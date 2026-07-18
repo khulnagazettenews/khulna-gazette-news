@@ -7,21 +7,53 @@
   --foreground: #171717;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  font-size: 118.75%; /* Scales 1rem to 19px to increase overall readability further */
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+/* Custom Marquee Animation for Breaking News Ticker */
+@keyframes marquee {
+  0% {
+    transform: translateX(100%);
   }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 35s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Base styling updates */
+.prose h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: #1e293b;
+}
+
+.prose p {
+  margin-bottom: 1rem;
+  line-height: 1.8;
+  font-size: 1.05rem;
+  color: #334155;
+}
+
+.prose blockquote {
+  border-left: 4px solid #dc2626;
+  padding-left: 1rem;
+  font-style: italic;
+  color: #475569;
+  margin: 1.5rem 0;
 }

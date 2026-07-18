@@ -1,0 +1,140 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/client"
+}
+
+// Roles: "SUPER_ADMIN", "EDITOR", "REPORTER"
+model User {
+  id        String   @id @default(uuid()) @map("_id")
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("REPORTER") // Mapped from Enum Role
+  avatar    String?
+  bio       String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  news      News[]
+}
+
+model Category {
+  id            String     @id @default(uuid()) @map("_id")
+  name          String
+  slug          String     @unique
+  parentId      String?
+  parent        Category?  @relation("SubCategories", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  subCategories Category[] @relation("SubCategories")
+  order         Int        @default(0)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  
+  // Relations for News
+  news          News[]     @relation("CategoryNews")
+  subNews       News[]     @relation("SubCategoryNews")
+}
+
+model Tag {
+  id        String   @id @default(uuid()) @map("_id")
+  name      String   @unique
+  slug      String   @unique
+  newsIds   String[]
+  news      News[]   @relation("NewsTags", fields: [newsIds], references: [id])
+}
+
+model News {
+  id              String      @id @default(uuid()) @map("_id")
+  title           String
+  subtitle        String?
+  slug            String      @unique
+  content         String      
+  featuredImage   String?
+  imageCaption    String?
+  photoCredit     String?
+  
+  categoryId      String
+  category        Category    @relation("CategoryNews", fields: [categoryId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  
+  subCategoryId   String?
+  subCategory     Category?   @relation("SubCategoryNews", fields: [subCategoryId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  
+  authorId        String
+  author          User        @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  
+  reporterName    String?     
+  tagIds          String[]
+  tags            Tag[]       @relation("NewsTags", fields: [tagIds], references: [id])
+  
+  status          String      @default("DRAFT") // Mapped from Enum: DRAFT, PUBLISHED, SCHEDULED, TRASHED
+  isBreaking      Boolean     @default(false)
+  isFeatured      Boolean     @default(false)
+  
+  publishedAt     DateTime?
+  scheduledAt     DateTime?
+  viewCount       Int         @default(0)
+  
+  metaTitle       String?
+  metaDescription String?
+  
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  
+  comments        Comment[]
+}
+
+model EpaperIssue {
+  id        String   @id @default(uuid()) @map("_id")
+  date      DateTime @unique
+  pdfUrl    String?
+  imageUrl  String?
+  imageUrls String[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model GalleryPhoto {
+  id        String   @id @default(uuid()) @map("_id")
+  imageUrl  String
+  caption   String?
+  credit    String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model GalleryVideo {
+  id         String   @id @default(uuid()) @map("_id")
+  youtubeUrl String
+  title      String
+  order      Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model PrayerTime {
+  id        String   @id @default(uuid()) @map("_id")
+  date      DateTime @unique
+  fajr      String
+  zohr      String
+  asr       String
+  magrib    String
+  esha      String
+  sunrise   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Comment {
+  id        String   @id @default(uuid()) @map("_id")
+  newsId    String
+  news      News     @relation(fields: [newsId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  name      String
+  comment   String
+  approved  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
