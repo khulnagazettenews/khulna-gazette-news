@@ -62,3 +62,8 @@ export type PrayerTime = Prisma.PrayerTimeModel
  * 
  */
 export type Comment = Prisma.CommentModel
+/**
+ * Model Advertisement
+ * 
+ */
+export type Advertisement = Prisma.AdvertisementModel

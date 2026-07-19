@@ -17,10 +17,8 @@ export default function EpaperManagement() {
 
   // Form State
   const [date, setDate] = useState('');
-  const [pdfUrl, setPdfUrl] = useState('');
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   
-  const [uploadingPdf, setUploadingPdf] = useState(false);
   const [uploadingImg, setUploadingImg] = useState(false);
   const [uploadProgress, setUploadProgress] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -45,34 +43,6 @@ export default function EpaperManagement() {
   useEffect(() => {
     fetchIssues();
   }, []);
-
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: 'pdf' | 'img') => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    if (type === 'pdf') setUploadingPdf(true);
-    setError('');
-
-    const formData = new FormData();
-    formData.append('file', file);
-
-    try {
-      const res = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      });
-      const data = await res.json();
-      if (res.ok) {
-        if (type === 'pdf') setPdfUrl(data.url);
-      } else {
-        setError(data.error || 'ফাইল আপলোড ব্যর্থ হয়েছে।');
-      }
-    } catch (err) {
-      setError('আপলোড ত্রুটি ঘটেছে।');
-    } finally {
-      setUploadingPdf(false);
-    }
-  };
 
   const handleMultiImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -127,8 +97,8 @@ export default function EpaperManagement() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!date || (!pdfUrl && imageUrls.length === 0)) {
-      setError('তারিখ এবং অন্ততঃ একটি ফাইল (PDF অথবা ইমেজ) আবশ্যক।');
+    if (!date || imageUrls.length === 0) {
+      setError('তারিখ এবং অন্ততঃ একটি ইমেজ পৃষ্ঠা আপলোড করা আবশ্যক।');
       return;
     }
 
@@ -140,14 +110,13 @@ export default function EpaperManagement() {
       const res = await fetch('/api/epaper', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ date, pdfUrl, imageUrls }),
+        body: JSON.stringify({ date, pdfUrl: null, imageUrls }),
       });
 
       const data = await res.json();
       if (res.ok) {
         setSuccess('ই-পেপার সফলভাবে আপলোড করা হয়েছে।');
         setDate('');
-        setPdfUrl('');
         setImageUrls([]);
         fetchIssues();
       } else {
@@ -186,7 +155,7 @@ export default function EpaperManagement() {
     <div className="space-y-6">
       <div>
         <h2 className="text-xl font-bold text-gray-800">ই-পেপার ম্যানেজমেন্ট</h2>
-        <p className="text-sm text-gray-500">প্রতিদিনের ছাপা পত্রিকার ইমেজ বা PDF সংস্করণ আপলোড করুন।</p>
+        <p className="text-sm text-gray-500">প্রতিদিনের ছাপা পত্রিকার পেজ ইমেজ সংস্করণ আপলোড করুন।</p>
       </div>
 
       {success && (
@@ -219,25 +188,6 @@ export default function EpaperManagement() {
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-red-600"
                 required
               />
-            </div>
-
-            {/* PDF URL Upload */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">PDF ফাইল (ঐচ্ছিক)</label>
-              {pdfUrl ? (
-                <div className="flex items-center justify-between bg-slate-50 border border-gray-200 rounded-lg px-3 py-2 text-xs">
-                  <span className="truncate max-w-[150px] text-gray-600 font-mono">{pdfUrl}</span>
-                  <button type="button" onClick={() => setPdfUrl('')} className="text-red-500 hover:text-red-700">
-                    <X size={16} />
-                  </button>
-                </div>
-              ) : (
-                <label className="border border-dashed border-gray-300 rounded-lg py-3 flex flex-col items-center justify-center cursor-pointer hover:border-red-600 transition bg-slate-50">
-                  <FileText size={18} className="text-gray-400 mb-1" />
-                  <span className="text-xs text-gray-500">{uploadingPdf ? 'আপলোড হচ্ছে...' : 'PDF ফাইল নির্বাচন করুন'}</span>
-                  <input type="file" accept=".pdf" onChange={(e) => handleFileUpload(e, 'pdf')} className="hidden" />
-                </label>
-              )}
             </div>
 
             {/* Image version upload */}

@@ -24,7 +24,7 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session || !['SUPER_ADMIN', 'EDITOR'].includes((session.user as any).role)) {
+    if (!session || !['SUPER_ADMIN', 'ADMIN', 'EDITOR', 'SUB_EDITOR'].includes((session.user as any).role)) {
       return NextResponse.json({ error: 'অননুমোদিত অ্যাক্সেস' }, { status: 403 });
     }
 

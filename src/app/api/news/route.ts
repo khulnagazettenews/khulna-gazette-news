@@ -36,9 +36,13 @@ export async function GET(req: Request) {
       ];
     }
 
-    // Role protection: Reporters can only view their own news in the admin panel
-    const isReporter = (session.user as any).role === 'REPORTER';
-    if (isReporter) {
+    const userRole = (session.user as any).role || 'REPORTER';
+    if (['SUBSCRIBER', 'ADVERTISEMENT_MANAGER'].includes(userRole)) {
+      return NextResponse.json({ error: 'অননুমোদিত অ্যাক্সেস' }, { status: 403 });
+    }
+
+    // Role protection: Reporters and Contributors can only view their own news in the admin panel
+    if (['REPORTER', 'CONTRIBUTOR'].includes(userRole)) {
       where.authorId = (session.user as any).id;
     }
 
@@ -73,6 +77,10 @@ export async function POST(req: Request) {
     const session = await getServerSession(authOptions);
     if (!session) {
       return NextResponse.json({ error: 'অননুমোদিত অ্যাক্সেস' }, { status: 401 });
+    }
+    const userRole = (session.user as any).role || 'REPORTER';
+    if (['SUBSCRIBER', 'ADVERTISEMENT_MANAGER'].includes(userRole)) {
+      return NextResponse.json({ error: 'অননুমোদিত অ্যাক্সেস' }, { status: 403 });
     }
 
     const body = await req.json();
@@ -132,10 +140,10 @@ export async function POST(req: Request) {
       };
     });
 
-    const isReporter = (session.user as any).role === 'REPORTER';
-    const finalStatus = isReporter ? 'DRAFT' : (status || 'DRAFT');
-    const finalIsBreaking = isReporter ? false : !!isBreaking;
-    const finalIsFeatured = isReporter ? false : !!isFeatured;
+    const canPublish = ['SUPER_ADMIN', 'ADMIN', 'EDITOR'].includes(userRole);
+    const finalStatus = canPublish ? (status || 'DRAFT') : 'DRAFT';
+    const finalIsBreaking = canPublish ? !!isBreaking : false;
+    const finalIsFeatured = canPublish ? !!isFeatured : false;
 
     const news = await prisma.news.create({
       data: {

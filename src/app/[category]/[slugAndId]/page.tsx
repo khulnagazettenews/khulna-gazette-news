@@ -8,6 +8,7 @@ import ViewsIncrement from '@/components/views-increment';
 import CommentSection from '@/components/comment-section';
 import Link from 'next/link';
 import { Calendar, Eye, User } from 'lucide-react';
+import AdBanner from '@/components/ad-banner';
 
 export const revalidate = 60; // Cache for 60 seconds (ISR)
 
@@ -192,11 +193,10 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
   }
 
   // CASE B: Render Article Details Page
-  // Extract ID from slugAndId (format: slug-id)
-  const parts = slugAndId.split('-');
-  const id = parts[parts.length - 1];
+  // Extract ID from slugAndId (A UUID is exactly 36 characters long)
+  const id = slugAndId.slice(-36);
 
-  if (!id) {
+  if (!id || id.length !== 36) {
     notFound();
   }
 
@@ -219,11 +219,15 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
       status: 'PUBLISHED',
       NOT: { id: news.id },
     },
-    take: 4,
+    take: 6,
     orderBy: { publishedAt: 'desc' },
     include: {
       category: true,
     },
+  });
+
+  const sidebarAd = await prisma.advertisement.findFirst({
+    where: { position: 'sidebar_banner', status: 'ACTIVE' },
   });
 
   const jsonLd = {
@@ -266,13 +270,23 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left Column: News details + Related news + Comments */}
           <div className="lg:col-span-2 space-y-6">
             <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-6">
               <span className="text-xs font-black text-red-600 bg-red-50 border border-red-100 px-3 py-1 rounded w-fit block">
                 {news.category?.name}
               </span>
 
-              <h1 className="text-2xl sm:text-3xl font-black text-gray-900 leading-snug">
+              <h1 
+                style={{ 
+                  fontFamily: 'var(--font-hind-siliguri), Bangla, sans-serif',
+                  fontStyle: 'normal',
+                  fontWeight: 700,
+                  color: 'rgb(0, 0, 0)',
+                  fontSize: '32px',
+                  lineHeight: '38px' 
+                }}
+              >
                 {news.title}
               </h1>
 
@@ -323,7 +337,15 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
               )}
 
               <div 
-                className="prose max-w-none text-slate-800 text-sm sm:text-base leading-relaxed"
+                style={{ 
+                  fontFamily: 'var(--font-hind-siliguri), Bangla, sans-serif',
+                  fontStyle: 'normal',
+                  fontWeight: 400,
+                  color: 'rgb(0, 0, 0)',
+                  fontSize: '21px',
+                  lineHeight: '29px' 
+                }}
+                className="prose max-w-none [&_p]:text-[21px] [&_p]:leading-[29px] [&_p]:font-normal [&_p]:text-black [&_p]:mb-6 [&_span]:text-[21px] [&_span]:leading-[29px] [&_li]:text-[21px] [&_li]:leading-[29px] [&_strong]:font-bold [&_strong]:text-black [&_b]:font-bold [&_b]:text-black text-black"
                 dangerouslySetInnerHTML={{ __html: news.content }}
               />
 
@@ -368,30 +390,26 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
 
             {relatedNews.length > 0 && (
               <div className="space-y-4">
-                <h3 className="text-sm sm:text-base font-bold text-gray-800 border-l-4 border-red-600 pl-2.5">
-                  সম্পর্কিত আরও সংবাদ
+                <h3 className="text-base font-black text-gray-800 border-t-2 border-red-600 pt-3">
+                  আরও সংবাদ
                 </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                   {relatedNews.map((item) => (
-                    <div key={item.id} className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex gap-4 hover:shadow-md transition group">
-                      <div className="flex-1 space-y-1.5">
-                        <Link href={`/${category}/${item.slug}-${item.id}`} className="block">
-                          <h4 className="text-xs sm:text-sm font-black text-gray-900 hover:text-red-650 transition leading-snug line-clamp-3">
-                            {item.title}
-                          </h4>
-                        </Link>
-                        <span className="text-[9px] text-gray-400 block font-medium">
-                          {item.publishedAt && new Date(item.publishedAt).toLocaleDateString('bn-BD', {
-                            month: 'short',
-                            day: 'numeric'
-                          })}
-                        </span>
+                    <div key={item.id} className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm flex flex-col justify-between group hover:shadow transition duration-200">
+                      <div>
+                        {item.featuredImage && (
+                          <Link href={`/${category}/${item.slug}-${item.id}`} className="block aspect-video overflow-hidden bg-gray-50">
+                            <img src={item.featuredImage} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
+                          </Link>
+                        )}
+                        <div className="p-3">
+                          <Link href={`/${category}/${item.slug}-${item.id}`}>
+                            <h4 className="text-xs sm:text-sm font-bold text-gray-900 hover:text-red-650 transition leading-snug line-clamp-3">
+                              {item.title}
+                            </h4>
+                          </Link>
+                        </div>
                       </div>
-                      {item.featuredImage && (
-                        <Link href={`/${category}/${item.slug}-${item.id}`} className="w-20 h-20 shrink-0 overflow-hidden rounded-lg bg-gray-50 aspect-square">
-                          <img src={item.featuredImage} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
-                        </Link>
-                      )}
                     </div>
                   ))}
                 </div>
@@ -401,8 +419,10 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
             <CommentSection newsId={news.id} />
           </div>
 
+          {/* Right Column: Sidebar Widgets & Ads */}
           <div className="space-y-6">
             <TabsWidget latest={latest} popular={popular} />
+            <AdBanner ad={sidebarAd} fallbackText="বিজ্ঞাপন ব্যানার (Sidebar)" className="h-60" />
             <PrayerWidget />
           </div>
         </div>

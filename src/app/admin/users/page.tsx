@@ -63,11 +63,13 @@ export default function RoleManagementPage() {
     }
   };
 
+  const role = (session?.user as any)?.role;
+
   useEffect(() => {
-    if (session && (session.user as any)?.role === 'SUPER_ADMIN') {
+    if (session && ['SUPER_ADMIN', 'ADMIN'].includes(role)) {
       fetchUsers();
     }
-  }, [session]);
+  }, [session, role]);
 
   if (status === 'loading') {
     return (
@@ -77,8 +79,8 @@ export default function RoleManagementPage() {
     );
   }
 
-  // Security Check: Only SUPER_ADMIN allowed
-  if (!session || (session.user as any)?.role !== 'SUPER_ADMIN') {
+  // Security Check: Only SUPER_ADMIN and ADMIN allowed
+  if (!session || !['SUPER_ADMIN', 'ADMIN'].includes(role)) {
     return (
       <div className="bg-red-50 border border-red-200 rounded-xl p-8 text-center max-w-2xl mx-auto my-12 shadow-sm">
         <div className="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -86,7 +88,7 @@ export default function RoleManagementPage() {
         </div>
         <h2 className="text-xl font-bold text-gray-800 mb-2">অননুমোদিত অ্যাক্সেস!</h2>
         <p className="text-gray-600 text-sm mb-4">
-          এই পৃষ্ঠাটি শুধুমাত্র সুপার অ্যাডমিনদের জন্য সংরক্ষিত। আপনার কাছে এই কন্টেন্টটি দেখার অনুমতি নেই।
+          এই পৃষ্ঠাটি শুধুমাত্র অ্যাডমিন বা সুপার অ্যাডমিনদের জন্য সংরক্ষিত। আপনার কাছে এই পৃষ্ঠাটি দেখার অনুমতি নেই।
         </p>
       </div>
     );
@@ -208,17 +210,52 @@ export default function RoleManagementPage() {
             সুপার অ্যাডমিন
           </span>
         );
+      case 'ADMIN':
+        return (
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-purple-50 text-purple-750 border border-purple-200">
+            অ্যাডমিন
+          </span>
+        );
       case 'EDITOR':
         return (
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
             সম্পাদক
           </span>
         );
+      case 'SUB_EDITOR':
+        return (
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
+            সহকারী সম্পাদক
+          </span>
+        );
       case 'REPORTER':
-        default:
         return (
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
             প্রতিবেদক
+          </span>
+        );
+      case 'CONTRIBUTOR':
+        return (
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-teal-50 text-teal-700 border border-teal-200">
+            কন্ট্রিবিউটর
+          </span>
+        );
+      case 'ADVERTISEMENT_MANAGER':
+        return (
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+            বিজ্ঞাপন ম্যানেজার
+          </span>
+        );
+      case 'SUBSCRIBER':
+        return (
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200">
+            সাবস্ক্রাইবার
+          </span>
+        );
+      default:
+        return (
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-gray-50 text-gray-700 border border-gray-200">
+            {role}
           </span>
         );
     }
@@ -312,14 +349,15 @@ export default function RoleManagementPage() {
                       <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => openEditModal(user)}
-                          className="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition"
+                          disabled={user.role === 'SUPER_ADMIN' && role === 'ADMIN'}
+                          className="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition disabled:opacity-30 disabled:hover:bg-transparent"
                           title="সম্পাদনা"
                         >
                           <Pencil size={15} />
                         </button>
                         <button
                           onClick={() => handleDelete(user)}
-                          disabled={user.id === (session.user as any).id}
+                          disabled={user.id === (session.user as any).id || (user.role === 'SUPER_ADMIN' && role === 'ADMIN')}
                           className="p-1.5 text-gray-500 hover:text-red-650 hover:bg-red-50 rounded transition disabled:opacity-30 disabled:hover:bg-transparent"
                           title="মুছে ফেলুন"
                         >
@@ -411,9 +449,16 @@ export default function RoleManagementPage() {
                   onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                   className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-650 focus:border-red-650 bg-white"
                 >
-                  <option value="REPORTER">প্রতিবেদক (Reporter - শুধুমাত্র খবর লিখতে পারবে)</option>
-                  <option value="EDITOR">সম্পাদক (Editor - খবর প্রকাশ ও কন্টেন্ট ম্যানেজমেন্ট)</option>
-                  <option value="SUPER_ADMIN">সুপার অ্যাডমিন (Super Admin - সম্পূর্ণ অ্যাক্সেস)</option>
+                  <option value="SUBSCRIBER">সাবস্ক্রাইবার (Subscriber)</option>
+                  <option value="CONTRIBUTOR">কন্ট্রিবিউটর (Contributor)</option>
+                  <option value="REPORTER">প্রতিবেদক (Reporter)</option>
+                  <option value="SUB_EDITOR">সহকারী সম্পাদক (Sub Editor)</option>
+                  <option value="EDITOR">সম্পাদক (Editor)</option>
+                  <option value="ADVERTISEMENT_MANAGER">বিজ্ঞাপন ম্যানেজার (Advertisement Manager)</option>
+                  <option value="ADMIN">অ্যাডমিন (Admin)</option>
+                  {role === 'SUPER_ADMIN' && (
+                    <option value="SUPER_ADMIN">সুপার অ্যাডমিন (Super Admin)</option>
+                  )}
                 </select>
               </div>
 
@@ -527,9 +572,16 @@ export default function RoleManagementPage() {
                   disabled={currentUser.id === (session.user as any).id}
                   className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-650 focus:border-red-650 bg-white disabled:opacity-60"
                 >
+                  <option value="SUBSCRIBER">সাবস্ক্রাইবার (Subscriber)</option>
+                  <option value="CONTRIBUTOR">কন্ট্রিবিউটর (Contributor)</option>
                   <option value="REPORTER">প্রতিবেদক (Reporter)</option>
+                  <option value="SUB_EDITOR">সহকারী সম্পাদক (Sub Editor)</option>
                   <option value="EDITOR">সম্পাদক (Editor)</option>
-                  <option value="SUPER_ADMIN">সুপার অ্যাডমিন (Super Admin)</option>
+                  <option value="ADVERTISEMENT_MANAGER">বিজ্ঞাপন ম্যানেজার (Advertisement Manager)</option>
+                  <option value="ADMIN">অ্যাডমিন (Admin)</option>
+                  {role === 'SUPER_ADMIN' && (
+                    <option value="SUPER_ADMIN">সুপার অ্যাডমিন (Super Admin)</option>
+                  )}
                 </select>
                 {currentUser.id === (session.user as any).id && (
                   <p className="text-[10px] text-amber-600 mt-1">

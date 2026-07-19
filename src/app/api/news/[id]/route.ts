@@ -42,6 +42,11 @@ export async function PUT(
       return NextResponse.json({ error: 'অননুমোদিত অ্যাক্সেস' }, { status: 401 });
     }
 
+    const userRole = (session.user as any).role || 'REPORTER';
+    if (['SUBSCRIBER', 'ADVERTISEMENT_MANAGER'].includes(userRole)) {
+      return NextResponse.json({ error: 'অননুমোদিত অ্যাক্সেস' }, { status: 403 });
+    }
+
     const { id } = params;
     
     // Check if news exists
@@ -54,10 +59,13 @@ export async function PUT(
       return NextResponse.json({ error: 'সংবাদটি পাওয়া যায়নি।' }, { status: 404 });
     }
 
-    // Role protection: Reporters can only update their own articles
-    const isReporter = (session.user as any).role === 'REPORTER';
-    if (isReporter && existingNews.authorId !== (session.user as any).id) {
+    // Role protection checks:
+    if (['REPORTER', 'CONTRIBUTOR'].includes(userRole) && existingNews.authorId !== (session.user as any).id) {
       return NextResponse.json({ error: 'আপনি শুধুমাত্র নিজের খবর সম্পাদনা করতে পারবেন।' }, { status: 403 });
+    }
+
+    if (userRole === 'CONTRIBUTOR' && existingNews.status !== 'DRAFT') {
+      return NextResponse.json({ error: 'খবরটি প্রকাশিত হয়ে গেছে, আপনি আর সম্পাদনা করতে পারবেন না।' }, { status: 403 });
     }
 
     const body = await req.json();
@@ -107,9 +115,28 @@ export async function PUT(
       };
     });
 
-    const finalStatus = isReporter ? 'DRAFT' : (status || 'DRAFT');
-    const finalIsBreaking = isReporter ? false : !!isBreaking;
-    const finalIsFeatured = isReporter ? false : !!isFeatured;
+    const canPublish = ['SUPER_ADMIN', 'ADMIN', 'EDITOR'].includes(userRole);
+    let finalStatus = existingNews.status;
+    let finalIsBreaking = existingNews.isBreaking;
+    let finalIsFeatured = existingNews.isFeatured;
+
+    if (canPublish) {
+      finalStatus = status || existingNews.status;
+      finalIsBreaking = isBreaking !== undefined ? !!isBreaking : existingNews.isBreaking;
+      finalIsFeatured = isFeatured !== undefined ? !!isFeatured : existingNews.isFeatured;
+    } else if (userRole === 'SUB_EDITOR') {
+      if (existingNews.status === 'DRAFT' && (status === 'PUBLISHED' || status === 'SCHEDULED')) {
+        finalStatus = 'DRAFT';
+      } else {
+        finalStatus = status || existingNews.status;
+      }
+      finalIsBreaking = existingNews.isBreaking;
+      finalIsFeatured = existingNews.isFeatured;
+    } else {
+      finalStatus = 'DRAFT';
+      finalIsBreaking = false;
+      finalIsFeatured = false;
+    }
 
     // Check if status is transitioning to PUBLISHED
     let publishedAt = existingNews.publishedAt;
@@ -195,9 +222,19 @@ export async function DELETE(
     }
 
     // Role protection
-    const isReporter = (session.user as any).role === 'REPORTER';
-    if (isReporter && existingNews.authorId !== (session.user as any).id) {
-      return NextResponse.json({ error: 'আপনি শুধুমাত্র নিজের খবর মুছে ফেলতে পারবেন।' }, { status: 403 });
+    const userRole = (session.user as any).role || 'REPORTER';
+    const canDeleteAny = ['SUPER_ADMIN', 'ADMIN', 'EDITOR'].includes(userRole);
+
+    if (!canDeleteAny) {
+      if (userRole === 'SUB_EDITOR') {
+        return NextResponse.json({ error: 'সংবাদ মুছে ফেলার অনুমতি নেই।' }, { status: 403 });
+      }
+      if (existingNews.authorId !== (session.user as any).id) {
+        return NextResponse.json({ error: 'আপনি অন্য কারও খবর মুছে ফেলতে পারবেন না।' }, { status: 403 });
+      }
+      if (existingNews.status !== 'DRAFT') {
+        return NextResponse.json({ error: 'প্রকাশিত সংবাদ আপনি মুছে ফেলতে পারবেন না।' }, { status: 403 });
+      }
     }
 
     await prisma.news.delete({

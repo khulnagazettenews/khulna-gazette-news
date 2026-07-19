@@ -4,15 +4,22 @@ import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 
-// GET: Fetch all users (Super Admin only)
+// GET: Fetch all users (Super Admin and Admin allowed)
 export async function GET(req: Request) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session || (session.user as any)?.role !== 'SUPER_ADMIN') {
+    const currentUserRole = (session?.user as any)?.role;
+    if (!session || !['SUPER_ADMIN', 'ADMIN'].includes(currentUserRole)) {
       return NextResponse.json({ error: 'অননুমোদিত অ্যাক্সেস' }, { status: 403 });
     }
 
+    const where: any = {};
+    if (currentUserRole === 'ADMIN') {
+      where.role = { not: 'SUPER_ADMIN' };
+    }
+
     const users = await prisma.user.findMany({
+      where,
       select: {
         id: true,
         name: true,
@@ -38,11 +45,12 @@ export async function GET(req: Request) {
   }
 }
 
-// POST: Create a new user (Super Admin only)
+// POST: Create a new user (Super Admin and Admin allowed)
 export async function POST(req: Request) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session || (session.user as any)?.role !== 'SUPER_ADMIN') {
+    const currentUserRole = (session?.user as any)?.role;
+    if (!session || !['SUPER_ADMIN', 'ADMIN'].includes(currentUserRole)) {
       return NextResponse.json({ error: 'অননুমোদিত অ্যাক্সেস' }, { status: 403 });
     }
 
@@ -53,6 +61,14 @@ export async function POST(req: Request) {
       return NextResponse.json(
         { error: 'নাম, ইমেইল, পাসওয়ার্ড এবং রোল প্রদান করা আবশ্যক।' },
         { status: 400 }
+      );
+    }
+
+    // Role safety validation
+    if (currentUserRole === 'ADMIN' && role === 'SUPER_ADMIN') {
+      return NextResponse.json(
+        { error: 'আপনি সুপার অ্যাডমিন রোল তৈরি করতে পারবেন না।' },
+        { status: 403 }
       );
     }
 

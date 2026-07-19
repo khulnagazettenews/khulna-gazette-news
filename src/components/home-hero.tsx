@@ -29,7 +29,7 @@ export default function HomeHero({ news }: HomeHeroProps) {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
       {/* Lead Story - Spans 2 cols */}
       <div className="lg:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col justify-between group">
         <Link href={`/${lead.category?.slug || 'news'}/${lead.slug}-${lead.id}`} className="block overflow-hidden relative aspect-video">
@@ -37,29 +37,29 @@ export default function HomeHero({ news }: HomeHeroProps) {
             <img 
               src={lead.featuredImage} 
               alt={lead.title} 
-              className="w-full h-full object-cover group-hover:scale-[1.02] transition duration-500" 
+              className="w-full h-full object-cover group-hover:scale-[1.01] transition duration-500" 
             />
           ) : (
             <div className="w-full h-full bg-slate-100 flex items-center justify-center text-gray-400">খুলনা গেজেট</div>
           )}
-          <span className="absolute bottom-4 left-4 bg-red-600 text-white font-extrabold text-[10px] px-2.5 py-1 rounded shadow">
+          <span className="absolute bottom-4 left-4 bg-red-600 text-white font-extrabold text-xs sm:text-sm px-3.5 py-1.5 rounded shadow">
             {lead.category?.name}
           </span>
         </Link>
 
-        <div className="p-6 space-y-3">
+        <div className="p-6 space-y-4">
           <Link href={`/${lead.category?.slug || 'news'}/${lead.slug}-${lead.id}`} className="block">
-            <h2 className="text-xl sm:text-2xl font-black text-gray-900 hover:text-red-650 transition leading-snug">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-gray-900 hover:text-red-650 transition leading-snug">
               {lead.title}
             </h2>
           </Link>
           {lead.subtitle && (
-            <p className="text-sm font-semibold text-slate-500">{lead.subtitle}</p>
+            <p className="text-base sm:text-lg font-bold text-slate-500">{lead.subtitle}</p>
           )}
-          <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
+          <p className="text-sm sm:text-base text-gray-705 leading-relaxed">
             {getExcerpt(lead.content)}
           </p>
-          <div className="flex items-center gap-3 text-[10px] text-gray-400 font-medium pt-2">
+          <div className="flex items-center gap-3 text-xs sm:text-sm text-gray-450 font-medium pt-2">
             <span>{lead.reporterName || 'স্টাফ রিপোর্টার'}</span>
             <span>•</span>
             <span>
@@ -78,18 +78,18 @@ export default function HomeHero({ news }: HomeHeroProps) {
         {secondary.map((story) => (
           <div 
             key={story.id} 
-            className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex gap-4 hover:shadow-md transition group"
+            className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm flex gap-4 hover:shadow-md transition group"
           >
-            <div className="flex-1 space-y-2">
-              <span className="text-[9px] font-extrabold text-red-600 uppercase tracking-wider block">
+            <div className="flex-1 space-y-2.5">
+              <span className="text-[10px] sm:text-xs font-extrabold text-red-600 uppercase tracking-wider block">
                 {story.category?.name}
               </span>
               <Link href={`/${story.category?.slug || 'news'}/${story.slug}-${story.id}`} className="block">
-                <h3 className="text-xs sm:text-sm font-black text-gray-900 hover:text-red-650 transition leading-snug line-clamp-3">
+                <h3 className="text-sm sm:text-base lg:text-lg font-extrabold text-gray-900 hover:text-red-650 transition leading-snug line-clamp-3">
                   {story.title}
                 </h3>
               </Link>
-              <span className="text-[9px] text-gray-400 block font-medium">
+              <span className="text-[10px] sm:text-xs text-gray-450 block font-medium">
                 {story.publishedAt && new Date(story.publishedAt).toLocaleDateString('bn-BD', {
                   month: 'short',
                   day: 'numeric'
@@ -100,7 +100,7 @@ export default function HomeHero({ news }: HomeHeroProps) {
             {story.featuredImage && (
               <Link 
                 href={`/${story.category?.slug || 'news'}/${story.slug}-${story.id}`}
-                className="w-24 h-24 sm:w-28 sm:h-28 shrink-0 overflow-hidden rounded-lg bg-gray-50 aspect-square"
+                className="w-32 h-24 sm:w-40 sm:h-28 shrink-0 overflow-hidden rounded-lg bg-gray-50 aspect-video"
               >
                 <img 
                   src={story.featuredImage} 

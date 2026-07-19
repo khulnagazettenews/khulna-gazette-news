@@ -9,7 +9,7 @@ export async function PUT(
 ) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session || !['SUPER_ADMIN', 'EDITOR'].includes((session.user as any).role)) {
+    if (!session || !['SUPER_ADMIN', 'ADMIN', 'EDITOR', 'SUB_EDITOR'].includes((session.user as any).role)) {
       return NextResponse.json({ error: 'অননুমোদিত অ্যাক্সেস' }, { status: 403 });
     }
 
@@ -70,8 +70,8 @@ export async function DELETE(
 ) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session || (session.user as any).role !== 'SUPER_ADMIN') {
-      return NextResponse.json({ error: 'শুধুমাত্র সুপার অ্যাডমিন মুছে ফেলতে পারবেন' }, { status: 403 });
+    if (!session || !['SUPER_ADMIN', 'ADMIN'].includes((session.user as any).role)) {
+      return NextResponse.json({ error: 'শুধুমাত্র অ্যাডমিন বা সুপার অ্যাডমিন মুছে ফেলতে পারবেন' }, { status: 403 });
     }
 
     const { id } = params;

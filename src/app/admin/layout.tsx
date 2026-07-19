@@ -2,7 +2,7 @@
 
 import { useSession, signOut } from 'next-auth/react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { 
   LayoutDashboard, 
   FolderKanban, 
@@ -16,34 +16,60 @@ import {
   ChevronRight,
   Menu,
   X,
-  Users
+  Users,
+  Megaphone,
+  MessageSquare
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const { data: session, status } = useSession();
   const pathname = usePathname();
+  const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const role = (session?.user as any)?.role || 'REPORTER';
+
+  // Redirect Subscribers out of admin panel
+  useEffect(() => {
+    if (status === 'authenticated' && role === 'SUBSCRIBER') {
+      router.replace('/');
+    }
+  }, [status, role, router]);
 
   // Bypass layout wrapper on login page
   if (pathname === '/admin/login') {
     return <>{children}</>;
   }
 
-  const role = (session?.user as any)?.role || 'REPORTER';
+  if (status === 'authenticated' && role === 'SUBSCRIBER') {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-650"></div>
+      </div>
+    );
+  }
 
   // Build navigation items based on role
-  const navigation = [
-    { name: 'ড্যাশবোর্ড', href: '/admin', icon: LayoutDashboard },
-  ];
+  const navigation = [];
 
-  if (role === 'SUPER_ADMIN' || role === 'EDITOR') {
+  // 1. Dashboard (Allowed for all roles except Subscriber)
+  if (role !== 'SUBSCRIBER') {
+    navigation.push({ name: 'ড্যাশবোর্ড', href: '/admin', icon: LayoutDashboard });
+  }
+
+  // 2. Categories (Super Admin, Admin, Editor, Sub Editor)
+  if (['SUPER_ADMIN', 'ADMIN', 'EDITOR', 'SUB_EDITOR'].includes(role)) {
     navigation.push({ name: 'ক্যাটাগরি ম্যানেজমেন্ট', href: '/admin/categories', icon: FolderKanban });
   }
 
-  navigation.push({ name: 'খবরসমূহ', href: '/admin/news', icon: Newspaper });
+  // 3. News Articles (Super Admin, Admin, Editor, Sub Editor, Reporter, Contributor)
+  if (['SUPER_ADMIN', 'ADMIN', 'EDITOR', 'SUB_EDITOR', 'REPORTER', 'CONTRIBUTOR'].includes(role)) {
+    navigation.push({ name: 'খবরসমূহ', href: '/admin/news', icon: Newspaper });
+  }
 
-  if (role === 'SUPER_ADMIN' || role === 'EDITOR') {
+  // 4. Media & Prayer Times (Super Admin, Admin, Editor, Sub Editor)
+  if (['SUPER_ADMIN', 'ADMIN', 'EDITOR', 'SUB_EDITOR'].includes(role)) {
     navigation.push(
       { name: 'ই-পেপার', href: '/admin/epaper', icon: FileImage },
       { name: 'ফটো গ্যালারি', href: '/admin/photos', icon: ImageIcon },
@@ -52,7 +78,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     );
   }
 
-  if (role === 'SUPER_ADMIN') {
+  // 5. Advertisements (Super Admin, Admin, Advertisement Manager)
+  if (['SUPER_ADMIN', 'ADMIN', 'ADVERTISEMENT_MANAGER'].includes(role)) {
+    navigation.push({ name: 'বিজ্ঞাপন ম্যানেজমেন্ট', href: '/admin/advertisements', icon: Megaphone });
+  }
+
+  // 6. Comments (Super Admin, Admin, Editor)
+  if (['SUPER_ADMIN', 'ADMIN', 'EDITOR'].includes(role)) {
+    navigation.push({ name: 'মন্তব্যসমূহ', href: '/admin/comments', icon: MessageSquare });
+  }
+
+  // 7. Users & Roles (Super Admin, Admin)
+  if (['SUPER_ADMIN', 'ADMIN'].includes(role)) {
     navigation.push({ name: 'ইউজার ও রোলস', href: '/admin/users', icon: Users });
   }
 
@@ -128,11 +165,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 {session?.user?.name || 'অ্যাডমিন'}
               </p>
               <p className="text-xs text-slate-400">
-                {(session?.user as any)?.role === 'SUPER_ADMIN' 
-                  ? 'সুপার অ্যাডমিন' 
-                  : (session?.user as any)?.role === 'EDITOR' 
-                  ? 'সম্পাদক' 
-                  : 'প্রতিবেদক'}
+                {(() => {
+                  const r = (session?.user as any)?.role;
+                  if (r === 'SUPER_ADMIN') return 'সুপার অ্যাডমিন';
+                  if (r === 'ADMIN') return 'অ্যাডমিন';
+                  if (r === 'EDITOR') return 'সম্পাদক';
+                  if (r === 'SUB_EDITOR') return 'সহকারী সম্পাদক';
+                  if (r === 'REPORTER') return 'প্রতিবেদক';
+                  if (r === 'CONTRIBUTOR') return 'কন্ট্রিবিউটর';
+                  if (r === 'ADVERTISEMENT_MANAGER') return 'বিজ্ঞাপন ম্যানেজার';
+                  if (r === 'SUBSCRIBER') return 'সাবস্ক্রাইবার';
+                  return 'প্রতিবেদক';
+                })()}
               </p>
             </div>
           </div>

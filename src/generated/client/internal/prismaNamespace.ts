@@ -398,7 +398,8 @@ export const ModelName = {
   GalleryPhoto: 'GalleryPhoto',
   GalleryVideo: 'GalleryVideo',
   PrayerTime: 'PrayerTime',
-  Comment: 'Comment'
+  Comment: 'Comment',
+  Advertisement: 'Advertisement'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -414,7 +415,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "category" | "tag" | "news" | "epaperIssue" | "galleryPhoto" | "galleryVideo" | "prayerTime" | "comment"
+    modelProps: "user" | "category" | "tag" | "news" | "epaperIssue" | "galleryPhoto" | "galleryVideo" | "prayerTime" | "comment" | "advertisement"
     txIsolationLevel: never
   }
   model: {
@@ -1084,6 +1085,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Advertisement: {
+      payload: Prisma.$AdvertisementPayload<ExtArgs>
+      fields: Prisma.AdvertisementFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AdvertisementFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdvertisementPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AdvertisementFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdvertisementPayload>
+        }
+        findFirst: {
+          args: Prisma.AdvertisementFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdvertisementPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AdvertisementFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdvertisementPayload>
+        }
+        findMany: {
+          args: Prisma.AdvertisementFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdvertisementPayload>[]
+        }
+        create: {
+          args: Prisma.AdvertisementCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdvertisementPayload>
+        }
+        createMany: {
+          args: Prisma.AdvertisementCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.AdvertisementDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdvertisementPayload>
+        }
+        update: {
+          args: Prisma.AdvertisementUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdvertisementPayload>
+        }
+        deleteMany: {
+          args: Prisma.AdvertisementDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AdvertisementUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.AdvertisementUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdvertisementPayload>
+        }
+        aggregate: {
+          args: Prisma.AdvertisementAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAdvertisement>
+        }
+        groupBy: {
+          args: Prisma.AdvertisementGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AdvertisementGroupByOutputType>[]
+        }
+        findRaw: {
+          args: Prisma.AdvertisementFindRawArgs<ExtArgs>
+          result: Prisma.JsonObject
+        }
+        aggregateRaw: {
+          args: Prisma.AdvertisementAggregateRawArgs<ExtArgs>
+          result: Prisma.JsonObject
+        }
+        count: {
+          args: Prisma.AdvertisementCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AdvertisementCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1233,6 +1308,24 @@ export const CommentScalarFieldEnum = {
 } as const
 
 export type CommentScalarFieldEnum = (typeof CommentScalarFieldEnum)[keyof typeof CommentScalarFieldEnum]
+
+
+export const AdvertisementScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  imageUrl: 'imageUrl',
+  targetUrl: 'targetUrl',
+  position: 'position',
+  status: 'status',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  clicks: 'clicks',
+  views: 'views',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AdvertisementScalarFieldEnum = (typeof AdvertisementScalarFieldEnum)[keyof typeof AdvertisementScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1414,6 +1507,7 @@ export type GlobalOmitConfig = {
   galleryVideo?: Prisma.GalleryVideoOmit
   prayerTime?: Prisma.PrayerTimeOmit
   comment?: Prisma.CommentOmit
+  advertisement?: Prisma.AdvertisementOmit
 }
 
 /* Types for Logging */

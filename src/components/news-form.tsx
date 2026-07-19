@@ -22,7 +22,10 @@ interface NewsFormProps {
 export default function NewsForm({ initialData, newsId }: NewsFormProps) {
   const router = useRouter();
   const { data: session } = useSession();
-  const isReporter = (session?.user as any)?.role === 'REPORTER';
+  const role = (session?.user as any)?.role || 'REPORTER';
+  const isReporterOrContributor = ['REPORTER', 'CONTRIBUTOR'].includes(role);
+  const isSubEditor = role === 'SUB_EDITOR';
+  const canPublish = ['SUPER_ADMIN', 'ADMIN', 'EDITOR'].includes(role);
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [subCategories, setSubCategories] = useState<Category[]>([]);
@@ -276,11 +279,18 @@ export default function NewsForm({ initialData, newsId }: NewsFormProps) {
                 </button>
               </div>
             ) : (
-              <label className="border-2 border-dashed border-gray-300 rounded-lg h-36 flex flex-col items-center justify-center cursor-pointer hover:border-red-600 transition bg-gray-50">
-                <Upload className="text-gray-400 mb-2" size={24} />
-                <span className="text-xs text-gray-500">{uploading ? 'আপলোড হচ্ছে...' : 'ছবি নির্বাচন করুন'}</span>
-                <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
-              </label>
+              role === 'CONTRIBUTOR' ? (
+                <div className="border-2 border-dashed border-gray-250 rounded-lg h-36 flex flex-col items-center justify-center bg-gray-50 text-gray-400 select-none">
+                  <Upload className="text-gray-300 mb-2" size={24} />
+                  <span className="text-xs">ছবি আপলোডের অনুমতি নেই</span>
+                </div>
+              ) : (
+                <label className="border-2 border-dashed border-gray-300 rounded-lg h-36 flex flex-col items-center justify-center cursor-pointer hover:border-red-650 transition bg-gray-50">
+                  <Upload className="text-gray-400 mb-2" size={24} />
+                  <span className="text-xs text-gray-500">{uploading ? 'আপলোড হচ্ছে...' : 'ছবি নির্বাচন করুন'}</span>
+                  <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
+                </label>
+              )
             )}
 
             <div>
@@ -379,7 +389,7 @@ export default function NewsForm({ initialData, newsId }: NewsFormProps) {
 
             <div>
               <label className="block text-xs font-medium text-gray-700 mb-1">অবস্থা (Status)</label>
-              {isReporter ? (
+              {isReporterOrContributor ? (
                 <div className="w-full border border-gray-250 bg-gray-50 text-gray-500 rounded-lg px-3 py-2 text-sm font-medium">
                   খসড়া (DRAFT) — প্রকাশ করতে সম্পাদকের অনুমতি লাগবে
                 </div>
@@ -387,17 +397,21 @@ export default function NewsForm({ initialData, newsId }: NewsFormProps) {
                 <select
                   value={status}
                   onChange={(e) => setStatus(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-red-650 focus:border-red-650"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-red-650 focus:border-red-650 bg-white"
                 >
                   <option value="DRAFT">খসড়া (Draft)</option>
-                  <option value="PUBLISHED">প্রকাশ করুন (Published)</option>
-                  <option value="SCHEDULED">শিডিউল (Scheduled)</option>
+                  {(canPublish || (isSubEditor && initialData?.status === 'PUBLISHED')) && (
+                    <option value="PUBLISHED">প্রকাশ করুন (Published)</option>
+                  )}
+                  {(canPublish || (isSubEditor && initialData?.status === 'SCHEDULED')) && (
+                    <option value="SCHEDULED">শিডিউল (Scheduled)</option>
+                  )}
                   <option value="TRASHED">মুছে ফেলুন (Trashed)</option>
                 </select>
               )}
             </div>
 
-            {status === 'SCHEDULED' && !isReporter && (
+            {status === 'SCHEDULED' && !isReporterOrContributor && (
               <div>
                 <label className="block text-xs font-medium text-gray-700 mb-1">শিডিউল প্রকাশের সময়</label>
                 <input
@@ -410,7 +424,7 @@ export default function NewsForm({ initialData, newsId }: NewsFormProps) {
               </div>
             )}
 
-            {!isReporter && (
+            {canPublish && (
               <div className="space-y-2.5 pt-2">
                 <label className="flex items-center gap-2 cursor-pointer text-sm font-medium text-gray-700">
                   <input

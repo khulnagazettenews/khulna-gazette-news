@@ -9,7 +9,9 @@ import {
   Eye, 
   PlusCircle, 
   ExternalLink,
-  Users
+  Users,
+  Megaphone,
+  MessageSquare
 } from 'lucide-react';
 
 export const revalidate = 0; // Disable server cache for admin index to ensure live stats
@@ -17,11 +19,11 @@ export const revalidate = 0; // Disable server cache for admin index to ensure l
 export default async function AdminDashboard() {
   const session = await getServerSession(authOptions);
   const role = (session?.user as any)?.role || 'REPORTER';
-  const isReporter = role === 'REPORTER';
+  const restrictsToOwnNews = ['REPORTER', 'CONTRIBUTOR'].includes(role);
   const userId = (session?.user as any)?.id;
 
   // Filter stats and news list based on role
-  const newsFilter = isReporter ? { authorId: userId } : {};
+  const newsFilter = restrictsToOwnNews ? { authorId: userId } : {};
 
   // 1. Fetch Stats from DB
   const totalNews = await prisma.news.count({ where: newsFilter });
@@ -34,7 +36,12 @@ export default async function AdminDashboard() {
   
   // Conditionally query category count or user count
   const totalCategories = await prisma.category.count();
-  const totalUsers = role === 'SUPER_ADMIN' ? await prisma.user.count() : 0;
+  const totalUsers = ['SUPER_ADMIN', 'ADMIN'].includes(role) ? await prisma.user.count() : 0;
+  
+  // Pending comments count
+  const pendingComments = ['SUPER_ADMIN', 'ADMIN', 'EDITOR'].includes(role) 
+    ? await prisma.comment.count({ where: { approved: false } }) 
+    : 0;
 
   // Sum views
   const newsWithViews = await prisma.news.findMany({
@@ -63,7 +70,16 @@ export default async function AdminDashboard() {
         </div>
         <div className="relative z-10">
           <span className="bg-red-600 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">
-            {role === 'SUPER_ADMIN' ? 'সুপার অ্যাডমিন কন্ট্রোল' : role === 'EDITOR' ? 'সম্পাদক কন্ট্রোল' : 'প্রতিবেদক প্যানেল'}
+            {(() => {
+              if (role === 'SUPER_ADMIN') return 'সুপার অ্যাডমিন কন্ট্রোল';
+              if (role === 'ADMIN') return 'অ্যাডমিন কন্ট্রোল';
+              if (role === 'EDITOR') return 'সম্পাদক কন্ট্রোল';
+              if (role === 'SUB_EDITOR') return 'সহকারী সম্পাদক কন্ট্রোল';
+              if (role === 'REPORTER') return 'প্রতিবেদক প্যানেল';
+              if (role === 'CONTRIBUTOR') return 'সহযোগী লেখক প্যানেল';
+              if (role === 'ADVERTISEMENT_MANAGER') return 'বিজ্ঞাপন ম্যানেজার প্যানেল';
+              return 'নিয়ন্ত্রণ প্যানেল';
+            })()}
           </span>
           <h2 className="text-3xl font-extrabold text-white mt-3">
             আসসালামু আলাইকুম, {session?.user?.name || 'অ্যাডমিন'}!
@@ -75,12 +91,12 @@ export default async function AdminDashboard() {
       </div>
 
       {/* Grid Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className={`grid grid-cols-1 md:grid-cols-2 ${['SUPER_ADMIN', 'ADMIN', 'EDITOR'].includes(role) ? 'lg:grid-cols-5' : 'lg:grid-cols-4'} gap-6`}>
         {/* Total News Card */}
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 border-l-4 border-l-blue-500 hover:scale-[1.02] transition-transform duration-300 flex items-center justify-between">
           <div>
             <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
-              {isReporter ? 'আমার মোট সংবাদ' : 'মোট সংবাদ'}
+              {restrictsToOwnNews ? 'আমার মোট সংবাদ' : 'মোট সংবাদ'}
             </p>
             <h3 className="text-3xl font-extrabold text-gray-800 mt-1.5">{totalNews}</h3>
           </div>
@@ -93,7 +109,7 @@ export default async function AdminDashboard() {
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 border-l-4 border-l-amber-500 hover:scale-[1.02] transition-transform duration-300 flex items-center justify-between">
           <div>
             <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
-              {isReporter ? 'আমার খসড়া সংবাদ' : 'খসড়া সংবাদ'}
+              {restrictsToOwnNews ? 'আমার খসড়া সংবাদ' : 'খসড়া সংবাদ'}
             </p>
             <h3 className="text-3xl font-extrabold text-gray-800 mt-1.5">{draftNews}</h3>
           </div>
@@ -103,7 +119,7 @@ export default async function AdminDashboard() {
         </div>
 
         {/* Third Card: Dynamic based on role */}
-        {role === 'SUPER_ADMIN' ? (
+        {['SUPER_ADMIN', 'ADMIN'].includes(role) ? (
           <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 border-l-4 border-l-emerald-500 hover:scale-[1.02] transition-transform duration-300 flex items-center justify-between">
             <div>
               <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">মোট টিম মেম্বার</p>
@@ -129,7 +145,7 @@ export default async function AdminDashboard() {
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 border-l-4 border-l-purple-500 hover:scale-[1.02] transition-transform duration-300 flex items-center justify-between">
           <div>
             <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
-              {isReporter ? 'আমার খবরের ভিউ' : 'মোট ভিউ'}
+              {restrictsToOwnNews ? 'আমার খবরের ভিউ' : 'মোট ভিউ'}
             </p>
             <h3 className="text-3xl font-extrabold text-gray-800 mt-1.5">{totalViews}</h3>
           </div>
@@ -137,6 +153,19 @@ export default async function AdminDashboard() {
             <Eye size={24} />
           </div>
         </div>
+
+        {/* Pending Comments Card */}
+        {['SUPER_ADMIN', 'ADMIN', 'EDITOR'].includes(role) && (
+          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 border-l-4 border-l-rose-500 hover:scale-[1.02] transition-transform duration-300 flex items-center justify-between">
+            <div>
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">অপেক্ষমান মন্তব্য</p>
+              <h3 className="text-3xl font-extrabold text-gray-800 mt-1.5">{pendingComments}</h3>
+            </div>
+            <div className="w-12 h-12 bg-rose-50 text-rose-600 rounded-xl flex items-center justify-center">
+              <MessageSquare size={24} />
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Main grids: recent news & quick links */}
@@ -145,7 +174,7 @@ export default async function AdminDashboard() {
         <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="px-6 py-5 border-b border-gray-200 flex items-center justify-between bg-gray-50/50">
             <h3 className="font-bold text-gray-800">
-              {isReporter ? 'আমার সাম্প্রতিক খবরসমূহ' : 'সাম্প্রতিক খবরসমূহ'}
+              {restrictsToOwnNews ? 'আমার সাম্প্রতিক খবরসমূহ' : 'সাম্প্রতিক খবরসমূহ'}
             </h3>
             <Link href="/admin/news" className="text-xs text-red-650 font-bold hover:underline">
               সব খবর দেখুন
@@ -213,15 +242,17 @@ export default async function AdminDashboard() {
           <h3 className="font-bold text-gray-800">সহজ অ্যাকশন</h3>
           
           <div className="space-y-3">
-            <Link 
-              href="/admin/news/new"
-              className="flex items-center gap-3 p-3 bg-red-50 text-red-700 hover:bg-red-100 rounded-xl transition-colors font-semibold text-sm"
-            >
-              <PlusCircle size={20} className="shrink-0" />
-              <span>নতুন খবর লিখুন</span>
-            </Link>
+            {['SUPER_ADMIN', 'ADMIN', 'EDITOR', 'SUB_EDITOR', 'REPORTER', 'CONTRIBUTOR'].includes(role) && (
+              <Link 
+                href="/admin/news/new"
+                className="flex items-center gap-3 p-3 bg-red-50 text-red-700 hover:bg-red-100 rounded-xl transition-colors font-semibold text-sm"
+              >
+                <PlusCircle size={20} className="shrink-0" />
+                <span>নতুন খবর লিখুন</span>
+              </Link>
+            )}
             
-            {role !== 'REPORTER' && (
+            {['SUPER_ADMIN', 'ADMIN', 'EDITOR', 'SUB_EDITOR'].includes(role) && (
               <Link 
                 href="/admin/categories"
                 className="flex items-center gap-3 p-3 bg-slate-50 text-slate-700 hover:bg-slate-100 rounded-xl transition-colors font-semibold text-sm"
@@ -231,7 +262,17 @@ export default async function AdminDashboard() {
               </Link>
             )}
 
-            {role === 'SUPER_ADMIN' && (
+            {['SUPER_ADMIN', 'ADMIN', 'ADVERTISEMENT_MANAGER'].includes(role) && (
+              <Link 
+                href="/admin/advertisements"
+                className="flex items-center gap-3 p-3 bg-amber-50 text-amber-700 hover:bg-amber-100 rounded-xl transition-colors font-semibold text-sm"
+              >
+                <Megaphone size={20} className="shrink-0" />
+                <span>বিজ্ঞাপন ম্যানেজ করুন</span>
+              </Link>
+            )}
+
+            {['SUPER_ADMIN', 'ADMIN'].includes(role) && (
               <Link 
                 href="/admin/users"
                 className="flex items-center gap-3 p-3 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-xl transition-colors font-semibold text-sm"

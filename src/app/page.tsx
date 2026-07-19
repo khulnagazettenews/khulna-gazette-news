@@ -8,6 +8,7 @@ import PrayerWidget from '@/components/prayer-widget';
 import CategoryBlock from '@/components/category-block';
 import Link from 'next/link';
 import { Camera, Video, Play, Phone, Mail } from 'lucide-react';
+import AdBanner from '@/components/ad-banner';
 
 export const revalidate = 90; // Revalidate home page every 90 seconds (ISR)
 
@@ -98,6 +99,13 @@ export default async function HomePage() {
     take: 3,
   });
 
+  // 6. Fetch active advertisements
+  const advertisements = await prisma.advertisement.findMany({
+    where: { status: 'ACTIVE' },
+  });
+  const topAd = advertisements.find((a) => a.position === 'top_banner');
+  const sidebarAd = advertisements.find((a) => a.position === 'sidebar_banner');
+
   const getYoutubeId = (url: string) => {
     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
     const match = url.match(regExp);
@@ -113,9 +121,7 @@ export default async function HomePage() {
       <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
         
         {/* Ad slot 1 */}
-        <div className="w-full bg-slate-100 border border-slate-200 h-24 rounded-xl flex items-center justify-center text-xs text-slate-400 select-none">
-          বিজ্ঞাপন ব্যানার স্লট
-        </div>
+        <AdBanner ad={topAd} fallbackText="বিজ্ঞাপন ব্যানার স্লট" className="h-24" />
 
         {/* Home Hero banner */}
         <HomeHero news={featuredNews} />
@@ -140,9 +146,9 @@ export default async function HomePage() {
             {/* Photo Gallery Grid Widget */}
             {photos.length > 0 && (
               <div className="space-y-4 pt-4">
-                <div className="flex items-center justify-between border-b-2 border-slate-100 pb-2">
-                  <h3 className="text-base sm:text-lg font-black text-gray-900 border-l-4 border-red-600 pl-2.5 flex items-center gap-2">
-                    <Camera size={20} className="text-red-650" />
+                <div className="flex items-center justify-between border-t-2 border-red-600 pt-2.5">
+                  <h3 className="text-base sm:text-lg font-black text-gray-900 flex items-center gap-2">
+                    <Camera size={20} className="text-red-600" />
                     <span>ফটো গ্যালারি</span>
                   </h3>
                   <Link href="/photo-gallery" className="text-xs text-red-600 font-bold hover:underline">
@@ -167,9 +173,9 @@ export default async function HomePage() {
             {/* Video Gallery Grid Widget */}
             {videos.length > 0 && (
               <div className="space-y-4">
-                <div className="flex items-center justify-between border-b-2 border-slate-100 pb-2">
-                  <h3 className="text-base sm:text-lg font-black text-gray-900 border-l-4 border-red-600 pl-2.5 flex items-center gap-2">
-                    <Video size={20} className="text-red-650" />
+                <div className="flex items-center justify-between border-t-2 border-red-600 pt-2.5">
+                  <h3 className="text-base sm:text-lg font-black text-gray-900 flex items-center gap-2">
+                    <Video size={20} className="text-red-600" />
                     <span>ভিডিও গ্যালারি</span>
                   </h3>
                   <Link href="/video-gallery" className="text-xs text-red-600 font-bold hover:underline">
@@ -246,9 +252,7 @@ export default async function HomePage() {
             </div>
             
             {/* Side Ad slot 2 */}
-            <div className="w-full bg-slate-100 border border-slate-200 h-60 rounded-xl flex items-center justify-center text-xs text-slate-400 select-none">
-              বিজ্ঞাপন ব্যানার (Sidebar)
-            </div>
+            <AdBanner ad={sidebarAd} fallbackText="বিজ্ঞাপন ব্যানার (Sidebar)" className="h-60" />
           </div>
         </div>
       </main>

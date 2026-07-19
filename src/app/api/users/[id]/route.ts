@@ -4,14 +4,15 @@ import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 
-// PATCH: Update user details or reset password (Super Admin only)
+// PATCH: Update user details or reset password (Super Admin & Admin allowed)
 export async function PATCH(
   req: Request,
   { params }: { params: { id: string } }
 ) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session || (session.user as any)?.role !== 'SUPER_ADMIN') {
+    const currentUserRole = (session?.user as any)?.role;
+    if (!session || !['SUPER_ADMIN', 'ADMIN'].includes(currentUserRole)) {
       return NextResponse.json({ error: 'অননুমোদিত অ্যাক্সেস' }, { status: 403 });
     }
 
@@ -26,6 +27,16 @@ export async function PATCH(
 
     if (!existingUser) {
       return NextResponse.json({ error: 'ব্যবহারকারী পাওয়া যায়নি।' }, { status: 404 });
+    }
+
+    // Role safety checks for ADMIN
+    if (currentUserRole === 'ADMIN') {
+      if (existingUser.role === 'SUPER_ADMIN') {
+        return NextResponse.json({ error: 'আপনি সুপার অ্যাডমিনের তথ্য পরিবর্তন করতে পারবেন না।' }, { status: 403 });
+      }
+      if (role && role === 'SUPER_ADMIN') {
+        return NextResponse.json({ error: 'আপনি কাউকে সুপার অ্যাডমিন রোল দিতে পারবেন না।' }, { status: 403 });
+      }
     }
 
     const updateData: any = {};
@@ -95,14 +106,15 @@ export async function PATCH(
   }
 }
 
-// DELETE: Delete a user (Super Admin only)
+// DELETE: Delete a user (Super Admin and Admin allowed)
 export async function DELETE(
   req: Request,
   { params }: { params: { id: string } }
 ) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session || (session.user as any)?.role !== 'SUPER_ADMIN') {
+    const currentUserRole = (session?.user as any)?.role;
+    if (!session || !['SUPER_ADMIN', 'ADMIN'].includes(currentUserRole)) {
       return NextResponse.json({ error: 'অননুমোদিত অ্যাক্সেস' }, { status: 403 });
     }
 
@@ -122,6 +134,13 @@ export async function DELETE(
 
     if (!userToDelete) {
       return NextResponse.json({ error: 'ব্যবহারকারী পাওয়া যায়নি।' }, { status: 404 });
+    }
+
+    // Role safety checks for ADMIN
+    if (currentUserRole === 'ADMIN') {
+      if (userToDelete.role === 'SUPER_ADMIN') {
+        return NextResponse.json({ error: 'আপনি সুপার অ্যাডমিন মুছে ফেলতে পারবেন না।' }, { status: 403 });
+      }
     }
 
     // If deleting a SUPER_ADMIN, ensure another exists

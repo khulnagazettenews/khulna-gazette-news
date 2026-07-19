@@ -57,7 +57,8 @@ export const ModelName = {
   GalleryPhoto: 'GalleryPhoto',
   GalleryVideo: 'GalleryVideo',
   PrayerTime: 'PrayerTime',
-  Comment: 'Comment'
+  Comment: 'Comment',
+  Advertisement: 'Advertisement'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -198,6 +199,24 @@ export const CommentScalarFieldEnum = {
 } as const
 
 export type CommentScalarFieldEnum = (typeof CommentScalarFieldEnum)[keyof typeof CommentScalarFieldEnum]
+
+
+export const AdvertisementScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  imageUrl: 'imageUrl',
+  targetUrl: 'targetUrl',
+  position: 'position',
+  status: 'status',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  clicks: 'clicks',
+  views: 'views',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AdvertisementScalarFieldEnum = (typeof AdvertisementScalarFieldEnum)[keyof typeof AdvertisementScalarFieldEnum]
 
 
 export const SortOrder = {

@@ -119,6 +119,25 @@ export default function EpaperViewer({ initialIssues }: EpaperViewerProps) {
     setPosition({ x: 0, y: 0 });
   };
 
+  const handleDoubleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (scale > 1) {
+      handleResetZoom();
+    } else {
+      setScale(2.5);
+      const container = containerRef.current;
+      if (container) {
+        const rect = container.getBoundingClientRect();
+        const clickX = e.clientX - (rect.left + rect.width / 2);
+        const clickY = e.clientY - (rect.top + rect.height / 2);
+        setPosition({
+          x: -clickX * 1.5,
+          y: -clickY * 1.5
+        });
+      }
+    }
+  };
+
   // Mouse drag handlers
   const handleMouseDown = (e: React.MouseEvent) => {
     if (scale <= 1) return; // Only pan when zoomed in
@@ -139,25 +158,48 @@ export default function EpaperViewer({ initialIssues }: EpaperViewerProps) {
     setIsDragging(false);
   };
 
-  // Mobile Touch drag handlers
+  const [touchStartDist, setTouchStartDist] = useState<number | null>(null);
+  const [touchStartScale, setTouchStartScale] = useState<number>(1);
+
+  // Mobile Touch drag & Pinch Zoom handlers
   const handleTouchStart = (e: React.TouchEvent) => {
-    if (scale <= 1) return; // Only pan when zoomed in
-    const touch = e.touches[0];
-    setIsDragging(true);
-    setDragStart({ x: touch.clientX - position.x, y: touch.clientY - position.y });
+    if (e.touches.length === 2) {
+      // Calculate initial pinch distance
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      setTouchStartDist(dist);
+      setTouchStartScale(scale);
+      setIsDragging(false); // Stop panning when pinching
+    } else if (e.touches.length === 1) {
+      if (scale <= 1) return; // Only pan when zoomed in
+      const touch = e.touches[0];
+      setIsDragging(true);
+      setDragStart({ x: touch.clientX - position.x, y: touch.clientY - position.y });
+    }
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isDragging || e.touches.length === 0) return;
-    const touch = e.touches[0];
-    setPosition({
-      x: touch.clientX - dragStart.x,
-      y: touch.clientY - dragStart.y,
-    });
+    if (e.touches.length === 2 && touchStartDist !== null) {
+      // Dynamic Pinch Zoom
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const newScale = touchStartScale * (dist / touchStartDist);
+      setScale(Math.min(Math.max(newScale, 1), 4));
+    } else if (e.touches.length === 1 && isDragging) {
+      // Panning
+      const touch = e.touches[0];
+      setPosition({
+        x: touch.clientX - dragStart.x,
+        y: touch.clientY - dragStart.y,
+      });
+    }
   };
 
   const handleTouchEnd = () => {
     setIsDragging(false);
+    setTouchStartDist(null);
   };
 
   return (
@@ -222,23 +264,12 @@ export default function EpaperViewer({ initialIssues }: EpaperViewerProps) {
                       day: 'numeric',
                     })}
                   </p>
-                  <div className="flex gap-2">
-                    {item.pdfUrl ? (
-                      <a
-                        href={item.pdfUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold text-[10px] py-2 rounded-lg transition flex items-center justify-center gap-1 shadow-sm"
-                      >
-                        <Download size={10} />
-                        <span>PDF ডাউনলোড</span>
-                      </a>
-                    ) : (
-                      <span className="flex-1 text-[10px] text-gray-400 font-semibold py-2">
-                        PDF উপলব্ধ নয়
-                      </span>
-                    )}
-                  </div>
+                  <button
+                    onClick={() => openReader(item)}
+                    className="w-full bg-red-600 hover:bg-red-700 text-white font-bold text-xs py-2.5 rounded-lg transition flex items-center justify-center gap-1.5 shadow-sm"
+                  >
+                    <span>পত্রিকা পড়ুন</span>
+                  </button>
                 </div>
               </div>
             );
@@ -271,18 +302,6 @@ export default function EpaperViewer({ initialIssues }: EpaperViewerProps) {
             )}
 
             <div className="flex items-center gap-2">
-              {activeIssue.pdfUrl && (
-                <a
-                  href={activeIssue.pdfUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-white/10 hover:bg-white/20 text-white font-bold text-xs px-3.5 py-1.5 rounded-lg transition flex items-center gap-1.5 shadow"
-                  title="PDF ডাউনলোড"
-                >
-                  <Download size={14} />
-                  <span className="hidden sm:inline">ডাউনলোড</span>
-                </a>
-              )}
               <button
                 onClick={closeReader}
                 className="bg-red-600 hover:bg-red-700 text-white p-2 rounded-lg transition shadow"
@@ -306,6 +325,7 @@ export default function EpaperViewer({ initialIssues }: EpaperViewerProps) {
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
+            onDoubleClick={handleDoubleClick}
           >
             {/* Previous Page Floating Button */}
             {pages.length > 1 && (
@@ -347,8 +367,8 @@ export default function EpaperViewer({ initialIssues }: EpaperViewerProps) {
                 style={{
                   transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
                   transition: isDragging ? 'none' : 'transform 0.15s ease-out',
-                  maxHeight: '75vh',
-                  maxWidth: '95vw',
+                  maxHeight: '100%',
+                  maxWidth: '100%',
                 }}
                 className={`object-contain select-none pointer-events-none transition-opacity duration-300 ${
                   imageLoaded ? 'opacity-100' : 'opacity-0'
@@ -359,13 +379,13 @@ export default function EpaperViewer({ initialIssues }: EpaperViewerProps) {
 
           {/* Premium Bottom Thumbnail Strip */}
           {pages.length > 1 && (
-            <div className="w-full bg-slate-950/90 border-t border-white/10 py-3 px-4 flex justify-center overflow-x-auto gap-2">
-              <div className="flex gap-3.5 mx-auto max-w-full overflow-x-auto py-1 px-2 scrollbar-thin scrollbar-thumb-slate-800">
+            <div className="w-full bg-slate-950/90 border-t border-white/10 py-2 px-4 flex justify-center overflow-x-auto gap-2">
+              <div className="flex gap-3 mx-auto max-w-full overflow-x-auto py-0.5 px-2 scrollbar-thin scrollbar-thumb-slate-800">
                 {pages.map((url, idx) => (
                   <button
                     key={idx}
                     onClick={() => changePage(idx)}
-                    className={`relative h-16 aspect-[3/4] rounded-lg overflow-hidden border-2 transition flex-shrink-0 ${
+                    className={`relative h-12 md:h-16 aspect-[3/4] rounded-lg overflow-hidden border-2 transition flex-shrink-0 ${
                       pageIndex === idx 
                         ? 'border-red-600 scale-105 shadow-lg shadow-red-600/30' 
                         : 'border-white/10 opacity-50 hover:opacity-100'
@@ -382,20 +402,20 @@ export default function EpaperViewer({ initialIssues }: EpaperViewerProps) {
           )}
 
           {/* Bottom Floating Toolbar */}
-          <div className="flex flex-col items-center justify-center py-4 px-4 border-t border-white/10 gap-3">
+          <div className="flex flex-col items-center justify-center py-2 md:py-4 px-4 border-t border-white/10 gap-2">
             {/* Zoom / Pan instructions */}
-            <p className="text-[10px] text-slate-400 font-medium text-center">
+            <p className="text-[10px] text-slate-455 font-medium text-center hidden md:block">
               * মাউস হুইল ঘুরিয়ে অথবা নিচের বাতন চেপে জুম করুন। জুম করা অবস্থায় মাউস দিয়ে টেনে ক্যানভাস সরান। কিবোর্ডের ← এবং → বাটন দিয়ে পৃষ্ঠা পরিবর্তন করতে পারবেন।
             </p>
 
-            <div className="flex items-center bg-slate-900 border border-white/10 px-4 py-2.5 rounded-2xl shadow-xl gap-6">
+            <div className="flex items-center bg-slate-900 border border-white/10 px-3 md:px-4 py-2 rounded-2xl shadow-xl gap-4 md:gap-6">
               <button
                 onClick={handleZoomOut}
                 disabled={scale <= 1}
                 className="text-white hover:text-red-500 disabled:text-slate-600 transition flex items-center gap-1"
                 title="জুম আউট"
               >
-                <ZoomOut size={18} />
+                <ZoomOut size={16} />
               </button>
 
               <div className="text-white text-xs font-black select-none w-16 text-center">
@@ -408,7 +428,7 @@ export default function EpaperViewer({ initialIssues }: EpaperViewerProps) {
                 className="text-white hover:text-red-500 disabled:text-slate-600 transition flex items-center gap-1"
                 title="জুম ইন"
               >
-                <ZoomIn size={18} />
+                <ZoomIn size={16} />
               </button>
 
               <div className="w-px h-5 bg-white/10"></div>
@@ -418,7 +438,7 @@ export default function EpaperViewer({ initialIssues }: EpaperViewerProps) {
                 className="text-slate-400 hover:text-white transition flex items-center gap-1.5 text-xs font-semibold"
                 title="রিসেট"
               >
-                <RotateCcw size={16} />
+                <RotateCcw size={14} />
                 <span>রিসেট</span>
               </button>
             </div>
