@@ -3,6 +3,8 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+
 // GET: Fetch comments (Super Admin, Admin, and Editor allowed)
 export async function GET(req: Request) {
   try {

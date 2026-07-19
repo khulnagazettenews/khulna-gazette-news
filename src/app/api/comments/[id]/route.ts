@@ -3,6 +3,8 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+
 // PATCH: Approve or reject comment (Super Admin, Admin, and Editor allowed)
 export async function PATCH(
   req: Request,
