@@ -11,7 +11,8 @@ import AdBanner from '@/components/ad-banner';
 import Link from 'next/link';
 import { Camera, Video, Play } from 'lucide-react';
 
-export const revalidate = 90; // Revalidate home page every 90 seconds (ISR)
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export default async function HomePage() {
   // 1. Fetch Top Hero News items (up to 12 items)
