@@ -28,7 +28,7 @@ export default async function BreakingNewsTicker() {
             {breakingList.map((item) => (
               <Link 
                 key={item.id} 
-                href={`/${item.category?.slug || 'news'}/${item.slug}-${item.id}`} 
+                href={`/${item.category?.slug || 'news'}/${item.id}`} 
                 className="hover:underline flex items-center gap-1.5"
               >
                 <span>✦</span>

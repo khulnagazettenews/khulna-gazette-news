@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Clock, Eye } from 'lucide-react';
 
 interface TabNewsItem {
   id: string;
@@ -15,36 +14,53 @@ interface TabNewsItem {
 interface TabsWidgetProps {
   latest: TabNewsItem[];
   popular: TabNewsItem[];
+  discussed?: TabNewsItem[];
 }
 
-export default function TabsWidget({ latest, popular }: TabsWidgetProps) {
-  const [activeTab, setActiveTab] = useState<'latest' | 'popular'>('latest');
+export default function TabsWidget({ latest, popular, discussed = [] }: TabsWidgetProps) {
+  const [activeTab, setActiveTab] = useState<'latest' | 'popular' | 'discussed'>('latest');
 
-  const list = activeTab === 'latest' ? latest : popular;
+  const getActiveList = () => {
+    if (activeTab === 'popular') return popular;
+    if (activeTab === 'discussed' && discussed.length > 0) return discussed;
+    return latest;
+  };
+
+  const list = getActiveList();
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
       {/* Tabs Selector */}
-      <div className="flex border-b border-gray-200">
+      <div className="flex border-b border-gray-200 text-xs sm:text-sm font-bold text-center">
         <button
           onClick={() => setActiveTab('latest')}
-          className={`flex-1 text-center py-3 text-sm font-bold transition ${
+          className={`flex-1 py-3 transition ${
             activeTab === 'latest'
               ? 'text-red-600 border-b-2 border-red-600 bg-red-50/20'
-              : 'text-gray-500 hover:text-gray-900 bg-gray-50/50'
+              : 'text-gray-600 hover:text-gray-900 bg-gray-50/50'
           }`}
         >
-          সর্বশেষ খবর
+          সর্বশেষ
         </button>
         <button
           onClick={() => setActiveTab('popular')}
-          className={`flex-1 text-center py-3 text-sm font-bold transition ${
+          className={`flex-1 py-3 transition border-l border-gray-150 ${
             activeTab === 'popular'
               ? 'text-red-600 border-b-2 border-red-600 bg-red-50/20'
-              : 'text-gray-500 hover:text-gray-900 bg-gray-50/50'
+              : 'text-gray-600 hover:text-gray-900 bg-gray-50/50'
           }`}
         >
-          সর্বাধিক পঠিত
+          পঠিত
+        </button>
+        <button
+          onClick={() => setActiveTab('discussed')}
+          className={`flex-1 py-3 transition border-l border-gray-150 ${
+            activeTab === 'discussed'
+              ? 'text-red-600 border-b-2 border-red-600 bg-red-50/20'
+              : 'text-gray-600 hover:text-gray-900 bg-gray-50/50'
+          }`}
+        >
+          আলোচিত
         </button>
       </div>
 
@@ -54,14 +70,14 @@ export default function TabsWidget({ latest, popular }: TabsWidgetProps) {
           <div className="text-center py-6 text-xs text-gray-400">কোনো খবর পাওয়া যায়নি।</div>
         ) : (
           list.map((item, idx) => (
-            <div key={item.id} className="py-3 flex items-start gap-3 first:pt-0 last:pb-0">
-              <span className="text-xl font-black text-gray-300 w-6 text-center select-none">
+            <div key={item.id} className="py-2.5 flex items-start gap-3 first:pt-0 last:pb-0">
+              <span className="text-lg font-black text-gray-300 w-5 text-center select-none shrink-0 mt-0.5">
                 {idx + 1}
               </span>
-              <div className="space-y-1">
+              <div className="space-y-1 flex-1">
                 <Link
-                  href={`/${item.category?.slug || 'news'}/${item.slug}-${item.id}`}
-                  className="text-xs font-bold text-gray-800 hover:text-red-600 transition leading-snug line-clamp-2"
+                  href={`/${item.category?.slug || 'news'}/${item.id}`}
+                  className="text-xs sm:text-sm font-bold text-gray-850 hover:text-red-600 transition leading-snug line-clamp-2"
                 >
                   {item.title}
                 </Link>

@@ -139,7 +139,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
                 >
                   <div>
                     {item.featuredImage && (
-                      <Link href={`/${item.category?.slug || category}/${item.slug}-${item.id}`} className="block aspect-video overflow-hidden bg-gray-50">
+                      <Link href={`/${item.category?.slug || category}/${item.id}`} className="block aspect-video overflow-hidden bg-gray-50">
                         <img 
                           src={item.featuredImage} 
                           alt={item.title} 
@@ -149,7 +149,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
                     )}
                     
                     <div className="p-4 space-y-2">
-                      <Link href={`/${item.category?.slug || category}/${item.slug}-${item.id}`}>
+                      <Link href={`/${item.category?.slug || category}/${item.id}`}>
                         <h3 className="text-sm sm:text-base font-black text-gray-900 hover:text-red-600 transition leading-snug line-clamp-2">
                           {item.title}
                         </h3>

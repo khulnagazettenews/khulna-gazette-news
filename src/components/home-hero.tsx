@@ -1,4 +1,8 @@
 import Link from 'next/link';
+import TabsWidget from './tabs-widget';
+import PrayerWidget from './prayer-widget';
+import AdBanner from './ad-banner';
+import { BookOpen } from 'lucide-react';
 
 interface HeroNewsItem {
   id: string;
@@ -7,110 +11,166 @@ interface HeroNewsItem {
   slug: string;
   featuredImage?: string | null;
   content: string;
-  publishedAt: Date | null;
+  publishedAt: Date | string | null;
   category: { name: string; slug: string };
   reporterName?: string | null;
 }
 
 interface HomeHeroProps {
   news: HeroNewsItem[];
+  latestNews: any[];
+  popularNews: any[];
+  sidebarAd?: any;
 }
 
-export default function HomeHero({ news }: HomeHeroProps) {
-  if (news.length === 0) return null;
+export default function HomeHero({ news, latestNews, popularNews, sidebarAd }: HomeHeroProps) {
+  if (!news || news.length === 0) return null;
 
-  const lead = news[0];
-  const secondary = news.slice(1, 4);
+  // Distribute news items according to Prothom-Alo layout structure
+  const leftColumnNews = news.slice(0, 2); // 2 cards on far left
+  const leadStory = news[2] || news[0]; // Main big featured story in center
+  const subGridNews = news.slice(3, 12); // 3x3 sub-grid (9 items) under main lead
 
-  // Extract a clean paragraph snippet for description preview
   const getExcerpt = (html: string) => {
     const text = html.replace(/<[^>]*>/g, '');
-    return text.length > 150 ? text.slice(0, 150) + '...' : text;
+    return text.length > 140 ? text.slice(0, 140) + '...' : text;
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      {/* Lead Story - Spans 2 cols */}
-      <div className="lg:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col justify-between group">
-        <Link href={`/${lead.category?.slug || 'news'}/${lead.slug}-${lead.id}`} className="block overflow-hidden relative aspect-video">
-          {lead.featuredImage ? (
-            <img 
-              src={lead.featuredImage} 
-              alt={lead.title} 
-              className="w-full h-full object-cover group-hover:scale-[1.01] transition duration-500" 
-            />
-          ) : (
-            <div className="w-full h-full bg-slate-100 flex items-center justify-center text-gray-400">খুলনা গেজেট</div>
-          )}
-          <span className="absolute bottom-4 left-4 bg-red-600 text-white font-extrabold text-xs sm:text-sm px-3.5 py-1.5 rounded shadow">
-            {lead.category?.name}
-          </span>
-        </Link>
-
-        <div className="p-6 space-y-4">
-          <Link href={`/${lead.category?.slug || 'news'}/${lead.slug}-${lead.id}`} className="block">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-gray-900 hover:text-red-650 transition leading-snug">
-              {lead.title}
-            </h2>
-          </Link>
-          {lead.subtitle && (
-            <p className="text-base sm:text-lg font-bold text-slate-500">{lead.subtitle}</p>
-          )}
-          <p className="text-sm sm:text-base text-gray-705 leading-relaxed">
-            {getExcerpt(lead.content)}
-          </p>
-          <div className="flex items-center gap-3 text-xs sm:text-sm text-gray-450 font-medium pt-2">
-            <span>{lead.reporterName || 'স্টাফ রিপোর্টার'}</span>
-            <span>•</span>
-            <span>
-              {lead.publishedAt && new Date(lead.publishedAt).toLocaleDateString('bn-BD', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-              })}
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* Secondary Stories Stack */}
-      <div className="space-y-6">
-        {secondary.map((story) => (
-          <div 
-            key={story.id} 
-            className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm flex gap-4 hover:shadow-md transition group"
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 my-4">
+      {/* 1. Left Column (2 Cols on LG): 2 Stacked Cards */}
+      <div className="lg:col-span-3 space-y-5 flex flex-col justify-between">
+        {leftColumnNews.map((story) => (
+          <div
+            key={story.id}
+            className="bg-white p-3.5 rounded-xl border border-gray-200 shadow-sm flex flex-col justify-between group h-full"
           >
-            <div className="flex-1 space-y-2.5">
-              <span className="text-[10px] sm:text-xs font-extrabold text-red-600 uppercase tracking-wider block">
-                {story.category?.name}
-              </span>
-              <Link href={`/${story.category?.slug || 'news'}/${story.slug}-${story.id}`} className="block">
-                <h3 className="text-sm sm:text-base lg:text-lg font-extrabold text-gray-900 hover:text-red-650 transition leading-snug line-clamp-3">
-                  {story.title}
-                </h3>
-              </Link>
-              <span className="text-[10px] sm:text-xs text-gray-450 block font-medium">
-                {story.publishedAt && new Date(story.publishedAt).toLocaleDateString('bn-BD', {
-                  month: 'short',
-                  day: 'numeric'
-                })}
-              </span>
-            </div>
-            
             {story.featuredImage && (
-              <Link 
-                href={`/${story.category?.slug || 'news'}/${story.slug}-${story.id}`}
-                className="w-32 h-24 sm:w-40 sm:h-28 shrink-0 overflow-hidden rounded-lg bg-gray-50 aspect-video"
+              <Link
+                href={`/${story.category?.slug || 'news'}/${story.id}`}
+                className="block aspect-video overflow-hidden rounded-lg bg-slate-100 mb-3"
               >
-                <img 
-                  src={story.featuredImage} 
-                  alt={story.title} 
+                <img
+                  src={story.featuredImage}
+                  alt={story.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
                 />
               </Link>
             )}
+            <div className="space-y-2">
+              <span className="text-[10px] font-extrabold text-red-600 uppercase tracking-wide">
+                {story.category?.name}
+              </span>
+              <Link href={`/${story.category?.slug || 'news'}/${story.id}`} className="block">
+                <h3 className="text-sm font-black text-gray-900 group-hover:text-red-650 transition leading-snug line-clamp-3">
+                  {story.title}
+                </h3>
+              </Link>
+            </div>
+            <span className="text-[10px] text-gray-400 font-medium block pt-2 border-t border-gray-100 mt-3">
+              {story.publishedAt &&
+                new Date(story.publishedAt).toLocaleDateString('bn-BD', {
+                  month: 'short',
+                  day: 'numeric',
+                })}
+            </span>
           </div>
         ))}
+      </div>
+
+      {/* 2. Middle Main Column (6 Cols on LG): Main Featured Lead Story + 3x3 Grid */}
+      <div className="lg:col-span-6 space-y-6">
+        {/* Main Lead Card */}
+        {leadStory && (
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden group">
+            <Link
+              href={`/${leadStory.category?.slug || 'news'}/${leadStory.id}`}
+              className="block relative aspect-[16/9] overflow-hidden"
+            >
+              {leadStory.featuredImage ? (
+                <img
+                  src={leadStory.featuredImage}
+                  alt={leadStory.title}
+                  className="w-full h-full object-cover group-hover:scale-[1.01] transition duration-500"
+                />
+              ) : (
+                <div className="w-full h-full bg-slate-100 flex items-center justify-center text-gray-400 font-bold">
+                  খুলনা গেজেট
+                </div>
+              )}
+              <span className="absolute bottom-3 left-3 bg-red-600 text-white font-extrabold text-xs px-3 py-1 rounded shadow">
+                {leadStory.category?.name}
+              </span>
+            </Link>
+
+            <div className="p-5 space-y-3">
+              <Link
+                href={`/${leadStory.category?.slug || 'news'}/${leadStory.id}`}
+                className="block"
+              >
+                <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-gray-900 group-hover:text-red-650 transition leading-tight">
+                  {leadStory.title}
+                </h1>
+              </Link>
+              <p className="text-xs sm:text-sm text-gray-650 leading-relaxed">
+                {getExcerpt(leadStory.content)}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* 3x3 Sub-Grid under Main Lead */}
+        {subGridNews.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+            {subGridNews.map((item) => (
+              <div key={item.id} className="group space-y-2 flex flex-col justify-between border-b sm:border-b-0 border-gray-100 pb-3 sm:pb-0">
+                {item.featuredImage && (
+                  <Link
+                    href={`/${item.category?.slug || 'news'}/${item.id}`}
+                    className="block aspect-[16/10] overflow-hidden rounded-md bg-slate-100"
+                  >
+                    <img
+                      src={item.featuredImage}
+                      alt={item.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                    />
+                  </Link>
+                )}
+                <Link
+                  href={`/${item.category?.slug || 'news'}/${item.id}`}
+                  className="block"
+                >
+                  <h4 className="text-xs font-bold text-gray-850 group-hover:text-red-600 transition leading-snug line-clamp-3">
+                    {item.title}
+                  </h4>
+                </Link>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* 3. Right Sidebar Column (3 Cols on LG): Tabs + Ad + Widgets */}
+      <div className="lg:col-span-3 space-y-5">
+        <TabsWidget latest={latestNews} popular={popularNews} discussed={latestNews} />
+        
+        <AdBanner ad={sidebarAd} fallbackText="বিজ্ঞাপন ব্যানার" className="h-48" />
+
+        {/* Epaper mini box */}
+        <div className="bg-red-50/50 border border-red-200 rounded-xl p-4 flex items-center justify-between shadow-sm">
+          <div className="space-y-1">
+            <h4 className="text-xs font-black text-gray-900">আজকের ই-পেপার</h4>
+            <p className="text-[10px] text-gray-500 font-medium">ছাপা কাগজের হুবহু ডিজিটালি পড়ুন</p>
+          </div>
+          <Link
+            href="/epaper"
+            className="bg-red-600 hover:bg-red-700 text-white p-2.5 rounded-lg transition shadow flex items-center justify-center shrink-0"
+          >
+            <BookOpen size={16} />
+          </Link>
+        </div>
+
+        <PrayerWidget />
       </div>
     </div>
   );
