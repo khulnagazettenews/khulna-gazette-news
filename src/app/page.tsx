@@ -25,15 +25,42 @@ export default async function HomePage() {
     },
   });
 
-  // 2. Fetch 6 Special News items for light-teal banner section (2nd image design)
-  const specialTopicBannerNews = await prisma.news.findMany({
-    where: { status: 'PUBLISHED' },
-    orderBy: [{ isBreaking: 'desc' }, { publishedAt: 'desc' }],
-    take: 6,
-    include: {
-      category: true,
-    },
+  // 2. Fetch Active Special Topic Configuration (Most recently updated active section)
+  let activeSpecialTopic = await prisma.specialTopic.findFirst({
+    where: { isActive: true },
+    orderBy: [{ updatedAt: 'desc' }, { order: 'asc' }],
   });
+
+  const totalSpecialTopics = await prisma.specialTopic.count();
+  if (!activeSpecialTopic && totalSpecialTopics === 0) {
+    activeSpecialTopic = await prisma.specialTopic.create({
+      data: {
+        title: 'বিশেষ প্রতিবেদন ও আন্তর্জাতিক সংবাদ',
+        bannerSubtitle: 'বিস্তারিত দেখতে কভার খবরের যেকোনো একটিতে ক্লিক করুন',
+        isActive: true,
+        newsIds: [],
+        order: 0,
+      },
+    });
+  }
+
+  let specialTopicBannerNews: any[] = [];
+  if (activeSpecialTopic && activeSpecialTopic.newsIds && activeSpecialTopic.newsIds.length > 0) {
+    const fetchedNews = await prisma.news.findMany({
+      where: {
+        id: { in: activeSpecialTopic.newsIds },
+      },
+      include: {
+        category: true,
+        subCategory: true,
+      },
+    });
+
+    // Maintain exact order selected by admin in "সেকশনে খবর নির্বাচন করুন"
+    specialTopicBannerNews = activeSpecialTopic.newsIds
+      .map((id) => fetchedNews.find((n) => n.id === id))
+      .filter(Boolean);
+  }
 
   // 3. Fetch Latest Articles for tabs
   const latestNews = await prisma.news.findMany({
@@ -136,6 +163,12 @@ export default async function HomePage() {
     return match && match[2].length === 11 ? match[2] : null;
   };
 
+  const exclusiveNews = await prisma.news.findMany({
+    where: { isFeatured: true, status: 'PUBLISHED' },
+    take: 4,
+    include: { category: true },
+  });
+
   return (
     <div className="flex flex-col min-h-screen bg-slate-50 font-sans">
       <PublicHeader />
@@ -143,12 +176,14 @@ export default async function HomePage() {
 
       {/* Main Container */}
       <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-6 space-y-6">
-        {/* 1. Dhaka Post Style Special Featured Topic Banner Section (2nd Image Design) */}
-        <SpecialTopicSection
-          title="বিশেষ প্রতিবেদন ও আন্তর্জাতিক সংবাদ"
-          bannerSubtitle="বিস্তারিত দেখতে কভার খবরের যেকোনো একটিতে ক্লিক করুন"
-          news={specialTopicBannerNews as any}
-        />
+        {/* 1. Dhaka Post Style Special Featured Topic Banner Section */}
+        {activeSpecialTopic && (
+          <SpecialTopicSection
+            title={activeSpecialTopic.title || 'বিশেষ প্রতিবেদন ও আন্তর্জাতিক সংবাদ'}
+            bannerSubtitle={activeSpecialTopic.bannerSubtitle || 'বিস্তারিত দেখতে কভার খবরের যেকোনো একটিতে ক্লিক করুন'}
+            news={specialTopicBannerNews as any}
+          />
+        )}
 
         {/* Top Ad slot */}
         <AdBanner ad={topAd} fallbackText="বিজ্ঞাপন ব্যানার" className="h-20 sm:h-24" />
@@ -158,6 +193,7 @@ export default async function HomePage() {
           news={heroNews as any}
           latestNews={serializeList(latestNews)}
           popularNews={serializeList(popularNews)}
+          exclusiveNews={serializeList(exclusiveNews)}
           sidebarAd={sidebarAd}
         />
 

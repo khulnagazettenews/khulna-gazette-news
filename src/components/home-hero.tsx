@@ -1,8 +1,5 @@
 import Link from 'next/link';
-import TabsWidget from './tabs-widget';
-import PrayerWidget from './prayer-widget';
-import AdBanner from './ad-banner';
-import { BookOpen } from 'lucide-react';
+import SidebarWidgets from './sidebar-widgets';
 
 interface HeroNewsItem {
   id: string;
@@ -20,10 +17,17 @@ interface HomeHeroProps {
   news: HeroNewsItem[];
   latestNews: any[];
   popularNews: any[];
+  exclusiveNews?: any[];
   sidebarAd?: any;
 }
 
-export default function HomeHero({ news, latestNews, popularNews, sidebarAd }: HomeHeroProps) {
+export default function HomeHero({
+  news,
+  latestNews,
+  popularNews,
+  exclusiveNews = [],
+  sidebarAd,
+}: HomeHeroProps) {
   if (!news || news.length === 0) return null;
 
   // Distribute news items according to Prothom-Alo layout structure
@@ -37,7 +41,7 @@ export default function HomeHero({ news, latestNews, popularNews, sidebarAd }: H
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 my-4">
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 my-4 items-start">
       {/* 1. Left Column (2 Cols on LG): 2 Stacked Cards */}
       <div className="lg:col-span-3 space-y-5 flex flex-col justify-between">
         {leftColumnNews.map((story) => (
@@ -150,27 +154,14 @@ export default function HomeHero({ news, latestNews, popularNews, sidebarAd }: H
         )}
       </div>
 
-      {/* 3. Right Sidebar Column (3 Cols on LG): Tabs + Ad + Widgets */}
-      <div className="lg:col-span-3 space-y-5">
-        <TabsWidget latest={latestNews} popular={popularNews} discussed={latestNews} />
-        
-        <AdBanner ad={sidebarAd} fallbackText="বিজ্ঞাপন ব্যানার" className="h-48" />
-
-        {/* Epaper mini box */}
-        <div className="bg-red-50/50 border border-red-200 rounded-xl p-4 flex items-center justify-between shadow-sm">
-          <div className="space-y-1">
-            <h4 className="text-xs font-black text-gray-900">আজকের ই-পেপার</h4>
-            <p className="text-[10px] text-gray-500 font-medium">ছাপা কাগজের হুবহু ডিজিটালি পড়ুন</p>
-          </div>
-          <Link
-            href="/epaper"
-            className="bg-red-600 hover:bg-red-700 text-white p-2.5 rounded-lg transition shadow flex items-center justify-center shrink-0"
-          >
-            <BookOpen size={16} />
-          </Link>
-        </div>
-
-        <PrayerWidget />
+      {/* 3. Right Sidebar Column (3 Cols on LG): Full 10 Sidebar Widgets matching reference image */}
+      <div className="lg:col-span-3">
+        <SidebarWidgets
+          latestNews={latestNews}
+          popularNews={popularNews}
+          exclusiveNews={exclusiveNews}
+          sidebarAd={sidebarAd}
+        />
       </div>
     </div>
   );
