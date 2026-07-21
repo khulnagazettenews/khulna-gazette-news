@@ -19,7 +19,7 @@ export default function YoutubeBanner() {
         </div>
       </div>
       <a
-        href="https://youtube.com"
+        href="https://www.youtube.com/@khulnagazette"
         target="_blank"
         rel="noopener noreferrer"
         className="inline-flex items-center gap-2 bg-white text-red-700 hover:bg-slate-100 font-black text-xs sm:text-sm px-5 py-2.5 rounded-lg shadow transition shrink-0 uppercase tracking-wide"

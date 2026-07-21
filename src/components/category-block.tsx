@@ -141,7 +141,7 @@ export default function CategoryBlock({
 
           {/* Sub cards (3 cols on lg) */}
           {secondary.map((item) => (
-            <div key={item.id} className="space-y-2 group flex flex-col justify-between">
+            <div key={item.id} className="space-y-2.5 group">
               {item.featuredImage && (
                 <Link
                   href={`/${slug}/${item.id}`}
@@ -168,7 +168,7 @@ export default function CategoryBlock({
 
   // 3. Standard & Compact Layout (Multi-column category block)
   return (
-    <div className="space-y-3 h-full">
+    <div className="space-y-3">
       {/* Category Section Header */}
       <div className="flex items-center justify-between border-t-2 border-red-600 pt-2.5">
         <h3 className="text-base sm:text-lg font-black text-gray-900 flex items-center gap-2">
@@ -181,7 +181,7 @@ export default function CategoryBlock({
       </div>
 
       {/* Block Content Grid */}
-      <div className="bg-white p-4 sm:p-5 rounded-xl border border-gray-200 shadow-sm space-y-4 h-full flex flex-col justify-between">
+      <div className="bg-white p-4 sm:p-5 rounded-xl border border-gray-200 shadow-sm space-y-4">
         {/* Featured News */}
         <div className="space-y-2.5 group">
           {lead.featuredImage && (

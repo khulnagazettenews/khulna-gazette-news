@@ -43,11 +43,11 @@ export default function HomeHero({
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 my-4 items-start">
       {/* 1. Left Column (2 Cols on LG): 2 Stacked Cards */}
-      <div className="lg:col-span-3 space-y-5 flex flex-col justify-between">
+      <div className="lg:col-span-3 space-y-5">
         {leftColumnNews.map((story) => (
           <div
             key={story.id}
-            className="bg-white p-3.5 rounded-xl border border-gray-200 shadow-sm flex flex-col justify-between group h-full"
+            className="bg-white p-3.5 rounded-xl border border-gray-200 shadow-sm space-y-3 group"
           >
             {story.featuredImage && (
               <Link
@@ -127,7 +127,7 @@ export default function HomeHero({
         {subGridNews.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
             {subGridNews.map((item) => (
-              <div key={item.id} className="group space-y-2 flex flex-col justify-between border-b sm:border-b-0 border-gray-100 pb-3 sm:pb-0">
+              <div key={item.id} className="group space-y-2.5 border-b sm:border-b-0 border-gray-100 pb-3 sm:pb-0">
                 {item.featuredImage && (
                   <Link
                     href={`/${item.category?.slug || 'news'}/${item.id}`}

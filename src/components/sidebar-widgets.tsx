@@ -155,7 +155,7 @@ export default function SidebarWidgets({
 
       {/* 8. YOUTUBE SUBSCRIBE BANNER */}
       <a
-        href="https://youtube.com"
+        href="https://www.youtube.com/@khulnagazette"
         target="_blank"
         rel="noopener noreferrer"
         className="w-full bg-[#c40404] hover:bg-red-700 text-white py-3 px-4 rounded-xl shadow-xs transition font-black text-xs flex items-center justify-center gap-2 border border-red-800"
