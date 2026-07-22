@@ -198,7 +198,7 @@ export default async function HomePage() {
       <BreakingNewsTicker />
 
       {/* Main Container */}
-      <main className="flex-grow max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-6 space-y-6">
+      <main className="flex-grow w-full max-w-full px-4 sm:px-8 lg:px-12 pt-3 pb-6 space-y-6">
         {/* 1. Dhaka Post Style Special Featured Topic Banner Section */}
         {activeSpecialTopic && (
           <SpecialTopicSection

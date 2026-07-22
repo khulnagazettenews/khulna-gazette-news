@@ -18,7 +18,7 @@ export default async function BreakingNewsTicker() {
 
   return (
     <div className="bg-red-600 text-white py-2 border-y border-red-700 overflow-hidden shadow-inner">
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-3">
+      <div className="w-full max-w-full px-4 sm:px-8 lg:px-12 flex items-center gap-3">
         <span className="shrink-0 bg-white text-red-600 font-extrabold px-2.5 py-0.5 rounded text-xs select-none shadow">
           ব্রেকিং নিউজ
         </span>
