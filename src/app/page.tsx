@@ -15,72 +15,122 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export default async function HomePage() {
-  // 1. Fetch Top Hero News items (up to 12 items)
-  const heroNews = await prisma.news.findMany({
-    where: { status: 'PUBLISHED' },
-    orderBy: [{ isFeatured: 'desc' }, { publishedAt: 'desc' }],
-    take: 12,
-    include: {
-      category: true,
-    },
-  });
-
-  // 2. Fetch Active Special Topic Configuration (Most recently updated active section)
+  // 1. Fetch Active Special Topic Configuration (very fast query, needed first to get newsIds)
   let activeSpecialTopic = await prisma.specialTopic.findFirst({
     where: { isActive: true },
     orderBy: [{ updatedAt: 'desc' }, { order: 'asc' }],
   });
 
-  const totalSpecialTopics = await prisma.specialTopic.count();
-  if (!activeSpecialTopic && totalSpecialTopics === 0) {
-    activeSpecialTopic = await prisma.specialTopic.create({
-      data: {
-        title: 'বিশেষ প্রতিবেদন ও আন্তর্জাতিক সংবাদ',
-        bannerSubtitle: 'বিস্তারিত দেখতে কভার খবরের যেকোনো একটিতে ক্লিক করুন',
-        isActive: true,
-        newsIds: [],
-        order: 0,
-      },
-    });
+  if (!activeSpecialTopic) {
+    const totalSpecialTopics = await prisma.specialTopic.count();
+    if (totalSpecialTopics === 0) {
+      activeSpecialTopic = await prisma.specialTopic.create({
+        data: {
+          title: 'বিশেষ প্রতিবেদন ও আন্তর্জাতিক সংবাদ',
+          bannerSubtitle: 'বিস্তারিত দেখতে কভার খবরের যেকোনো একটিতে ক্লিক করুন',
+          isActive: true,
+          newsIds: [],
+          order: 0,
+        },
+      });
+    }
   }
 
-  let specialTopicBannerNews: any[] = [];
-  if (activeSpecialTopic && activeSpecialTopic.newsIds && activeSpecialTopic.newsIds.length > 0) {
-    const fetchedNews = await prisma.news.findMany({
+  // Define categories to fetch for category blocks
+  const categorySlugs = [
+    'bangladesh',
+    'international',
+    'sports',
+    'entertainment',
+    'politics',
+    'economy',
+    'crime',
+    'technology',
+    'lifestyle',
+    'health',
+    'motamot',
+  ];
+
+  // Map slugs to Prisma queries
+  const categoryQueries = categorySlugs.map((slug) =>
+    prisma.news.findMany({
       where: {
-        id: { in: activeSpecialTopic.newsIds },
+        category: { slug },
+        status: 'PUBLISHED',
       },
+      orderBy: { publishedAt: 'desc' },
+      take: slug === 'motamot' ? 4 : 5,
       include: {
         category: true,
-        subCategory: true,
+        author: { select: { name: true, avatar: true } },
       },
-    });
+    })
+  );
 
-    // Maintain exact order selected by admin in "সেকশনে খবর নির্বাচন করুন"
-    specialTopicBannerNews = activeSpecialTopic.newsIds
-      .map((id) => fetchedNews.find((n) => n.id === id))
-      .filter(Boolean);
-  }
+  // Setup special topic banner news query (if there are IDs)
+  const specialTopicBannerNewsQuery = (activeSpecialTopic?.newsIds && activeSpecialTopic.newsIds.length > 0)
+    ? prisma.news.findMany({
+        where: { id: { in: activeSpecialTopic.newsIds } },
+        include: { category: true, subCategory: true },
+      })
+    : Promise.resolve([]);
 
-  // 3. Fetch Latest Articles for tabs
-  const latestNews = await prisma.news.findMany({
-    where: { status: 'PUBLISHED' },
-    orderBy: { publishedAt: 'desc' },
-    take: 6,
-    include: {
-      category: true,
-    },
-  });
-
-  // 4. Fetch Popular Articles for tabs
-  const popularNews = await prisma.news.findMany({
-    where: { status: 'PUBLISHED' },
-    orderBy: { viewCount: 'desc' },
-    take: 6,
-    include: {
-      category: true,
-    },
-  });
+  // 2. Fetch all other news, ads, media, and category listings in PARALLEL
+  const [
+    heroNews,
+    latestNews,
+    popularNews,
+    photos,
+    videos,
+    advertisements,
+    exclusiveNews,
+    specialTopicBannerNewsFetched,
+    ...initialCategoryResults
+  ] = await Promise.all([
+    // Hero news
+    prisma.news.findMany({
+      where: { status: 'PUBLISHED' },
+      orderBy: [{ isFeatured: 'desc' }, { publishedAt: 'desc' }],
+      take: 12,
+      include: { category: true },
+    }),
+    // Latest news for sidebar tabs
+    prisma.news.findMany({
+      where: { status: 'PUBLISHED' },
+      orderBy: { publishedAt: 'desc' },
+      take: 6,
+      include: { category: true },
+    }),
+    // Popular news for sidebar tabs
+    prisma.news.findMany({
+      where: { status: 'PUBLISHED' },
+      orderBy: { viewCount: 'desc' },
+      take: 6,
+      include: { category: true },
+    }),
+    // Photos
+    prisma.galleryPhoto.findMany({
+      orderBy: { order: 'asc' },
+      take: 4,
+    }),
+    // Videos
+    prisma.galleryVideo.findMany({
+      orderBy: { order: 'asc' },
+      take: 3,
+    }),
+    // Advertisements
+    prisma.advertisement.findMany({
+      where: { status: 'ACTIVE' },
+    }),
+    // Exclusive news
+    prisma.news.findMany({
+      where: { isFeatured: true, status: 'PUBLISHED' },
+      take: 4,
+      include: { category: true },
+    }),
+    specialTopicBannerNewsQuery,
+    ...categoryQueries,
+  ]);
 
   // Helper to serialize Date objects for client components
   const serializeList = (list: any[]) => {
@@ -92,24 +142,13 @@ export default async function HomePage() {
     }));
   };
 
-  // 5. Category Blocks fetching helper
-  const fetchCategoryItems = async (slug: string, takeCount = 5) => {
-    const items = await prisma.news.findMany({
-      where: {
-        category: { slug },
-        status: 'PUBLISHED',
-      },
-      orderBy: { publishedAt: 'desc' },
-      take: takeCount,
-      include: {
-        category: true,
-        author: { select: { name: true, avatar: true } },
-      },
-    });
-
-    // Fallback to latest published if specific category has no news yet
-    if (items.length === 0) {
-      const fallback = await prisma.news.findMany({
+  // 3. Resolve fallbacks in parallel if any category returns empty items
+  const categoryResults = await Promise.all(
+    initialCategoryResults.map(async (items, idx) => {
+      if (items.length > 0) return items;
+      const slug = categorySlugs[idx];
+      const takeCount = slug === 'motamot' ? 4 : 5;
+      return prisma.news.findMany({
         where: { status: 'PUBLISHED' },
         orderBy: { publishedAt: 'desc' },
         take: takeCount,
@@ -118,41 +157,31 @@ export default async function HomePage() {
           author: { select: { name: true, avatar: true } },
         },
       });
-      return fallback;
-    }
-    return items;
-  };
+    })
+  );
 
-  // Fetch categorized news sections
-  const bangladeshNews = await fetchCategoryItems('bangladesh', 5);
-  const internationalNews = await fetchCategoryItems('international', 5);
-  const sportsNews = await fetchCategoryItems('sports', 5);
-  const entertainmentNews = await fetchCategoryItems('entertainment', 5);
-  const politicsNews = await fetchCategoryItems('politics', 5);
-  const economyNews = await fetchCategoryItems('economy', 5);
-  const crimeNews = await fetchCategoryItems('crime', 5);
-  const techNews = await fetchCategoryItems('technology', 5);
-  const lifestyleNews = await fetchCategoryItems('lifestyle', 5);
-  const healthNews = await fetchCategoryItems('health', 5);
+  // Map resolved categories back to their variables
+  const bangladeshNews = categoryResults[0];
+  const internationalNews = categoryResults[1];
+  const sportsNews = categoryResults[2];
+  const entertainmentNews = categoryResults[3];
+  const politicsNews = categoryResults[4];
+  const economyNews = categoryResults[5];
+  const crimeNews = categoryResults[6];
+  const techNews = categoryResults[7];
+  const lifestyleNews = categoryResults[8];
+  const healthNews = categoryResults[9];
+  const opinionNews = categoryResults[10];
 
-  // Opinion columnists articles
-  const opinionNews = await fetchCategoryItems('motamot', 4);
+  // Map special topic banner news maintaining admin ordering
+  let specialTopicBannerNews: any[] = [];
+  if (activeSpecialTopic?.newsIds && activeSpecialTopic.newsIds.length > 0) {
+    specialTopicBannerNews = activeSpecialTopic.newsIds
+      .map((id) => specialTopicBannerNewsFetched.find((n) => n.id === id))
+      .filter(Boolean);
+  }
 
-  // Photos and Videos
-  const photos = await prisma.galleryPhoto.findMany({
-    orderBy: { order: 'asc' },
-    take: 4,
-  });
-
-  const videos = await prisma.galleryVideo.findMany({
-    orderBy: { order: 'asc' },
-    take: 3,
-  });
-
-  // Active advertisements
-  const advertisements = await prisma.advertisement.findMany({
-    where: { status: 'ACTIVE' },
-  });
+  // Active advertisements extraction
   const topAd = advertisements.find((a) => a.position === 'top_banner');
   const sidebarAd = advertisements.find((a) => a.position === 'sidebar_banner');
   const middleAd = advertisements.find((a) => a.position === 'middle_banner');
@@ -162,12 +191,6 @@ export default async function HomePage() {
     const match = url.match(regExp);
     return match && match[2].length === 11 ? match[2] : null;
   };
-
-  const exclusiveNews = await prisma.news.findMany({
-    where: { isFeatured: true, status: 'PUBLISHED' },
-    take: 4,
-    include: { category: true },
-  });
 
   return (
     <div className="flex flex-col min-h-screen bg-slate-50 font-sans">
