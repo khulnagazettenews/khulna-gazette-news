@@ -1,13 +1,6 @@
 import type { Metadata } from "next";
-import { Hind_Siliguri } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers";
-
-const hindSiliguri = Hind_Siliguri({
-  subsets: ["bengali", "latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-hind-siliguri",
-});
 
 export const metadata: Metadata = {
   title: "খুলনা গেজেট | Khulna Gazette - খবরের অন্তরালে খবর",
@@ -39,7 +32,7 @@ export default function RootLayout({
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/site.webmanifest" />
       </head>
-      <body className={`${hindSiliguri.variable} font-sans bg-gray-50 text-gray-900 antialiased`}>
+      <body className="font-sans bg-gray-50 text-gray-900 antialiased">
         <Providers>{children}</Providers>
       </body>
     </html>
