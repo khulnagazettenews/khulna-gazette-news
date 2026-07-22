@@ -38,9 +38,9 @@ export default function PrayerWidgetClient({ timings }: PrayerWidgetClientProps)
     const isAm = cleanVal.toLowerCase().includes('am');
     cleanVal = cleanVal.replace(/(am|pm)/i, '').trim();
 
-    let [hStr, mStr] = cleanVal.split(':');
+    const [hStr, mStr] = cleanVal.split(':');
     let h = parseInt(hStr, 10);
-    let m = mStr || '00';
+    const m = mStr || '00';
 
     if (isPm && h < 12) h += 12;
     if (isAm && h === 12) h = 0;
