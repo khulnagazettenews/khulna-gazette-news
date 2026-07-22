@@ -5,7 +5,7 @@ export default async function PublicFooter() {
   return (
     <footer className="bg-[#151515] text-white text-[17px] mt-12">
       {/* Top Footer Section with 6 columns */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
 
         {/* Col 1 */}
         <div>
@@ -159,7 +159,7 @@ export default async function PublicFooter() {
 
       {/* Middle Footer Section with Logo and Editorial details */}
       <div className="border-t border-[#333] bg-[#151515] py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-start gap-12">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-start gap-12">
           <div className="flex-shrink-0">
             <Link href="/">
               <Image
@@ -183,7 +183,7 @@ export default async function PublicFooter() {
 
       {/* Bottom Footer Copyright & Legal strip */}
       <div className="bg-[#202731] py-5 text-sm text-gray-300">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4">
           <p className="font-semibold">
             এই ওয়েবসাইটের কোনো লেখা, ছবি, অডিও, ভিডিও অনুমতি ছাড়া ব্যবহার বেআইনি।
           </p>

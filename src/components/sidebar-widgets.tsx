@@ -145,7 +145,14 @@ export default function SidebarWidgets({
       </div>
 
       {/* 10. PRAYER TIMES WIDGET */}
-      <PrayerWidget />
+      <div className="bg-white rounded-xl border border-slate-200/90 shadow-xs overflow-hidden">
+        <div className="bg-[#1e293b] text-white py-2.5 px-4 text-center font-black text-xs tracking-tight">
+          নামাজের সময়সূচি
+        </div>
+        <div className="p-3">
+          <PrayerWidget />
+        </div>
+      </div>
     </div>
   );
 }

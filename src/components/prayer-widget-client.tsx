@@ -68,30 +68,20 @@ export default function PrayerWidgetClient({ timings }: PrayerWidgetClientProps)
   ];
 
   return (
-    <div className="bg-white border border-gray-200 rounded-md shadow-xs overflow-hidden w-full max-w-[280px] sm:max-w-xs mx-auto font-sans select-none p-2 sm:p-2.5">
-      {/* Dark Slate Top Header Bar */}
-      <div className="bg-[#3c4656] text-white rounded-xs py-1.5 text-center mb-2">
-        <h3 className="text-sm sm:text-base font-bold tracking-wide">
-          নামাজের সময়সূচি
-        </h3>
-      </div>
-
-      {/* Prayer Times List */}
-      <div className="space-y-1.5 px-0.5">
-        {list.map((item) => (
-          <div key={item.name} className="flex items-center justify-between gap-2">
-            {/* Left Gray Name Badge */}
-            <div className="bg-[#f1f3f5] text-slate-800 font-bold text-xs sm:text-sm py-1 flex-1 rounded-xs text-center shadow-2xs">
-              {item.name}
-            </div>
-
-            {/* Right Light Blue Time Badge */}
-            <div className="bg-[#e7f5ff] text-[#1971c2] font-bold text-xs sm:text-sm py-1 flex-1 rounded-xs text-center shadow-2xs">
-              {item.time}
-            </div>
+    <div className="w-full font-sans select-none space-y-2">
+      {list.map((item) => (
+        <div key={item.name} className="flex items-center justify-between gap-2.5">
+          {/* Left Gray Name Badge */}
+          <div className="bg-[#f1f3f5] text-slate-800 font-bold text-xs lg:text-sm py-1.5 flex-1 rounded-md text-center shadow-2xs">
+            {item.name}
           </div>
-        ))}
-      </div>
+
+          {/* Right Light Blue Time Badge */}
+          <div className="bg-[#e7f5ff] text-[#1971c2] font-bold text-xs lg:text-sm py-1.5 flex-1 rounded-md text-center shadow-2xs">
+            {item.time}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

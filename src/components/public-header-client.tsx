@@ -133,7 +133,7 @@ export default function PublicHeaderClient({ categories, formattedDate }: Public
   return (
     <div className="bg-white font-sans w-full">
       {/* 1. TOP HEADER ROW */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex sm:py-3.5 items-center justify-between">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-3 flex sm:py-3.5 items-center justify-between">
         {/* Left: Menu Toggle & Date Display */}
         <div className="flex items-center gap-2 sm:gap-4 flex-1 sm:min-w-[325px] shrink-0">
           {/* Hamburger menu button */}
@@ -223,7 +223,7 @@ export default function PublicHeaderClient({ categories, formattedDate }: Public
 
       {/* 2. BOTTOM NAVIGATION BAR ROW (DESKTOP) */}
       <div className="border-t border-b border-gray-200 sticky top-0 z-40 bg-white shadow-xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="hidden xl:flex items-center justify-center space-x-6 text-[0.95rem] text-[#262626] font-normal h-11">
             {/* Homepage Link with red Home Icon */}
             <Link
@@ -362,7 +362,7 @@ export default function PublicHeaderClient({ categories, formattedDate }: Public
       {/* Floating Search Bar Overlay */}
       {searchOpen && (
         <div className="bg-gray-50 py-3 border-b border-gray-200">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
             <form onSubmit={handleSearchSubmit} className="flex gap-2">
               <input
                 type="text"
