@@ -26,19 +26,26 @@ export default function CommentSection({ newsId }: CommentSectionProps) {
   const fetchComments = async () => {
     try {
       const res = await fetch(`/api/news/${newsId}/comments`);
-      const data = await res.json();
       if (res.ok) {
-        setComments(data);
+        const text = await res.text();
+        if (text) {
+          const data = JSON.parse(text);
+          if (Array.isArray(data)) {
+            setComments(data);
+          }
+        }
       }
     } catch (err) {
-      console.error(err);
+      console.error('Failed to fetch comments:', err);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchComments();
+    if (newsId) {
+      fetchComments();
+    }
   }, [newsId]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -55,7 +62,8 @@ export default function CommentSection({ newsId }: CommentSectionProps) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: name.trim(), comment: commentText.trim() }),
       });
-      const data = await res.json();
+      const text = await res.text();
+      const data = text ? JSON.parse(text) : {};
 
       if (res.ok) {
         setSuccess('আপনার মন্তব্যটি সফলভাবে জমা দেওয়া হয়েছে এবং অনুমোদনের অপেক্ষায় রয়েছে।');

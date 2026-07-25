@@ -13,34 +13,43 @@ export default function FacebookWidget() {
       {/* 2. Mock Facebook Page Plugin Box */}
       <div className="border border-[#dddfe2] rounded-sm bg-white overflow-hidden shadow-2xs font-sans">
         {/* Cover Photo Area */}
-        <div className="h-[74px] bg-white relative border-b border-[#dddfe2]">
-          {/* Circular Logo with blue ring border */}
+        <div className="h-[100px] relative border-b border-[#dddfe2] overflow-hidden bg-slate-100">
+          <img
+            src="/uploads/sidebar/fb_cover.jpg"
+            alt="খুলনা গেজেট কভার"
+            className="w-full h-full object-cover select-none"
+          />
+        </div>
+
+        {/* Page Info & Logo Overlay Area */}
+        <div className="p-3 relative bg-white">
+          {/* Circular Profile Avatar overlapping cover photo */}
           <a
             href={facebookUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="absolute left-[10px] top-[10px] w-[50px] h-[50px] rounded-full bg-white border-2 border-[#1877f2] flex items-center justify-center p-[2px] shadow-xs hover:scale-[1.02] transition"
+            className="absolute left-[12px] top-[-26px] w-[50px] h-[50px] rounded-full bg-white border-2 border-white shadow-md flex items-center justify-center p-[2px] z-10 hover:scale-[1.03] transition"
           >
             <img
               src="/favicon.png"
               alt="Khulna Gazette News"
-              className="w-full h-full rounded-full object-contain select-none"
+              className="w-full h-full rounded-full object-cover select-none"
             />
           </a>
-        </div>
 
-        {/* Page Info Area */}
-        <div className="p-3 pt-3.5 space-y-1">
-          <a
-            href={facebookUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-[13px] font-bold text-[#365899] hover:underline block leading-snug"
-          >
-            Khulna Gazette News
-          </a>
-          <div className="text-[11px] text-[#616770] font-semibold select-none leading-none pb-1">
-            171,520 followers
+          {/* Title and follower count aligned next to logo */}
+          <div className="pl-[58px] min-h-[38px] flex flex-col justify-center">
+            <a
+              href={facebookUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[14px] font-extrabold text-[#365899] hover:underline block leading-snug"
+            >
+              Khulna Gazette News
+            </a>
+            <div className="text-[11px] text-[#616770] font-semibold select-none leading-tight mt-0.5">
+              171,520 followers
+            </div>
           </div>
         </div>
 

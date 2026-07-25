@@ -30,10 +30,10 @@ export default function HomeHero({
 }: HomeHeroProps) {
   if (!news || news.length === 0) return null;
 
-  // Distribute news items according to Prothom-Alo layout structure
-  const leftColumnNews = news.slice(0, 2); // 2 cards on far left
+  // Distribute news items matching khulnagazette.com lead structure
+  const leftColumnNews = news.slice(0, 2); // 2 stacked cards on far left
   const leadStory = news[2] || news[0]; // Main big featured story in center
-  const subGridNews = news.slice(3, 12); // 3x3 sub-grid (9 items) under main lead
+  const subGridNews = news.slice(3, 7); // 4 cards under main lead
 
   const getExcerpt = (html: string) => {
     const text = html.replace(/<[^>]*>/g, '');
@@ -41,18 +41,18 @@ export default function HomeHero({
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 my-4 items-start">
-      {/* 1. Left Column (2 Cols on LG): 2 Stacked Cards */}
-      <div className="lg:col-span-3 space-y-5">
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 my-3 items-start">
+      {/* 1. Left Column (3 Cols on LG): 2 Stacked Cards */}
+      <div className="lg:col-span-3 space-y-4">
         {leftColumnNews.map((story) => (
           <div
             key={story.id}
-            className="bg-white p-3.5 rounded-xl border border-gray-200 shadow-sm space-y-3 group"
+            className="bg-white p-2.5 rounded border border-gray-200 shadow-xs space-y-2 group"
           >
             {story.featuredImage && (
               <Link
                 href={`/${story.category?.slug || 'news'}/${story.id}`}
-                className="block aspect-video overflow-hidden rounded-lg bg-slate-100 mb-3"
+                className="block aspect-video overflow-hidden rounded bg-gray-100 mb-2"
               >
                 <img
                   src={story.featuredImage}
@@ -61,77 +61,70 @@ export default function HomeHero({
                 />
               </Link>
             )}
-            <div className="space-y-2">
-              <span className="text-[10px] font-extrabold text-red-600 uppercase tracking-wide">
+            <div className="space-y-1">
+              <span className="text-[11px] font-bold text-red-600 tracking-tight">
                 {story.category?.name}
               </span>
               <Link href={`/${story.category?.slug || 'news'}/${story.id}`} className="block">
-                <h3 className="text-sm font-black text-gray-900 group-hover:text-red-650 transition leading-snug line-clamp-3">
+                <h3 className="text-[17px] sm:text-[18px] font-bold text-[#000000] group-hover:text-red-600 transition leading-snug line-clamp-3">
                   {story.title}
                 </h3>
               </Link>
             </div>
-            <span className="text-[10px] text-gray-400 font-medium block pt-2 border-t border-gray-100 mt-3">
-              {story.publishedAt &&
-                new Date(story.publishedAt).toLocaleDateString('bn-BD', {
-                  month: 'short',
-                  day: 'numeric',
-                })}
-            </span>
           </div>
         ))}
       </div>
 
-      {/* 2. Middle Main Column (6 Cols on LG): Main Featured Lead Story + 3x3 Grid */}
-      <div className="lg:col-span-6 space-y-6">
+      {/* 2. Middle Main Column (6 Cols on LG): Main Featured Lead Story + 4 Column Grid */}
+      <div className="lg:col-span-6 space-y-4">
         {/* Main Lead Card */}
         {leadStory && (
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden group">
+          <div className="bg-white rounded border border-gray-200 overflow-hidden group p-2.5 space-y-3">
             <Link
               href={`/${leadStory.category?.slug || 'news'}/${leadStory.id}`}
-              className="block relative aspect-[16/9] overflow-hidden"
+              className="block relative aspect-[16/9] overflow-hidden rounded bg-gray-100"
             >
               {leadStory.featuredImage ? (
                 <img
                   src={leadStory.featuredImage}
                   alt={leadStory.title}
-                  className="w-full h-full object-cover group-hover:scale-[1.01] transition duration-500"
+                  className="w-full h-full object-cover group-hover:scale-[1.01] transition duration-300"
                 />
               ) : (
-                <div className="w-full h-full bg-slate-100 flex items-center justify-center text-gray-400 font-bold">
+                <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400 font-bold">
                   খুলনা গেজেট
                 </div>
               )}
-              <span className="absolute bottom-3 left-3 bg-red-600 text-white font-extrabold text-xs px-3 py-1 rounded shadow">
+              <span className="absolute bottom-2 left-2 bg-red-600 text-white font-bold text-xs px-2.5 py-0.5 rounded select-none">
                 {leadStory.category?.name}
               </span>
             </Link>
 
-            <div className="p-5 space-y-3">
+            <div className="space-y-2">
               <Link
                 href={`/${leadStory.category?.slug || 'news'}/${leadStory.id}`}
                 className="block"
               >
-                <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-gray-900 group-hover:text-red-650 transition leading-tight">
+                <h1 className="text-xl sm:text-2xl lg:text-[28px] font-extrabold text-[#000000] group-hover:text-red-600 transition leading-tight">
                   {leadStory.title}
                 </h1>
               </Link>
-              <p className="text-xs sm:text-sm text-gray-650 leading-relaxed">
+              <p className="text-xs sm:text-sm text-gray-700 leading-relaxed">
                 {getExcerpt(leadStory.content)}
               </p>
             </div>
           </div>
         )}
 
-        {/* 3x3 Sub-Grid under Main Lead */}
+        {/* 4-Card Sub-Grid under Main Lead Story */}
         {subGridNews.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-white p-3 rounded border border-gray-200">
             {subGridNews.map((item) => (
-              <div key={item.id} className="group space-y-2.5 border-b sm:border-b-0 border-gray-100 pb-3 sm:pb-0">
+              <div key={item.id} className="group space-y-1.5">
                 {item.featuredImage && (
                   <Link
                     href={`/${item.category?.slug || 'news'}/${item.id}`}
-                    className="block aspect-[16/10] overflow-hidden rounded-md bg-slate-100"
+                    className="block aspect-[16/10] overflow-hidden rounded bg-gray-100 mb-1.5"
                   >
                     <img
                       src={item.featuredImage}
@@ -144,7 +137,7 @@ export default function HomeHero({
                   href={`/${item.category?.slug || 'news'}/${item.id}`}
                   className="block"
                 >
-                  <h4 className="text-xs font-bold text-gray-850 group-hover:text-red-600 transition leading-snug line-clamp-3">
+                  <h4 className="text-[15px] sm:text-[16px] font-bold text-[#000000] group-hover:text-red-600 transition leading-snug line-clamp-3">
                     {item.title}
                   </h4>
                 </Link>
@@ -154,7 +147,7 @@ export default function HomeHero({
         )}
       </div>
 
-      {/* 3. Right Sidebar Column (3 Cols on LG): Full 10 Sidebar Widgets matching reference image */}
+      {/* 3. Right Sidebar Column (3 Cols on LG): Full Sidebar Widgets */}
       <div className="lg:col-span-3">
         <SidebarWidgets
           latestNews={latestNews}

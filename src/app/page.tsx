@@ -36,19 +36,23 @@ export default async function HomePage() {
     }
   }
 
-  // Define categories to fetch for category blocks
+  // Define categories to fetch for category blocks matching khulnagazette.com live homepage order
   const categorySlugs = [
-    'bangladesh',
-    'international',
-    'sports',
-    'entertainment',
-    'politics',
-    'economy',
-    'crime',
-    'technology',
-    'lifestyle',
-    'health',
-    'motamot',
+    'bangladesh',       // 0: বাংলাদেশ
+    'politics',         // 1: রাজনীতি
+    'sports',           // 2: খেলা
+    'entertainment',    // 3: বিনোদন
+    'khulna',           // 4: খুলনাঞ্চল
+    'economy',          // 5: অর্থনীতি
+    'international',    // 6: আন্তর্জাতিক
+    'education',        // 7: শিক্ষা
+    'islam',            // 8: ইসলাম ও জীবন
+    'technology',       // 9: আইটি
+    'health',           // 10: চিকিৎসা
+    'literature',       // 11: সাহিত্য
+    'mukto-bhabna',     // 12: মুক্ত ভাবনা
+    'chitro-bichitro',  // 13: চিত্র বিচিত্র
+    'social-media',     // 14: সোশ্যাল মিডিয়া
   ];
 
   // Map slugs to Prisma queries
@@ -59,7 +63,7 @@ export default async function HomePage() {
         status: 'PUBLISHED',
       },
       orderBy: { publishedAt: 'desc' },
-      take: slug === 'motamot' ? 4 : 5,
+      take: 5,
       include: {
         category: true,
         author: { select: { name: true, avatar: true } },
@@ -125,7 +129,7 @@ export default async function HomePage() {
     // Exclusive news
     prisma.news.findMany({
       where: { isFeatured: true, status: 'PUBLISHED' },
-      take: 4,
+      take: 5,
       include: { category: true },
     }),
     specialTopicBannerNewsQuery,
@@ -144,14 +148,12 @@ export default async function HomePage() {
 
   // 3. Resolve fallbacks in parallel if any category returns empty items
   const categoryResults = await Promise.all(
-    initialCategoryResults.map(async (items, idx) => {
+    initialCategoryResults.map(async (items) => {
       if (items.length > 0) return items;
-      const slug = categorySlugs[idx];
-      const takeCount = slug === 'motamot' ? 4 : 5;
       return prisma.news.findMany({
         where: { status: 'PUBLISHED' },
         orderBy: { publishedAt: 'desc' },
-        take: takeCount,
+        take: 5,
         include: {
           category: true,
           author: { select: { name: true, avatar: true } },
@@ -162,16 +164,20 @@ export default async function HomePage() {
 
   // Map resolved categories back to their variables
   const bangladeshNews = categoryResults[0];
-  const internationalNews = categoryResults[1];
+  const politicsNews = categoryResults[1];
   const sportsNews = categoryResults[2];
   const entertainmentNews = categoryResults[3];
-  const politicsNews = categoryResults[4];
+  const khulnaNews = categoryResults[4];
   const economyNews = categoryResults[5];
-  const crimeNews = categoryResults[6];
-  const techNews = categoryResults[7];
-  const lifestyleNews = categoryResults[8];
-  const healthNews = categoryResults[9];
-  const opinionNews = categoryResults[10];
+  const internationalNews = categoryResults[6];
+  const educationNews = categoryResults[7];
+  const islamNews = categoryResults[8];
+  const techNews = categoryResults[9];
+  const healthNews = categoryResults[10];
+  const literatureNews = categoryResults[11];
+  const muktoBhabnaNews = categoryResults[12];
+  const chitroBichitroNews = categoryResults[13];
+  const socialMediaNews = categoryResults[14];
 
   // Map special topic banner news maintaining admin ordering
   let specialTopicBannerNews: any[] = [];
@@ -211,7 +217,7 @@ export default async function HomePage() {
         {/* Top Ad slot */}
         <AdBanner ad={topAd} fallbackText="বিজ্ঞাপন ব্যানার" className="h-20 sm:h-24" />
 
-        {/* 2. Prothom-Alo style Hero 3-Column Section */}
+        {/* 2. Main Lead 3-Column Section (Hero Lead + Sidebar) */}
         <HomeHero
           news={heroNews as any}
           latestNews={serializeList(latestNews)}
@@ -223,15 +229,15 @@ export default async function HomePage() {
         {/* 3. Red YouTube Promo Strip */}
         <YoutubeBanner />
 
-        {/* 4. Side-by-Side Category Pair 1: বাংলাদেশ & আন্তর্জাতিক */}
+        {/* 4. Category Pair 1: বাংলাদেশ & রাজনীতি */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <CategoryBlock title="বাংলাদেশ" slug="bangladesh" news={bangladeshNews as any} />
-          <CategoryBlock title="আন্তর্জাতিক" slug="international" news={internationalNews as any} />
+          <CategoryBlock title="রাজনীতি" slug="politics" news={politicsNews as any} />
         </div>
 
         {/* 5. Sports Section (Main image on left + 4 mini cards on right) */}
         <CategoryBlock
-          title="খেলাধুলা"
+          title="খেলা"
           slug="sports"
           news={sportsNews as any}
           variant="sports"
@@ -248,26 +254,41 @@ export default async function HomePage() {
           variant="entertainment"
         />
 
-        {/* 7. Side-by-Side Category Pair 2: রাজনীতি & অর্থনীতি */}
+        {/* 7. Category Pair 2: খুলনাঞ্চল & অর্থনীতি */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <CategoryBlock title="রাজনীতি" slug="politics" news={politicsNews as any} />
+          <CategoryBlock title="খুলনাঞ্চল" slug="khulna" news={khulnaNews as any} />
           <CategoryBlock title="অর্থনীতি" slug="economy" news={economyNews as any} />
         </div>
 
-        {/* 8. Side-by-Side Category Pair 3: অপরাধ & প্রযুক্তি */}
+        {/* 8. International Category */}
+        <CategoryBlock title="আন্তর্জাতিক" slug="international" news={internationalNews as any} />
+
+        {/* 9. Category Pair 3: শিক্ষা & ইসলাম ও জীবন */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <CategoryBlock title="অপরাধ" slug="crime" news={crimeNews as any} />
-          <CategoryBlock title="বিজ্ঞান ও প্রযুক্তি" slug="technology" news={techNews as any} />
+          <CategoryBlock title="শিক্ষা" slug="education" news={educationNews as any} />
+          <CategoryBlock title="ইসলাম ও জীবন" slug="islam" news={islamNews as any} />
         </div>
 
-        {/* 9. Opinion Columnists Section */}
-        <OpinionWidget items={opinionNews as any} />
+        {/* 10. IT / Science & Tech Category */}
+        <CategoryBlock title="আইটি" slug="technology" news={techNews as any} />
 
-        {/* 10. Side-by-Side Category Pair 4: লাইফস্টাইল & স্বাস্থ্য */}
+        {/* 11. Category Pair 4: চিকিৎসা & সাহিত্য */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <CategoryBlock title="জীবনযাপন" slug="lifestyle" news={lifestyleNews as any} />
-          <CategoryBlock title="স্বাস্থ্য" slug="health" news={healthNews as any} />
+          <CategoryBlock title="চিকিৎসা" slug="health" news={healthNews as any} />
+          <CategoryBlock title="সাহিত্য" slug="literature" news={literatureNews as any} />
         </div>
+
+        {/* 12. Mukto Bhabna Category */}
+        <CategoryBlock title="মুক্ত ভাবনা" slug="mukto-bhabna" news={muktoBhabnaNews as any} />
+
+        {/* 13. Category Pair 5: চিত্র বিচিত্র & সোশ্যাল মিডিয়া */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <CategoryBlock title="চিত্র বিচিত্র" slug="chitro-bichitro" news={chitroBichitroNews as any} />
+          <CategoryBlock title="সোশ্যাল মিডিয়া" slug="social-media" news={socialMediaNews as any} />
+        </div>
+
+        {/* 14. Gazette Exclusive Section */}
+        <CategoryBlock title="গেজেট এক্সক্লুসিভ" slug="gazette-exclusive" news={exclusiveNews as any} />
 
         {/* 11. Photo & Video Gallery */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-4 border-t border-gray-200">

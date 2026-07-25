@@ -33,41 +33,41 @@ export default function TabsWidget({ latest, popular }: TabsWidgetProps) {
   };
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200/90 shadow-xs overflow-hidden">
-      {/* 2 Tabs Header in Dark Slate */}
-      <div className="grid grid-cols-2 bg-[#1e293b] text-white text-xs sm:text-sm font-extrabold text-center border-b border-slate-700 select-none">
+    <div className="bg-white border border-gray-200 rounded overflow-hidden shadow-xs">
+      {/* 2 Tabs Header in Dark Slate / Black */}
+      <div className="grid grid-cols-2 bg-[#111827] text-white text-[15px] sm:text-[16px] font-bold text-center select-none border-b border-gray-800">
         <button
           onClick={() => setActiveTab('latest')}
-          className={`py-3 transition flex items-center justify-center gap-1.5 ${
+          className={`py-2.5 transition flex items-center justify-center gap-1.5 cursor-pointer ${
             activeTab === 'latest'
-              ? 'bg-[#0f172a] text-white border-b-2 border-red-500 font-black'
-              : 'text-slate-300 hover:text-white hover:bg-slate-800/80'
+              ? 'bg-[#1f2937] text-white border-b-2 border-red-600 font-bold'
+              : 'text-gray-300 hover:text-white hover:bg-gray-800'
           }`}
         >
           <span>সর্বশেষ</span>
         </button>
         <button
           onClick={() => setActiveTab('popular')}
-          className={`py-3 transition border-l border-slate-700 flex items-center justify-center gap-1.5 ${
+          className={`py-2.5 transition border-l border-gray-800 flex items-center justify-center gap-1.5 cursor-pointer ${
             activeTab === 'popular'
-              ? 'bg-[#0f172a] text-white border-b-2 border-red-500 font-black'
-              : 'text-slate-300 hover:text-white hover:bg-slate-800/80'
+              ? 'bg-[#1f2937] text-white border-b-2 border-red-600 font-bold'
+              : 'text-gray-300 hover:text-white hover:bg-gray-800'
           }`}
         >
           <span>সর্বাধিক পঠিত</span>
         </button>
       </div>
 
-      {/* List Items */}
-      <div className="divide-y divide-slate-100 p-3 max-h-[380px] overflow-y-auto">
+      {/* List Items Container */}
+      <div className="divide-y divide-gray-150 p-2.5 max-h-[420px] overflow-y-auto custom-scrollbar">
         {list.length === 0 ? (
-          <div className="text-center py-6 text-xs text-slate-400 font-medium">কোনো খবর পাওয়া যায়নি।</div>
+          <div className="text-center py-6 text-sm text-gray-400 font-medium">কোনো খবর পাওয়া যায়নি।</div>
         ) : (
-          list.slice(0, 7).map((item) => (
-            <div key={item.id} className="py-2.5 flex items-start gap-3 first:pt-1 last:pb-1 group">
+          list.slice(0, 8).map((item) => (
+            <div key={item.id} className="py-2.5 flex items-start gap-3 group first:pt-1 last:pb-1">
               <Link
                 href={`/${item.category?.slug || 'news'}/${item.id}`}
-                className="w-16 h-12 shrink-0 overflow-hidden rounded-md bg-slate-100 block aspect-[4/3]"
+                className="w-20 h-14 shrink-0 overflow-hidden rounded bg-gray-100 block relative"
               >
                 {item.featuredImage ? (
                   <img
@@ -76,7 +76,7 @@ export default function TabsWidget({ latest, popular }: TabsWidgetProps) {
                     className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
                   />
                 ) : (
-                  <div className="w-full h-full bg-slate-200 flex items-center justify-center text-[9px] text-slate-500 font-bold">
+                  <div className="w-full h-full bg-gray-200 flex items-center justify-center text-[10px] text-gray-500 font-bold">
                     খুলনা গেজেট
                   </div>
                 )}
@@ -85,12 +85,12 @@ export default function TabsWidget({ latest, popular }: TabsWidgetProps) {
               <div className="space-y-1 flex-1 min-w-0">
                 <Link
                   href={`/${item.category?.slug || 'news'}/${item.id}`}
-                  className="text-xs font-bold text-slate-900 group-hover:text-red-650 transition leading-snug line-clamp-2 block"
+                  className="text-[17px] sm:text-[19px] font-bold text-[#000000] group-hover:text-red-600 transition leading-snug line-clamp-2 block"
                 >
                   {item.title}
                 </Link>
                 {item.publishedAt && (
-                  <span className="text-[10px] text-slate-400 block font-medium">
+                  <span className="text-[13px] text-gray-500 block font-medium">
                     {getTimeAgo(item.publishedAt)}
                   </span>
                 )}
@@ -102,3 +102,5 @@ export default function TabsWidget({ latest, popular }: TabsWidgetProps) {
     </div>
   );
 }
+
+

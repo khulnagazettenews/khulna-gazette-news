@@ -55,16 +55,16 @@ export default function SidebarWidgets({
       </div>
 
       {/* 4. GAZETTE EXCLUSIVE NEWS BOX */}
-      <div className="bg-white rounded-xl border border-slate-200/90 shadow-xs overflow-hidden">
-        <div className="bg-[#1e293b] text-white py-2.5 px-4 text-center font-black text-xs tracking-tight">
+      <div className="bg-white rounded border border-gray-200 overflow-hidden">
+        <div className="bg-[#1e293b] text-white py-2 px-3 text-center font-extrabold text-xs tracking-tight">
           গেজেট এক্সক্লুসিভ
         </div>
-        <div className="p-3 divide-y divide-slate-100 space-y-2">
+        <div className="p-3 divide-y divide-gray-100 space-y-2">
           {(exclusiveNews.length > 0 ? exclusiveNews : latestNews.slice(0, 3)).map((item) => (
-            <div key={item.id} className="pt-2 first:pt-0 flex items-start gap-3 group">
+            <div key={item.id} className="pt-2 first:pt-0 flex items-start gap-2.5 group">
               <Link
                 href={`/${item.category?.slug || 'news'}/${item.id}`}
-                className="w-16 h-12 shrink-0 overflow-hidden rounded-md bg-slate-100 block aspect-[4/3]"
+                className="w-16 h-12 shrink-0 overflow-hidden rounded bg-gray-100 block aspect-[4/3]"
               >
                 {item.featuredImage ? (
                   <img
@@ -73,14 +73,14 @@ export default function SidebarWidgets({
                     className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
                   />
                 ) : (
-                  <div className="w-full h-full bg-slate-200 flex items-center justify-center text-[9px] text-slate-500 font-bold">
+                  <div className="w-full h-full bg-gray-200 flex items-center justify-center text-[9px] text-gray-500 font-bold">
                     খুলনা গেজেট
                   </div>
                 )}
               </Link>
               <Link
                 href={`/${item.category?.slug || 'news'}/${item.id}`}
-                className="text-xs font-bold text-slate-900 group-hover:text-red-650 transition leading-snug line-clamp-2 block flex-1"
+                className="text-[14px] sm:text-[15px] font-bold text-[#000000] group-hover:text-red-600 transition leading-snug line-clamp-2 block flex-1"
               >
                 {item.title}
               </Link>

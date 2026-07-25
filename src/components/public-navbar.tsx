@@ -49,32 +49,32 @@ export default function PublicNavbar({ categories }: NavbarProps) {
   };
 
   return (
-    <nav className="bg-white border-b border-gray-200 sticky top-0 z-40 shadow-sm text-[0.95rem]">
+    <nav className="bg-white border-b border-gray-200 sticky top-0 z-40 shadow-sm text-[1.15rem] font-bold">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-12">
           {/* Mobile menu toggle */}
           <div className="flex xl:hidden">
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="text-[#262626] hover:text-[#ED1C24] focus:outline-none"
+              className="text-[#000000] hover:text-[#ED1C24] focus:outline-none"
             >
               {mobileOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
 
           {/* Desktop Nav menu */}
-          <div className="hidden xl:flex items-center space-x-6 w-full text-[#262626] font-semibold">
+          <div className="hidden xl:flex items-center space-x-6 w-full text-[#000000] font-bold">
             {/* Homepage Link with Home Icon */}
             <Link
               href="/"
               className={`hover:text-[#ED1C24] py-3.5 transition flex items-center justify-center relative group ${
-                pathname === '/' ? 'text-[#ED1C24]' : 'text-[#262626]'
+                pathname === '/' ? 'text-[#ED1C24]' : 'text-[#000000]'
               }`}
             >
               <span className="relative py-1">
-                <Home size={18} />
+                <Home size={20} className="text-[#ED1C24] fill-current" />
                 <span
-                  className={`absolute left-0 bottom-0 h-[2px] bg-[#ED1C24] transition-all duration-300 ${
+                  className={`absolute left-0 bottom-0 h-[2.5px] bg-[#ED1C24] transition-all duration-300 ${
                     pathname === '/' ? 'w-full' : 'w-0 group-hover:w-full'
                   }`}
                 ></span>
@@ -90,31 +90,31 @@ export default function PublicNavbar({ categories }: NavbarProps) {
                   {hasSub ? (
                     <button
                       onClick={() => toggleDropdown(cat.id)}
-                      className={`flex items-center gap-1 hover:text-[#ED1C24] py-3.5 transition focus:outline-none relative ${
-                        isActive ? 'text-[#ED1C24]' : 'text-[#262626]'
+                      className={`flex items-center gap-1 hover:text-[#ED1C24] py-3.5 transition focus:outline-none relative font-bold ${
+                        isActive ? 'text-[#ED1C24]' : 'text-[#000000]'
                       }`}
                     >
                       <span className="relative py-1">
                         {cat.name}
                         <span
-                          className={`absolute left-0 bottom-0 h-[2px] bg-[#ED1C24] transition-all duration-300 ${
+                          className={`absolute left-0 bottom-0 h-[2.5px] bg-[#ED1C24] transition-all duration-300 ${
                             isActive ? 'w-full' : 'w-0 group-hover:w-full'
                           }`}
                         ></span>
                       </span>
-                      <ChevronDown size={14} />
+                      <ChevronDown size={14} className="text-gray-600 group-hover:text-[#ED1C24]" />
                     </button>
                   ) : (
                     <Link
                       href={`/${cat.slug}`}
-                      className={`hover:text-[#ED1C24] py-3.5 transition relative group ${
-                        isActive ? 'text-[#ED1C24]' : 'text-[#262626]'
+                      className={`hover:text-[#ED1C24] py-3.5 transition relative group font-bold ${
+                        isActive ? 'text-[#ED1C24]' : 'text-[#000000]'
                       }`}
                     >
                       <span className="relative py-1">
                         {cat.name}
                         <span
-                          className={`absolute left-0 bottom-0 h-[2px] bg-[#ED1C24] transition-all duration-300 ${
+                          className={`absolute left-0 bottom-0 h-[2.5px] bg-[#ED1C24] transition-all duration-300 ${
                             isActive ? 'w-full' : 'w-0 group-hover:w-full'
                           }`}
                         ></span>

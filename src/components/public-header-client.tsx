@@ -142,13 +142,13 @@ export default function PublicHeaderClient({ categories, formattedDate }: Public
             className="text-gray-700 hover:text-red-600 focus:outline-none p-1 shrink-0 cursor-pointer"
             title="Menu"
           >
-            {mobileOpen ? <X size={26} className="stroke-[2.5]" /> : <Menu size={26} className="stroke-[2.5]" />}
+            {mobileOpen ? <i className="fa fa-times text-2xl"></i> : <i className="fa fa-bars text-2xl"></i>}
           </button>
 
           {/* Date and Location Text */}
-          <div className="hidden sm:flex flex-col text-xs sm:text-sm font-bold text-gray-800 leading-tight select-none whitespace-nowrap">
-            <span>খুলনা, বাংলাদেশ</span>
-            <span className="text-[10px] sm:text-xs text-gray-500 font-medium mt-0.5">{currentDate}</span>
+          <div className="hidden sm:flex flex-col select-none whitespace-nowrap leading-snug">
+            <span className="text-base sm:text-lg font-extrabold text-[#000000] tracking-tight">খুলনা, বাংলাদেশ</span>
+            <span className="text-xs sm:text-sm md:text-[15px] font-bold text-[#333333] mt-0.5">{currentDate}</span>
           </div>
         </div>
 
@@ -171,38 +171,27 @@ export default function PublicHeaderClient({ categories, formattedDate }: Public
           {/* e-Paper Link */}
           <Link
             href="/epaper"
-            className="text-red-600 hover:text-red-700 font-black text-[12px] sm:text-[13px] md:text-base hover:underline select-none tracking-tight"
+            className="text-red-600 hover:text-red-700 font-black text-[12px] sm:text-[13px] md:text-base hover:underline select-none tracking-tight flex items-center gap-1.5"
           >
-            ই-পেপার
+            <i className="fa fa-newspaper-o"></i>
+            <span>ই-পেপার</span>
           </Link>
 
           {/* Social Icons & Search Toggle */}
           <div className="flex items-center gap-2 sm:gap-3.5 mt-1 sm:mt-1.5 text-gray-800 select-none">
             {/* Social Icons (hidden on mobile) */}
-            <div className="hidden sm:flex items-center gap-3.5">
-              {/* Facebook */}
+            <div className="hidden sm:flex items-center gap-3.5 text-base">
               <a href="https://www.facebook.com/klngazette" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600 transition" title="Facebook">
-                <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                  <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c4.56-.93 8-4.96 8-9.75z"/>
-                </svg>
+                <i className="fa fa-facebook"></i>
               </a>
-              {/* Twitter */}
               <a href="https://twitter.com/khulnagazette" target="_blank" rel="noopener noreferrer" className="hover:text-sky-500 transition" title="Twitter">
-                <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                  <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
-                </svg>
+                <i className="fa fa-twitter"></i>
               </a>
-              {/* YouTube */}
-              <a href="https://www.youtube.com/channel/UCU_4M-GqxW5k1SONo5OoP4Q" target="_blank" rel="noopener noreferrer" className="hover:text-red-650 transition" title="Youtube">
-                <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                  <path d="M23.498 6.163a3.003 3.003 0 00-2.11-2.11C19.517 3.545 12 3.545 12 3.545s-7.517 0-9.388.508a3.003 3.003 0 00-2.11 2.11C0 8.033 0 12 0 12s0 3.967.502 5.837a3.003 3.003 0 002.11 2.11c1.871.508 9.388.508 9.388.508s7.517 0 9.388-.508a3.003 3.003 0 002.11-2.11C24 15.967 24 12 24 12s0-3.967-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-                </svg>
+              <a href="https://www.youtube.com/channel/UCU_4M-GqxW5k1SONo5OoP4Q" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 transition" title="Youtube">
+                <i className="fa fa-youtube-play"></i>
               </a>
-              {/* Instagram */}
               <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-pink-600 transition" title="Instagram">
-                <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051C.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
-                </svg>
+                <i className="fa fa-instagram"></i>
               </a>
             </div>
 
@@ -212,10 +201,10 @@ export default function PublicHeaderClient({ categories, formattedDate }: Public
             {/* Search Icon button */}
             <button
               onClick={() => setSearchOpen(!searchOpen)}
-              className="hover:text-red-650 focus:outline-none p-1 cursor-pointer"
+              className="hover:text-red-600 focus:outline-none p-1 cursor-pointer"
               title="Search"
             >
-              <Search size={19} className="stroke-[2.5]" />
+              <i className="fa fa-search text-base"></i>
             </button>
           </div>
         </div>
@@ -224,18 +213,18 @@ export default function PublicHeaderClient({ categories, formattedDate }: Public
       {/* 2. BOTTOM NAVIGATION BAR ROW (DESKTOP) */}
       <div className="border-t border-b border-gray-200 sticky top-0 z-40 bg-white shadow-xs">
         <div className="w-full max-w-full px-4 sm:px-8 lg:px-12">
-          <div className="hidden xl:flex items-center justify-center space-x-6 text-[0.95rem] text-[#262626] font-normal h-11">
+          <div className="hidden xl:flex items-center justify-center space-x-6 lg:space-x-7 text-[1.15rem] lg:text-[1.25rem] text-[#000000] font-bold h-12">
             {/* Homepage Link with red Home Icon */}
             <Link
               href="/"
               className={`hover:text-[#ED1C24] py-2 transition flex items-center justify-center relative group ${
-                pathname === '/' ? 'text-[#ED1C24]' : 'text-[#262626]'
+                pathname === '/' ? 'text-[#ED1C24]' : 'text-[#000000]'
               }`}
             >
               <span className="relative py-1 flex items-center justify-center">
-                <Home size={17} className="text-[#ED1C24] fill-current" />
+                <i className="fa fa-home text-[#ED1C24] text-xl"></i>
                 <span
-                  className={`absolute left-0 bottom-0 h-[2px] bg-[#ED1C24] transition-all duration-300 ${
+                  className={`absolute left-0 bottom-0 h-[2.5px] bg-[#ED1C24] transition-all duration-300 ${
                     pathname === '/' ? 'w-full' : 'w-0 group-hover:w-full'
                   }`}
                 ></span>
@@ -251,31 +240,31 @@ export default function PublicHeaderClient({ categories, formattedDate }: Public
                   {hasSub ? (
                     <button
                       onClick={() => toggleDropdown(cat.id)}
-                      className={`flex items-center gap-1 hover:text-[#ED1C24] py-2 transition focus:outline-none relative ${
-                        isActive ? 'text-[#ED1C24]' : 'text-[#262626]'
+                      className={`flex items-center gap-1 hover:text-[#ED1C24] py-2 transition focus:outline-none relative font-bold ${
+                        isActive ? 'text-[#ED1C24]' : 'text-[#000000]'
                       }`}
                     >
                       <span className="relative py-1">
                         {cat.name}
                         <span
-                          className={`absolute left-0 bottom-0 h-[2px] bg-[#ED1C24] transition-all duration-300 ${
+                          className={`absolute left-0 bottom-0 h-[2.5px] bg-[#ED1C24] transition-all duration-300 ${
                             isActive ? 'w-full' : 'w-0 group-hover:w-full'
                           }`}
                         ></span>
                       </span>
-                      <ChevronDown size={12} className="text-gray-400 group-hover:text-[#ED1C24]" />
+                      <ChevronDown size={14} className="text-gray-600 group-hover:text-[#ED1C24]" />
                     </button>
                   ) : (
                     <Link
                       href={`/${cat.slug}`}
-                      className={`hover:text-[#ED1C24] py-2 transition relative group ${
-                        isActive ? 'text-[#ED1C24]' : 'text-[#262626]'
+                      className={`hover:text-[#ED1C24] py-2 transition relative group font-bold ${
+                        isActive ? 'text-[#ED1C24]' : 'text-[#000000]'
                       }`}
                     >
                       <span className="relative py-1">
                         {cat.name}
                         <span
-                          className={`absolute left-0 bottom-0 h-[2px] bg-[#ED1C24] transition-all duration-300 ${
+                          className={`absolute left-0 bottom-0 h-[2.5px] bg-[#ED1C24] transition-all duration-300 ${
                             isActive ? 'w-full' : 'w-0 group-hover:w-full'
                           }`}
                         ></span>
@@ -285,12 +274,12 @@ export default function PublicHeaderClient({ categories, formattedDate }: Public
 
                   {/* Dropdown Menu for subcategories */}
                   {hasSub && (
-                    <div className="absolute left-0 mt-0 w-48 bg-white text-[#262626] rounded-b-lg shadow-xl py-2 hidden group-hover:block border-t-2 border-[#ED1C24] transition duration-150 z-50">
+                    <div className="absolute left-0 mt-0 w-52 bg-white text-[#000000] rounded-b-lg shadow-xl py-2.5 hidden group-hover:block border-t-2 border-[#ED1C24] transition duration-150 z-50">
                       {cat.subCategories?.map((sub) => (
                         <Link
                           key={sub.id}
                           href={`/${cat.slug}/${sub.slug}`}
-                          className="block px-4 py-2 hover:bg-red-50 hover:text-[#ED1C24] text-xs font-semibold"
+                          className="block px-4 py-2 hover:bg-red-50 hover:text-[#ED1C24] text-sm sm:text-base font-bold"
                         >
                           {sub.name}
                         </Link>
@@ -305,14 +294,14 @@ export default function PublicHeaderClient({ categories, formattedDate }: Public
             {exclusiveCat && (
               <Link
                 href={`/${exclusiveCat.slug}`}
-                className={`hover:text-[#ED1C24] py-2 transition font-normal relative group ${
-                  pathname === `/${exclusiveCat.slug}` ? 'text-[#ED1C24]' : ''
+                className={`hover:text-[#ED1C24] py-2 transition font-bold relative group ${
+                  pathname === `/${exclusiveCat.slug}` ? 'text-[#ED1C24]' : 'text-[#000000]'
                 }`}
               >
                 <span className="relative py-1">
                   {exclusiveCat.name}
                   <span
-                    className={`absolute left-0 bottom-0 h-[2px] bg-[#ED1C24] transition-all duration-300 ${
+                    className={`absolute left-0 bottom-0 h-[2.5px] bg-[#ED1C24] transition-all duration-300 ${
                       pathname === `/${exclusiveCat.slug}` ? 'w-full' : 'w-0 group-hover:w-full'
                     }`}
                   ></span>
@@ -323,32 +312,32 @@ export default function PublicHeaderClient({ categories, formattedDate }: Public
             {/* More dropdown */}
             {moreCats.length > 0 && (
               <div className="relative group">
-                <button className="flex items-center gap-1 hover:text-[#ED1C24] py-2 transition focus:outline-none relative">
+                <button className="flex items-center gap-1 hover:text-[#ED1C24] py-2 transition focus:outline-none relative font-bold text-[#000000]">
                   <span className="relative py-1">
                     <span>আরও</span>
-                    <span className="absolute left-0 bottom-0 h-[2px] bg-[#ED1C24] transition-all duration-300 w-0 group-hover:w-full"></span>
+                    <span className="absolute left-0 bottom-0 h-[2.5px] bg-[#ED1C24] transition-all duration-300 w-0 group-hover:w-full"></span>
                   </span>
-                  <ChevronDown size={12} className="text-gray-400" />
+                  <ChevronDown size={14} className="text-gray-600" />
                 </button>
-                <div className="absolute right-0 mt-0 w-48 bg-white text-[#262626] rounded-b-lg shadow-xl py-2 hidden group-hover:block border-t-2 border-[#ED1C24] z-50 transition">
+                <div className="absolute right-0 mt-0 w-52 bg-white text-[#000000] rounded-b-lg shadow-xl py-2.5 hidden group-hover:block border-t-2 border-[#ED1C24] z-50 transition">
                   {moreCats.map((cat) => (
                     <Link
                       key={cat.id}
                       href={`/${cat.slug}`}
-                      className="block px-4 py-2 hover:bg-red-50 hover:text-[#ED1C24] text-xs font-semibold"
+                      className="block px-4 py-2 hover:bg-red-50 hover:text-[#ED1C24] text-sm sm:text-base font-bold"
                     >
                       {cat.name}
                     </Link>
                   ))}
                   <Link
                     href="/photo-gallery"
-                    className="block px-4 py-2 hover:bg-red-50 hover:text-[#ED1C24] text-xs font-semibold border-t border-gray-100"
+                    className="block px-4 py-2 hover:bg-red-50 hover:text-[#ED1C24] text-sm sm:text-base font-bold border-t border-gray-100"
                   >
                     ফটো গ্যালারি
                   </Link>
                   <Link
                     href="/video-gallery"
-                    className="block px-4 py-2 hover:bg-red-50 hover:text-[#ED1C24] text-xs font-semibold"
+                    className="block px-4 py-2 hover:bg-red-50 hover:text-[#ED1C24] text-sm sm:text-base font-bold"
                   >
                     ভিডিও গ্যালারি
                   </Link>

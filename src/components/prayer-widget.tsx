@@ -59,42 +59,46 @@ export default async function PrayerWidget() {
   // Fetch live prayer times and date info from Aladhan API
   try {
     const res = await fetch(
-      'http://api.aladhan.com/v1/timingsByCity?city=Khulna&country=Bangladesh&method=1',
+      'https://api.aladhan.com/v1/timingsByCity?city=Khulna&country=Bangladesh&method=1',
       { next: { revalidate: 3600 } }
     );
     if (res.ok) {
-      const json = await res.json();
-      if (json.data && json.data.timings) {
-        const t = json.data.timings;
-        // Keep English 24h format for client processing
-        if (!dbTimes) {
-          timings = {
-            fajr: t.Fajr.split(' ')[0],
-            sunrise: t.Sunrise.split(' ')[0],
-            zohr: t.Dhuhr.split(' ')[0],
-            asr: t.Asr.split(' ')[0],
-            magrib: t.Maghrib.split(' ')[0],
-            esha: t.Isha.split(' ')[0],
-          };
-        }
+      const text = await res.text();
+      if (text) {
+        const json = JSON.parse(text);
+        if (json && json.data && json.data.timings) {
+          const t = json.data.timings;
+          if (!dbTimes) {
+            timings = {
+              fajr: t.Fajr.split(' ')[0],
+              sunrise: t.Sunrise.split(' ')[0],
+              zohr: t.Dhuhr.split(' ')[0],
+              asr: t.Asr.split(' ')[0],
+              magrib: t.Maghrib.split(' ')[0],
+              esha: t.Isha.split(' ')[0],
+            };
+          }
 
-        const hijri = json.data.date.hijri;
-        const hijriMonths: Record<string, string> = {
-          'Muharram': 'মহররম',
-          'Safar': 'সফর',
-          'Rabi\' al-awwal': 'রবিউল আউয়াল',
-          'Rabi\' ath-thani': 'রবিউস সানি',
-          'Jumada al-awwal': 'জমাদিউল আউয়াল',
-          'Jumada ath-thani': 'জমাদিউস সানি',
-          'Rajab': 'রজব',
-          'Sha\'ban': 'শাবান',
-          'Ramadan': 'রমজান',
-          'Shawwal': 'শাওয়াল',
-          'Dhu al-Qa\'dah': 'জিলকদ',
-          'Dhu al-Hijjah': 'জিলহজ'
-        };
-        const monthBn = hijriMonths[hijri.month.en] || hijri.month.en;
-        hijriDateStr = `${toBengaliNumber(hijri.day)} ${monthBn} ${toBengaliNumber(hijri.year)}`;
+          if (json.data.date && json.data.date.hijri) {
+            const hijri = json.data.date.hijri;
+            const hijriMonths: Record<string, string> = {
+              'Muharram': 'মহররম',
+              'Safar': 'সফর',
+              'Rabi\' al-awwal': 'রবিউল আউয়াল',
+              'Rabi\' ath-thani': 'রবিউস সানি',
+              'Jumada al-awwal': 'জমাদিউল আউয়াল',
+              'Jumada ath-thani': 'জমাদিউস সানি',
+              'Rajab': 'রজব',
+              'Sha\'ban': 'শাবান',
+              'Ramadan': 'রমজান',
+              'Shawwal': 'শাওয়াল',
+              'Dhu al-Qa\'dah': 'জিলকদ',
+              'Dhu al-Hijjah': 'জিলহজ'
+            };
+            const monthBn = hijriMonths[hijri.month.en] || hijri.month.en;
+            hijriDateStr = `${toBengaliNumber(hijri.day)} ${monthBn} ${toBengaliNumber(hijri.year)}`;
+          }
+        }
       }
     }
   } catch (err) {

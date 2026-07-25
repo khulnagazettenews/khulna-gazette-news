@@ -6,8 +6,10 @@ import TabsWidget from '@/components/tabs-widget';
 import PrayerWidget from '@/components/prayer-widget';
 import ViewsIncrement from '@/components/views-increment';
 import CommentSection from '@/components/comment-section';
+import SocialShareBar from '@/components/social-share-bar';
+import AppPromoBanner from '@/components/app-promo-banner';
 import Link from 'next/link';
-import { Calendar, Eye, User, Home } from 'lucide-react';
+import { Calendar, User, Home, Clock } from 'lucide-react';
 import AdBanner from '@/components/ad-banner';
 
 export const revalidate = 60; // Cache for 60 seconds (ISR)
@@ -19,6 +21,39 @@ interface RouteProps {
   };
   searchParams: {
     page?: string;
+  };
+}
+
+function formatBengaliDateTime(dateInput?: Date | string | null) {
+  if (!dateInput) return { dateStr: '', timeStr: '' };
+  const d = new Date(dateInput);
+  
+  const toBengaliNumber = (num: number | string) => {
+    const digits: Record<string, string> = { '0':'০','1':'১','2':'২','3':'৩','4':'৪','5':'৫','6':'৬','7':'৭','8':'৮','9':'৯' };
+    return num.toString().split('').map(c => digits[c] || c).join('');
+  };
+
+  const months = [
+    'জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন',
+    'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'
+  ];
+  
+  const monthName = months[d.getMonth()];
+  const dayNum = toBengaliNumber(d.getDate());
+  const yearNum = toBengaliNumber(d.getFullYear());
+
+  let hours = d.getHours();
+  const minutes = d.getMinutes();
+  const period = hours >= 12 ? 'অপরাহ্ন' : 'পূর্বাহ্ন';
+  if (hours > 12) hours -= 12;
+  if (hours === 0) hours = 12;
+
+  const hoursStr = toBengaliNumber(hours);
+  const minutesStr = toBengaliNumber(minutes < 10 ? `0${minutes}` : minutes);
+
+  return {
+    dateStr: `${monthName} ${dayNum}, ${yearNum}`,
+    timeStr: `${hoursStr}:${minutesStr} ${period}`
   };
 }
 
@@ -83,14 +118,14 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
     const latestNews = await prisma.news.findMany({
       where: { status: 'PUBLISHED' },
       orderBy: { publishedAt: 'desc' },
-      take: 6,
+      take: 8,
       include: { category: true },
     });
 
     const popularNews = await prisma.news.findMany({
       where: { status: 'PUBLISHED' },
       orderBy: { viewCount: 'desc' },
-      take: 6,
+      take: 8,
       include: { category: true },
     });
 
@@ -117,7 +152,7 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
       'dateModified': news.updatedAt.toISOString(),
       'author': [{
         '@type': 'Person',
-        'name': news.reporterName || news.author.name,
+        'name': news.reporterName || news.author?.name || 'খুলনা গেজেট',
       }],
       'publisher': {
         '@type': 'Organization',
@@ -131,8 +166,10 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
 
     const articleUrl = `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/${news.category?.slug || 'news'}/${news.id}`;
 
+    const { dateStr, timeStr } = formatBengaliDateTime(news.publishedAt);
+
     return (
-      <div className="flex flex-col min-h-screen bg-slate-50 font-sans">
+      <div className="flex flex-col min-h-screen bg-white font-sans text-gray-900">
         <PublicHeader />
         <script
           type="application/ld+json"
@@ -140,128 +177,76 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
         />
         <ViewsIncrement newsId={news.id} />
 
-        <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+        <main className="flex-grow max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 py-5 space-y-5 w-full">
           {/* Breadcrumb Bar */}
-          <div className="text-xs text-gray-500 flex items-center gap-1.5 select-none border-b border-gray-200 pb-3">
-            <Link href="/" className="hover:text-red-650 flex items-center gap-1">
-              <Home size={14} className="text-gray-600" />
+          <div className="text-xs text-gray-600 flex items-center gap-1.5 select-none border-b border-gray-200 pb-2.5">
+            <Link href="/" className="hover:text-red-600 flex items-center gap-1">
+              <i className="fa fa-home text-gray-700 text-sm"></i>
             </Link>
-            <span>›</span>
-            <Link href={`/${news.category?.slug || 'news'}`} className="hover:text-red-650 font-semibold text-gray-700">
+            <span className="text-gray-400">›</span>
+            <Link href={`/${news.category?.slug || 'news'}`} className="hover:text-red-600 font-bold text-gray-800">
               {news.category?.name || 'সংবাদ'}
             </Link>
             {news.subCategory && (
               <>
-                <span>›</span>
-                <span className="text-gray-600">{news.subCategory.name}</span>
+                <span className="text-gray-400">›</span>
+                <span className="text-gray-600 font-medium">{news.subCategory.name}</span>
               </>
             )}
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Left Column: Article Details + Share Bar + Content + More News Grid */}
-            <div className="lg:col-span-2 space-y-6">
-              <div className="bg-white p-5 sm:p-7 rounded-xl border border-gray-200 shadow-xs space-y-5">
+            <div className="lg:col-span-2 space-y-5">
+              <div className="space-y-4">
                 
                 {/* Title */}
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-gray-900 leading-snug sm:leading-tight">
+                <h1 className="text-[28px] sm:text-[32px] lg:text-[34px] font-extrabold text-[#000000] leading-[1.3] tracking-tight">
                   {news.title}
                 </h1>
 
-                {news.subtitle && (
-                  <p className="text-base sm:text-lg font-bold text-gray-600 leading-relaxed">
-                    {news.subtitle}
-                  </p>
-                )}
+                {/* Reporter / Subtitle Tagline */}
+                <div className="text-[20px] sm:text-[22px] font-bold text-[#222222] pt-1">
+                  {news.subtitle || news.reporterName || 'আন্তর্জাতিক ডেস্ক'}
+                </div>
 
                 {/* Author & Timestamp + Social Share Bar */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between border-y border-gray-150 py-3 text-xs text-gray-600 gap-3">
-                  <div className="space-y-1">
-                    <div className="font-bold text-gray-900">
-                      {news.reporterName || 'নিজস্ব প্রতিবেদক'}
-                    </div>
-                    <div className="flex items-center gap-2 text-gray-500 font-medium text-[11px]">
-                      <span>খুলনা গেজেট</span>
-                      <span>•</span>
-                      <span>
-                        {news.publishedAt && new Date(news.publishedAt).toLocaleDateString('bn-BD', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between border-y border-gray-200 py-2 text-[13px] sm:text-[14px] text-[#555555] gap-3 my-2">
+                  <div className="flex flex-wrap items-center gap-3 font-normal">
+                    <span className="flex items-center gap-1.5 text-[#333333] font-medium">
+                      <i className="fa fa-user text-gray-600"></i>
+                      <span>{news.reporterName || news.author?.name || 'খুলনা গেজেট'}</span>
+                    </span>
+                    {dateStr && (
+                      <span className="flex items-center gap-1.5 text-[#555555]">
+                        <i className="fa fa-calendar text-gray-500"></i>
+                        <span>{dateStr}</span>
                       </span>
-                    </div>
+                    )}
+                    {timeStr && (
+                      <span className="flex items-center gap-1.5 text-[#555555]">
+                        <i className="fa fa-clock-o text-gray-500"></i>
+                        <span>{timeStr}</span>
+                      </span>
+                    )}
                   </div>
 
                   {/* Social Share Buttons */}
-                  <div className="flex items-center gap-1.5">
-                    {/* Facebook */}
-                    <a
-                      href={`https://facebook.com/sharer/sharer.php?u=${encodeURIComponent(articleUrl)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-7 h-7 rounded-full bg-[#1877F2] hover:bg-blue-700 text-white flex items-center justify-center transition shadow-xs"
-                      title="Facebook-এ শেয়ার করুন"
-                    >
-                      <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
-                        <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c4.56-.93 8-4.96 8-9.75z"/>
-                      </svg>
-                    </a>
-
-                    {/* Twitter */}
-                    <a
-                      href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(articleUrl)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-7 h-7 rounded-full bg-[#1DA1F2] hover:bg-sky-600 text-white flex items-center justify-center transition shadow-xs"
-                      title="Twitter-এ শেয়ার করুন"
-                    >
-                      <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
-                        <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
-                      </svg>
-                    </a>
-
-                    {/* Instagram */}
-                    <a
-                      href="https://instagram.com"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-7 h-7 rounded-full bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 text-white flex items-center justify-center transition shadow-xs"
-                      title="Instagram"
-                    >
-                      <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
-                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051C.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
-                      </svg>
-                    </a>
-
-                    {/* WhatsApp */}
-                    <a
-                      href={`https://api.whatsapp.com/send?text=${encodeURIComponent(articleUrl)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-7 h-7 rounded-full bg-[#25D366] hover:bg-emerald-600 text-white flex items-center justify-center transition shadow-xs"
-                      title="WhatsApp-এ শেয়ার করুন"
-                    >
-                      <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
-                        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
-                      </svg>
-                    </a>
-                  </div>
+                  <SocialShareBar title={news.title} url={articleUrl} />
                 </div>
 
-                {/* Featured Image with Watermark */}
+                {/* Featured Image */}
                 {news.featuredImage && (
-                  <div className="space-y-2">
-                    <div className="aspect-[16/9] w-full rounded-xl overflow-hidden shadow-xs border border-gray-200 relative group">
-                      <img src={news.featuredImage} alt={news.title} className="w-full h-full object-cover" />
-                      <div className="absolute bottom-2 right-2 bg-black/60 text-white font-extrabold text-[10px] px-2.5 py-1 rounded backdrop-blur-xs select-none">
-                        খুলনা গেজেট
-                      </div>
+                  <div className="space-y-1.5 my-3">
+                    <div className="w-full rounded overflow-hidden border border-gray-200 relative group bg-gray-50">
+                      <img
+                        src={news.featuredImage}
+                        alt={news.title}
+                        className="w-full h-auto object-cover max-h-[520px]"
+                      />
                     </div>
                     {(news.imageCaption || news.photoCredit) && (
-                      <div className="text-[11px] text-gray-500 leading-tight flex justify-between gap-4 px-1">
+                      <div className="text-[12px] text-gray-600 leading-tight flex justify-between gap-4 px-1">
                         <span>{news.imageCaption}</span>
                         {news.photoCredit && <span className="font-bold shrink-0">ছবি: {news.photoCredit}</span>}
                       </div>
@@ -269,17 +254,22 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
                   </div>
                 )}
 
-                {/* Article Content */}
+                {/* Article Main Content */}
                 <div 
-                  className="prose max-w-none text-gray-900 leading-relaxed text-base sm:text-lg [&_p]:mb-5 [&_p]:text-gray-900 [&_p]:leading-[1.8] [&_strong]:font-bold [&_b]:font-bold"
+                  className="prose max-w-none text-[#000000] font-normal leading-[1.8] text-[21px] [&_p]:mb-5 [&_p]:text-[#000000] [&_p]:leading-[1.8] [&_p]:text-[21px] [&_strong]:font-extrabold [&_b]:font-extrabold [&_img]:rounded [&_img]:my-4"
                   dangerouslySetInnerHTML={{ __html: news.content }}
                 />
 
+                {/* Article Bottom Sign-off */}
+                <div className="pt-2 text-[16px] font-bold text-[#000000] italic">
+                  খুলনা গেজেট/এএজে
+                </div>
+
                 {/* Tags */}
                 {news.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-2 pt-4 border-t border-gray-150">
+                  <div className="flex flex-wrap gap-2 pt-4 border-t border-gray-150 mt-6">
                     {news.tags.map((t) => (
-                      <span key={t.id} className="text-xs bg-slate-100 text-slate-700 px-3 py-1 rounded-md border border-slate-200 font-medium">
+                      <span key={t.id} className="text-xs bg-gray-100 text-gray-800 px-3 py-1 rounded border border-gray-200 font-bold">
                         # {t.name}
                       </span>
                     ))}
@@ -289,38 +279,31 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
 
               {/* "আরও সংবাদ" (More News) Grid Section */}
               {relatedNews.length > 0 && (
-                <div className="space-y-4 pt-4">
-                  <div className="flex items-center justify-between border-t-2 border-red-600 pt-2.5">
-                    <h3 className="text-base sm:text-lg font-black text-gray-900">
+                <div className="space-y-4 pt-4 mt-6">
+                  <div className="border-b-2 border-red-600 pb-1">
+                    <h2 className="text-[24px] sm:text-[26px] font-extrabold text-[#000000]">
                       আরও সংবাদ
-                    </h3>
+                    </h2>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     {relatedNews.map((item) => (
-                      <div key={item.id} className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-xs flex flex-col justify-between group hover:shadow-md transition duration-200 p-3 space-y-3">
+                      <div key={item.id} className="bg-white rounded border border-gray-200 overflow-hidden flex flex-col justify-between group p-2.5 space-y-2 hover:shadow-xs transition">
                         <div>
                           {item.featuredImage ? (
-                            <Link href={`/${item.category?.slug || 'news'}/${item.id}`} className="block aspect-[16/10] overflow-hidden rounded-lg bg-slate-100 mb-2.5">
+                            <Link href={`/${item.category?.slug || 'news'}/${item.id}`} className="block aspect-[16/10] overflow-hidden rounded bg-gray-100 mb-2">
                               <img src={item.featuredImage} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
                             </Link>
                           ) : (
-                            <div className="aspect-[16/10] w-full rounded-lg bg-slate-100 flex items-center justify-center text-gray-400 text-xs font-bold mb-2.5">
+                            <div className="aspect-[16/10] w-full rounded bg-gray-100 flex items-center justify-center text-gray-400 text-xs font-bold mb-2">
                               খুলনা গেজেট
                             </div>
                           )}
                           <Link href={`/${item.category?.slug || 'news'}/${item.id}`}>
-                            <h4 className="text-xs sm:text-sm font-black text-gray-900 group-hover:text-red-650 transition leading-snug line-clamp-3">
+                            <h5 className="text-[18px] sm:text-[20px] font-extrabold text-[#000000] group-hover:text-red-600 transition leading-snug line-clamp-3">
                               {item.title}
-                            </h4>
+                            </h5>
                           </Link>
-                        </div>
-
-                        <div className="text-[10px] text-gray-400 font-medium border-t border-gray-100 pt-2">
-                          {item.publishedAt && new Date(item.publishedAt).toLocaleDateString('bn-BD', {
-                            month: 'short',
-                            day: 'numeric',
-                          })}
                         </div>
                       </div>
                     ))}
@@ -329,30 +312,23 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
               )}
 
               {/* Comments Section */}
-              <CommentSection newsId={news.id} />
+              <div className="pt-6 border-t border-gray-200">
+                <CommentSection newsId={news.id} />
+              </div>
             </div>
 
             {/* Right Column: Sidebar Widgets & App Banner */}
             <div className="space-y-6">
+              {/* Latest / Most Read Tabs Widget */}
               <TabsWidget latest={serializeList(latestNews)} popular={serializeList(popularNews)} />
 
-              {/* App Banner Widget */}
-              <div className="bg-gradient-to-tr from-slate-900 to-slate-800 rounded-xl p-5 text-white text-center space-y-3 shadow-sm border border-slate-700">
-                <h4 className="font-black text-base">খুলনা গেজেট মোবাইল অ্যাপ</h4>
-                <p className="text-xs text-slate-400 leading-relaxed">
-                  লাইভ সংবাদ পড়তে এখনই অ্যান্ড্রয়েড অ্যাপ ডাউনলোড করুন।
-                </p>
-                <a 
-                  href="https://play.google.com" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="inline-block bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition text-xs shadow w-full"
-                >
-                  অ্যাপ ইনস্টল করুন
-                </a>
-              </div>
+              {/* Mobile App Download Banner */}
+              <AppPromoBanner />
 
-              <AdBanner ad={sidebarAd} fallbackText="বিজ্ঞাপন ব্যানার (Sidebar)" className="h-60" />
+              {/* Sidebar Advertisement */}
+              <AdBanner ad={sidebarAd} fallbackText="বিজ্ঞাপন ব্যানার" className="h-60" />
+
+              {/* Prayer Times Widget */}
               <PrayerWidget />
             </div>
           </div>
