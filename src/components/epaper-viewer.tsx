@@ -1,11 +1,18 @@
 'use client';
 
-import { useState, useRef, useEffect, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import { 
-  Calendar, FileText, Download, ZoomIn, ZoomOut, RotateCcw, X, 
-  ChevronLeft, ChevronRight, Maximize2, Minimize2, Sparkles, BookOpen, 
-  Image as ImageIcon, Focus, Crop, ArrowRight, Layers, LayoutGrid, Check,
-  Newspaper, Sliders
+  ChevronLeft, 
+  ChevronRight, 
+  X, 
+  Calendar as CalendarIcon, 
+  Download, 
+  ZoomIn, 
+  ZoomOut, 
+  RotateCcw, 
+  Maximize2,
+  Plus,
+  Minus
 } from 'lucide-react';
 
 interface EpaperIssue {
@@ -22,633 +29,412 @@ interface EpaperViewerProps {
   initialIssues: EpaperIssue[];
 }
 
-interface PartViewFocus {
-  percentX: number;
-  percentY: number;
-  scale: number;
-  pageIdx: number;
-}
+const PAGE_LABELS = ['প্রথম-পাতা', '২য়-পাতা', '৩য়-পাতা', 'শেষ-পাতা'];
 
-// Helper to convert numbers to Bengali digits
-const toBengaliNumber = (num: number | string): string => {
-  const englishToBengaliMap: { [key: string]: string } = {
-    '0': '০', '1': '১', '2': '২', '3': '৩', '4': '৪',
-    '5': '৫', '6': '৬', '7': '৭', '8': '৮', '9': '৯'
-  };
-  return String(num).split('').map(char => englishToBengaliMap[char] || char).join('');
-};
-
-// Formats date to Bengali readable string
-const formatBengaliDate = (dateInput: Date | string, includeWeekday = true): string => {
-  const dateObj = new Date(dateInput);
-  if (isNaN(dateObj.getTime())) return '';
-  return dateObj.toLocaleDateString('bn-BD', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    ...(includeWeekday ? { weekday: 'long' } : {}),
-  });
-};
-
-// BD-Pratidin Page Label Helper (১ম পৃষ্ঠা, ২য় পৃষ্ঠা, ৩য় পৃষ্ঠা...)
-const getBengaliPageOrdinal = (index: number): string => {
-  const ordinals = [
-    '১ম পৃষ্ঠা', '২য় পৃষ্ঠা', '৩য় পৃষ্ঠা', '৪র্থ পৃষ্ঠা', 
-    '৫ম পৃষ্ঠা', '৬ষ্ঠ পৃষ্ঠা', '৭ম পৃষ্ঠা', '৮ম পৃষ্ঠা', 
-    '৯ম পৃষ্ঠা', '১০ম পৃষ্ঠা', '১১দশ পৃষ্ঠা', '১২দশ পৃষ্ঠা'
-  ];
-  if (ordinals[index]) return ordinals[index];
-  return `পৃষ্ঠা ${toBengaliNumber(index + 1)}`;
-};
+// Exact sample pages from purbanchal.com for live demonstration
+const FALLBACK_PAGES = [
+  'https://purbanchal.com/wp-content/uploads/2026/07/প্রথম-পাতা-25.gif',
+  'https://purbanchal.com/wp-content/uploads/2026/07/২য়-পাতা-25.gif',
+  'https://purbanchal.com/wp-content/uploads/2026/07/৩য়-পাতা-26.gif',
+  'https://purbanchal.com/wp-content/uploads/2026/07/শেষ-পাতা-25.gif',
+];
 
 export default function EpaperViewer({ initialIssues }: EpaperViewerProps) {
   const [issues] = useState<EpaperIssue[]>(initialIssues);
-  
-  // Selected issue (Defaults to latest edition)
   const [activeIssue, setActiveIssue] = useState<EpaperIssue | null>(
     initialIssues.length > 0 ? initialIssues[0] : null
   );
-  
-  const [pageIndex, setPageIndex] = useState<number>(0);
-  const [scale, setScale] = useState<number>(1);
-  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
 
-  // Mobile Touch Swipe Coordinates
-  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  const [activePageIndex, setActivePageIndex] = useState<number>(0);
+  const [zoomScale, setZoomScale] = useState<number>(1);
+  const [lightboxOpen, setLightboxOpen] = useState<boolean>(false);
+  const [lightboxZoom, setLightboxZoom] = useState<number>(1.5);
+  const [selectedDateStr, setSelectedDateStr] = useState<string>(
+    activeIssue ? new Date(activeIssue.date).toISOString().split('T')[0] : '2026-07-25'
+  );
 
-  // Clicked Article Section Focus Modal
-  const [partView, setPartView] = useState<PartViewFocus | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  // Search date state for archive
-  const [archiveSearchDate, setArchiveSearchDate] = useState<string>('');
-
-  const mainViewerRef = useRef<HTMLDivElement>(null);
-
-  // Pages array for current active issue
+  // Extract 4 pages for active issue
   const pages = useMemo(() => {
-    if (!activeIssue) return [];
-    if (activeIssue.imageUrls && activeIssue.imageUrls.length > 0) {
-      return activeIssue.imageUrls;
+    let list: string[] = [];
+    if (activeIssue?.imageUrls && activeIssue.imageUrls.length > 0) {
+      list = [...activeIssue.imageUrls];
+    } else if (activeIssue?.imageUrl) {
+      list = [activeIssue.imageUrl];
     }
-    return activeIssue.imageUrl ? [activeIssue.imageUrl] : [];
+
+    if (list.length === 0) {
+      return FALLBACK_PAGES;
+    }
+
+    while (list.length < 4) {
+      list.push(FALLBACK_PAGES[list.length] || FALLBACK_PAGES[0]);
+    }
+    return list.slice(0, 4);
   }, [activeIssue]);
 
-  // Switch edition
-  const handleSelectIssue = (issue: EpaperIssue) => {
-    setActiveIssue(issue);
-    setPageIndex(0);
-    setScale(1);
-    setPartView(null);
-    
-    // Smooth scroll to top reader
-    if (mainViewerRef.current) {
-      mainViewerRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
-
-  // Switch date from top date picker
+  // Handle date change
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedDate = e.target.value;
-    if (!selectedDate) return;
+    const dateVal = e.target.value;
+    setSelectedDateStr(dateVal);
+    if (!dateVal) return;
 
-    const matchedIssue = issues.find((item) => {
-      const itemDateStr = new Date(item.date).toISOString().split('T')[0];
-      return itemDateStr === selectedDate;
+    const found = issues.find((item) => {
+      const dStr = new Date(item.date).toISOString().split('T')[0];
+      return dStr === dateVal;
     });
 
-    if (matchedIssue) {
-      handleSelectIssue(matchedIssue);
-    } else {
-      alert('দুঃখিত, নির্বাচিত তারিখে কোনো ই-পেপার প্রকাশ করা হয়নি।');
+    if (found) {
+      setActiveIssue(found);
+      setActivePageIndex(0);
+      setZoomScale(1);
     }
   };
 
-  // CHANGE SLIDE PAGE
-  const changePage = (index: number) => {
-    if (index < 0 || index >= pages.length) return;
-    setPageIndex(index);
-    setScale(1);
-    setPartView(null);
+  const getPageLabel = (idx: number) => {
+    return PAGE_LABELS[idx] || `পৃষ্ঠা ${idx + 1}`;
   };
 
-  // Fullscreen toggle
-  const toggleFullscreen = () => {
-    if (!mainViewerRef.current) return;
-    if (!document.fullscreenElement) {
-      mainViewerRef.current.requestFullscreen().then(() => {
-        setIsFullscreen(true);
-      }).catch((err) => console.error(err));
-    } else {
-      document.exitFullscreen().then(() => {
-        setIsFullscreen(false);
-      }).catch(() => {});
-    }
+  // Zoom handlers
+  const handleZoomOut = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setZoomScale((z) => Math.max(z - 0.25, 0.5));
   };
 
-  // Keyboard navigation
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (!activeIssue) return;
-      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLSelectElement) return;
+  const handleZoomIn = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setZoomScale((z) => Math.min(z + 0.25, 4));
+  };
 
-      if (e.key === 'ArrowLeft') {
-        changePage(pageIndex - 1);
-      } else if (e.key === 'ArrowRight') {
-        changePage(pageIndex + 1);
-      } else if (e.key === 'Escape') {
-        setPartView(null);
+  const handleZoomReset = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setZoomScale(1);
+  };
+
+  // Optional Ctrl + Mouse Wheel Zooming
+  const handleWheel = (e: React.WheelEvent) => {
+    // Only zoom when Ctrl key is pressed, preventing accidental zoom out during normal scrolling
+    if (e.ctrlKey || e.metaKey) {
+      e.preventDefault();
+      if (e.deltaY < 0) {
+        setZoomScale((z) => Math.min(z + 0.2, 4));
+      } else {
+        setZoomScale((z) => Math.max(z - 0.2, 1));
       }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [activeIssue, pageIndex, pages.length, partView]);
-
-  // MOBILE TOUCH SWIPE FOR HORIZONTAL SLIDER
-  const handleTouchStart = (e: React.TouchEvent) => {
-    setTouchStartX(e.touches[0].clientX);
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    if (touchStartX === null) return;
-    const touchEndX = e.changedTouches[0].clientX;
-    const deltaX = touchEndX - touchStartX;
-
-    // Swipe Threshold 40px
-    if (deltaX < -40) {
-      changePage(pageIndex + 1);
-    } else if (deltaX > 40) {
-      changePage(pageIndex - 1);
     }
-
-    setTouchStartX(null);
   };
-
-  // Zoom control helpers
-  const handleZoomIn = () => setScale((prev) => Math.min(prev + 0.5, 3));
-  const handleZoomOut = () => setScale((prev) => Math.max(prev - 0.5, 1));
-
-  // Click on newspaper page image to zoom into that exact article!
-  const handleImageClick = (e: React.MouseEvent<HTMLImageElement>, idx: number) => {
-    if (scale > 1) return;
-
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    const percentX = Math.round((x / rect.width) * 100);
-    const percentY = Math.round((y / rect.height) * 100);
-
-    // Open article focus view modal
-    setPartView({
-      percentX,
-      percentY,
-      scale: 3.2,
-      pageIdx: idx,
-    });
-  };
-
-  // Download page image
-  const handleDownloadImage = () => {
-    if (!pages[pageIndex]) return;
-    const link = document.createElement('a');
-    link.href = pages[pageIndex];
-    link.download = `khulna-gazette-epaper-${activeIssue?.id || 'issue'}-page-${pageIndex + 1}.jpg`;
-    link.target = '_blank';
-    link.rel = 'noopener noreferrer';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  // Archive filtered list
-  const archiveIssues = useMemo(() => {
-    if (!archiveSearchDate) return issues;
-    return issues.filter((item) => {
-      const itemDateStr = new Date(item.date).toISOString().split('T')[0];
-      return itemDateStr === archiveSearchDate;
-    });
-  }, [issues, archiveSearchDate]);
 
   return (
-    <div className="space-y-6 font-sans max-w-5xl mx-auto">
-      {/* ========================================================================= */}
-      {/* SMOOTH HORIZONTAL PAGE SLIDE CAROUSEL READER */}
-      {/* ========================================================================= */}
-      <div ref={mainViewerRef} className="space-y-4">
-        {/* CLEAN TOP CONTROL BAR 1 (Header Controls) */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-wrap items-center justify-between gap-3 text-slate-800">
-          {/* Brand Logo & Date Selector */}
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full bg-red-700 inline-block animate-pulse"></span>
-              <h1 className="text-base sm:text-lg font-black text-slate-900 tracking-tight">
-                খুলনা গেজেট ই-পেপার
-              </h1>
+    <div className="max-w-[1140px] mx-auto py-6 px-3 sm:px-4 font-sans text-[#222222]">
+      
+      {/* 1. HEADER SECTION ("আজকের পত্রিকা") - Exact Purbanchal Header Style */}
+      <div className="mb-6">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            {/* Purbanchal Red Circle Icon SVG */}
+            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="16" viewBox="0 0 17 16" fill="none">
+              <path d="M3 13.5C1.5 11.9792 0.75 10.1458 0.75 8C0.75 5.85417 1.5 4.03125 3 2.53125C4.52083 1.01042 6.35417 0.25 8.5 0.25C10.6458 0.25 12.4688 1.01042 13.9688 2.53125C15.4896 4.03125 16.25 5.85417 16.25 8C16.25 10.1458 15.4896 11.9792 13.9688 13.5C12.4688 15 10.6458 15.75 8.5 15.75C6.35417 15.75 4.52083 15 3 13.5ZM8.5 13.75C10.0833 13.75 11.4375 13.1875 12.5625 12.0625C13.6875 10.9375 14.25 9.58333 14.25 8C14.25 6.41667 13.6875 5.0625 12.5625 3.9375C11.4375 2.8125 10.0833 2.25 8.5 2.25V13.75Z" fill="#A00B01"/>
+            </svg>
+            <h3 className="text-[22px] font-bold text-[#222222] tracking-tight">
+              আজকের পত্রিকা
+            </h3>
+          </div>
+
+          {activeIssue?.pdfUrl && (
+            <a
+              href={activeIssue.pdfUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-[#A00B01] hover:bg-red-800 text-white text-xs font-bold px-3.5 py-1.5 rounded transition flex items-center gap-1.5"
+            >
+              <Download size={14} />
+              <span>PDF ডাউনলোড</span>
+            </a>
+          )}
+        </div>
+        
+        {/* Divider line */}
+        <div className="w-full h-[1px] bg-[#ececec] mt-3 mb-5"></div>
+
+        {/* 2. TOP PAGE THUMBNAILS CONTAINER (.epaper-thumbnails-container) */}
+        <div className="bg-[#f7f7f7] p-2.5 sm:p-3 rounded-[5px] shadow-[0_1px_3px_rgba(0,0,0,0.1)] border border-[#eeeeee]">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+            {pages.map((imgUrl, idx) => {
+              const label = getPageLabel(idx);
+              const isActive = activePageIndex === idx;
+
+              return (
+                <div
+                  key={idx}
+                  onClick={() => {
+                    setActivePageIndex(idx);
+                    setZoomScale(1);
+                  }}
+                  className={`p-1.5 rounded-[3px] cursor-pointer transition flex flex-col items-center select-none ${
+                    isActive
+                      ? 'border-2 border-[#A00B01] bg-white shadow-xs'
+                      : 'border-2 border-transparent hover:border-[#A00B01] bg-transparent'
+                  }`}
+                >
+                  <div className="w-full aspect-[3/4] overflow-hidden bg-white">
+                    <img
+                      src={imgUrl}
+                      alt={label}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div
+                    className={`text-center font-bold text-[14px] mt-1.5 transition ${
+                      isActive ? 'text-[#A00B01]' : 'text-[#333333]'
+                    }`}
+                  >
+                    {label}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* 3. CENTER MAIN PAGE DISPLAY (.uael-img-gallery) WITH WORKING ZOOM CONTROLS */}
+      <div className="max-w-[850px] mx-auto my-6 bg-white border border-[#e2e2e2] rounded shadow-2xs overflow-hidden">
+        {/* Working Zoom Toolbar Header */}
+        <div className="bg-[#f5f5f5] border-b border-[#e2e2e2] p-2 px-3 flex items-center justify-between gap-2 text-xs font-bold text-gray-800">
+          <div className="flex items-center gap-2">
+            <span className="bg-[#A00B01] text-white px-2.5 py-0.5 rounded text-[11px] font-bold">
+              {getPageLabel(activePageIndex)}
+            </span>
+            <span className="text-gray-600 text-[11px]">
+              ({activePageIndex + 1} / {pages.length})
+            </span>
+          </div>
+
+          {/* Fully Clickable - and + Zoom Buttons */}
+          <div className="flex items-center gap-1.5">
+            {/* Zoom Out Button (-) */}
+            <button
+              type="button"
+              onClick={handleZoomOut}
+              className="bg-white hover:bg-gray-200 border border-gray-300 text-gray-800 px-2 py-1 rounded text-xs font-extrabold flex items-center gap-1 transition cursor-pointer shadow-2xs"
+              title="জুম আউট (-)"
+            >
+              <Minus size={13} className="text-[#A00B01]" />
+              <span>জুম কমান (-)</span>
+            </button>
+
+            {/* Current Zoom % Indicator / Click to Reset */}
+            <button
+              type="button"
+              onClick={handleZoomReset}
+              className="bg-white border border-gray-300 text-[#A00B01] font-black text-xs px-2.5 py-1 rounded hover:bg-gray-100 transition shadow-2xs"
+              title="১০০% সাইজে ফেরান (রিসেট)"
+            >
+              {Math.round(zoomScale * 100)}%
+            </button>
+
+            {/* Zoom In Button (+) */}
+            <button
+              type="button"
+              onClick={handleZoomIn}
+              className="bg-white hover:bg-gray-200 border border-gray-300 text-gray-800 px-2 py-1 rounded text-xs font-extrabold flex items-center gap-1 transition cursor-pointer shadow-2xs"
+              title="জুম ইন (+)"
+            >
+              <Plus size={13} className="text-[#A00B01]" />
+              <span>জুম বাড়ান (+)</span>
+            </button>
+
+            {/* Lightbox Fullscreen Button */}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setLightboxOpen(true);
+              }}
+              className="bg-[#A00B01] hover:bg-red-800 text-white px-2.5 py-1 rounded text-xs font-bold transition flex items-center gap-1 cursor-pointer ml-1 shadow-2xs"
+              title="ফুলস্ক্রিন লাইটবক্স"
+            >
+              <Maximize2 size={13} />
+              <span className="hidden sm:inline">বড় করুন</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Scrollable Container with Mouse Wheel & Scaled Image */}
+        <div 
+          ref={containerRef}
+          onWheel={handleWheel}
+          className="relative overflow-auto flex justify-center bg-[#fafafa] p-2 min-h-[500px] max-h-[850px] scrollbar-thin scrollbar-thumb-gray-400 select-none"
+        >
+          <div 
+            className="transition-all duration-150 flex justify-center"
+            style={{ width: `${zoomScale * 100}%` }}
+          >
+            <img
+              src={pages[activePageIndex]}
+              alt={getPageLabel(activePageIndex)}
+              onDoubleClick={() => setZoomScale((z) => (z > 1 ? 1 : 2))}
+              onClick={() => {
+                if (zoomScale === 1) {
+                  setLightboxOpen(true);
+                }
+              }}
+              className="w-full h-auto object-contain block cursor-pointer border border-gray-200 shadow-2xs bg-white"
+              title="মাউসের চাকা ঘোরান জুম করতে, অথবা জুম বাড়ান (+) বাটনে টিপুন"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* 4. CALENDAR SECTION ("Calender") - Exact Purbanchal Style */}
+      <div className="mt-8 pt-4">
+        <div className="flex items-center gap-2">
+          {/* Red Circle Icon SVG */}
+          <svg xmlns="http://www.w3.org/2000/svg" width="17" height="16" viewBox="0 0 17 16" fill="none">
+            <path d="M3 13.5C1.5 11.9792 0.75 10.1458 0.75 8C0.75 5.85417 1.5 4.03125 3 2.53125C4.52083 1.01042 6.35417 0.25 8.5 0.25C10.6458 0.25 12.4688 1.01042 13.9688 2.53125C15.4896 4.03125 16.25 5.85417 16.25 8C16.25 10.1458 15.4896 11.9792 13.9688 13.5C12.4688 15 10.6458 15.75 8.5 15.75C6.35417 15.75 4.52083 15 3 13.5ZM8.5 13.75C10.0833 13.75 11.4375 13.1875 12.5625 12.0625C13.6875 6.41667 13.6875 5.0625 12.5625 3.9375C11.4375 2.8125 10.0833 2.25 8.5 2.25V13.75Z" fill="#A00B01"/>
+          </svg>
+          <h3 className="text-[20px] font-bold text-[#222222] tracking-tight">
+            Calender
+          </h3>
+        </div>
+
+        {/* Divider line */}
+        <div className="w-full h-[1px] bg-[#ececec] mt-3 mb-4"></div>
+
+        {/* Datepicker container */}
+        <div className="bg-[#f7f7f7] p-3.5 rounded-[5px] border border-[#eeeeee] flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-2 bg-white border border-[#cccccc] rounded px-3 py-2 text-xs font-bold">
+            <CalendarIcon size={16} className="text-[#A00B01]" />
+            <span>তারিখ নির্বাচন করুন:</span>
+            <input
+              type="date"
+              value={selectedDateStr}
+              onChange={handleDateChange}
+              className="bg-transparent text-[#222222] font-bold focus:outline-none cursor-pointer"
+            />
+          </div>
+          <span className="text-xs text-gray-500 font-semibold">
+            (যেকোনো দিনের সংকলন দেখতে তারিখ সিলেক্ট করুন)
+          </span>
+        </div>
+      </div>
+
+      {/* 5. LIGHTBOX SLIDER POPUP WITH WORKING ZOOM CONTROLS */}
+      {lightboxOpen && pages[activePageIndex] && (
+        <div className="fixed inset-0 z-50 bg-black/90 flex flex-col items-center justify-between p-3 sm:p-5 select-none">
+          {/* Header Bar */}
+          <div className="w-full flex items-center justify-between text-white max-w-5xl border-b border-white/20 pb-2">
+            <div className="flex items-center gap-3">
+              <span className="font-bold text-base sm:text-lg">
+                {getPageLabel(activePageIndex)} - ই-পেপার
+              </span>
+              <span className="text-xs text-red-400 font-extrabold bg-white/10 px-2.5 py-0.5 rounded">
+                জুম: {Math.round(lightboxZoom * 100)}%
+              </span>
             </div>
 
-            <div className="flex items-center gap-2 pl-3 border-l border-slate-200">
-              <span className="text-xs text-slate-500 font-bold hidden sm:inline">তারিখ:</span>
-              <input
-                type="date"
-                value={activeIssue ? new Date(activeIssue.date).toISOString().split('T')[0] : ''}
-                onChange={handleDateChange}
-                className="bg-slate-50 border border-slate-300 text-slate-800 text-xs font-bold px-3 py-1.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-700 cursor-pointer shadow-2xs"
+            {/* Lightbox Zoom Controls */}
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setLightboxZoom((z) => Math.max(z - 0.25, 0.5))}
+                className="bg-white/20 hover:bg-white/30 text-white px-2 py-1 rounded text-xs font-bold transition flex items-center gap-1"
+                title="জুম আউট (-)"
+              >
+                <Minus size={14} />
+                <span>জুম কমান (-)</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setLightboxZoom(1)}
+                className="bg-white/20 hover:bg-white/30 text-white px-2 py-1 rounded text-xs font-bold transition"
+                title="রিসেট"
+              >
+                100%
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setLightboxZoom((z) => Math.min(z + 0.25, 4))}
+                className="bg-white/20 hover:bg-white/30 text-white px-2 py-1 rounded text-xs font-bold transition flex items-center gap-1"
+                title="জুম ইন (+)"
+              >
+                <Plus size={14} />
+                <span>জুম বাড়ান (+)</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setLightboxOpen(false)}
+                className="bg-white/20 hover:bg-[#A00B01] text-white p-1.5 rounded-full transition cursor-pointer ml-2"
+                title="বন্ধ করুন"
+              >
+                <X size={22} />
+              </button>
+            </div>
+          </div>
+
+          {/* Main Newspaper Image Display */}
+          <div 
+            onWheel={(e) => {
+              if (e.ctrlKey || e.metaKey) {
+                e.preventDefault();
+                if (e.deltaY < 0) {
+                  setLightboxZoom((z) => Math.min(z + 0.25, 4));
+                } else {
+                  setLightboxZoom((z) => Math.max(z - 0.25, 1));
+                }
+              }
+            }}
+            className="flex-1 w-full flex items-start justify-center overflow-auto p-2 my-2 scrollbar-thin scrollbar-thumb-white/40"
+          >
+            <div 
+              className="transition-all duration-150 flex justify-center"
+              style={{ width: `${lightboxZoom * 100}%` }}
+            >
+              <img
+                src={pages[activePageIndex]}
+                alt={getPageLabel(activePageIndex)}
+                className="w-full h-auto object-contain rounded bg-white shadow-2xl"
               />
             </div>
           </div>
 
-          {/* Page Counter & Action Tool Buttons */}
-          <div className="flex items-center gap-2 flex-wrap ml-auto">
-            {pages.length > 0 && (
-              <span className="text-xs font-extrabold text-slate-700 bg-slate-100 border border-slate-200 px-3.5 py-1.5 rounded-xl">
-                {getBengaliPageOrdinal(pageIndex)} (মোট {toBengaliNumber(pages.length)} পৃষ্ঠা)
-              </span>
-            )}
-
-            {/* Navigation Buttons */}
+          {/* Bottom Bar Page Navigation */}
+          <div className="w-full max-w-md flex items-center justify-between text-white bg-white/10 px-6 py-2.5 rounded-full backdrop-blur-md border border-white/20">
             <button
-              onClick={() => changePage(pageIndex - 1)}
-              disabled={pageIndex === 0}
-              className="bg-slate-100 hover:bg-red-700 hover:text-white text-slate-800 disabled:text-slate-300 px-3.5 py-1.5 rounded-xl border border-slate-200 text-xs font-bold transition flex items-center gap-1 shadow-2xs"
-              title="পূর্ববর্তী পৃষ্ঠা"
+              onClick={() => {
+                if (activePageIndex > 0) setActivePageIndex(activePageIndex - 1);
+              }}
+              disabled={activePageIndex === 0}
+              className="hover:text-red-400 disabled:opacity-30 font-bold flex items-center gap-1 cursor-pointer text-xs"
             >
-              <ChevronLeft size={15} />
-              <span>আগের পৃষ্ঠা</span>
+              <ChevronLeft size={18} />
+              <span>আগের পাতা</span>
             </button>
 
-            <button
-              onClick={() => changePage(pageIndex + 1)}
-              disabled={pageIndex === pages.length - 1}
-              className="bg-slate-100 hover:bg-red-700 hover:text-white text-slate-800 disabled:text-slate-300 px-3.5 py-1.5 rounded-xl border border-slate-200 text-xs font-bold transition flex items-center gap-1 shadow-2xs"
-              title="পরবর্তী পৃষ্ঠা"
-            >
-              <span>পরবর্তী পৃষ্ঠা</span>
-              <ChevronRight size={15} />
-            </button>
-
-            <div className="w-px h-5 bg-slate-200 my-auto"></div>
-
-            {/* Quick Zoom Buttons */}
-            <button
-              onClick={handleZoomOut}
-              disabled={scale <= 1}
-              className="bg-slate-100 hover:bg-slate-200 text-slate-800 disabled:opacity-30 p-1.5 rounded-xl border border-slate-200 transition"
-              title="জুম আউট"
-            >
-              <ZoomOut size={15} />
-            </button>
-
-            <span className="text-xs font-black text-slate-700 w-11 text-center select-none bg-slate-50 px-2 py-1 rounded-lg border border-slate-200">
-              {toBengaliNumber((scale * 100).toFixed(0))}%
+            <span className="font-bold text-xs sm:text-sm text-red-400">
+              {getPageLabel(activePageIndex)} ({activePageIndex + 1} / {pages.length})
             </span>
 
             <button
-              onClick={handleZoomIn}
-              disabled={scale >= 3}
-              className="bg-slate-100 hover:bg-slate-200 text-slate-800 disabled:opacity-30 p-1.5 rounded-xl border border-slate-200 transition"
-              title="জুম ইন"
+              onClick={() => {
+                if (activePageIndex < pages.length - 1) setActivePageIndex(activePageIndex + 1);
+              }}
+              disabled={activePageIndex === pages.length - 1}
+              className="hover:text-red-400 disabled:opacity-30 font-bold flex items-center gap-1 cursor-pointer text-xs"
             >
-              <ZoomIn size={15} />
+              <span>পরের পাতা</span>
+              <ChevronRight size={18} />
             </button>
-
-            <div className="w-px h-5 bg-slate-200 my-auto"></div>
-
-            {/* Download Image Button */}
-            <button
-              onClick={handleDownloadImage}
-              className="bg-slate-100 hover:bg-slate-200 text-slate-800 p-1.5 rounded-xl border border-slate-200 transition"
-              title="ছবি ডাউনলোড"
-            >
-              <ImageIcon size={15} />
-            </button>
-
-            {/* Download PDF Button */}
-            {activeIssue?.pdfUrl && (
-              <a
-                href={activeIssue.pdfUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-red-700 hover:bg-red-800 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1 shadow-sm"
-                title="পিডিএফ ফাইল ডাউনলোড"
-              >
-                <Download size={14} />
-                <span className="hidden sm:inline">পিডিএফ</span>
-              </a>
-            )}
-
-            {/* Fullscreen Button */}
-            <button
-              onClick={toggleFullscreen}
-              className="bg-slate-800 hover:bg-slate-900 text-white p-1.5 rounded-xl transition"
-              title="ফুলস্ক্রিন"
-            >
-              {isFullscreen ? <Minimize2 size={15} /> : <Maximize2 size={15} />}
-            </button>
-          </div>
-        </div>
-
-        {/* CLEAN TOP CONTROL BAR 2: HORIZONTAL PAGE NUMBER TABS (১ম পৃষ্ঠা, ২য় পৃষ্ঠা...) */}
-        {activeIssue && pages.length > 0 && (
-          <div className="bg-white border border-slate-200 rounded-2xl px-4 py-2.5 flex items-center gap-2 overflow-x-auto scrollbar-thin scrollbar-thumb-slate-300 shadow-sm">
-            <span className="text-xs font-extrabold text-slate-600 flex-shrink-0 mr-1 flex items-center gap-1">
-              <Layers size={14} className="text-red-700" />
-              <span>পৃষ্ঠাসমূহ:</span>
-            </span>
-            {pages.map((_, idx) => (
-              <button
-                key={idx}
-                onClick={() => changePage(idx)}
-                className={`px-4 py-1.5 rounded-xl text-xs font-extrabold transition flex-shrink-0 ${
-                  pageIndex === idx
-                    ? 'bg-red-700 text-white shadow-md shadow-red-700/30 scale-105'
-                    : 'bg-slate-100 text-slate-800 hover:bg-slate-200 border border-slate-200'
-                }`}
-              >
-                {getBengaliPageOrdinal(idx)}
-              </button>
-            ))}
-          </div>
-        )}
-
-        {/* SMOOTH HORIZONTAL PAGE SLIDE CANVAS */}
-        {activeIssue && pages.length > 0 ? (
-          <div className="bg-slate-100/90 border border-slate-200 rounded-2xl p-4 sm:p-6 shadow-sm flex flex-col items-center justify-center relative overflow-hidden">
-            {/* Helper Banner */}
-            <div className="bg-red-50 text-red-700 border border-red-200 text-xs font-bold px-4 py-1.5 rounded-full mb-4 shadow-2xs flex items-center gap-1.5 animate-pulse z-10">
-              <Sparkles size={14} />
-              <span>স্ক্রিনে সোয়াইপ বা অ্যারো বাটন টিপে সব পৃষ্ঠা স্লাইড করুন — সংবাদের অংশে ক্লিক করে জুম দেখুন</span>
-            </div>
-
-            {/* Left Page Floating Navigation Arrow */}
-            <button
-              onClick={() => changePage(pageIndex - 1)}
-              disabled={pageIndex === 0}
-              className="absolute left-3 sm:left-5 z-30 p-3.5 rounded-full bg-slate-900/80 hover:bg-red-700 text-white border border-white/20 shadow-2xl backdrop-blur-md disabled:opacity-10 hover:scale-110 transition cursor-pointer"
-              title="পূর্ববর্তী পৃষ্ঠা"
-            >
-              <ChevronLeft size={24} />
-            </button>
-
-            {/* Right Page Floating Navigation Arrow */}
-            <button
-              onClick={() => changePage(pageIndex + 1)}
-              disabled={pageIndex === pages.length - 1}
-              className="absolute right-3 sm:right-5 z-30 p-3.5 rounded-full bg-slate-900/80 hover:bg-red-700 text-white border border-white/20 shadow-2xl backdrop-blur-md disabled:opacity-10 hover:scale-110 transition cursor-pointer"
-              title="পরবর্তী পৃষ্ঠা"
-            >
-              <ChevronRight size={24} />
-            </button>
-
-            {/* HORIZONTAL SLIDING TRACK FOR ALL PAGES */}
-            <div 
-              className="w-full overflow-hidden select-none"
-              onTouchStart={handleTouchStart}
-              onTouchEnd={handleTouchEnd}
-            >
-              <div 
-                className="flex transition-transform duration-300 ease-out w-full"
-                style={{ transform: `translateX(-${pageIndex * 100}%)` }}
-              >
-                {pages.map((url, idx) => (
-                  <div key={idx} className="w-full flex-shrink-0 flex items-center justify-center p-1 sm:p-2">
-                    <img
-                      src={url}
-                      alt={`Khulna Gazette Epaper Page ${idx + 1}`}
-                      onClick={(e) => handleImageClick(e, idx)}
-                      style={{
-                        transform: pageIndex === idx ? `scale(${scale})` : 'scale(1)',
-                        maxHeight: '660px',
-                        maxWidth: '100%',
-                      }}
-                      className="object-contain bg-white rounded-xl shadow-xl border border-slate-300 transition-transform duration-200 cursor-pointer"
-                      title="সংবাদের যেকোনো অংশে ক্লিক করে জুম পপআপ দেখুন"
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Bottom Horizontal Thumbnails Strip */}
-            {pages.length > 1 && (
-              <div className="w-full mt-5 pt-4 border-t border-slate-200">
-                <div className="flex gap-3 overflow-x-auto justify-start sm:justify-center py-1 px-1 scrollbar-thin scrollbar-thumb-slate-300">
-                  {pages.map((url, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => changePage(idx)}
-                      className={`relative h-16 sm:h-20 aspect-[3/4] rounded-xl border transition-all flex-shrink-0 overflow-hidden ${
-                        pageIndex === idx 
-                          ? 'border-red-700 ring-2 ring-red-700/30 scale-105 shadow-md' 
-                          : 'border-slate-300 opacity-60 hover:opacity-100'
-                      }`}
-                    >
-                      <img src={url} alt={`Page ${idx + 1}`} className="w-full h-full object-cover" />
-                      <div className="absolute bottom-0 inset-x-0 bg-slate-900/90 text-white text-[9px] font-extrabold text-center py-0.5">
-                        {getBengaliPageOrdinal(idx)}
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        ) : (
-          <div className="py-20 text-center text-slate-500 bg-white border border-slate-200 rounded-2xl shadow-sm">
-            <FileText size={44} className="mx-auto mb-2 opacity-40" />
-            <p className="font-bold text-xs">কোনো ই-পেপার পাওয়া যায়নি</p>
-          </div>
-        )}
-      </div>
-
-      {/* ========================================================================= */}
-      {/* CLICKED ARTICLE CROPPED FOCUS MODAL */}
-      {/* ========================================================================= */}
-      {partView && pages[partView.pageIdx !== undefined ? partView.pageIdx : pageIndex] && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/95 p-3 sm:p-6 backdrop-blur-xl animate-in fade-in duration-200">
-          <div className="bg-slate-900 border border-slate-700/80 rounded-3xl max-w-4xl w-full h-[85vh] flex flex-col overflow-hidden shadow-2xl relative">
-            {/* Modal Top Header */}
-            <div className="bg-slate-950 px-5 py-3.5 border-b border-slate-800 flex items-center justify-between text-white">
-              <div className="flex items-center gap-2.5">
-                <Crop size={18} className="text-red-500" />
-                <span className="font-black text-sm text-white">
-                  সংবাদ অংশ (Focused Article View)
-                </span>
-                <span className="bg-slate-800 text-slate-300 text-[10px] px-2 py-0.5 rounded-lg font-bold border border-slate-700">
-                  {toBengaliNumber((partView.scale * 100).toFixed(0))}% জুম
-                </span>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setPartView(prev => prev ? { ...prev, scale: Math.max(prev.scale - 0.5, 1.5) } : null)}
-                  className="p-1.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl border border-slate-700 text-xs transition"
-                  title="জুম কমান"
-                >
-                  <ZoomOut size={15} />
-                </button>
-                <button
-                  onClick={() => setPartView(prev => prev ? { ...prev, scale: Math.min(prev.scale + 0.5, 5) } : null)}
-                  className="p-1.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl border border-slate-700 text-xs transition"
-                  title="জুম বাড়ান"
-                >
-                  <ZoomIn size={15} />
-                </button>
-                <button
-                  onClick={() => setPartView(null)}
-                  className="p-1.5 bg-red-600 hover:bg-red-700 text-white rounded-xl transition shadow-md shadow-red-600/30"
-                  title="বন্ধ করুন (Esc)"
-                >
-                  <X size={18} />
-                </button>
-              </div>
-            </div>
-
-            {/* Cropped Article Focus Canvas */}
-            <div className="flex-grow relative bg-slate-950 flex items-center justify-center overflow-auto p-4 scrollbar-thin scrollbar-thumb-slate-800">
-              <div className="relative overflow-hidden rounded-2xl border border-slate-800 shadow-2xl">
-                <img
-                  src={pages[partView.pageIdx !== undefined ? partView.pageIdx : pageIndex]}
-                  alt="Focused Article Part"
-                  style={{
-                    transformOrigin: `${partView.percentX}% ${partView.percentY}%`,
-                    transform: `scale(${partView.scale})`,
-                    maxHeight: '65vh',
-                    objectFit: 'contain',
-                  }}
-                  className="transition duration-200"
-                />
-              </div>
-            </div>
-
-            {/* Modal Bottom Footer Actions */}
-            <div className="bg-slate-950 px-5 py-3.5 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
-              <span className="font-medium">* ক্রপ করা সংবাদটি স্পষ্ট পড়ুন</span>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={handleDownloadImage}
-                  className="bg-slate-800 hover:bg-slate-700 text-white font-bold px-4 py-2 rounded-xl transition border border-slate-700 flex items-center gap-1.5 text-xs"
-                >
-                  <ImageIcon size={14} />
-                  <span>ইমেজ ডাউনলোড</span>
-                </button>
-                <button
-                  onClick={() => setPartView(null)}
-                  className="bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2 rounded-xl transition text-xs shadow-md shadow-red-600/30"
-                >
-                  সম্পূর্ণ পৃষ্ঠা
-                </button>
-              </div>
-            </div>
           </div>
         </div>
       )}
-
-      {/* ========================================================================= */}
-      {/* BOTTOM ARCHIVE SECTION */}
-      {/* ========================================================================= */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
-          <div>
-            <h2 className="text-base sm:text-lg font-black text-slate-900 border-l-4 border-red-700 pl-3 flex items-center gap-2">
-              <span>পূর্ববর্তী ই-পেপার সংস্করণ (আর্কাইভ)</span>
-            </h2>
-            <p className="text-xs text-slate-500 mt-1">
-              অতীতের যেকোনো দিনের ই-পেপার পত্রিকা পড়তে নিচে নির্বাচন করুন
-            </p>
-          </div>
-
-          {/* Date Search for Archive */}
-          <div className="flex items-center gap-2">
-            <input
-              type="date"
-              value={archiveSearchDate}
-              onChange={(e) => setArchiveSearchDate(e.target.value)}
-              className="bg-slate-50 border border-slate-200 text-xs font-bold text-slate-800 px-3 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-700 shadow-xs"
-            />
-            {archiveSearchDate && (
-              <button
-                onClick={() => setArchiveSearchDate('')}
-                className="p-2 text-slate-400 hover:text-slate-700 bg-slate-100 rounded-xl text-xs"
-                title="ফিল্টার রিসেট"
-              >
-                <X size={14} />
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* Compact 4-Column Cards Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5">
-          {archiveIssues.length === 0 ? (
-            <div className="col-span-full text-center py-10 text-slate-400 font-bold text-xs">
-              কোনো পূর্ববর্তী সংস্করণ পাওয়া যায়নি।
-            </div>
-          ) : (
-            archiveIssues.map((item) => {
-              const isSelected = activeIssue?.id === item.id;
-              const pageCount = item.imageUrls?.length || (item.imageUrl ? 1 : 0);
-
-              return (
-                <div
-                  key={item.id}
-                  onClick={() => handleSelectIssue(item)}
-                  className={`bg-slate-50 rounded-2xl border overflow-hidden shadow-xs hover:shadow-xl transition duration-300 cursor-pointer flex flex-col justify-between group ${
-                    isSelected ? 'border-red-700 ring-2 ring-red-700/20 bg-red-50/20' : 'border-slate-200 hover:border-slate-300'
-                  }`}
-                >
-                  <div className="aspect-[3/4] w-full bg-slate-200 overflow-hidden relative">
-                    {item.imageUrl ? (
-                      <img
-                        src={item.imageUrl}
-                        alt="Epaper Cover"
-                        className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex flex-col items-center justify-center text-slate-400">
-                        <FileText size={36} />
-                      </div>
-                    )}
-
-                    <div className="absolute bottom-2 right-2 bg-slate-900/90 text-white text-[9px] font-bold px-2 py-0.5 rounded-lg shadow">
-                      {toBengaliNumber(pageCount)} পৃষ্ঠা
-                    </div>
-                  </div>
-
-                  <div className="p-3 text-center space-y-2">
-                    <p className="font-extrabold text-xs text-slate-800 truncate">
-                      {formatBengaliDate(item.date, false)}
-                    </p>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleSelectIssue(item);
-                      }}
-                      className={`w-full text-xs font-bold py-2 rounded-xl transition flex items-center justify-center gap-1.5 ${
-                        isSelected 
-                          ? 'bg-red-700 text-white shadow-md shadow-red-700/30' 
-                          : 'bg-slate-200 hover:bg-red-700 hover:text-white text-slate-700'
-                      }`}
-                    >
-                      <BookOpen size={13} />
-                      <span>{isSelected ? 'পড়া হচ্ছে' : 'পত্রিকা পড়ুন'}</span>
-                    </button>
-                  </div>
-                </div>
-              );
-            })
-          )}
-        </div>
-      </div>
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
