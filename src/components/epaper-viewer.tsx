@@ -31,12 +31,12 @@ interface EpaperViewerProps {
 
 const PAGE_LABELS = ['প্রথম-পাতা', '২য়-পাতা', '৩য়-পাতা', 'শেষ-পাতা'];
 
-// Exact sample pages from purbanchal.com for live demonstration
+// Real Khulna Gazette Front Page + pages
 const FALLBACK_PAGES = [
-  'https://purbanchal.com/wp-content/uploads/2026/07/প্রথম-পাতা-25.gif',
-  'https://purbanchal.com/wp-content/uploads/2026/07/২য়-পাতা-25.gif',
-  'https://purbanchal.com/wp-content/uploads/2026/07/৩য়-পাতা-26.gif',
-  'https://purbanchal.com/wp-content/uploads/2026/07/শেষ-পাতা-25.gif',
+  '/uploads/epaper/khulna_gazette_p1.jpg',
+  '/uploads/epaper/khulna_gazette_p1.jpg',
+  '/uploads/epaper/khulna_gazette_p1.jpg',
+  '/uploads/epaper/khulna_gazette_p1.jpg',
 ];
 
 export default function EpaperViewer({ initialIssues }: EpaperViewerProps) {

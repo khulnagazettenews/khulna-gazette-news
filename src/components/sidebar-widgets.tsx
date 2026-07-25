@@ -37,19 +37,20 @@ export default function SidebarWidgets({
         </div>
       </div>
 
-      {/* 3. EPAPER PROMO BANNER */}
-      <div className="bg-white rounded-xl border border-slate-200/90 shadow-xs overflow-hidden">
-        <div className="bg-[#1e293b] text-white py-2.5 px-4 text-center font-black text-xs tracking-tight">
+      {/* 3. EPAPER PROMO BANNER (Exact Size Matching Reference Screenshot) */}
+      <div className="bg-[#1e293b] rounded-2xl border border-slate-700/60 shadow-sm overflow-hidden font-sans">
+        <div className="bg-[#1e293b] text-white py-2.5 px-4 text-center font-extrabold text-sm tracking-tight border-b border-slate-700/50">
           ই-পেপার সংস্করণ
         </div>
-        <Link href="/epaper" className="block relative aspect-[4/3] w-full overflow-hidden bg-slate-100 group">
+        <Link href="/epaper" className="block relative aspect-[4/3] w-full overflow-hidden bg-[#243c3b] group p-2">
           <img
-            src="/uploads/sidebar/epaper_promo.png"
+            src="/uploads/sidebar/epaper_promo.jpg"
             alt="ই-পেপার সংস্করণ"
-            className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+            className="w-full h-full object-cover object-top rounded-xs group-hover:scale-105 transition duration-500 shadow-md"
           />
-          <div className="absolute inset-x-0 bottom-0 bg-slate-900/80 text-white p-2 text-center text-xs font-bold backdrop-blur-xs">
-            অনলাইনে পৃষ্ঠা উল্টে পড়ুন →
+          <div className="absolute inset-x-0 bottom-0 bg-[#0f172a]/90 text-white py-2 px-3 text-center text-xs font-bold backdrop-blur-xs flex items-center justify-center gap-1">
+            <span>অনলাইনে পৃষ্ঠা উল্টে পড়ুন</span>
+            <span className="text-amber-400">➔</span>
           </div>
         </Link>
       </div>
