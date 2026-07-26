@@ -127,3 +127,22 @@ h5 {
 .animate-marquee:hover {
   animation-play-state: paused;
 }
+
+/* Admin Portal Scope - Ensures Admin Dashboard uses exact same Noto Sans Bengali font as public website */
+.admin-portal, 
+.admin-portal *, 
+.admin-portal input, 
+.admin-portal select, 
+.admin-portal textarea, 
+.admin-portal button {
+  font-family: 'Noto Sans Bengali', 'Bangla', 'Hind Siliguri', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+}
+
+.admin-portal h1, 
+.admin-portal h2, 
+.admin-portal h3, 
+.admin-portal h4, 
+.admin-portal h5 {
+  font-family: 'Noto Sans Bengali', 'Bangla', 'Hind Siliguri', sans-serif !important;
+  margin-bottom: initial;
+}
