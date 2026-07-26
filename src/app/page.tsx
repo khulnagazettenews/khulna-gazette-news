@@ -146,21 +146,8 @@ export default async function HomePage() {
     }));
   };
 
-  // 3. Resolve fallbacks in parallel if any category returns empty items
-  const categoryResults = await Promise.all(
-    initialCategoryResults.map(async (items) => {
-      if (items.length > 0) return items;
-      return prisma.news.findMany({
-        where: { status: 'PUBLISHED' },
-        orderBy: { publishedAt: 'desc' },
-        take: 5,
-        include: {
-          category: true,
-          author: { select: { name: true, avatar: true } },
-        },
-      });
-    })
-  );
+  // 3. Category results directly map to queried categories (no generic fallback duplicates)
+  const categoryResults = initialCategoryResults;
 
   // Map resolved categories back to their variables
   const bangladeshNews = categoryResults[0];
