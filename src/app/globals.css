@@ -146,3 +146,13 @@ h5 {
   font-family: 'Noto Sans Bengali', 'Bangla', 'Hind Siliguri', sans-serif !important;
   margin-bottom: initial;
 }
+
+/* E-Paper Ultra-Sharp Image Rendering */
+.epaper-sharp {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}

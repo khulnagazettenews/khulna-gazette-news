@@ -7,12 +7,12 @@ import {
   X, 
   Calendar as CalendarIcon, 
   Download, 
-  ZoomIn, 
-  ZoomOut, 
-  RotateCcw, 
   Maximize2,
   Plus,
-  Minus
+  Minus,
+  FileText,
+  ImageIcon,
+  Sparkles
 } from 'lucide-react';
 
 interface EpaperIssue {
@@ -46,9 +46,10 @@ export default function EpaperViewer({ initialIssues }: EpaperViewerProps) {
   );
 
   const [activePageIndex, setActivePageIndex] = useState<number>(0);
-  const [zoomScale, setZoomScale] = useState<number>(1);
+  const [zoomScale, setZoomScale] = useState<number>(1.25); // Default to 125% HD clarity on desktop
+  const [viewMode, setViewMode] = useState<'image' | 'pdf'>('image'); // Mode switcher
   const [lightboxOpen, setLightboxOpen] = useState<boolean>(false);
-  const [lightboxZoom, setLightboxZoom] = useState<number>(1.5);
+  const [lightboxZoom, setLightboxZoom] = useState<number>(1.75);
   const [selectedDateStr, setSelectedDateStr] = useState<string>(
     activeIssue ? new Date(activeIssue.date).toISOString().split('T')[0] : '2026-07-25'
   );
@@ -88,7 +89,7 @@ export default function EpaperViewer({ initialIssues }: EpaperViewerProps) {
     if (found) {
       setActiveIssue(found);
       setActivePageIndex(0);
-      setZoomScale(1);
+      setZoomScale(1.25);
     }
   };
 
@@ -100,7 +101,7 @@ export default function EpaperViewer({ initialIssues }: EpaperViewerProps) {
   const handleZoomOut = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
-    setZoomScale((z) => Math.max(z - 0.25, 0.5));
+    setZoomScale((z) => Math.max(z - 0.25, 0.75));
   };
 
   const handleZoomIn = (e: React.MouseEvent) => {
@@ -109,21 +110,20 @@ export default function EpaperViewer({ initialIssues }: EpaperViewerProps) {
     setZoomScale((z) => Math.min(z + 0.25, 4));
   };
 
-  const handleZoomReset = (e: React.MouseEvent) => {
+  const setPresetZoom = (scale: number, e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
-    setZoomScale(1);
+    setZoomScale(scale);
   };
 
   // Optional Ctrl + Mouse Wheel Zooming
   const handleWheel = (e: React.WheelEvent) => {
-    // Only zoom when Ctrl key is pressed, preventing accidental zoom out during normal scrolling
     if (e.ctrlKey || e.metaKey) {
       e.preventDefault();
       if (e.deltaY < 0) {
-        setZoomScale((z) => Math.min(z + 0.2, 4));
+        setZoomScale((z) => Math.min(z + 0.25, 4));
       } else {
-        setZoomScale((z) => Math.max(z - 0.2, 1));
+        setZoomScale((z) => Math.max(z - 0.25, 0.75));
       }
     }
   };
@@ -131,30 +131,58 @@ export default function EpaperViewer({ initialIssues }: EpaperViewerProps) {
   return (
     <div className="max-w-[1140px] mx-auto py-6 px-3 sm:px-4 font-sans text-[#222222]">
       
-      {/* 1. HEADER SECTION ("আজকের পত্রিকা") - Exact Purbanchal Header Style */}
+      {/* 1. HEADER SECTION ("আজকের পত্রিকা") - Exact Purbanchal Header Style + Sharp Mode Indicator */}
       <div className="mb-6">
-        <div className="flex items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            {/* Purbanchal Red Circle Icon SVG */}
             <svg xmlns="http://www.w3.org/2000/svg" width="17" height="16" viewBox="0 0 17 16" fill="none">
               <path d="M3 13.5C1.5 11.9792 0.75 10.1458 0.75 8C0.75 5.85417 1.5 4.03125 3 2.53125C4.52083 1.01042 6.35417 0.25 8.5 0.25C10.6458 0.25 12.4688 1.01042 13.9688 2.53125C15.4896 4.03125 16.25 5.85417 16.25 8C16.25 10.1458 15.4896 11.9792 13.9688 13.5C12.4688 15 10.6458 15.75 8.5 15.75C6.35417 15.75 4.52083 15 3 13.5ZM8.5 13.75C10.0833 13.75 11.4375 13.1875 12.5625 12.0625C13.6875 10.9375 14.25 9.58333 14.25 8C14.25 6.41667 13.6875 5.0625 12.5625 3.9375C11.4375 2.8125 10.0833 2.25 8.5 2.25V13.75Z" fill="#A00B01"/>
             </svg>
-            <h3 className="text-[22px] font-bold text-[#222222] tracking-tight">
-              আজকের পত্রিকা
+            <h3 className="text-[22px] font-bold text-[#222222] tracking-tight flex items-center gap-2">
+              <span>আজকের পত্রিকা</span>
+              <span className="text-[11px] font-extrabold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full flex items-center gap-1">
+                <Sparkles size={12} />
+                <span>এইচডি স্পস্ট ভিউ</span>
+              </span>
             </h3>
           </div>
 
-          {activeIssue?.pdfUrl && (
-            <a
-              href={activeIssue.pdfUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-[#A00B01] hover:bg-red-800 text-white text-xs font-bold px-3.5 py-1.5 rounded transition flex items-center gap-1.5"
-            >
-              <Download size={14} />
-              <span>PDF ডাউনলোড</span>
-            </a>
-          )}
+          <div className="flex items-center gap-2">
+            {activeIssue?.pdfUrl && (
+              <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-lg border border-slate-200 text-xs font-bold">
+                <button
+                  onClick={() => setViewMode('image')}
+                  className={`px-3 py-1 rounded transition flex items-center gap-1 ${
+                    viewMode === 'image' ? 'bg-[#A00B01] text-white shadow-2xs' : 'text-slate-700 hover:text-[#A00B01]'
+                  }`}
+                >
+                  <ImageIcon size={13} />
+                  <span>ইমেজ মোড</span>
+                </button>
+                <button
+                  onClick={() => setViewMode('pdf')}
+                  className={`px-3 py-1 rounded transition flex items-center gap-1 ${
+                    viewMode === 'pdf' ? 'bg-[#A00B01] text-white shadow-2xs' : 'text-slate-700 hover:text-[#A00B01]'
+                  }`}
+                >
+                  <FileText size={13} />
+                  <span>অরিজিনাল ভেক্টর পিডিএফ (১০০% ক্লিয়ার)</span>
+                </button>
+              </div>
+            )}
+
+            {activeIssue?.pdfUrl && (
+              <a
+                href={activeIssue.pdfUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-[#A00B01] hover:bg-red-800 text-white text-xs font-bold px-3.5 py-1.5 rounded transition flex items-center gap-1.5 shadow-2xs"
+              >
+                <Download size={14} />
+                <span>PDF ডাউনলোড</span>
+              </a>
+            )}
+          </div>
         </div>
         
         {/* Divider line */}
@@ -172,7 +200,8 @@ export default function EpaperViewer({ initialIssues }: EpaperViewerProps) {
                   key={idx}
                   onClick={() => {
                     setActivePageIndex(idx);
-                    setZoomScale(1);
+                    setZoomScale(1.25);
+                    setViewMode('image');
                   }}
                   className={`p-1.5 rounded-[3px] cursor-pointer transition flex flex-col items-center select-none ${
                     isActive
@@ -184,7 +213,7 @@ export default function EpaperViewer({ initialIssues }: EpaperViewerProps) {
                     <img
                       src={imgUrl}
                       alt={label}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover epaper-sharp"
                     />
                   </div>
                   <div
@@ -201,99 +230,139 @@ export default function EpaperViewer({ initialIssues }: EpaperViewerProps) {
         </div>
       </div>
 
-      {/* 3. CENTER MAIN PAGE DISPLAY (.uael-img-gallery) WITH WORKING ZOOM CONTROLS */}
-      <div className="max-w-[850px] mx-auto my-6 bg-white border border-[#e2e2e2] rounded shadow-2xs overflow-hidden">
-        {/* Working Zoom Toolbar Header */}
-        <div className="bg-[#f5f5f5] border-b border-[#e2e2e2] p-2 px-3 flex items-center justify-between gap-2 text-xs font-bold text-gray-800">
-          <div className="flex items-center gap-2">
-            <span className="bg-[#A00B01] text-white px-2.5 py-0.5 rounded text-[11px] font-bold">
-              {getPageLabel(activePageIndex)}
-            </span>
-            <span className="text-gray-600 text-[11px]">
-              ({activePageIndex + 1} / {pages.length})
-            </span>
+      {/* 3. CENTER MAIN PAGE DISPLAY (Vector PDF View vs Sharp Image View) */}
+      {viewMode === 'pdf' && activeIssue?.pdfUrl ? (
+        <div className="max-w-[1050px] mx-auto my-6 bg-white border border-[#e2e2e2] rounded shadow-sm overflow-hidden p-2">
+          <div className="bg-[#f5f5f5] p-2 mb-2 rounded border border-slate-200 flex items-center justify-between text-xs font-bold text-slate-800">
+            <span className="text-[#A00B01]">📄 অরিজিনাল ভেক্টর পিডিএফ ফরম্যাট — সর্বোচ্চ স্পষ্টতা ও ক্লিয়ার রিডিং</span>
+            <a href={activeIssue.pdfUrl} target="_blank" rel="noreferrer" className="text-blue-600 underline">নতুন ট্যাবে বড় করে দেখুন</a>
           </div>
-
-          {/* Fully Clickable - and + Zoom Buttons */}
-          <div className="flex items-center gap-1.5">
-            {/* Zoom Out Button (-) */}
-            <button
-              type="button"
-              onClick={handleZoomOut}
-              className="bg-white hover:bg-gray-200 border border-gray-300 text-gray-800 px-2 py-1 rounded text-xs font-extrabold flex items-center gap-1 transition cursor-pointer shadow-2xs"
-              title="জুম আউট (-)"
-            >
-              <Minus size={13} className="text-[#A00B01]" />
-              <span>জুম কমান (-)</span>
-            </button>
-
-            {/* Current Zoom % Indicator / Click to Reset */}
-            <button
-              type="button"
-              onClick={handleZoomReset}
-              className="bg-white border border-gray-300 text-[#A00B01] font-black text-xs px-2.5 py-1 rounded hover:bg-gray-100 transition shadow-2xs"
-              title="১০০% সাইজে ফেরান (রিসেট)"
-            >
-              {Math.round(zoomScale * 100)}%
-            </button>
-
-            {/* Zoom In Button (+) */}
-            <button
-              type="button"
-              onClick={handleZoomIn}
-              className="bg-white hover:bg-gray-200 border border-gray-300 text-gray-800 px-2 py-1 rounded text-xs font-extrabold flex items-center gap-1 transition cursor-pointer shadow-2xs"
-              title="জুম ইন (+)"
-            >
-              <Plus size={13} className="text-[#A00B01]" />
-              <span>জুম বাড়ান (+)</span>
-            </button>
-
-            {/* Lightbox Fullscreen Button */}
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                setLightboxOpen(true);
-              }}
-              className="bg-[#A00B01] hover:bg-red-800 text-white px-2.5 py-1 rounded text-xs font-bold transition flex items-center gap-1 cursor-pointer ml-1 shadow-2xs"
-              title="ফুলস্ক্রিন লাইটবক্স"
-            >
-              <Maximize2 size={13} />
-              <span className="hidden sm:inline">বড় করুন</span>
-            </button>
-          </div>
+          <iframe 
+            src={activeIssue.pdfUrl} 
+            className="w-full h-[850px] rounded border border-slate-200"
+            title="Khulna Gazette E-Paper Vector PDF Viewer"
+          />
         </div>
+      ) : (
+        <div className="max-w-[1050px] mx-auto my-6 bg-white border border-[#e2e2e2] rounded shadow-2xs overflow-hidden">
+          {/* Working Zoom Toolbar Header with Quick Preset Scaler */}
+          <div className="bg-[#f5f5f5] border-b border-[#e2e2e2] p-2.5 px-3.5 flex flex-wrap items-center justify-between gap-2 text-xs font-bold text-gray-800">
+            <div className="flex items-center gap-2">
+              <span className="bg-[#A00B01] text-white px-2.5 py-0.5 rounded text-[11px] font-bold">
+                {getPageLabel(activePageIndex)}
+              </span>
+              <span className="text-gray-600 text-[11px]">
+                ({activePageIndex + 1} / {pages.length})
+              </span>
+            </div>
 
-        {/* Scrollable Container with Mouse Wheel & Scaled Image */}
-        <div 
-          ref={containerRef}
-          onWheel={handleWheel}
-          className="relative overflow-auto flex justify-center bg-[#fafafa] p-2 min-h-[500px] max-h-[850px] scrollbar-thin scrollbar-thumb-gray-400 select-none"
-        >
-          <div 
-            className="transition-all duration-150 flex justify-center"
-            style={{ width: `${zoomScale * 100}%` }}
-          >
-            <img
-              src={pages[activePageIndex]}
-              alt={getPageLabel(activePageIndex)}
-              onDoubleClick={() => setZoomScale((z) => (z > 1 ? 1 : 2))}
-              onClick={() => {
-                if (zoomScale === 1) {
+            {/* Sharp Zoom Presets & Controls */}
+            <div className="flex flex-wrap items-center gap-1.5">
+              <span className="text-[11px] text-gray-500 font-semibold mr-1 hidden sm:inline">দ্রুত জুম:</span>
+
+              {/* Preset Buttons */}
+              <button
+                type="button"
+                onClick={(e) => setPresetZoom(1, e)}
+                className={`px-2 py-0.5 rounded text-[11px] font-extrabold border transition ${zoomScale === 1 ? 'bg-[#A00B01] text-white border-[#A00B01]' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100'}`}
+              >
+                100%
+              </button>
+              <button
+                type="button"
+                onClick={(e) => setPresetZoom(1.5, e)}
+                className={`px-2 py-0.5 rounded text-[11px] font-extrabold border transition ${zoomScale === 1.5 ? 'bg-[#A00B01] text-white border-[#A00B01]' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100'}`}
+              >
+                150% (HD)
+              </button>
+              <button
+                type="button"
+                onClick={(e) => setPresetZoom(2, e)}
+                className={`px-2 py-0.5 rounded text-[11px] font-extrabold border transition ${zoomScale === 2 ? 'bg-[#A00B01] text-white border-[#A00B01]' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100'}`}
+              >
+                200% (আল্ট্রা)
+              </button>
+
+              <div className="h-4 w-[1px] bg-gray-300 mx-1"></div>
+
+              {/* Zoom Out Button (-) */}
+              <button
+                type="button"
+                onClick={handleZoomOut}
+                className="bg-white hover:bg-gray-200 border border-gray-300 text-gray-800 px-2 py-1 rounded text-xs font-extrabold flex items-center gap-1 transition cursor-pointer shadow-2xs"
+                title="জুম আউট (-)"
+              >
+                <Minus size={13} className="text-[#A00B01]" />
+                <span>জুম কমান (-)</span>
+              </button>
+
+              {/* Zoom In Button (+) */}
+              <button
+                type="button"
+                onClick={handleZoomIn}
+                className="bg-white hover:bg-gray-200 border border-gray-300 text-gray-800 px-2 py-1 rounded text-xs font-extrabold flex items-center gap-1 transition cursor-pointer shadow-2xs"
+                title="জুম ইন (+)"
+              >
+                <Plus size={13} className="text-[#A00B01]" />
+                <span>জুম বাড়ান (+)</span>
+              </button>
+
+              {/* Lightbox Fullscreen Button */}
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
                   setLightboxOpen(true);
-                }
-              }}
-              className="w-full h-auto object-contain block cursor-pointer border border-gray-200 shadow-2xs bg-white"
-              title="মাউসের চাকা ঘোরান জুম করতে, অথবা জুম বাড়ান (+) বাটনে টিপুন"
-            />
+                }}
+                className="bg-[#A00B01] hover:bg-red-800 text-white px-2.5 py-1 rounded text-xs font-bold transition flex items-center gap-1 cursor-pointer ml-1 shadow-2xs"
+                title="ফুলস্ক্রিন লাইটবক্স"
+              >
+                <Maximize2 size={13} />
+                <span className="hidden sm:inline">ফুলস্ক্রিন</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Reading Tip Bar */}
+          <div className="bg-amber-50/80 px-3 py-1 border-b border-amber-100 text-[11px] text-amber-900 font-semibold flex items-center justify-between">
+            <span>💡 পরিষ্কার লেখা পড়ার জন্য চিত্রে ডাবল-ক্লিক করুন অথবা ১৫০%/২০০% জুম অপশন চাপুন।</span>
+            <span className="text-gray-500 font-normal">স্কেল: {Math.round(zoomScale * 100)}%</span>
+          </div>
+
+          {/* Scrollable Container with Crisp HD Sharp Rendering */}
+          <div 
+            ref={containerRef}
+            onWheel={handleWheel}
+            className="relative overflow-auto flex justify-center bg-[#f0f0f0] p-3 min-h-[550px] max-h-[900px] scrollbar-thin scrollbar-thumb-gray-400 select-none"
+          >
+            <div 
+              className="transition-all duration-150 flex justify-center"
+              style={{ width: `${zoomScale * 100}%` }}
+            >
+              <img
+                src={pages[activePageIndex]}
+                alt={getPageLabel(activePageIndex)}
+                onDoubleClick={() => setZoomScale((z) => (z > 1.25 ? 1 : 2))}
+                onClick={() => {
+                  if (zoomScale <= 1.25) {
+                    setLightboxOpen(true);
+                  }
+                }}
+                className="w-full h-auto object-contain block cursor-pointer border border-gray-300 shadow-sm bg-white epaper-sharp"
+                style={{
+                  imageRendering: 'crisp-edges',
+                  WebkitFontSmoothing: 'antialiased',
+                }}
+                title="স্পষ্ট খবরের জন্য ডাবল ক্লিক করুন বা জুম বাড়ান"
+              />
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* 4. CALENDAR SECTION ("Calender") - Exact Purbanchal Style */}
       <div className="mt-8 pt-4">
         <div className="flex items-center gap-2">
-          {/* Red Circle Icon SVG */}
           <svg xmlns="http://www.w3.org/2000/svg" width="17" height="16" viewBox="0 0 17 16" fill="none">
             <path d="M3 13.5C1.5 11.9792 0.75 10.1458 0.75 8C0.75 5.85417 1.5 4.03125 3 2.53125C4.52083 1.01042 6.35417 0.25 8.5 0.25C10.6458 0.25 12.4688 1.01042 13.9688 2.53125C15.4896 4.03125 16.25 5.85417 16.25 8C16.25 10.1458 15.4896 11.9792 13.9688 13.5C12.4688 15 10.6458 15.75 8.5 15.75C6.35417 15.75 4.52083 15 3 13.5ZM8.5 13.75C10.0833 13.75 11.4375 13.1875 12.5625 12.0625C13.6875 6.41667 13.6875 5.0625 12.5625 3.9375C11.4375 2.8125 10.0833 2.25 8.5 2.25V13.75Z" fill="#A00B01"/>
           </svg>
@@ -323,16 +392,16 @@ export default function EpaperViewer({ initialIssues }: EpaperViewerProps) {
         </div>
       </div>
 
-      {/* 5. LIGHTBOX SLIDER POPUP WITH WORKING ZOOM CONTROLS */}
+      {/* 5. LIGHTBOX SLIDER POPUP WITH WORKING HD CRISP ZOOM CONTROLS */}
       {lightboxOpen && pages[activePageIndex] && (
-        <div className="fixed inset-0 z-50 bg-black/90 flex flex-col items-center justify-between p-3 sm:p-5 select-none">
+        <div className="fixed inset-0 z-50 bg-black/95 flex flex-col items-center justify-between p-3 sm:p-5 select-none">
           {/* Header Bar */}
-          <div className="w-full flex items-center justify-between text-white max-w-5xl border-b border-white/20 pb-2">
+          <div className="w-full flex items-center justify-between text-white max-w-6xl border-b border-white/20 pb-2">
             <div className="flex items-center gap-3">
               <span className="font-bold text-base sm:text-lg">
-                {getPageLabel(activePageIndex)} - ই-পেপার
+                {getPageLabel(activePageIndex)} - ই-পেপার (এইচডি ভিউ)
               </span>
-              <span className="text-xs text-red-400 font-extrabold bg-white/10 px-2.5 py-0.5 rounded">
+              <span className="text-xs text-emerald-400 font-extrabold bg-white/10 px-2.5 py-0.5 rounded border border-emerald-500/30">
                 জুম: {Math.round(lightboxZoom * 100)}%
               </span>
             </div>
@@ -341,21 +410,26 @@ export default function EpaperViewer({ initialIssues }: EpaperViewerProps) {
             <div className="flex items-center gap-2">
               <button
                 type="button"
-                onClick={() => setLightboxZoom((z) => Math.max(z - 0.25, 0.5))}
-                className="bg-white/20 hover:bg-white/30 text-white px-2 py-1 rounded text-xs font-bold transition flex items-center gap-1"
-                title="জুম আউট (-)"
+                onClick={() => setLightboxZoom(1.5)}
+                className="bg-white/20 hover:bg-white/30 text-white px-2.5 py-1 rounded text-xs font-bold transition"
               >
-                <Minus size={14} />
-                <span>জুম কমান (-)</span>
+                150% HD
+              </button>
+              <button
+                type="button"
+                onClick={() => setLightboxZoom(2.25)}
+                className="bg-white/20 hover:bg-white/30 text-white px-2.5 py-1 rounded text-xs font-bold transition"
+              >
+                225% আল্ট্রা
               </button>
 
               <button
                 type="button"
-                onClick={() => setLightboxZoom(1)}
-                className="bg-white/20 hover:bg-white/30 text-white px-2 py-1 rounded text-xs font-bold transition"
-                title="রিসেট"
+                onClick={() => setLightboxZoom((z) => Math.max(z - 0.25, 0.75))}
+                className="bg-white/20 hover:bg-white/30 text-white px-2 py-1 rounded text-xs font-bold transition flex items-center gap-1"
+                title="জুম আউট (-)"
               >
-                100%
+                <Minus size={14} />
               </button>
 
               <button
@@ -365,7 +439,6 @@ export default function EpaperViewer({ initialIssues }: EpaperViewerProps) {
                 title="জুম ইন (+)"
               >
                 <Plus size={14} />
-                <span>জুম বাড়ান (+)</span>
               </button>
 
               <button
@@ -387,7 +460,7 @@ export default function EpaperViewer({ initialIssues }: EpaperViewerProps) {
                 if (e.deltaY < 0) {
                   setLightboxZoom((z) => Math.min(z + 0.25, 4));
                 } else {
-                  setLightboxZoom((z) => Math.max(z - 0.25, 1));
+                  setLightboxZoom((z) => Math.max(z - 0.25, 0.75));
                 }
               }
             }}
@@ -400,7 +473,11 @@ export default function EpaperViewer({ initialIssues }: EpaperViewerProps) {
               <img
                 src={pages[activePageIndex]}
                 alt={getPageLabel(activePageIndex)}
-                className="w-full h-auto object-contain rounded bg-white shadow-2xl"
+                className="w-full h-auto object-contain rounded bg-white shadow-2xl epaper-sharp"
+                style={{
+                  imageRendering: 'crisp-edges',
+                  WebkitFontSmoothing: 'antialiased',
+                }}
               />
             </div>
           </div>
