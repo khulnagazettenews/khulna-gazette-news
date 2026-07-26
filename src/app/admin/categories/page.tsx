@@ -1,7 +1,20 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { PlusCircle, Pencil, Trash2, ChevronDown, ChevronRight, Folder } from 'lucide-react';
+import { 
+  PlusCircle, 
+  Pencil, 
+  Trash2, 
+  ChevronRight, 
+  Folder, 
+  FolderKanban, 
+  FolderPlus,
+  Sparkles,
+  CheckCircle2,
+  AlertCircle,
+  Hash,
+  Layers
+} from 'lucide-react';
 
 interface Category {
   id: string;
@@ -35,8 +48,6 @@ export default function CategoryManagement() {
       const data = await res.json();
       if (res.ok) {
         setCategories(data);
-        
-        // Flatten list for parent selection (only main categories are allowed as parent)
         setParentOptions(data.filter((c: Category) => c.parentId === null));
       } else {
         setError(data.error || 'ক্যাটাগরি লোড করা সম্ভব হয়নি।');
@@ -102,7 +113,7 @@ export default function CategoryManagement() {
       const data = await res.json();
 
       if (res.ok) {
-        setSuccess(editingId ? 'ক্যাটাগরি আপডেট করা হয়েছে।' : 'নতুন ক্যাটাগরি তৈরি করা হয়েছে।');
+        setSuccess(editingId ? 'ক্যাটাগরি আপডেট করা হয়েছে।' : 'নতুন ক্যাটাগরি সফলভাবে তৈরি করা হয়েছে।');
         handleCancel();
         fetchCategories();
       } else {
@@ -141,68 +152,87 @@ export default function CategoryManagement() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6 max-w-7xl mx-auto pb-10 font-sans">
+      {/* 1. Header */}
+      <div className="bg-white rounded-3xl p-6 shadow-xs border border-slate-200/80 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-gray-800">ক্যাটাগরি ম্যানেজমেন্ট</h2>
-          <p className="text-sm text-gray-500">খুলনা গেজেট সাইটের ক্যাটাগরি ও সাব-ক্যাটাগরি নিয়ন্ত্রণ করুন।</p>
+          <div className="flex items-center gap-2 text-xs font-bold text-red-600 mb-1">
+            <FolderKanban size={16} />
+            <span>ওয়েবসাইট স্ট্রাকচার ম্যানেজমেন্ট</span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+            <span>ক্যাটাগরি ম্যানেজমেন্ট</span>
+            <span className="text-xs font-bold bg-slate-100 text-slate-700 px-2.5 py-1 rounded-full border border-slate-200">
+              {categories.length} টি ক্যাটাগরি
+            </span>
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-500 mt-1">
+            খুলনা গেজেট পোর্টালে প্রকাশনার ক্যাটাগরি ও সাব-ক্যাটাগরি পরিচালনা করুন।
+          </p>
         </div>
       </div>
 
+      {/* Alerts */}
       {success && (
-        <div className="bg-green-150 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm">
-          {success}
+        <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-4 rounded-2xl text-xs font-bold flex items-center gap-2">
+          <CheckCircle2 size={18} />
+          <span>{success}</span>
         </div>
       )}
 
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm">
-          {error}
+        <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded-2xl text-xs font-bold flex items-center gap-2">
+          <AlertCircle size={18} />
+          <span>{error}</span>
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
         {/* Category Form */}
-        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm h-fit">
-          <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
-            <PlusCircle size={18} className="text-red-600" />
-            <span>{editingId ? 'ক্যাটাগরি সম্পাদনা' : 'নতুন ক্যাটাগরি যোগ করুন'}</span>
-          </h3>
+        <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+            <h3 className="font-extrabold text-base text-slate-900 flex items-center gap-2">
+              <FolderPlus size={18} className="text-red-600" />
+              <span>{editingId ? 'ক্যাটাগরি সম্পাদনা' : 'নতুন ক্যাটাগরি যোগ করুন'}</span>
+            </h3>
+            {editingId && (
+              <span className="text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200 px-2 py-0.5 rounded-full">
+                সম্পাদনা মোড
+              </span>
+            )}
+          </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4 text-xs font-semibold text-slate-700">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">ক্যাটাগরির নাম (বাংলা)</label>
+              <label className="block mb-1.5 font-bold text-slate-900">ক্যাটাগরির নাম (বাংলা)</label>
               <input
                 type="text"
                 value={name}
-                onChange={(e) => {
-                  setName(e.target.value);
-                  // Generate generic slug draft from English translation if possible, or manual
-                }}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-red-600"
+                onChange={(e) => setName(e.target.value)}
+                className="w-full border border-slate-200 rounded-2xl px-3.5 py-2.5 bg-slate-50 focus:bg-white focus:outline-none focus:border-red-500 font-bold transition"
                 placeholder="যেমন: বাংলাদেশ"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">স্লাগ (Slug - ইংরেজিতে)</label>
+              <label className="block mb-1.5 font-bold text-slate-900">স্লাগ (Slug - ইংরেজিতে)</label>
               <input
                 type="text"
                 value={slug}
                 onChange={(e) => setSlug(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-red-600"
+                className="w-full border border-slate-200 rounded-2xl px-3.5 py-2.5 bg-slate-50 focus:bg-white focus:outline-none focus:border-red-500 font-bold transition"
                 placeholder="যেমন: bangladesh"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">প্যারেন্ট ক্যাটাগরি (ঐচ্ছিক)</label>
+              <label className="block mb-1.5 font-bold text-slate-900">প্যারেন্ট ক্যাটাগরি (ঐচ্ছিক)</label>
               <select
                 value={parentId}
                 onChange={(e) => setParentId(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-red-600"
+                className="w-full border border-slate-200 rounded-2xl px-3.5 py-2.5 bg-slate-50 focus:bg-white focus:outline-none focus:border-red-500 font-bold transition cursor-pointer"
               >
                 <option value="">কোনো প্যারেন্ট নেই (মূল ক্যাটাগরি)</option>
                 {parentOptions.map((opt) => (
@@ -214,12 +244,12 @@ export default function CategoryManagement() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">ক্রম নম্বর (Order)</label>
+              <label className="block mb-1.5 font-bold text-slate-900">ক্রম নম্বর (Order)</label>
               <input
                 type="number"
                 value={order}
                 onChange={(e) => setOrder(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-red-600"
+                className="w-full border border-slate-200 rounded-2xl px-3.5 py-2.5 bg-slate-50 focus:bg-white focus:outline-none focus:border-red-500 font-bold transition"
                 placeholder="0"
               />
             </div>
@@ -228,7 +258,7 @@ export default function CategoryManagement() {
               <button
                 type="submit"
                 disabled={formLoading}
-                className="flex-1 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold py-2.5 rounded-lg transition disabled:opacity-50"
+                className="flex-1 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white text-xs font-black py-3 rounded-2xl shadow-xs transition disabled:opacity-50"
               >
                 {editingId ? 'আপডেট করুন' : 'তৈরি করুন'}
               </button>
@@ -236,7 +266,7 @@ export default function CategoryManagement() {
                 <button
                   type="button"
                   onClick={handleCancel}
-                  className="bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold py-2.5 px-4 rounded-lg transition"
+                  className="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold py-3 px-4 rounded-2xl transition"
                 >
                   বাতিল
                 </button>
@@ -246,40 +276,52 @@ export default function CategoryManagement() {
         </div>
 
         {/* Categories Tree list */}
-        <div className="lg:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-          <h3 className="font-bold text-gray-800 mb-4">ক্যাটাগরি তালিকা</h3>
+        <div className="lg:col-span-2 bg-white rounded-3xl border border-slate-200/80 shadow-xs p-6 space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+            <h3 className="font-extrabold text-base text-slate-900 flex items-center gap-2">
+              <Layers size={18} className="text-teal-600" />
+              <span>ক্যাটাগরি ও সাব-ক্যাটাগরি তালিকা</span>
+            </h3>
+            <span className="text-xs text-slate-400 font-bold">প্যারেন্ট ও সাব-ক্যাটাগরি ভিউ</span>
+          </div>
 
           {loading ? (
-            <div className="text-center py-10 text-gray-400">লোডিং হচ্ছে...</div>
+            <div className="text-center py-12 text-slate-400 font-bold">
+              <div className="animate-spin rounded-full h-7 w-7 border-b-2 border-red-600 mx-auto mb-2"></div>
+              ক্যাটাগরি লোড হচ্ছে...
+            </div>
           ) : categories.length === 0 ? (
-            <div className="text-center py-10 text-gray-400">কোনো ক্যাটাগরি পাওয়া যায়নি।</div>
+            <div className="text-center py-12 text-slate-400 font-medium">কোনো ক্যাটাগরি পাওয়া যায়নি।</div>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-3">
               {categories.map((cat) => (
-                <div key={cat.id} className="border border-gray-100 rounded-xl overflow-hidden shadow-sm">
+                <div key={cat.id} className="border border-slate-200/90 rounded-2xl overflow-hidden shadow-2xs">
                   {/* Parent Row */}
-                  <div className="bg-slate-50 px-4 py-3 flex items-center justify-between border-b border-gray-100">
+                  <div className="bg-slate-50/80 px-4 py-3 flex items-center justify-between border-b border-slate-100">
                     <div className="flex items-center gap-3">
-                      <Folder className="text-blue-500" size={18} />
+                      <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100 font-bold">
+                        <Folder size={16} />
+                      </div>
                       <div>
-                        <span className="font-bold text-gray-700">{cat.name}</span>
-                        <span className="text-[10px] text-gray-400 ml-2">/{cat.slug}</span>
+                        <span className="font-extrabold text-slate-900 text-sm">{cat.name}</span>
+                        <span className="text-[11px] font-mono text-slate-400 ml-2">/{cat.slug}</span>
                       </div>
                     </div>
+
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-gray-400 bg-gray-200 px-2 py-0.5 rounded font-mono">
+                      <span className="text-[11px] text-slate-600 bg-slate-200/70 px-2.5 py-0.5 rounded-lg font-bold">
                         ক্রম: {cat.order}
                       </span>
                       <button
                         onClick={() => handleEdit(cat)}
-                        className="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition"
+                        className="p-1.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition"
                         title="সম্পাদনা"
                       >
                         <Pencil size={15} />
                       </button>
                       <button
                         onClick={() => handleDelete(cat.id)}
-                        className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded transition"
+                        className="p-1.5 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition"
                         title="মুছে ফেলুন"
                       >
                         <Trash2 size={15} />
@@ -289,29 +331,29 @@ export default function CategoryManagement() {
 
                   {/* Subcategories list */}
                   {cat.subCategories && cat.subCategories.length > 0 && (
-                    <div className="divide-y divide-gray-50 bg-white">
+                    <div className="divide-y divide-slate-100 bg-white">
                       {cat.subCategories.map((sub) => (
-                        <div key={sub.id} className="pl-10 pr-4 py-2.5 flex items-center justify-between hover:bg-gray-50/55 transition">
+                        <div key={sub.id} className="pl-10 pr-4 py-2.5 flex items-center justify-between hover:bg-slate-50/60 transition">
                           <div className="flex items-center gap-2">
-                            <ChevronRight size={14} className="text-gray-400" />
-                            <span className="text-sm font-medium text-gray-600">{sub.name}</span>
-                            <span className="text-[9px] text-gray-400">/{sub.slug}</span>
+                            <ChevronRight size={14} className="text-slate-400" />
+                            <span className="text-xs font-extrabold text-slate-700">{sub.name}</span>
+                            <span className="text-[10px] font-mono text-slate-400">/{sub.slug}</span>
                           </div>
                           <div className="flex items-center gap-2">
-                            <span className="text-[10px] text-gray-400 font-mono">ক্রম: {sub.order}</span>
+                            <span className="text-[10px] text-slate-400 font-mono">ক্রম: {sub.order}</span>
                             <button
                               onClick={() => handleEdit(sub)}
-                              className="p-1 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition"
+                              className="p-1 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition"
                               title="সম্পাদনা"
                             >
-                              <Pencil size={13} />
+                              <Pencil size={14} />
                             </button>
                             <button
                               onClick={() => handleDelete(sub.id)}
-                              className="p-1 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded transition"
+                              className="p-1 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition"
                               title="মুছে ফেলুন"
                             >
-                              <Trash2 size={13} />
+                              <Trash2 size={14} />
                             </button>
                           </div>
                         </div>

@@ -1,7 +1,16 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Upload, X, Trash2, Camera } from 'lucide-react';
+import { 
+  Upload, 
+  X, 
+  Trash2, 
+  Camera, 
+  Image as ImageIcon,
+  CheckCircle2,
+  AlertCircle,
+  Sparkles
+} from 'lucide-react';
 
 interface GalleryPhoto {
   id: string;
@@ -64,7 +73,7 @@ export default function PhotoGalleryManagement() {
       if (res.ok) {
         setImageUrl(data.url);
       } else {
-        setError(data.error || 'ছবি আপলোড ব্যর্থ হয়েছে।');
+        setError(data.error || 'ছবি আপলোড করতে সমস্যা হয়েছে।');
       }
     } catch (err) {
       setError('আপলোড ত্রুটি ঘটেছে।');
@@ -88,19 +97,24 @@ export default function PhotoGalleryManagement() {
       const res = await fetch('/api/photos', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ imageUrl, caption, credit, order }),
+        body: JSON.stringify({
+          imageUrl,
+          caption: caption.trim() || null,
+          credit: credit.trim() || null,
+          order: parseInt(order) || 0,
+        }),
       });
 
       const data = await res.json();
       if (res.ok) {
-        setSuccess('ছবি সফলভাবে গ্যালারিতে যোগ করা হয়েছে।');
+        setSuccess('গ্যালারিতে নতুন ছবি সফলভাবে যোগ করা হয়েছে!');
         setImageUrl('');
         setCaption('');
         setCredit('');
         setOrder('0');
         fetchPhotos();
       } else {
-        setError(data.error || 'একটি সমস্যা হয়েছে।');
+        setError(data.error || 'সংরক্ষণ করা সম্ভব হয়নি।');
       }
     } catch (err) {
       setError('অনুরোধ পাঠানো সম্ভব হয়নি।');
@@ -110,7 +124,7 @@ export default function PhotoGalleryManagement() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('আপনি কি নিশ্চিত যে এই ছবিটি গ্যালারি থেকে মুছে ফেলতে চান?')) {
+    if (!confirm('আপনি কি নিশ্চিত যে এই ছবিটি মুছে ফেলতে চান?')) {
       return;
     }
 
@@ -132,133 +146,161 @@ export default function PhotoGalleryManagement() {
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-xl font-bold text-gray-800">ফটো গ্যালারি ম্যানেজমেন্ট</h2>
-        <p className="text-sm text-gray-500">ফটো গ্যালারির ছবি আপলোড ও ক্যাপশন যোগ করুন।</p>
+    <div className="space-y-6 max-w-7xl mx-auto pb-10 font-sans">
+      {/* Header */}
+      <div className="bg-white rounded-3xl p-6 shadow-xs border border-slate-200/80 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2 text-xs font-bold text-red-600 mb-1">
+            <Camera size={16} />
+            <span>ছবি ফিচার ব্যবস্থাপনা</span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+            <span>ফটো গ্যালারি ম্যানেজমেন্ট</span>
+            <span className="text-xs font-bold bg-slate-100 text-slate-700 px-2.5 py-1 rounded-full border border-slate-200">
+              {photos.length} টি ছবি
+            </span>
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-500 mt-1">
+            হোমপেজের ফটো গ্যালারি সেকশনে প্রকাশের জন্য বিশেষ ছবি ও ক্যাপশন আপলোড করুন।
+          </p>
+        </div>
       </div>
 
+      {/* Alerts */}
       {success && (
-        <div className="bg-green-150 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm">
-          {success}
+        <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-4 rounded-2xl text-xs font-bold flex items-center gap-2">
+          <CheckCircle2 size={18} />
+          <span>{success}</span>
         </div>
       )}
 
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm">
-          {error}
+        <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded-2xl text-xs font-bold flex items-center gap-2">
+          <AlertCircle size={18} />
+          <span>{error}</span>
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Upload Form */}
-        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm h-fit space-y-4">
-          <h3 className="font-bold text-gray-800 text-sm flex items-center gap-2 border-b border-gray-150 pb-2">
-            <Camera size={18} className="text-red-600" />
-            <span>ছবি যোগ করুন</span>
+        <div className="lg:col-span-5 bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs space-y-4">
+          <h3 className="font-extrabold text-slate-900 text-base flex items-center gap-2 border-b border-slate-100 pb-3">
+            <Upload size={18} className="text-red-600" />
+            <span>নতুন ছবি আপলোড করুন</span>
           </h3>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Image version upload */}
+          <form onSubmit={handleSubmit} className="space-y-4 text-xs font-semibold text-slate-700">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">ছবি নির্বাচন করুন</label>
+              <label className="block mb-1.5 font-extrabold text-slate-900">গ্যালারি ছবি ফাইল <span className="text-red-600">*</span></label>
               {imageUrl ? (
-                <div className="relative aspect-video w-full border border-gray-200 rounded-lg overflow-hidden bg-slate-50 flex items-center justify-center">
-                  <img src={imageUrl} alt="Uploaded gallery" className="w-full h-full object-cover" />
+                <div className="relative aspect-video rounded-2xl overflow-hidden border border-slate-200 bg-slate-50 flex items-center justify-center group">
+                  <img src={imageUrl} alt="Preview" className="w-full h-full object-cover" />
                   <button
                     type="button"
                     onClick={() => setImageUrl('')}
-                    className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white p-1 rounded-full shadow transition"
+                    className="absolute top-2 right-2 bg-red-600 text-white p-1 rounded-full shadow-md transition"
                   >
                     <X size={14} />
                   </button>
                 </div>
               ) : (
-                <label className="border border-dashed border-gray-300 rounded-lg py-5 flex flex-col items-center justify-center cursor-pointer hover:border-red-600 transition bg-slate-50">
-                  <Upload className="text-gray-400 mb-1" size={20} />
-                  <span className="text-xs text-gray-500">{uploading ? 'আপলোড হচ্ছে...' : 'ছবি আপলোড'}</span>
-                  <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
+                <label className="aspect-video border-2 border-dashed border-slate-300 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:border-red-600 transition bg-slate-50">
+                  {uploading ? (
+                    <span className="text-xs font-bold text-red-600 animate-pulse">আপলোড হচ্ছে...</span>
+                  ) : (
+                    <>
+                      <Upload size={22} className="text-slate-400 mb-1.5" />
+                      <span className="text-xs font-bold text-slate-600">ছবি সিলেক্ট করুন</span>
+                    </>
+                  )}
+                  <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" disabled={uploading} />
                 </label>
               )}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">ক্যাপশন (বাংলা)</label>
-              <textarea
+              <label className="block mb-1.5 font-bold text-slate-900">ছবি বিবরণ / ক্যাপশন (ঐচ্ছিক)</label>
+              <input
+                type="text"
                 value={caption}
                 onChange={(e) => setCaption(e.target.value)}
-                rows={2}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-red-600"
-                placeholder="ছবির ক্যাপশন লিখুন"
+                placeholder="যেমন: রূপসা নদীতে সূর্যাস্তের মনোরম দৃশ্য"
+                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl font-bold focus:outline-none focus:border-red-500 focus:bg-white transition"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">ক্রেডিট (ফটোগ্রাফার)</label>
+              <label className="block mb-1.5 font-bold text-slate-900">ছবি ক্রেডিট / আলোকচিত্রী (ঐচ্ছিক)</label>
               <input
                 type="text"
                 value={credit}
                 onChange={(e) => setCredit(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-red-600"
-                placeholder="যেমন: খুলনা গেজেট / আলোকচিত্রী"
+                placeholder="যেমন: খুলনা গেজেট / নিজস্ব প্রতিনিধি"
+                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl font-bold focus:outline-none focus:border-red-500 focus:bg-white transition"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">ক্রম নম্বর (Order)</label>
+              <label className="block mb-1.5 font-bold text-slate-900">ক্রম নম্বর (Order)</label>
               <input
                 type="number"
                 value={order}
                 onChange={(e) => setOrder(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-red-600"
+                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl font-bold focus:outline-none focus:border-red-500 focus:bg-white transition"
               />
             </div>
 
             <button
               type="submit"
               disabled={submitting}
-              className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold text-sm py-2.5 rounded-lg transition disabled:opacity-50"
+              className="w-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-black text-xs sm:text-sm py-3 rounded-2xl transition disabled:opacity-50 shadow-md shadow-red-600/20"
             >
-              {submitting ? 'সংরক্ষণ হচ্ছে...' : 'সংরক্ষণ করুন'}
+              {submitting ? 'প্রকাশ হচ্ছে...' : 'গ্যালারিতে যুক্ত করুন'}
             </button>
           </form>
         </div>
 
-        {/* Epaper Issues list */}
-        <div className="lg:col-span-2 bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-          <h3 className="font-bold text-gray-800 mb-4">গ্যালারির ছবিসমূহ</h3>
+        {/* Gallery Cards (Right Column) */}
+        <div className="lg:col-span-7 bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs space-y-4">
+          <h3 className="font-extrabold text-slate-900 text-base border-b border-slate-100 pb-3 flex items-center justify-between">
+            <span>ফটো গ্যালারি ফটোসমূহ</span>
+            <span className="text-xs text-slate-400 font-bold">মোট: {photos.length} টি</span>
+          </h3>
 
           {loading ? (
-            <div className="text-center py-10 text-gray-400">লোডিং হচ্ছে...</div>
+            <div className="text-center py-12 text-slate-400 font-bold">
+              <div className="animate-spin rounded-full h-7 w-7 border-b-2 border-red-600 mx-auto mb-2"></div>
+              গ্যালারি লোড হচ্ছে...
+            </div>
           ) : photos.length === 0 ? (
-            <div className="text-center py-10 text-gray-400">কোনো ছবি পাওয়া যায়নি।</div>
+            <div className="text-center py-12 text-slate-400 font-medium">কোনো ছবি পাওয়া যায়নি।</div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {photos.map((item) => (
-                <div key={item.id} className="border border-gray-200 rounded-xl overflow-hidden shadow-sm flex flex-col justify-between bg-gray-50 relative group">
-                  <div className="aspect-video w-full bg-white border-b border-gray-200 overflow-hidden">
-                    <img src={item.imageUrl} alt={item.caption || 'Gallery Photo'} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
-                  </div>
-
-                  <div className="p-3">
-                    <p className="text-sm font-semibold text-gray-700 line-clamp-2">
-                      {item.caption || 'কোনো ক্যাপশন নেই'}
-                    </p>
-                    {item.credit && (
-                      <p className="text-[10px] text-gray-450 mt-1 font-bold">
-                        ছবি: {item.credit}
-                      </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {photos.map((photo) => (
+                <div key={photo.id} className="border border-slate-200/90 rounded-2xl overflow-hidden shadow-2xs bg-white group flex flex-col justify-between">
+                  <div>
+                    <div className="aspect-video bg-slate-100 overflow-hidden relative">
+                      <img src={photo.imageUrl} alt={photo.caption || 'Photo'} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
+                      <span className="absolute top-2 left-2 bg-slate-900/80 text-white text-[10px] font-bold px-2 py-0.5 rounded-md">
+                        ক্রম: {photo.order}
+                      </span>
+                    </div>
+                    {photo.caption && (
+                      <div className="p-3">
+                        <p className="text-xs font-extrabold text-slate-900 line-clamp-2">{photo.caption}</p>
+                        {photo.credit && <span className="text-[10px] text-slate-400 font-semibold block mt-1">ছবি: {photo.credit}</span>}
+                      </div>
                     )}
-                    <span className="text-[9px] text-gray-400 block mt-1 font-mono">ক্রম: {item.order}</span>
                   </div>
-
-                  <button
-                    onClick={() => handleDelete(item.id)}
-                    className="absolute top-2 right-2 p-1.5 bg-white hover:bg-red-50 text-gray-500 hover:text-red-600 rounded-full shadow border border-gray-200 transition opacity-0 group-hover:opacity-100"
-                    title="মুছে ফেলুন"
-                  >
-                    <Trash2 size={14} />
-                  </button>
+                  <div className="p-3 pt-0 flex justify-end">
+                    <button
+                      onClick={() => handleDelete(photo.id)}
+                      className="p-1.5 text-rose-600 hover:bg-rose-50 rounded-xl transition flex items-center gap-1 text-xs font-bold"
+                    >
+                      <Trash2 size={14} />
+                      <span>মুছুন</span>
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>

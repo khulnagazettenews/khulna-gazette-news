@@ -2,13 +2,30 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { PlusCircle, Pencil, Trash2, Search, Eye } from 'lucide-react';
+import { 
+  PlusCircle, 
+  Pencil, 
+  Trash2, 
+  Search, 
+  Eye, 
+  ExternalLink,
+  Newspaper,
+  CheckCircle2,
+  Clock,
+  Filter,
+  Image as ImageIcon,
+  User as UserIcon,
+  ChevronLeft,
+  ChevronRight
+} from 'lucide-react';
 
 interface NewsItem {
   id: string;
   title: string;
-  category: { name: string };
-  subCategory?: { name: string } | null;
+  slug: string;
+  featuredImage?: string | null;
+  category: { name: string; slug: string };
+  subCategory?: { name: string; slug: string } | null;
   author: { name: string };
   status: string;
   viewCount: number;
@@ -58,7 +75,7 @@ export default function NewsManagementList() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('আপনি কি নিশ্চিত যে এই সংবাদটি মুছে ফেলতে চান?')) {
+    if (!confirm('আপনি কি নিশ্চিত যে এই সংবাদটি স্থায়ীভাবে মুছে ফেলতে চান?')) {
       return;
     }
 
@@ -80,135 +97,219 @@ export default function NewsManagementList() {
   const totalPages = Math.ceil(total / limit);
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div className="space-y-6 max-w-7xl mx-auto pb-10 font-sans">
+      {/* 1. Header & Title Banner */}
+      <div className="bg-white rounded-3xl p-6 shadow-xs border border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-gray-800">সংবাদসমূহ</h2>
-          <p className="text-sm text-gray-500">আপনার সাইটের সকল সংবাদ এখান থেকে পরিচালনা করুন।</p>
+          <div className="flex items-center gap-2 text-xs font-bold text-red-600 mb-1">
+            <Newspaper size={16} />
+            <span>সংবাদ কন্টেন্ট ব্যবস্থাপনা</span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+            <span>সংবাদসমূহ</span>
+            <span className="text-xs font-bold bg-slate-100 text-slate-700 px-2.5 py-1 rounded-full border border-slate-200">
+              মোট {total} টি
+            </span>
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-500 mt-1">
+            খুলনা গেজেট পোর্টালের সকল সংবাদ এখান থেকে সম্পাদনা, ফিল্টার এবং রিভিউ করুন।
+          </p>
         </div>
+
         <Link
           href="/admin/news/new"
-          className="flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-semibold text-sm px-4 py-2.5 rounded-lg transition h-fit"
+          className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-extrabold text-xs sm:text-sm px-5 py-3 rounded-2xl shadow-md shadow-red-600/20 transition transform hover:-translate-y-0.5 active:translate-y-0 shrink-0"
         >
           <PlusCircle size={18} />
           <span>নতুন সংবাদ লিখুন</span>
         </Link>
       </div>
 
-      {/* Filter panel */}
-      <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex flex-col md:flex-row gap-4 items-center justify-between">
+      {/* 2. Filter Bar & Search */}
+      <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col md:flex-row gap-4 items-center justify-between">
+        {/* Search Bar */}
         <form onSubmit={handleSearchSubmit} className="relative w-full md:max-w-md">
+          <Search size={16} className="absolute left-3.5 top-3 text-slate-400" />
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="খবরের শিরোনাম খুঁজুন..."
-            className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-600"
+            placeholder="সংবাদের শিরোনাম বা বিষয়বস্তু খুঁজুন..."
+            className="w-full pl-10 pr-4 py-2.5 text-xs sm:text-sm font-semibold bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-red-500 focus:bg-white transition"
           />
-          <button type="submit" className="absolute left-3 top-2.5 text-gray-400">
-            <Search size={18} />
-          </button>
         </form>
 
-        <div className="w-full md:w-auto flex gap-4">
-          <select
-            value={statusFilter}
-            onChange={(e) => {
-              setStatusFilter(e.target.value);
-              setPage(1);
-            }}
-            className="w-full md:w-48 text-sm border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-red-600"
+        {/* Status Pills Filter */}
+        <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
+          <button
+            type="button"
+            onClick={() => { setStatusFilter(''); setPage(1); }}
+            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition ${
+              statusFilter === '' 
+                ? 'bg-slate-900 text-white shadow-xs' 
+                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+            }`}
           >
-            <option value="">সকল খবরের অবস্থা</option>
-            <option value="PUBLISHED">প্রকাশিত (Published)</option>
-            <option value="DRAFT">খসড়া (Draft)</option>
-            <option value="SCHEDULED">শিডিউলড (Scheduled)</option>
-          </select>
+            সকল সংবাদ
+          </button>
+          <button
+            type="button"
+            onClick={() => { setStatusFilter('PUBLISHED'); setPage(1); }}
+            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1 ${
+              statusFilter === 'PUBLISHED' 
+                ? 'bg-emerald-600 text-white shadow-xs' 
+                : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-100'
+            }`}
+          >
+            <CheckCircle2 size={13} />
+            <span>প্রকাশিত</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => { setStatusFilter('DRAFT'); setPage(1); }}
+            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1 ${
+              statusFilter === 'DRAFT' 
+                ? 'bg-amber-600 text-white shadow-xs' 
+                : 'bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-100'
+            }`}
+          >
+            <Clock size={13} />
+            <span>খসড়া</span>
+          </button>
         </div>
       </div>
 
-      {/* News Table */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      {/* 3. News Table Card */}
+      <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full border-collapse text-left">
             <thead>
-              <tr className="bg-gray-50 border-b border-gray-200">
-                <th className="px-6 py-4 text-xs font-semibold text-gray-500">শিরোনাম</th>
-                <th className="px-6 py-4 text-xs font-semibold text-gray-500">ক্যাটাগরি</th>
-                <th className="px-6 py-4 text-xs font-semibold text-gray-500">লেখক</th>
-                <th className="px-6 py-4 text-xs font-semibold text-gray-500">অবস্থা</th>
-                <th className="px-6 py-4 text-xs font-semibold text-gray-500">ভিউ</th>
-                <th className="px-6 py-4 text-xs font-semibold text-gray-500 text-right">অ্যাকশন</th>
+              <tr className="bg-slate-50/70 border-b border-slate-150 text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">
+                <th className="px-6 py-4">সংবাদের শিরোনাম</th>
+                <th className="px-4 py-4">ক্যাটাগরি</th>
+                <th className="px-4 py-4">লেখক</th>
+                <th className="px-4 py-4">অবস্থা</th>
+                <th className="px-4 py-4 text-center">ভিউ</th>
+                <th className="px-6 py-4 text-right">অ্যাকশন</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-slate-100 text-xs">
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-gray-400">
-                    লোডিং হচ্ছে...
+                  <td colSpan={6} className="px-6 py-12 text-center text-slate-400 font-bold">
+                    <div className="animate-spin rounded-full h-7 w-7 border-b-2 border-red-600 mx-auto mb-2"></div>
+                    সংবাদ তালিকা লোড হচ্ছে...
                   </td>
                 </tr>
               ) : news.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-gray-400">
+                  <td colSpan={6} className="px-6 py-12 text-center text-slate-400 font-medium">
                     কোনো সংবাদ পাওয়া যায়নি।
                   </td>
                 </tr>
               ) : (
                 news.map((item) => (
-                  <tr key={item.id} className="hover:bg-gray-50/50 transition">
-                    <td className="px-6 py-4 max-w-sm">
-                      <span className="font-semibold text-gray-800 line-clamp-1">{item.title}</span>
-                      <span className="text-[10px] text-gray-400 block mt-1">
-                        তৈরি হয়েছে:{' '}
-                        {new Date(item.createdAt).toLocaleDateString('bn-BD', {
-                          year: 'numeric',
-                          month: 'short',
-                          day: 'numeric',
-                        })}
-                      </span>
+                  <tr key={item.id} className="hover:bg-slate-50/80 transition group">
+                    {/* Title with Image Thumbnail */}
+                    <td className="px-6 py-3.5">
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-10 rounded-xl overflow-hidden bg-slate-100 shrink-0 border border-slate-200 shadow-2xs">
+                          {item.featuredImage ? (
+                            <img src={item.featuredImage} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-slate-400 bg-slate-100">
+                              <ImageIcon size={16} />
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="min-w-0 max-w-sm">
+                          <Link 
+                            href={`/admin/news/${item.id}/edit`}
+                            className="font-extrabold text-slate-900 group-hover:text-red-600 transition leading-snug line-clamp-1 block"
+                          >
+                            {item.title}
+                          </Link>
+                          <span className="text-[10px] text-slate-400 block mt-0.5 font-medium">
+                            {new Date(item.createdAt).toLocaleDateString('bn-BD', {
+                              year: 'numeric',
+                              month: 'short',
+                              day: 'numeric'
+                            })}
+                          </span>
+                        </div>
+                      </div>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">
-                      <span className="bg-gray-100 px-2.5 py-1 rounded">
-                        {item.category?.name || 'অনির্ধারিত'}
+
+                    {/* Category Pill */}
+                    <td className="px-4 py-3.5">
+                      <span className="text-[11px] font-bold text-teal-800 bg-teal-50 px-2.5 py-1 rounded-lg border border-teal-100 inline-block">
+                        {item.category?.name || 'সাধারণ'}
                       </span>
                       {item.subCategory && (
-                        <span className="text-gray-400 text-xs ml-1.5">
-                          &gt; {item.subCategory.name}
+                        <span className="text-slate-400 text-[10px] font-semibold block mt-0.5">
+                          ↳ {item.subCategory.name}
                         </span>
                       )}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{item.author.name}</td>
-                    <td className="px-6 py-4 text-sm">
-                      <span
-                        className={`text-[10px] font-semibold px-2.5 py-1 rounded-full ${
-                          item.status === 'PUBLISHED'
-                            ? 'bg-green-50 text-green-700 border border-green-150'
-                            : item.status === 'DRAFT'
-                            ? 'bg-amber-50 text-amber-700 border border-amber-150'
-                            : 'bg-indigo-50 text-indigo-750 border border-indigo-150'
-                        }`}
-                      >
-                        {item.status === 'PUBLISHED'
-                          ? 'প্রকাশিত'
+
+                    {/* Author */}
+                    <td className="px-4 py-3.5 text-slate-700 font-bold">
+                      <div className="flex items-center gap-1.5">
+                        <div className="w-5 h-5 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-[10px] font-extrabold">
+                          {item.author?.name ? item.author.name.charAt(0) : <UserIcon size={10} />}
+                        </div>
+                        <span className="truncate">{item.author?.name || 'রিপোর্টার'}</span>
+                      </div>
+                    </td>
+
+                    {/* Status Pill Badge */}
+                    <td className="px-4 py-3.5">
+                      <span className={`text-[10px] font-black px-2.5 py-1 rounded-full inline-flex items-center gap-1 ${
+                        item.status === 'PUBLISHED'
+                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                           : item.status === 'DRAFT'
-                          ? 'খসড়া'
-                          : 'শিডিউলড'}
+                          ? 'bg-amber-50 text-amber-700 border border-amber-200'
+                          : 'bg-indigo-50 text-indigo-700 border border-indigo-200'
+                      }`}>
+                        <span className={`w-1.5 h-1.5 rounded-full ${
+                          item.status === 'PUBLISHED' ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'
+                        }`}></span>
+                        <span>
+                          {item.status === 'PUBLISHED' ? 'প্রকাশিত' : item.status === 'DRAFT' ? 'খসড়া' : 'শিডিউলড'}
+                        </span>
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-sm font-semibold text-gray-600">{item.viewCount}</td>
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-2">
+
+                    {/* Views */}
+                    <td className="px-4 py-3.5 text-center font-extrabold text-slate-700">
+                      {item.viewCount.toLocaleString('bn-BD')}
+                    </td>
+
+                    {/* Action buttons */}
+                    <td className="px-6 py-3.5 text-right">
+                      <div className="flex items-center justify-end gap-1.5">
+                        {item.status === 'PUBLISHED' && (
+                          <Link
+                            href={`/${item.category?.slug || 'news'}/${item.id}`}
+                            target="_blank"
+                            className="p-1.5 text-slate-500 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition"
+                            title="ওয়েবসাইটে দেখুন"
+                          >
+                            <ExternalLink size={15} />
+                          </Link>
+                        )}
                         <Link
                           href={`/admin/news/${item.id}/edit`}
-                          className="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition"
-                          title="সম্পাদনা"
+                          className="p-1.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition"
+                          title="সম্পাদনা করুন"
                         >
                           <Pencil size={15} />
                         </Link>
                         <button
+                          type="button"
                           onClick={() => handleDelete(item.id)}
-                          className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded transition"
+                          className="p-1.5 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition"
                           title="মুছে ফেলুন"
                         >
                           <Trash2 size={15} />
@@ -222,26 +323,32 @@ export default function NewsManagementList() {
           </table>
         </div>
 
-        {/* Pagination panel */}
+        {/* Pagination Controls */}
         {totalPages > 1 && (
-          <div className="px-6 py-4 border-t border-gray-200 bg-gray-50 flex items-center justify-between">
-            <span className="text-xs text-gray-500">
-              পৃষ্ঠা {page} / {totalPages} (মোট {total}টি খবরের মধ্যে)
+          <div className="px-6 py-4 border-t border-slate-100 bg-slate-50/60 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <span className="text-xs text-slate-500 font-medium">
+              পৃষ্ঠা <span className="font-bold text-slate-900">{page}</span> / {totalPages} (মোট {total}টি সংবাদ)
             </span>
-            <div className="flex gap-2">
+
+            <div className="flex items-center gap-2">
               <button
+                type="button"
                 onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
                 disabled={page === 1}
-                className="bg-white border border-gray-300 text-gray-600 text-xs px-3 py-1.5 rounded hover:bg-gray-100 transition disabled:opacity-50"
+                className="inline-flex items-center gap-1 bg-white border border-slate-200 text-slate-700 text-xs font-bold px-3 py-1.5 rounded-xl hover:bg-slate-100 transition disabled:opacity-40 shadow-2xs"
               >
-                পূর্ববর্তী
+                <ChevronLeft size={14} />
+                <span>পূর্ববর্তী</span>
               </button>
+
               <button
+                type="button"
                 onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
                 disabled={page === totalPages}
-                className="bg-white border border-gray-300 text-gray-600 text-xs px-3 py-1.5 rounded hover:bg-gray-100 transition disabled:opacity-50"
+                className="inline-flex items-center gap-1 bg-white border border-slate-200 text-slate-700 text-xs font-bold px-3 py-1.5 rounded-xl hover:bg-slate-100 transition disabled:opacity-40 shadow-2xs"
               >
-                পরবর্তী
+                <span>পরবর্তী</span>
+                <ChevronRight size={14} />
               </button>
             </div>
           </div>

@@ -1,7 +1,19 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Upload, X, Trash2, Calendar, FileText, ChevronLeft, ChevronRight, Check } from 'lucide-react';
+import { 
+  Upload, 
+  X, 
+  Trash2, 
+  Calendar, 
+  FileText, 
+  CheckCircle2, 
+  AlertCircle,
+  FileImage,
+  Sparkles,
+  Check,
+  Download
+} from 'lucide-react';
 
 interface EpaperIssue {
   id: string;
@@ -148,7 +160,7 @@ export default function EpaperManagement() {
 
       const data = await res.json();
       if (res.ok) {
-        setSuccess('১ দিনের ৪টি পৃষ্ঠার ই-পেপার সফলভাবে সংরক্ষিত হয়েছে!');
+        setSuccess('১ দিনের ৪টি পৃষ্ঠার ই-পেপার সফলভাবে প্রকাশিত হয়েছে!');
         setDate('');
         setImageUrls(['', '', '', '']);
         fetchIssues();
@@ -185,67 +197,85 @@ export default function EpaperManagement() {
   };
 
   return (
-    <div className="space-y-6 font-sans">
-      <div>
-        <h2 className="text-xl font-bold text-gray-800">ই-পেপার ম্যানেজমেন্ট (১ দিনের ৪টি পৃষ্ঠা)</h2>
-        <p className="text-sm text-gray-500">
-          প্রতিটি প্রকাশের দিনের জন্য ১ নম্বর থেকে ৪ নম্বর পৃষ্ঠা (প্রথম-পাতা, ২য়-পাতা, ৩য়-পাতা, শেষ-পাতা) আপলোড করুন।
-        </p>
+    <div className="space-y-6 max-w-7xl mx-auto pb-10 font-sans">
+      {/* Header section */}
+      <div className="bg-white rounded-3xl p-6 shadow-xs border border-slate-200/80 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2 text-xs font-bold text-red-600 mb-1">
+            <FileImage size={16} />
+            <span>ডিজিটাল ই-পেপার আর্কাইভ</span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+            <span>ই-পেপার ব্যবস্থাপনা</span>
+            <span className="text-xs font-bold bg-slate-100 text-slate-700 px-2.5 py-1 rounded-full border border-slate-200">
+              {issues.length} টি প্রকাশনা
+            </span>
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-500 mt-1">
+            প্রতিটি প্রকাশের দিনের জন্য ১ নম্বর থেকে ৪ নম্বর পৃষ্ঠা আপলোড ও নিয়ন্ত্রণ করুন।
+          </p>
+        </div>
       </div>
 
+      {/* Alerts */}
       {success && (
-        <div className="bg-green-100 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm font-bold">
-          {success}
+        <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-4 rounded-2xl text-xs font-bold flex items-center gap-2">
+          <CheckCircle2 size={18} />
+          <span>{success}</span>
         </div>
       )}
 
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm font-bold">
-          {error}
+        <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded-2xl text-xs font-bold flex items-center gap-2">
+          <AlertCircle size={18} />
+          <span>{error}</span>
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Upload Form (Left Column) */}
-        <div className="lg:col-span-5 bg-white p-6 rounded-xl border border-gray-200 shadow-sm h-fit space-y-5">
-          <h3 className="font-bold text-gray-800 text-base flex items-center gap-2 border-b border-gray-150 pb-3">
-            <Upload size={20} className="text-red-600" />
+        <div className="lg:col-span-5 bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs space-y-5">
+          <h3 className="font-extrabold text-slate-900 text-base flex items-center gap-2 border-b border-slate-100 pb-3">
+            <Upload size={18} className="text-red-600" />
             <span>১ দিনের ৪টি পেজ আপলোড করুন</span>
           </h3>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-4 text-xs font-semibold text-slate-700">
             {/* Date Input */}
             <div>
-              <label className="block text-sm font-extrabold text-gray-700 mb-1">
+              <label className="block mb-1.5 font-extrabold text-slate-900">
                 পত্রিকা প্রকাশের তারিখ <span className="text-red-600">*</span>
               </label>
-              <input
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-red-600"
-                required
-              />
+              <div className="relative">
+                <Calendar size={16} className="absolute left-3.5 top-3 text-slate-400" />
+                <input
+                  type="date"
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
+                  className="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl font-bold focus:outline-none focus:border-red-500 focus:bg-white transition"
+                  required
+                />
+              </div>
             </div>
 
             {/* Quick Bulk Upload */}
-            <div className="bg-slate-50 border border-slate-200 rounded-lg p-3">
-              <label className="block text-xs font-bold text-gray-600 mb-1.5">
-                একসাথে ৪টি ছবি নির্বাচন করতে চাইলে:
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 space-y-1">
+              <label className="block text-[11px] font-bold text-slate-700">
+                একসাথে ৪টি ছবি সোর্স ফাইল নির্বাচন করুন:
               </label>
               <input
                 type="file"
                 accept="image/*"
                 multiple
                 onChange={handleBulkUpload}
-                className="block w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-extrabold file:bg-red-600 file:text-white hover:file:bg-red-700 cursor-pointer"
+                className="block w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-extrabold file:bg-slate-900 file:text-white hover:file:bg-slate-800 cursor-pointer"
               />
             </div>
 
             {/* 4 Dedicated Slots Grid */}
-            <div className="space-y-3 pt-1">
-              <label className="block text-xs font-extrabold text-gray-700">
-                পৃষ্ঠা অনুযায়ী ছবি আপলোড (১ থেকে ৪):
+            <div className="space-y-2 pt-1">
+              <label className="block text-xs font-extrabold text-slate-900">
+                পৃষ্ঠা অনুযায়ী ছবি প্রিভিউ (১ থেকে ৪):
               </label>
 
               <div className="grid grid-cols-2 gap-3">
@@ -256,36 +286,36 @@ export default function EpaperManagement() {
                   return (
                     <div
                       key={idx}
-                      className="border border-gray-200 rounded-lg p-2.5 bg-gray-50 flex flex-col justify-between space-y-2 relative"
+                      className="border border-slate-200/90 rounded-2xl p-2.5 bg-slate-50 flex flex-col justify-between space-y-2 relative"
                     >
-                      <div className="flex items-center justify-between text-xs font-extrabold text-gray-800 border-b border-gray-200 pb-1">
+                      <div className="flex items-center justify-between text-[11px] font-black text-slate-800 border-b border-slate-200/70 pb-1">
                         <span>{pageTitle}</span>
-                        {url && <Check size={14} className="text-green-600" />}
+                        {url && <Check size={14} className="text-emerald-600" />}
                       </div>
 
                       {url ? (
-                        <div className="relative aspect-[3/4] rounded overflow-hidden border border-gray-300 bg-white group">
-                          <img src={url} alt={pageTitle} className="w-full h-full object-cover" />
+                        <div className="relative aspect-[3/4] rounded-xl overflow-hidden border border-slate-200 bg-white group">
+                          <img src={url} alt={pageTitle} className="w-full h-full object-cover epaper-sharp" />
                           <button
                             type="button"
                             onClick={() => removeSlotImage(idx)}
-                            className="absolute top-1 right-1 bg-red-600 text-white p-1 rounded-full hover:bg-red-700 shadow transition"
+                            className="absolute top-1.5 right-1.5 bg-red-600 text-white p-1 rounded-full hover:bg-red-700 shadow-md transition"
                             title="মুছে ফেলুন"
                           >
                             <X size={14} />
                           </button>
                         </div>
                       ) : (
-                        <label className="aspect-[3/4] border-2 border-dashed border-gray-300 rounded flex flex-col items-center justify-center cursor-pointer hover:border-red-600 bg-white transition p-2 text-center">
+                        <label className="aspect-[3/4] border-2 border-dashed border-slate-300 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-red-600 bg-white transition p-2 text-center">
                           {isUploading ? (
-                            <span className="text-[11px] font-bold text-red-600 animate-pulse">
+                            <span className="text-[10px] font-extrabold text-red-600 animate-pulse">
                               আপলোড হচ্ছে...
                             </span>
                           ) : (
                             <>
-                              <Upload size={18} className="text-gray-400 mb-1" />
-                              <span className="text-[11px] font-bold text-gray-600">
-                                ছবি আপলোড
+                              <Upload size={18} className="text-slate-400 mb-1" />
+                              <span className="text-[10px] font-bold text-slate-600">
+                                আপলোড করুন
                               </span>
                             </>
                           )}
@@ -307,23 +337,27 @@ export default function EpaperManagement() {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full bg-red-600 hover:bg-red-700 text-white font-extrabold text-sm py-3 rounded-lg transition disabled:opacity-50 shadow-sm"
+              className="w-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-black text-xs sm:text-sm py-3 rounded-2xl transition disabled:opacity-50 shadow-md shadow-red-600/20"
             >
-              {submitting ? 'সংরক্ষণ করা হচ্ছে...' : '৪টি পাতার ই-পেপার প্রকাশ করুন'}
+              {submitting ? 'প্রকাশিত করা হচ্ছে...' : '৪টি পাতার ই-পেপার প্রকাশ করুন'}
             </button>
           </form>
         </div>
 
         {/* Epaper Issues list (Right Column) */}
-        <div className="lg:col-span-7 bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-          <h3 className="font-bold text-gray-800 mb-4 border-b border-gray-150 pb-2">
-            প্রকাশিত ই-পেপার সংখ্যার তালিকা
+        <div className="lg:col-span-7 bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs space-y-4">
+          <h3 className="font-extrabold text-slate-900 text-base border-b border-slate-100 pb-3 flex items-center justify-between">
+            <span>প্রকাশিত ই-পেপার সংখ্যার তালিকা</span>
+            <span className="text-xs text-slate-400 font-bold">মোট: {issues.length} টি</span>
           </h3>
 
           {loading ? (
-            <div className="text-center py-12 text-gray-400 font-bold">লোডিং হচ্ছে...</div>
+            <div className="text-center py-12 text-slate-400 font-bold">
+              <div className="animate-spin rounded-full h-7 w-7 border-b-2 border-red-600 mx-auto mb-2"></div>
+              ই-পেপার লোড হচ্ছে...
+            </div>
           ) : issues.length === 0 ? (
-            <div className="text-center py-12 text-gray-400 font-bold">কোনো ই-পেপার পাওয়া যায়নি।</div>
+            <div className="text-center py-12 text-slate-400 font-medium">কোনো ই-পেপার পাওয়া যায়নি।</div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               {issues.map((issue) => {
@@ -332,9 +366,9 @@ export default function EpaperManagement() {
                   : (issue.imageUrl ? [issue.imageUrl] : []);
 
                 return (
-                  <div key={issue.id} className="border border-gray-200 rounded-xl overflow-hidden shadow-xs bg-slate-50 relative group p-3 space-y-3">
-                    <div className="flex items-center justify-between border-b border-gray-200 pb-2">
-                      <span className="font-extrabold text-xs text-gray-800">
+                  <div key={issue.id} className="border border-slate-200/90 rounded-2xl overflow-hidden shadow-2xs bg-slate-50/70 p-3.5 space-y-3">
+                    <div className="flex items-center justify-between border-b border-slate-200/80 pb-2">
+                      <span className="font-black text-xs text-slate-900">
                         {new Date(issue.date).toLocaleDateString('bn-BD', {
                           year: 'numeric',
                           month: 'long',
@@ -344,7 +378,7 @@ export default function EpaperManagement() {
                       </span>
                       <button
                         onClick={() => handleDelete(issue.id)}
-                        className="text-gray-400 hover:text-red-600 p-1 rounded transition"
+                        className="text-slate-400 hover:text-red-600 p-1 rounded-lg transition"
                         title="ই-পেপার সংকলন মুছে ফেলুন"
                       >
                         <Trash2 size={16} />
@@ -352,19 +386,19 @@ export default function EpaperManagement() {
                     </div>
 
                     {/* 4 Thumbnails Mini Grid */}
-                    <div className="grid grid-cols-4 gap-1.5 bg-white p-1.5 border border-gray-200 rounded">
+                    <div className="grid grid-cols-4 gap-1.5 bg-white p-1.5 border border-slate-200 rounded-xl">
                       {[0, 1, 2, 3].map((slotIdx) => {
                         const img = list[slotIdx];
                         return (
-                          <div key={slotIdx} className="aspect-[3/4] bg-slate-100 rounded border border-gray-200 overflow-hidden relative">
+                          <div key={slotIdx} className="aspect-[3/4] bg-slate-100 rounded-lg border border-slate-200 overflow-hidden relative">
                             {img ? (
-                              <img src={img} alt={`Page ${slotIdx + 1}`} className="w-full h-full object-cover" />
+                              <img src={img} alt={`Page ${slotIdx + 1}`} className="w-full h-full object-cover epaper-sharp" />
                             ) : (
-                              <div className="w-full h-full flex items-center justify-center text-[9px] text-gray-300 font-bold">
+                              <div className="w-full h-full flex items-center justify-center text-[9px] text-slate-300 font-bold">
                                 খালি
                               </div>
                             )}
-                            <span className="absolute bottom-0 inset-x-0 bg-black/75 text-white text-[8px] font-bold text-center py-0.2">
+                            <span className="absolute bottom-0 inset-x-0 bg-slate-900/90 text-white text-[8px] font-black text-center py-0.2">
                               P{slotIdx + 1}
                             </span>
                           </div>
@@ -372,11 +406,12 @@ export default function EpaperManagement() {
                       })}
                     </div>
 
-                    <div className="flex items-center justify-between text-[11px] text-gray-500 font-bold pt-1">
+                    <div className="flex items-center justify-between text-[11px] text-slate-500 font-bold pt-0.5">
                       <span>মোট পৃষ্ঠা: {list.length}টি</span>
                       {issue.pdfUrl && (
-                        <a href={issue.pdfUrl} target="_blank" className="text-red-600 hover:underline">
-                          PDF ফাইল
+                        <a href={issue.pdfUrl} target="_blank" className="text-red-600 hover:underline flex items-center gap-1">
+                          <Download size={12} />
+                          <span>পিডিএফ (PDF)</span>
                         </a>
                       )}
                     </div>

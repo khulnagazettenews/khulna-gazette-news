@@ -11,8 +11,10 @@ import {
   Mail, 
   User as UserIcon, 
   X, 
-  Check, 
-  AlertCircle 
+  CheckCircle2, 
+  AlertCircle,
+  Users,
+  ShieldCheck
 } from 'lucide-react';
 
 interface User {
@@ -74,7 +76,7 @@ export default function RoleManagementPage() {
   if (status === 'loading') {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-red-650"></div>
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-red-600"></div>
       </div>
     );
   }
@@ -82,13 +84,13 @@ export default function RoleManagementPage() {
   // Security Check: Only SUPER_ADMIN and ADMIN allowed
   if (!session || !['SUPER_ADMIN', 'ADMIN'].includes(role)) {
     return (
-      <div className="bg-red-50 border border-red-200 rounded-xl p-8 text-center max-w-2xl mx-auto my-12 shadow-sm">
+      <div className="bg-red-50 border border-red-200 rounded-3xl p-8 text-center max-w-2xl mx-auto my-12 shadow-sm font-sans">
         <div className="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
           <ShieldAlert size={32} />
         </div>
-        <h2 className="text-xl font-bold text-gray-800 mb-2">অননুমোদিত অ্যাক্সেস!</h2>
-        <p className="text-gray-600 text-sm mb-4">
-          এই পৃষ্ঠাটি শুধুমাত্র অ্যাডমিন বা সুপার অ্যাডমিনদের জন্য সংরক্ষিত। আপনার কাছে এই পৃষ্ঠাটি দেখার অনুমতি নেই।
+        <h2 className="text-xl font-bold text-slate-900 mb-2">অননুমোদিত অ্যাক্সেস!</h2>
+        <p className="text-slate-600 text-xs sm:text-sm mb-4">
+          এই পৃষ্ঠাটি শুধুমাত্র অ্যাডমিন বা সুপার অ্যাডমিনদের জন্য সংরক্ষিত।
         </p>
       </div>
     );
@@ -111,7 +113,7 @@ export default function RoleManagementPage() {
         throw new Error(data.error || 'ব্যবহারকারী তৈরি করা সম্ভব হয়নি।');
       }
 
-      setSuccess('ব্যবহারকারী সফলভাবে তৈরি করা হয়েছে।');
+      setSuccess('নতুন ব্যবহারকারী সফলভাবে যোগ করা হয়েছে।');
       setIsAddModalOpen(false);
       setFormData({ name: '', email: '', password: '', role: 'REPORTER', bio: '' });
       fetchUsers();
@@ -206,55 +208,50 @@ export default function RoleManagementPage() {
     switch (role) {
       case 'SUPER_ADMIN':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-red-50 text-red-700 border border-red-200">
-            সুপার অ্যাডমিন
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black bg-rose-50 text-rose-700 border border-rose-200">
+            <ShieldCheck size={13} />
+            <span>সুপার অ্যাডমিন</span>
           </span>
         );
       case 'ADMIN':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-purple-50 text-purple-750 border border-purple-200">
-            অ্যাডমিন
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black bg-purple-50 text-purple-750 border border-purple-200">
+            <span>অ্যাডমিন</span>
           </span>
         );
       case 'EDITOR':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
-            সম্পাদক
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black bg-blue-50 text-blue-700 border border-blue-200">
+            <span>সম্পাদক</span>
           </span>
         );
       case 'SUB_EDITOR':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
-            সহকারী সম্পাদক
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black bg-indigo-50 text-indigo-700 border border-indigo-200">
+            <span>সহকারী সম্পাদক</span>
           </span>
         );
       case 'REPORTER':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-            প্রতিবেদক
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200">
+            <span>প্রতিবেদক</span>
           </span>
         );
       case 'CONTRIBUTOR':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-teal-50 text-teal-700 border border-teal-200">
-            কন্ট্রিবিউটর
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black bg-teal-50 text-teal-700 border border-teal-200">
+            <span>কন্ট্রিবিউটর</span>
           </span>
         );
       case 'ADVERTISEMENT_MANAGER':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">
-            বিজ্ঞাপন ম্যানেজার
-          </span>
-        );
-      case 'SUBSCRIBER':
-        return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200">
-            সাবস্ক্রাইবার
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black bg-amber-50 text-amber-700 border border-amber-200">
+            <span>বিজ্ঞাপন ম্যানেজার</span>
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-gray-50 text-gray-700 border border-gray-200">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-slate-100 text-slate-700 border border-slate-200">
             {role}
           </span>
         );
@@ -262,83 +259,95 @@ export default function RoleManagementPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-7xl mx-auto pb-10 font-sans">
       {/* Header section */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="bg-white rounded-3xl p-6 shadow-xs border border-slate-200/80 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-gray-800">ইউজার ও রোলস ম্যানেজমেন্ট</h2>
-          <p className="text-sm text-gray-500">খুলনা গেজেট টিমের সদস্যদের পরিচালনা করুন এবং তাদের রোল সেট করুন।</p>
+          <div className="flex items-center gap-2 text-xs font-bold text-red-600 mb-1">
+            <Users size={16} />
+            <span>টিম পারমিশন ও এক্সেস কন্ট্রোল</span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+            <span>ইউজার ও রোলস ব্যবস্থাপনা</span>
+            <span className="text-xs font-bold bg-slate-100 text-slate-700 px-2.5 py-1 rounded-full border border-slate-200">
+              মোট {users.length} জন
+            </span>
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-500 mt-1">
+            খুলনা গেজেটের সম্পাদকীয় এবং প্রযুক্তিগত দলের রোল পারমিশন পরিচালনা করুন।
+          </p>
         </div>
+
         <button
           onClick={() => {
             setFormData({ name: '', email: '', password: '', role: 'REPORTER', bio: '' });
             setIsAddModalOpen(true);
           }}
-          className="flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-semibold text-sm px-4 py-2.5 rounded-lg shadow-sm hover:shadow transition"
+          className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-extrabold text-xs sm:text-sm px-5 py-3 rounded-2xl shadow-md shadow-red-600/20 transition transform hover:-translate-y-0.5 shrink-0"
         >
           <UserPlus size={18} />
           <span>নতুন সদস্য যোগ করুন</span>
         </button>
       </div>
 
-      {/* Error/Success alerts */}
+      {/* Alerts */}
       {error && (
-        <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded-md flex items-center gap-3 text-sm animate-pulse">
-          <AlertCircle size={18} className="shrink-0" />
+        <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded-2xl text-xs font-bold flex items-center gap-2">
+          <AlertCircle size={18} />
           <span>{error}</span>
         </div>
       )}
       {success && (
-        <div className="bg-emerald-50 border-l-4 border-emerald-500 text-emerald-700 p-4 rounded-md flex items-center gap-3 text-sm">
-          <Check size={18} className="shrink-0" />
+        <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-4 rounded-2xl text-xs font-bold flex items-center gap-2">
+          <CheckCircle2 size={18} />
           <span>{success}</span>
         </div>
       )}
 
       {/* Users table */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full border-collapse text-left">
             <thead>
-              <tr className="bg-gray-50 border-b border-gray-200">
-                <th className="px-6 py-4 text-xs font-semibold text-gray-500">নাম</th>
-                <th className="px-6 py-4 text-xs font-semibold text-gray-500">ইমেইল</th>
-                <th className="px-6 py-4 text-xs font-semibold text-gray-500">রোল / পদবী</th>
-                <th className="px-6 py-4 text-xs font-semibold text-gray-500">যোগদানের তারিখ</th>
-                <th className="px-6 py-4 text-xs font-semibold text-gray-500 text-right">অ্যাকশন</th>
+              <tr className="bg-slate-50/70 border-b border-slate-150 text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">
+                <th className="px-6 py-4">সদস্যের নাম</th>
+                <th className="px-6 py-4">ইমেইল ঠিকানা</th>
+                <th className="px-6 py-4">রোল / পদবী</th>
+                <th className="px-6 py-4">যোগদানের তারিখ</th>
+                <th className="px-6 py-4 text-right">অ্যাকশন</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-slate-100 text-xs">
               {loading ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-12 text-center text-gray-400">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600 mx-auto"></div>
-                    <span className="text-xs mt-2 block">ইউজার তালিকা লোড হচ্ছে...</span>
+                  <td colSpan={5} className="px-6 py-12 text-center text-slate-400 font-bold">
+                    <div className="animate-spin rounded-full h-7 w-7 border-b-2 border-red-600 mx-auto mb-2"></div>
+                    ইউজার তালিকা লোড হচ্ছে...
                   </td>
                 </tr>
               ) : users.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-12 text-center text-gray-400">
+                  <td colSpan={5} className="px-6 py-12 text-center text-slate-400 font-medium">
                     কোনো ব্যবহারকারী পাওয়া যায়নি।
                   </td>
                 </tr>
               ) : (
                 users.map((user) => (
-                  <tr key={user.id} className="hover:bg-gray-50/50 transition">
+                  <tr key={user.id} className="hover:bg-slate-50/80 transition group">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-700">
+                        <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-slate-200 to-slate-100 border border-slate-200 text-slate-700 flex items-center justify-center font-black text-sm shrink-0 shadow-2xs">
                           {user.name.charAt(0)}
                         </div>
                         <div>
-                          <span className="font-semibold text-gray-800 block text-sm">{user.name}</span>
-                          {user.bio && <span className="text-[10px] text-gray-400 block line-clamp-1">{user.bio}</span>}
+                          <span className="font-extrabold text-slate-900 block text-sm">{user.name}</span>
+                          {user.bio && <span className="text-[11px] text-slate-400 block line-clamp-1">{user.bio}</span>}
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-650">{user.email}</td>
+                    <td className="px-6 py-4 text-slate-700 font-semibold">{user.email}</td>
                     <td className="px-6 py-4">{getRoleBadge(user.role)}</td>
-                    <td className="px-6 py-4 text-sm text-gray-500">
+                    <td className="px-6 py-4 text-slate-500 font-medium">
                       {new Date(user.createdAt).toLocaleDateString('bn-BD', {
                         year: 'numeric',
                         month: 'long',
@@ -346,11 +355,11 @@ export default function RoleManagementPage() {
                       })}
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-2">
+                      <div className="flex items-center justify-end gap-1.5">
                         <button
                           onClick={() => openEditModal(user)}
                           disabled={user.role === 'SUPER_ADMIN' && role === 'ADMIN'}
-                          className="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition disabled:opacity-30 disabled:hover:bg-transparent"
+                          className="p-1.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition disabled:opacity-30"
                           title="সম্পাদনা"
                         >
                           <Pencil size={15} />
@@ -358,7 +367,7 @@ export default function RoleManagementPage() {
                         <button
                           onClick={() => handleDelete(user)}
                           disabled={user.id === (session.user as any).id || (user.role === 'SUPER_ADMIN' && role === 'ADMIN')}
-                          className="p-1.5 text-gray-500 hover:text-red-650 hover:bg-red-50 rounded transition disabled:opacity-30 disabled:hover:bg-transparent"
+                          className="p-1.5 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition disabled:opacity-30"
                           title="মুছে ফেলুন"
                         >
                           <Trash2 size={15} />
@@ -375,79 +384,73 @@ export default function RoleManagementPage() {
 
       {/* Add User Modal */}
       {isAddModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-xl max-w-md w-full shadow-lg overflow-hidden border border-gray-100 animate-in fade-in zoom-in-95 duration-200">
-            <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-              <h3 className="font-bold text-gray-800 flex items-center gap-2">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
+          <div className="bg-white rounded-3xl max-w-md w-full shadow-2xl overflow-hidden border border-slate-200 animate-in fade-in zoom-in-95 duration-200">
+            <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+              <h3 className="font-extrabold text-slate-900 text-base flex items-center gap-2">
                 <UserPlus size={18} className="text-red-600" />
                 <span>নতুন সদস্য যোগ করুন</span>
               </h3>
               <button 
                 onClick={() => setIsAddModalOpen(false)}
-                className="text-gray-400 hover:text-gray-600 rounded-full p-1 hover:bg-gray-100 transition"
+                className="text-slate-400 hover:text-slate-600 rounded-full p-1 transition"
               >
                 <X size={18} />
               </button>
             </div>
             
-            <form onSubmit={handleAddSubmit} className="p-6 space-y-4">
+            <form onSubmit={handleAddSubmit} className="p-6 space-y-4 text-xs font-semibold text-slate-700">
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1.5">সম্পূর্ণ নাম</label>
+                <label className="block mb-1.5 font-bold text-slate-900">সম্পূর্ণ নাম</label>
                 <div className="relative">
-                  <span className="absolute left-3 top-2.5 text-gray-400">
-                    <UserIcon size={16} />
-                  </span>
+                  <UserIcon size={16} className="absolute left-3.5 top-3 text-slate-400" />
                   <input
                     type="text"
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     placeholder="যেমন: সাকিব আল হাসান"
-                    className="w-full pl-9 pr-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-650 focus:border-red-650"
+                    className="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-red-500 focus:bg-white font-bold transition"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1.5">ইমেইল ঠিকানা</label>
+                <label className="block mb-1.5 font-bold text-slate-900">ইমেইল ঠিকানা</label>
                 <div className="relative">
-                  <span className="absolute left-3 top-2.5 text-gray-400">
-                    <Mail size={16} />
-                  </span>
+                  <Mail size={16} className="absolute left-3.5 top-3 text-slate-400" />
                   <input
                     type="email"
                     required
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     placeholder="যেমন: mail@example.com"
-                    className="w-full pl-9 pr-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-650 focus:border-red-650"
+                    className="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-red-500 focus:bg-white font-bold transition"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1.5">পাসওয়ার্ড</label>
+                <label className="block mb-1.5 font-bold text-slate-900">পাসওয়ার্ড</label>
                 <div className="relative">
-                  <span className="absolute left-3 top-2.5 text-gray-400">
-                    <Lock size={16} />
-                  </span>
+                  <Lock size={16} className="absolute left-3.5 top-3 text-slate-400" />
                   <input
                     type="password"
                     required
                     value={formData.password}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                     placeholder="কমপক্ষে ৬টি অক্ষর"
-                    className="w-full pl-9 pr-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-650 focus:border-red-650"
+                    className="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-red-500 focus:bg-white font-bold transition"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1.5">রোল / পদবী</label>
+                <label className="block mb-1.5 font-bold text-slate-900">রোল / পদবী</label>
                 <select
                   value={formData.role}
                   onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-650 focus:border-red-650 bg-white"
+                  className="w-full px-3.5 py-2.5 border border-slate-200 rounded-2xl focus:outline-none focus:border-red-500 bg-slate-50 font-bold transition cursor-pointer"
                 >
                   <option value="SUBSCRIBER">সাবস্ক্রাইবার (Subscriber)</option>
                   <option value="CONTRIBUTOR">কন্ট্রিবিউটর (Contributor)</option>
@@ -463,27 +466,27 @@ export default function RoleManagementPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1.5">সংক্ষিপ্ত বায়ো (ঐচ্ছিক)</label>
+                <label className="block mb-1.5 font-bold text-slate-900">সংক্ষিপ্ত বায়ো (ঐচ্ছিক)</label>
                 <textarea
                   value={formData.bio}
                   onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
                   placeholder="যেমন: খুলনা ব্যুরো প্রধান"
                   rows={2}
-                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-650 focus:border-red-650"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-red-500 font-semibold transition"
                 />
               </div>
 
-              <div className="pt-4 flex gap-3">
+              <div className="pt-2 flex gap-3">
                 <button
                   type="button"
                   onClick={() => setIsAddModalOpen(false)}
-                  className="w-1/2 border border-gray-300 text-gray-600 text-sm font-semibold py-2.5 rounded-lg hover:bg-gray-50 transition"
+                  className="w-1/2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 rounded-2xl transition"
                 >
                   বাতিল করুন
                 </button>
                 <button
                   type="submit"
-                  className="w-1/2 bg-red-600 hover:bg-red-750 text-white text-sm font-semibold py-2.5 rounded-lg shadow-sm hover:shadow transition"
+                  className="w-1/2 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-black py-3 rounded-2xl shadow-xs transition"
                 >
                   সদস্য যোগ করুন
                 </button>
@@ -495,10 +498,10 @@ export default function RoleManagementPage() {
 
       {/* Edit User Modal */}
       {isEditModalOpen && currentUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-xl max-w-md w-full shadow-lg overflow-hidden border border-gray-100 animate-in fade-in zoom-in-95 duration-200">
-            <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-              <h3 className="font-bold text-gray-800 flex items-center gap-2">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
+          <div className="bg-white rounded-3xl max-w-md w-full shadow-2xl overflow-hidden border border-slate-200 animate-in fade-in zoom-in-95 duration-200">
+            <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+              <h3 className="font-extrabold text-slate-900 text-base flex items-center gap-2">
                 <Pencil size={18} className="text-blue-600" />
                 <span>সদস্যের তথ্য সম্পাদন</span>
               </h3>
@@ -507,70 +510,64 @@ export default function RoleManagementPage() {
                   setIsEditModalOpen(false);
                   setCurrentUser(null);
                 }}
-                className="text-gray-400 hover:text-gray-600 rounded-full p-1 hover:bg-gray-100 transition"
+                className="text-slate-400 hover:text-slate-600 rounded-full p-1 transition"
               >
                 <X size={18} />
               </button>
             </div>
             
-            <form onSubmit={handleEditSubmit} className="p-6 space-y-4">
+            <form onSubmit={handleEditSubmit} className="p-6 space-y-4 text-xs font-semibold text-slate-700">
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1.5">সম্পূর্ণ নাম</label>
+                <label className="block mb-1.5 font-bold text-slate-900">সম্পূর্ণ নাম</label>
                 <div className="relative">
-                  <span className="absolute left-3 top-2.5 text-gray-400">
-                    <UserIcon size={16} />
-                  </span>
+                  <UserIcon size={16} className="absolute left-3.5 top-3 text-slate-400" />
                   <input
                     type="text"
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full pl-9 pr-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-650 focus:border-red-650"
+                    className="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-red-500 focus:bg-white font-bold transition"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1.5">ইমেইল ঠিকানা</label>
+                <label className="block mb-1.5 font-bold text-slate-900">ইমেইল ঠিকানা</label>
                 <div className="relative">
-                  <span className="absolute left-3 top-2.5 text-gray-400">
-                    <Mail size={16} />
-                  </span>
+                  <Mail size={16} className="absolute left-3.5 top-3 text-slate-400" />
                   <input
                     type="email"
                     required
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full pl-9 pr-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-650 focus:border-red-650"
+                    className="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-red-500 focus:bg-white font-bold transition"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1.5">
+                <label className="block mb-1.5 font-bold text-slate-900">
                   পাসওয়ার্ড পরিবর্তন করুন (ঐচ্ছিক)
                 </label>
                 <div className="relative">
-                  <span className="absolute left-3 top-2.5 text-gray-400">
-                    <Lock size={16} />
-                  </span>
+                  <Lock size={16} className="absolute left-3.5 top-3 text-slate-400" />
                   <input
                     type="password"
                     value={formData.password}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                     placeholder="অপরিবর্তিত রাখতে খালি রাখুন"
-                    className="w-full pl-9 pr-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-650 focus:border-red-650"
+                    className="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-red-500 focus:bg-white font-bold transition"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1.5">রোল / পদবী</label>
+                <label className="block mb-1.5 font-bold text-slate-900">রোল / পদবী</label>
                 <select
                   value={formData.role}
                   onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                   disabled={currentUser.id === (session.user as any).id}
-                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-650 focus:border-red-650 bg-white disabled:opacity-60"
+                  className="w-full px-3.5 py-2.5 border border-slate-200 rounded-2xl focus:outline-none focus:border-red-500 bg-slate-50 font-bold transition cursor-pointer disabled:opacity-50"
                 >
                   <option value="SUBSCRIBER">সাবস্ক্রাইবার (Subscriber)</option>
                   <option value="CONTRIBUTOR">কন্ট্রিবিউটর (Contributor)</option>
@@ -583,37 +580,32 @@ export default function RoleManagementPage() {
                     <option value="SUPER_ADMIN">সুপার অ্যাডমিন (Super Admin)</option>
                   )}
                 </select>
-                {currentUser.id === (session.user as any).id && (
-                  <p className="text-[10px] text-amber-600 mt-1">
-                    নিরাপত্তার স্বার্থে আপনি নিজের রোল পরিবর্তন করতে পারবেন না।
-                  </p>
-                )}
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1.5">সংক্ষিপ্ত বায়ো (ঐচ্ছিক)</label>
+                <label className="block mb-1.5 font-bold text-slate-900">সংক্ষিপ্ত বায়ো (ঐচ্ছিক)</label>
                 <textarea
                   value={formData.bio}
                   onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
                   rows={2}
-                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-650 focus:border-red-650"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-red-500 font-semibold transition"
                 />
               </div>
 
-              <div className="pt-4 flex gap-3">
+              <div className="pt-2 flex gap-3">
                 <button
                   type="button"
                   onClick={() => {
                     setIsEditModalOpen(false);
                     setCurrentUser(null);
                   }}
-                  className="w-1/2 border border-gray-300 text-gray-600 text-sm font-semibold py-2.5 rounded-lg hover:bg-gray-50 transition"
+                  className="w-1/2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 rounded-2xl transition"
                 >
                   বাতিল করুন
                 </button>
                 <button
                   type="submit"
-                  className="w-1/2 bg-blue-600 hover:bg-blue-750 text-white text-sm font-semibold py-2.5 rounded-lg shadow-sm hover:shadow transition"
+                  className="w-1/2 bg-blue-600 hover:bg-blue-700 text-white font-black py-3 rounded-2xl shadow-xs transition"
                 >
                   আপডেট করুন
                 </button>

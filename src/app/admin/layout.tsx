@@ -22,7 +22,8 @@ import {
   Sparkles,
   ExternalLink,
   Globe,
-  ShieldCheck
+  ShieldCheck,
+  ArrowUpDown
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
@@ -62,9 +63,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     navigation.push({ name: 'ড্যাশবোর্ড', href: '/admin', icon: LayoutDashboard });
   }
 
-  // 2. Categories & Special Topics (Super Admin, Admin, Editor, Sub Editor)
+  // 2. Categories, Reorder & Special Topics (Super Admin, Admin, Editor, Sub Editor)
   if (['SUPER_ADMIN', 'ADMIN', 'EDITOR', 'SUB_EDITOR'].includes(role)) {
     navigation.push(
+      { name: 'নিউজ রিঅর্ডার', href: '/admin/reorder', icon: ArrowUpDown },
       { name: 'ক্যাটাগরি ম্যানেজমেন্ট', href: '/admin/categories', icon: FolderKanban },
       { name: 'বিশেষ প্রতিবেদন সেকশন', href: '/admin/special-topics', icon: Sparkles }
     );

@@ -79,9 +79,14 @@ export default async function HomePage() {
       })
     : Promise.resolve([]);
 
+  // Setup Top News Hero order query
+  const topNewsConfigQuery = prisma.specialTopic.findUnique({
+    where: { id: 'top_news_hero_order' },
+  });
+
   // 2. Fetch all other news, ads, media, and category listings in PARALLEL
   const [
-    heroNews,
+    heroNewsFallback,
     latestNews,
     popularNews,
     photos,
@@ -89,13 +94,14 @@ export default async function HomePage() {
     advertisements,
     exclusiveNews,
     specialTopicBannerNewsFetched,
+    topNewsConfig,
     ...initialCategoryResults
   ] = await Promise.all([
-    // Hero news
+    // Hero news fallback
     prisma.news.findMany({
       where: { status: 'PUBLISHED' },
       orderBy: [{ isFeatured: 'desc' }, { publishedAt: 'desc' }],
-      take: 12,
+      take: 15,
       include: { category: true },
     }),
     // Latest news for sidebar tabs
@@ -133,8 +139,34 @@ export default async function HomePage() {
       include: { category: true },
     }),
     specialTopicBannerNewsQuery,
+    topNewsConfigQuery,
     ...categoryQueries,
   ]);
+
+  // Order hero news according to topNewsConfig.newsIds
+  let heroNews: any[] = [];
+  if (topNewsConfig?.newsIds && topNewsConfig.newsIds.length > 0) {
+    const fetchedTopArticles = await prisma.news.findMany({
+      where: {
+        id: { in: topNewsConfig.newsIds },
+        status: 'PUBLISHED',
+      },
+      include: { category: true },
+    });
+
+    topNewsConfig.newsIds.forEach((id) => {
+      const item = fetchedTopArticles.find((n) => n.id === id);
+      if (item) heroNews.push(item);
+    });
+
+    heroNewsFallback.forEach((item) => {
+      if (heroNews.length < 15 && !heroNews.some((n) => n.id === item.id)) {
+        heroNews.push(item);
+      }
+    });
+  } else {
+    heroNews = heroNewsFallback;
+  }
 
   // Helper to serialize Date objects for client components
   const serializeList = (list: any[]) => {

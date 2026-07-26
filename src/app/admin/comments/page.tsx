@@ -8,9 +8,11 @@ import {
   Trash2, 
   X, 
   AlertCircle, 
-  CheckCircle,
+  CheckCircle2,
   ExternalLink,
-  MessageCircle
+  MessageCircle,
+  User as UserIcon,
+  Clock
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -64,7 +66,7 @@ export default function CommentsModerationPage() {
   if (status === 'loading') {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-red-650"></div>
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-red-600"></div>
       </div>
     );
   }
@@ -72,12 +74,12 @@ export default function CommentsModerationPage() {
   // Security Check
   if (!session || !['SUPER_ADMIN', 'ADMIN', 'EDITOR'].includes(userRole)) {
     return (
-      <div className="bg-red-50 border border-red-200 rounded-xl p-8 text-center max-w-2xl mx-auto my-12 shadow-sm">
+      <div className="bg-red-50 border border-red-200 rounded-3xl p-8 text-center max-w-2xl mx-auto my-12 shadow-xs font-sans">
         <div className="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
           <MessageSquare size={32} />
         </div>
-        <h2 className="text-xl font-bold text-gray-800 mb-2">অননুমোদিত অ্যাক্সেস!</h2>
-        <p className="text-gray-600 text-sm mb-4">
+        <h2 className="text-xl font-bold text-slate-900 mb-2">অননুমোদিত অ্যাক্সেস!</h2>
+        <p className="text-slate-600 text-xs sm:text-sm mb-4">
           এই পৃষ্ঠাটি শুধুমাত্র মডারেটর এবং এডিটরদের জন্য সংরক্ষিত।
         </p>
       </div>
@@ -107,7 +109,7 @@ export default function CommentsModerationPage() {
   };
 
   const handleDelete = async (commentId: string) => {
-    if (!confirm('আপনি কি নিশ্চিত যে এই মন্তব্যটি মুছে ফেলতে চান?')) {
+    if (!confirm('আপনি কি নিশ্চিত যে এই মন্তব্যটি স্থায়ীভাবে মুছে ফেলতে চান?')) {
       return;
     }
 
@@ -131,75 +133,90 @@ export default function CommentsModerationPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-7xl mx-auto pb-10 font-sans">
       {/* Header section */}
-      <div>
-        <h2 className="text-2xl font-bold text-gray-800">মন্তব্য মডারেশন প্যানেল</h2>
-        <p className="text-sm text-gray-500">পাঠকদের মন্তব্য রিভিউ, অনুমোদন ও মুছে ফেলার মাধ্যমে মডারেট করুন।</p>
+      <div className="bg-white rounded-3xl p-6 shadow-xs border border-slate-200/80 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2 text-xs font-bold text-red-600 mb-1">
+            <MessageSquare size={16} />
+            <span>পাঠকদের মন্তব্য ও ফিডব্যাক মডারেশন</span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+            <span>মন্তব্য মডারেশন প্যানেল</span>
+            <span className="text-xs font-bold bg-slate-100 text-slate-700 px-2.5 py-1 rounded-full border border-slate-200">
+              {comments.length} টি মন্তব্য
+            </span>
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-500 mt-1">
+            পাঠকদের প্রকাশিত বা অপেক্ষমান মন্তব্যের মডারেশন নিয়ন্ত্রণ করুন।
+          </p>
+        </div>
       </div>
 
       {/* Tabs list */}
-      <div className="flex border-b border-gray-200">
+      <div className="bg-white p-2 rounded-2xl border border-slate-200/80 shadow-xs flex items-center gap-2">
         <button
           onClick={() => setActiveTab('pending')}
-          className={`px-5 py-3 text-sm font-semibold border-b-2 transition ${
+          className={`px-5 py-2.5 rounded-xl text-xs font-black transition flex items-center gap-2 ${
             activeTab === 'pending'
-              ? 'border-red-600 text-red-650'
-              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              ? 'bg-gradient-to-r from-red-600 to-rose-600 text-white shadow-xs'
+              : 'text-slate-600 hover:bg-slate-100'
           }`}
         >
-          অপেক্ষমান মন্তব্য (Pending)
+          <Clock size={15} />
+          <span>অপেক্ষমান মন্তব্য (Pending)</span>
         </button>
         <button
           onClick={() => setActiveTab('approved')}
-          className={`px-5 py-3 text-sm font-semibold border-b-2 transition ${
+          className={`px-5 py-2.5 rounded-xl text-xs font-black transition flex items-center gap-2 ${
             activeTab === 'approved'
-              ? 'border-red-600 text-red-650'
-              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              ? 'bg-slate-900 text-white shadow-xs'
+              : 'text-slate-600 hover:bg-slate-100'
           }`}
         >
-          অনুমোদিত মন্তব্য (Approved)
+          <CheckCircle2 size={15} />
+          <span>অনুমোদিত মন্তব্য (Approved)</span>
         </button>
       </div>
 
       {/* Alert boxes */}
       {error && (
-        <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded-md flex items-center gap-3 text-sm animate-pulse">
-          <AlertCircle size={18} className="shrink-0" />
+        <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded-2xl text-xs font-bold flex items-center gap-2">
+          <AlertCircle size={18} />
           <span>{error}</span>
         </div>
       )}
       {success && (
-        <div className="bg-emerald-50 border-l-4 border-emerald-500 text-emerald-700 p-4 rounded-md flex items-center gap-3 text-sm">
-          <CheckCircle size={18} className="shrink-0" />
+        <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-4 rounded-2xl text-xs font-bold flex items-center gap-2">
+          <CheckCircle2 size={18} />
           <span>{success}</span>
         </div>
       )}
 
       {/* Comments List Grid */}
       {loading ? (
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-12 text-center text-gray-400">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600 mx-auto"></div>
-          <span className="text-xs mt-2 block">মন্তব্য তালিকা লোড হচ্ছে...</span>
+        <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xs p-12 text-center text-slate-400 font-bold">
+          <div className="animate-spin rounded-full h-7 w-7 border-b-2 border-red-600 mx-auto mb-2"></div>
+          মন্তব্য তালিকা লোড হচ্ছে...
         </div>
       ) : comments.length === 0 ? (
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-12 text-center text-gray-400 select-none">
-          <MessageCircle size={40} className="mx-auto text-gray-300 mb-3" />
+        <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xs p-12 text-center text-slate-400 select-none font-medium">
+          <MessageCircle size={40} className="mx-auto text-slate-300 mb-3" />
           <span>কোনো মন্তব্য পাওয়া যায়নি।</span>
         </div>
       ) : (
         <div className="space-y-4">
           {comments.map((comment) => (
-            <div key={comment.id} className="bg-white rounded-xl border border-gray-200 shadow-sm p-5 hover:shadow-sm transition space-y-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-              <div className="space-y-2 max-w-3xl flex-grow">
+            <div key={comment.id} className="bg-white rounded-3xl border border-slate-200/90 shadow-xs p-5 hover:shadow-md transition duration-200 space-y-3 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div className="space-y-2.5 max-w-3xl flex-grow">
                 {/* Meta details */}
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-700 text-sm">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-slate-200 to-slate-100 border border-slate-200 text-slate-700 flex items-center justify-center font-black text-sm shrink-0">
                     {comment.name.charAt(0)}
                   </div>
                   <div>
-                    <span className="font-bold text-gray-800 text-sm">{comment.name}</span>
-                    <span className="text-[10px] text-gray-400 block">
+                    <span className="font-extrabold text-slate-900 text-sm block">{comment.name}</span>
+                    <span className="text-[10px] text-slate-400 font-semibold block">
                       {new Date(comment.createdAt).toLocaleDateString('bn-BD', {
                         year: 'numeric',
                         month: 'short',
@@ -212,47 +229,47 @@ export default function CommentsModerationPage() {
                 </div>
 
                 {/* Comment Content */}
-                <p className="text-sm text-gray-700 whitespace-pre-line leading-relaxed pl-1">
-                  {comment.comment}
+                <p className="text-xs sm:text-sm text-slate-800 whitespace-pre-line leading-relaxed pl-1 font-medium bg-slate-50/60 p-3 rounded-2xl border border-slate-100">
+                  "{comment.comment}"
                 </p>
 
                 {/* Article link */}
                 {comment.news && (
-                  <div className="pt-1 flex items-center gap-1 text-[11px] text-blue-650 hover:underline">
-                    <span>সংবাদ: </span>
-                    <Link href={`/${comment.news.slug}`} target="_blank" className="font-medium inline-flex items-center gap-1">
-                      {comment.news.title}
-                      <ExternalLink size={10} />
+                  <div className="pt-1 flex items-center gap-1.5 text-xs text-blue-600 hover:underline font-bold">
+                    <span className="text-slate-400 font-semibold">সংবাদ:</span>
+                    <Link href={`/${comment.news.slug}`} target="_blank" className="inline-flex items-center gap-1">
+                      <span>{comment.news.title}</span>
+                      <ExternalLink size={12} />
                     </Link>
                   </div>
                 )}
               </div>
 
               {/* Action buttons */}
-              <div className="flex items-center justify-end gap-2 md:self-center shrink-0">
+              <div className="flex items-center justify-end gap-2 md:self-center shrink-0 text-xs font-extrabold">
                 {activeTab === 'pending' ? (
                   <button
                     onClick={() => handleApproveToggle(comment.id, true)}
-                    className="flex items-center gap-1 bg-green-50 text-green-700 hover:bg-green-100 border border-green-200 px-3 py-1.5 rounded-lg text-xs font-semibold transition"
+                    className="flex items-center gap-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white px-4 py-2.5 rounded-2xl shadow-xs transition"
                   >
-                    <Check size={14} />
+                    <Check size={15} />
                     <span>অনুমোদন দিন</span>
                   </button>
                 ) : (
                   <button
                     onClick={() => handleApproveToggle(comment.id, false)}
-                    className="flex items-center gap-1 bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 px-3 py-1.5 rounded-lg text-xs font-semibold transition"
+                    className="flex items-center gap-1.5 bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 px-4 py-2.5 rounded-2xl transition"
                   >
-                    <X size={14} />
+                    <X size={15} />
                     <span>অনুমোদন বাতিল</span>
                   </button>
                 )}
                 <button
                   onClick={() => handleDelete(comment.id)}
-                  className="flex items-center gap-1 bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 px-3 py-1.5 rounded-lg text-xs font-semibold transition"
+                  className="flex items-center gap-1.5 bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 px-3.5 py-2.5 rounded-2xl transition"
                 >
-                  <Trash2 size={14} />
-                  <span>মুছে ফেলুন</span>
+                  <Trash2 size={15} />
+                  <span>মুছুন</span>
                 </button>
               </div>
             </div>

@@ -76,6 +76,7 @@ model News {
   publishedAt     DateTime?
   scheduledAt     DateTime?
   viewCount       Int         @default(0)
+  order           Int         @default(0)
   
   metaTitle       String?
   metaDescription String?
@@ -163,5 +164,11 @@ model SpecialTopic {
   order          Int      @default(0)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+}
+
+model TopNews {
+  id        String   @id @default("top_news") @map("_id")
+  newsIds   String[]
+  updatedAt DateTime @updatedAt
 }
 
