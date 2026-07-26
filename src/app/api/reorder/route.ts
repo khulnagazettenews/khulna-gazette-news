@@ -23,11 +23,11 @@ export async function GET(req: Request) {
 
     if (categorySlug === 'top_news') {
       // Fetch saved Top News ordering
-      let topNewsConfig = await prisma.specialTopic.findUnique({
+      const topNewsConfig = await prisma.specialTopic.findUnique({
         where: { id: 'top_news_hero_order' },
       });
 
-      let savedIds: string[] = topNewsConfig?.newsIds || [];
+      const savedIds: string[] = topNewsConfig?.newsIds || [];
 
       // Fetch published news articles
       const allPublishedNews = await prisma.news.findMany({
@@ -41,7 +41,7 @@ export async function GET(req: Request) {
       });
 
       // Filter and order news based on savedIds
-      let orderedNews: any[] = [];
+      const orderedNews: any[] = [];
       if (savedIds.length > 0) {
         savedIds.forEach((id) => {
           const item = allPublishedNews.find((n) => n.id === id);
@@ -75,11 +75,11 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: 'ক্যাটাগরি পাওয়া যায়নি' }, { status: 404 });
     }
 
-    let catConfig = await prisma.specialTopic.findUnique({
+    const catConfig = await prisma.specialTopic.findUnique({
       where: { id: `cat_order_${targetCategory.id}` },
     });
 
-    let savedIds: string[] = catConfig?.newsIds || [];
+    const savedIds: string[] = catConfig?.newsIds || [];
 
     const categoryNews = await prisma.news.findMany({
       where: {
@@ -97,7 +97,7 @@ export async function GET(req: Request) {
       },
     });
 
-    let orderedNews: any[] = [];
+    const orderedNews: any[] = [];
     if (savedIds.length > 0) {
       savedIds.forEach((id) => {
         const item = categoryNews.find((n) => n.id === id);
