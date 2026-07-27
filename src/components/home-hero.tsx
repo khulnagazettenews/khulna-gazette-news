@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import SidebarWidgets from './sidebar-widgets';
 
 interface HeroNewsItem {
   id: string;
@@ -15,19 +14,9 @@ interface HeroNewsItem {
 
 interface HomeHeroProps {
   news: HeroNewsItem[];
-  latestNews: any[];
-  popularNews: any[];
-  exclusiveNews?: any[];
-  sidebarAd?: any;
 }
 
-export default function HomeHero({
-  news,
-  latestNews,
-  popularNews,
-  exclusiveNews = [],
-  sidebarAd,
-}: HomeHeroProps) {
+export default function HomeHero({ news }: HomeHeroProps) {
   if (!news || news.length === 0) return null;
 
   // Distribute news items matching khulnagazette.com lead structure
@@ -41,7 +30,7 @@ export default function HomeHero({
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 my-3 items-start">
+    <div className="grid grid-cols-1 lg:grid-cols-9 gap-5 items-start">
       {/* 1. Left Column (3 Cols on LG): 2 Stacked Cards */}
       <div className="lg:col-span-3 space-y-4">
         {leftColumnNews.map((story) => (
@@ -145,16 +134,6 @@ export default function HomeHero({
             ))}
           </div>
         )}
-      </div>
-
-      {/* 3. Right Sidebar Column (3 Cols on LG): Full Sidebar Widgets */}
-      <div className="lg:col-span-3">
-        <SidebarWidgets
-          latestNews={latestNews}
-          popularNews={popularNews}
-          exclusiveNews={exclusiveNews}
-          sidebarAd={sidebarAd}
-        />
       </div>
     </div>
   );

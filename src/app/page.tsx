@@ -3,6 +3,7 @@ import PublicHeader from '@/components/public-header';
 import BreakingNewsTicker from '@/components/breaking-news';
 import PublicFooter from '@/components/public-footer';
 import HomeHero from '@/components/home-hero';
+import SidebarWidgets from '@/components/sidebar-widgets';
 import CategoryBlock from '@/components/category-block';
 import SpecialTopicSection from '@/components/special-topic-section';
 import OpinionWidget from '@/components/opinion-widget';
@@ -224,165 +225,166 @@ export default async function HomePage() {
 
       {/* Main Container */}
       <main className="flex-grow w-full max-w-full px-4 sm:px-8 lg:px-12 pt-3 pb-6 space-y-6">
-        {/* 1. Dhaka Post Style Special Featured Topic Banner Section */}
-        {activeSpecialTopic && (
-          <SpecialTopicSection
-            title={activeSpecialTopic.title || 'বিশেষ প্রতিবেদন ও আন্তর্জাতিক সংবাদ'}
-            bannerSubtitle={activeSpecialTopic.bannerSubtitle || 'বিস্তারিত দেখতে কভার খবরের যেকোনো একটিতে ক্লিক করুন'}
-            news={specialTopicBannerNews as any}
-          />
-        )}
-
-        {/* Top Ad slot */}
+        {/* 1. Dhaka Pos        {/* Top Ad slot */}
         <AdBanner ad={topAd} fallbackText="বিজ্ঞাপন ব্যানার" className="h-20 sm:h-24" />
 
-        {/* 2. Main Lead 3-Column Section (Hero Lead + Sidebar) */}
-        <HomeHero
-          news={heroNews as any}
-          latestNews={serializeList(latestNews)}
-          popularNews={serializeList(popularNews)}
-          exclusiveNews={serializeList(exclusiveNews)}
-          sidebarAd={sidebarAd}
-        />
+        {/* Main 2-Column Grid (Left Main Content 9 Cols + Right Sidebar 3 Cols) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          {/* Left Column (9 Cols on LG): Hero + Category Blocks + Media Galleries */}
+          <div className="lg:col-span-9 space-y-6">
+            {/* 2. Main Lead Hero Section */}
+            <HomeHero news={heroNews as any} />
 
-        {/* 3. Red YouTube Promo Strip */}
-        <YoutubeBanner />
+            {/* 3. Red YouTube Promo Strip */}
+            <YoutubeBanner />
 
-        {/* 4. Category Pair 1: বাংলাদেশ & রাজনীতি */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <CategoryBlock title="বাংলাদেশ" slug="bangladesh" news={bangladeshNews as any} />
-          <CategoryBlock title="রাজনীতি" slug="politics" news={politicsNews as any} />
-        </div>
+            {/* 4. Category Pair 1: বাংলাদেশ & রাজনীতি */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <CategoryBlock title="বাংলাদেশ" slug="bangladesh" news={bangladeshNews as any} />
+              <CategoryBlock title="রাজনীতি" slug="politics" news={politicsNews as any} />
+            </div>
 
-        {/* 5. Sports Section (Main image on left + 4 mini cards on right) */}
-        <CategoryBlock
-          title="খেলা"
-          slug="sports"
-          news={sportsNews as any}
-          variant="sports"
-        />
+            {/* 5. Sports Section (Main image on left + 4 mini cards on right) */}
+            <CategoryBlock
+              title="খেলা"
+              slug="sports"
+              news={sportsNews as any}
+              variant="sports"
+            />
 
-        {/* Middle Ad slot */}
-        <AdBanner ad={middleAd} fallbackText="বিজ্ঞাপন স্পেস" className="h-20 sm:h-24" />
+            {/* Middle Ad slot */}
+            <AdBanner ad={middleAd} fallbackText="বিজ্ঞাপন স্পেস" className="h-20 sm:h-24" />
 
-        {/* 6. Entertainment Section */}
-        <CategoryBlock
-          title="বিনোদন"
-          slug="entertainment"
-          news={entertainmentNews as any}
-          variant="entertainment"
-        />
+            {/* 6. Entertainment Section */}
+            <CategoryBlock
+              title="বিনোদন"
+              slug="entertainment"
+              news={entertainmentNews as any}
+              variant="entertainment"
+            />
 
-        {/* 7. Category Pair 2: খুলনাঞ্চল & অর্থনীতি */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <CategoryBlock title="খুলনাঞ্চল" slug="khulna" news={khulnaNews as any} />
-          <CategoryBlock title="অর্থনীতি" slug="economy" news={economyNews as any} />
-        </div>
+            {/* 7. Category Pair 2: খুলনাঞ্চল & অর্থনীতি */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <CategoryBlock title="খুলনাঞ্চল" slug="khulna" news={khulnaNews as any} />
+              <CategoryBlock title="অর্থনীতি" slug="economy" news={economyNews as any} />
+            </div>
 
-        {/* 8. International Category */}
-        <CategoryBlock title="আন্তর্জাতিক" slug="international" news={internationalNews as any} />
+            {/* 8. International Category */}
+            <CategoryBlock title="আন্তর্জাতিক" slug="international" news={internationalNews as any} />
 
-        {/* 9. Category Pair 3: শিক্ষা & ইসলাম ও জীবন */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <CategoryBlock title="শিক্ষা" slug="education" news={educationNews as any} />
-          <CategoryBlock title="ইসলাম ও জীবন" slug="islam" news={islamNews as any} />
-        </div>
+            {/* 9. Category Pair 3: শিক্ষা & ইসলাম ও জীবন */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <CategoryBlock title="শিক্ষা" slug="education" news={educationNews as any} />
+              <CategoryBlock title="ইসলাম ও জীবন" slug="islam" news={islamNews as any} />
+            </div>
 
-        {/* 10. IT / Science & Tech Category */}
-        <CategoryBlock title="আইটি" slug="technology" news={techNews as any} />
+            {/* 10. IT / Science & Tech Category */}
+            <CategoryBlock title="আইটি" slug="technology" news={techNews as any} />
 
-        {/* 11. Category Pair 4: চিকিৎসা & সাহিত্য */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <CategoryBlock title="চিকিৎসা" slug="health" news={healthNews as any} />
-          <CategoryBlock title="সাহিত্য" slug="literature" news={literatureNews as any} />
-        </div>
+            {/* 11. Category Pair 4: চিকিৎসা & সাহিত্য */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <CategoryBlock title="চিকিৎসা" slug="health" news={healthNews as any} />
+              <CategoryBlock title="সাহিত্য" slug="literature" news={literatureNews as any} />
+            </div>
 
-        {/* 12. Mukto Bhabna Category */}
-        <CategoryBlock title="মুক্ত ভাবনা" slug="mukto-bhabna" news={muktoBhabnaNews as any} />
+            {/* 12. Mukto Bhabna Category */}
+            <CategoryBlock title="মুক্ত ভাবনা" slug="mukto-bhabna" news={muktoBhabnaNews as any} />
 
-        {/* 13. Category Pair 5: চিত্র বিচিত্র & সোশ্যাল মিডিয়া */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <CategoryBlock title="চিত্র বিচিত্র" slug="chitro-bichitro" news={chitroBichitroNews as any} />
-          <CategoryBlock title="সোশ্যাল মিডিয়া" slug="social-media" news={socialMediaNews as any} />
-        </div>
+            {/* 13. Category Pair 5: চিত্র বিচিত্র & সোশ্যাল মিডিয়া */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <CategoryBlock title="চিত্র বিচিত্র" slug="chitro-bichitro" news={chitroBichitroNews as any} />
+              <CategoryBlock title="সোশ্যাল মিডিয়া" slug="social-media" news={socialMediaNews as any} />
+            </div>
 
-        {/* 14. Gazette Exclusive Section */}
-        <CategoryBlock title="গেজেট এক্সক্লুসিভ" slug="gazette-exclusive" news={exclusiveNews as any} />
+            {/* 14. Gazette Exclusive Section */}
+            <CategoryBlock title="গেজেট এক্সক্লুসিভ" slug="gazette-exclusive" news={exclusiveNews as any} />
 
-        {/* 11. Photo & Video Gallery */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-4 border-t border-gray-200">
-          {/* Photo Gallery */}
-          {photos.length > 0 && (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between border-t-2 border-red-600 pt-2.5">
-                <h3 className="text-base sm:text-lg font-black text-gray-900 flex items-center gap-2">
-                  <Camera size={20} className="text-red-600" />
-                  <span>ফটো গ্যালারি</span>
-                </h3>
-                <Link href="/photo-gallery" className="text-xs text-red-600 font-bold hover:underline">
-                  সব ছবি দেখুন
-                </Link>
-              </div>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
-                {photos.map((ph) => (
-                  <div key={ph.id} className="relative aspect-square rounded-lg overflow-hidden group shadow-sm border border-gray-100">
-                    <img src={ph.imageUrl} alt={ph.caption || 'Gallery image'} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
-                    {ph.caption && (
-                      <div className="absolute inset-x-0 bottom-0 bg-black/60 text-white p-2 text-[10px] truncate leading-tight select-none">
-                        {ph.caption}
-                      </div>
-                    )}
+            {/* 15. Photo & Video Gallery */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-4 border-t border-gray-200">
+              {/* Photo Gallery */}
+              {photos.length > 0 && (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between border-t-2 border-red-600 pt-2.5">
+                    <h3 className="text-base sm:text-lg font-black text-gray-900 flex items-center gap-2">
+                      <Camera size={20} className="text-red-600" />
+                      <span>ফটো গ্যালারি</span>
+                    </h3>
+                    <Link href="/photo-gallery" className="text-xs text-red-600 font-bold hover:underline">
+                      সব ছবি দেখুন
+                    </Link>
                   </div>
-                ))}
-              </div>
-            </div>
-          )}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+                    {photos.map((ph) => (
+                      <div key={ph.id} className="relative aspect-square rounded-lg overflow-hidden group shadow-sm border border-gray-100">
+                        <img src={ph.imageUrl} alt={ph.caption || 'Gallery image'} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
+                        {ph.caption && (
+                          <div className="absolute inset-x-0 bottom-0 bg-black/60 text-white p-2 text-[10px] truncate leading-tight select-none">
+                            {ph.caption}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
-          {/* Video Gallery */}
-          {videos.length > 0 && (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between border-t-2 border-red-600 pt-2.5">
-                <h3 className="text-base sm:text-lg font-black text-gray-900 flex items-center gap-2">
-                  <Video size={20} className="text-red-600" />
-                  <span>ভিডিও গ্যালারি</span>
-                </h3>
-                <Link href="/video-gallery" className="text-xs text-red-600 font-bold hover:underline">
-                  সব ভিডিও দেখুন
-                </Link>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                {videos.map((vid) => {
-                  const ytId = getYoutubeId(vid.youtubeUrl);
-                  const thumb = ytId ? `https://img.youtube.com/vi/${ytId}/mqdefault.jpg` : '';
-                  return (
-                    <div key={vid.id} className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col justify-between group">
-                      <div className="relative aspect-video w-full bg-slate-900 flex items-center justify-center overflow-hidden">
-                        {thumb && <img src={thumb} alt={vid.title} className="w-full h-full object-cover opacity-85 group-hover:scale-105 transition duration-300" />}
-                        <a 
-                          href={vid.youtubeUrl} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="absolute w-9 h-9 bg-red-600 text-white rounded-full flex items-center justify-center hover:bg-red-700 transition shadow-lg"
-                        >
-                          <Play size={15} className="ml-0.5 fill-current" />
-                        </a>
-                      </div>
-                      <div className="p-2.5 text-left">
-                        <a 
-                          href={vid.youtubeUrl} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="text-xs font-bold text-gray-800 hover:text-red-600 transition leading-snug line-clamp-2 block"
-                        >
-                          {vid.title}
-                        </a>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+              {/* Video Gallery */}
+              {videos.length > 0 && (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between border-t-2 border-red-600 pt-2.5">
+                    <h3 className="text-base sm:text-lg font-black text-gray-900 flex items-center gap-2">
+                      <Video size={20} className="text-red-600" />
+                      <span>ভিডিও গ্যালারি</span>
+                    </h3>
+                    <Link href="/video-gallery" className="text-xs text-red-600 font-bold hover:underline">
+                      সব ভিডিও দেখুন
+                    </Link>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    {videos.map((vid) => {
+                      const ytId = getYoutubeId(vid.youtubeUrl);
+                      const thumb = ytId ? `https://img.youtube.com/vi/${ytId}/mqdefault.jpg` : '';
+                      return (
+                        <div key={vid.id} className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col justify-between group">
+                          <div className="relative aspect-video w-full bg-slate-900 flex items-center justify-center overflow-hidden">
+                            {thumb && <img src={thumb} alt={vid.title} className="w-full h-full object-cover opacity-85 group-hover:scale-105 transition duration-300" />}
+                            <a 
+                              href={vid.youtubeUrl} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="absolute w-9 h-9 bg-red-600 text-white rounded-full flex items-center justify-center hover:bg-red-700 transition shadow-lg"
+                            >
+                              <Play size={15} className="ml-0.5 fill-current" />
+                            </a>
+                          </div>
+                          <div className="p-2.5 text-left">
+                            <a 
+                              href={vid.youtubeUrl} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="text-xs font-bold text-gray-800 hover:text-red-600 transition leading-snug line-clamp-2 block"
+                            >
+                              {vid.title}
+                            </a>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
-          )}
+          </div>
+
+          {/* Right Column (3 Cols on LG): Full Sidebar Widgets */}
+          <div className="lg:col-span-3">
+            <SidebarWidgets
+              latestNews={serializeList(latestNews)}
+              popularNews={serializeList(popularNews)}
+              exclusiveNews={serializeList(exclusiveNews)}
+              sidebarAd={sidebarAd}
+            />
+          </div>
         </div>
       </main>
 
