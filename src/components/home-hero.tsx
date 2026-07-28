@@ -19,15 +19,15 @@ interface HomeHeroProps {
 export default function HomeHero({ news }: HomeHeroProps) {
   if (!news || news.length === 0) return null;
 
-  // 15 Top News Articles Layout with Center Main Lead:
-  // - news[0]: Main Featured Lead (CENTER Column - 6 cols)
-  // - news[1], news[2]: Left Stacked Side Leads (3 cols)
-  // - news[3], news[4]: Right Stacked Side Leads (3 cols)
-  // - news[5] to news[14]: 10 Articles Grid below (3 columns)
-  const mainLead = news[0];
-  const leftLeads = news.slice(1, 3);
-  const rightLeads = news.slice(3, 5);
-  const gridNews = news.slice(5, 15);
+  // 15 Top News Articles Layout matching Admin Dashboard Position config:
+  // - news[0], news[1]: Position 1 & 2 -> Left Stacked Side Leads (3 cols)
+  // - news[2]: Position 3 -> Main Featured Lead (CENTER Column - 6 cols)
+  // - news[3], news[4]: Position 4 & 5 -> Right Stacked Side Leads (3 cols)
+  // - news[5] to news[14]: Positions 6 to 15 -> 10 Articles Grid below (3 columns)
+  const leftLeads = news.length >= 2 ? news.slice(0, 2) : [];
+  const mainLead = news.length >= 3 ? news[2] : news[0];
+  const rightLeads = news.length >= 5 ? news.slice(3, 5) : [];
+  const gridNews = news.length > 5 ? news.slice(5, 15) : [];
 
   return (
     <div className="bg-white p-3.5 sm:p-4 rounded-lg border border-gray-200 shadow-2xs space-y-4">
