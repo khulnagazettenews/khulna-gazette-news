@@ -23,7 +23,11 @@ import {
   ExternalLink,
   Globe,
   ShieldCheck,
-  ArrowUpDown
+  ArrowUpDown,
+  PlusCircle,
+  Search,
+  Bell,
+  Home
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
@@ -49,7 +53,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   if (status === 'authenticated' && role === 'SUBSCRIBER') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-900">
+      <div className="min-h-screen flex items-center justify-center bg-slate-950">
         <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-red-500"></div>
       </div>
     );
@@ -58,12 +62,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   // Build navigation items based on role
   const navigation = [];
 
-  // 1. Dashboard (Allowed for all roles except Subscriber)
+  // 1. Dashboard
   if (role !== 'SUBSCRIBER') {
     navigation.push({ name: 'ড্যাশবোর্ড', href: '/admin', icon: LayoutDashboard });
   }
 
-  // 2. Categories, Reorder & Special Topics (Super Admin, Admin, Editor, Sub Editor)
+  // 2. Categories, Reorder & Special Topics
   if (['SUPER_ADMIN', 'ADMIN', 'EDITOR', 'SUB_EDITOR'].includes(role)) {
     navigation.push(
       { name: 'নিউজ রিঅর্ডার', href: '/admin/reorder', icon: ArrowUpDown },
@@ -72,12 +76,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     );
   }
 
-  // 3. News Articles (Super Admin, Admin, Editor, Sub Editor, Reporter, Contributor)
+  // 3. News Articles
   if (['SUPER_ADMIN', 'ADMIN', 'EDITOR', 'SUB_EDITOR', 'REPORTER', 'CONTRIBUTOR'].includes(role)) {
     navigation.push({ name: 'খবরসমূহ', href: '/admin/news', icon: Newspaper });
   }
 
-  // 4. Media & Prayer Times (Super Admin, Admin, Editor, Sub Editor)
+  // 4. Media & Prayer Times
   if (['SUPER_ADMIN', 'ADMIN', 'EDITOR', 'SUB_EDITOR'].includes(role)) {
     navigation.push(
       { name: 'ই-পেপার', href: '/admin/epaper', icon: FileImage },
@@ -87,17 +91,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     );
   }
 
-  // 5. Advertisements (Super Admin, Admin, Advertisement Manager)
+  // 5. Advertisements
   if (['SUPER_ADMIN', 'ADMIN', 'ADVERTISEMENT_MANAGER'].includes(role)) {
     navigation.push({ name: 'বিজ্ঞাপন ম্যানেজমেন্ট', href: '/admin/advertisements', icon: Megaphone });
   }
 
-  // 6. Comments (Super Admin, Admin, Editor)
+  // 6. Comments
   if (['SUPER_ADMIN', 'ADMIN', 'EDITOR'].includes(role)) {
     navigation.push({ name: 'মন্তব্যসমূহ', href: '/admin/comments', icon: MessageSquare });
   }
 
-  // 7. Users & Roles (Super Admin, Admin)
+  // 7. Users & Roles
   if (['SUPER_ADMIN', 'ADMIN'].includes(role)) {
     navigation.push({ name: 'ইউজার ও রোলস', href: '/admin/users', icon: Users });
   }
@@ -106,40 +110,46 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     signOut({ callbackUrl: '/admin/login' });
   };
 
+  // Get active breadcrumb title
+  const currentNavItem = navigation.find(item => 
+    pathname === item.href || (item.href !== '/admin' && pathname?.startsWith(item.href))
+  );
+  const activeTitle = currentNavItem ? currentNavItem.name : 'অ্যাডমিন পোর্টাল';
+
   return (
-    <div className="admin-portal min-h-screen bg-slate-100/70 flex font-sans antialiased text-slate-800">
+    <div className="admin-portal min-h-screen bg-slate-100/60 flex font-sans antialiased text-slate-800">
       {/* Mobile Sidebar overlay */}
       {sidebarOpen && (
         <div 
-          className="fixed inset-0 z-40 bg-slate-950/60 backdrop-blur-xs lg:hidden transition-opacity"
+          className="fixed inset-0 z-40 bg-slate-950/50 backdrop-blur-xs lg:hidden transition-opacity"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       {/* Sidebar Container */}
       <aside 
-        className={`fixed inset-y-0 left-0 z-50 w-64 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white flex flex-col justify-between border-r border-slate-800/80 shadow-2xl transform transition-transform duration-300 ease-in-out lg:static lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 text-white flex flex-col justify-between border-r border-slate-800 shadow-xl transform transition-transform duration-300 ease-in-out lg:static lg:translate-x-0 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         <div>
           {/* Brand Logo Header */}
-          <div className="h-16 flex items-center justify-between px-6 border-b border-slate-800/80 bg-slate-950/40">
-            <Link href="/admin" className="flex items-center gap-2.5 group">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-red-600 to-rose-500 flex items-center justify-center text-white font-black text-sm shadow-md shadow-red-600/30 group-hover:scale-105 transition duration-300">
-                KG
+          <div className="h-16 flex items-center justify-between px-6 border-b border-slate-800 bg-slate-900">
+            <Link href="/admin" className="flex items-center gap-3 group min-w-0">
+              <div className="w-9.5 h-9.5 rounded-xl bg-blue-600 flex items-center justify-center text-white font-black text-base shadow-md shadow-blue-600/30 group-hover:bg-blue-500 transition duration-300 shrink-0">
+                খ
               </div>
-              <div className="flex flex-col">
-                <span className="text-base font-extrabold text-white tracking-tight leading-tight">
+              <div className="flex flex-col min-w-0">
+                <span className="text-base font-extrabold text-white tracking-tight leading-tight group-hover:text-blue-400 transition-colors truncate">
                   খুলনা গেজেট
                 </span>
-                <span className="text-[10px] text-teal-400 font-mono tracking-wider font-semibold uppercase">
+                <span className="text-xs text-blue-400 font-mono tracking-wider font-bold uppercase">
                   Admin Portal
                 </span>
               </div>
             </Link>
             <button 
-              className="lg:hidden text-slate-400 hover:text-white p-1 rounded-md hover:bg-slate-800/60 transition" 
+              className="lg:hidden text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-slate-800 transition" 
               onClick={() => setSidebarOpen(false)}
             >
               <X size={18} />
@@ -147,11 +157,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </div>
 
           {/* Navigation Section */}
-          <div className="px-4 pt-5 pb-2">
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2 font-mono">
-              মূল মেনু
-            </p>
-            <nav className="space-y-1">
+          <div className="px-3.5 pt-5 pb-2">
+            <div className="px-3 mb-2.5 flex items-center justify-between">
+              <span className="text-xs font-extrabold text-slate-300 uppercase tracking-wider font-mono">
+                মূল মেনু
+              </span>
+              <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
+            </div>
+            <nav className="space-y-1.5">
               {navigation.map((item) => {
                 const active = pathname ? (pathname === item.href || (item.href !== '/admin' && pathname.startsWith(item.href))) : false;
                 const Icon = item.icon;
@@ -159,18 +172,23 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   <Link
                     key={item.name}
                     href={item.href}
-                    className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 group ${
+                    className={`flex items-center justify-between px-4 py-3 rounded-xl text-sm font-bold transition-all duration-200 group relative ${
                       active 
-                        ? 'bg-gradient-to-r from-red-600 to-rose-600 text-white shadow-md shadow-red-600/20 font-bold' 
-                        : 'text-slate-300 hover:bg-slate-800/70 hover:text-white'
+                        ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30 font-extrabold' 
+                        : 'text-slate-200 hover:bg-slate-800 hover:text-white'
                     }`}
                     onClick={() => setSidebarOpen(false)}
                   >
                     <div className="flex items-center gap-3">
-                      <Icon size={17} className={active ? 'text-white' : 'text-slate-400 group-hover:text-red-400 transition-colors'} />
+                      <Icon size={18} className={active ? 'text-white' : 'text-slate-400 group-hover:text-blue-400 transition-colors'} />
                       <span>{item.name}</span>
                     </div>
-                    {active && <ChevronRight size={14} className="text-white/80" />}
+                    {active && (
+                      <div className="flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-white"></span>
+                        <ChevronRight size={15} className="text-white" />
+                      </div>
+                    )}
                   </Link>
                 );
               })}
@@ -179,20 +197,20 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
 
         {/* User Profile Card & Signout Footer */}
-        <div className="p-4 border-t border-slate-800/80 bg-slate-950/60 space-y-3.5">
-          <div className="flex items-center gap-3 p-2 rounded-xl bg-slate-900/80 border border-slate-800/70">
+        <div className="p-4 border-t border-slate-800 bg-slate-900 space-y-3">
+          <div className="flex items-center gap-3 p-3 rounded-2xl bg-slate-800 border border-slate-700/80 shadow-xs">
             <div className="relative">
-              <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-rose-600 to-red-500 flex items-center justify-center text-white font-extrabold text-xs shadow-xs border border-white/10">
-                {session?.user?.name ? session.user.name.charAt(0) : <UserIcon size={16} />}
+              <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white font-black text-sm shadow-xs">
+                {session?.user?.name ? session.user.name.charAt(0).toUpperCase() : <UserIcon size={18} />}
               </div>
-              <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-slate-900"></span>
+              <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-slate-900"></span>
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-bold text-white truncate">
+              <p className="text-sm font-extrabold text-white truncate">
                 {session?.user?.name || 'অ্যাডমিন'}
               </p>
-              <div className="flex items-center gap-1 text-[10px] text-teal-400 font-medium">
-                <ShieldCheck size={11} className="shrink-0" />
+              <div className="flex items-center gap-1 text-xs text-blue-300 font-bold">
+                <ShieldCheck size={12} className="shrink-0 text-blue-400" />
                 <span className="truncate">
                   {(() => {
                     const r = (session?.user as any)?.role;
@@ -213,7 +231,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
           <button
             onClick={handleLogout}
-            className="w-full flex items-center justify-center gap-2 bg-slate-900 hover:bg-red-950/40 text-slate-300 hover:text-red-400 border border-slate-800 hover:border-red-900/50 text-xs font-semibold py-2 rounded-xl transition duration-200"
+            className="w-full flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700/80 text-xs font-bold py-2.5 rounded-xl transition duration-200"
           >
             <LogOut size={14} />
             <span>লগআউট করুন</span>
@@ -224,33 +242,54 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Main content area */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Header bar */}
-        <header className="h-16 bg-white/90 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-30 flex items-center justify-between px-6 shadow-xs">
+        <header className="h-16 bg-white border-b border-slate-200/90 sticky top-0 z-30 flex items-center justify-between px-4 sm:px-6 shadow-2xs">
           <div className="flex items-center gap-3">
             <button 
-              className="lg:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100 transition focus:outline-none" 
+              className="lg:hidden p-2 rounded-xl text-slate-600 hover:bg-slate-100 transition focus:outline-none border border-slate-200" 
               onClick={() => setSidebarOpen(true)}
             >
-              <Menu size={20} />
+              <Menu size={18} />
             </button>
-            <h1 className="text-sm sm:text-base font-bold text-slate-800 hidden sm:block">
-              খুলনা গেজেট অ্যাডমিন প্যানেল
-            </h1>
+            
+            {/* Breadcrumb Path */}
+            <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-slate-700">
+              <Link href="/admin" className="text-slate-400 hover:text-slate-700 transition flex items-center gap-1">
+                <Home size={14} />
+                <span className="hidden sm:inline">হোম</span>
+              </Link>
+              <ChevronRight size={13} className="text-slate-300" />
+              <span className="text-slate-900 font-extrabold">{activeTitle}</span>
+            </div>
           </div>
 
-          <div className="ml-auto flex items-center gap-3 sm:gap-4">
-            <div className="hidden md:flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-full border border-slate-200/70 text-xs text-slate-600 font-medium">
+          {/* Right Action Icons & User Info */}
+          <div className="ml-auto flex items-center gap-2.5 sm:gap-4">
+            {/* Quick News Creation Shortcut */}
+            {['SUPER_ADMIN', 'ADMIN', 'EDITOR', 'SUB_EDITOR', 'REPORTER', 'CONTRIBUTOR'].includes(role) && (
+              <Link
+                href="/admin/news/new"
+                className="inline-flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs px-3.5 py-2 rounded-xl shadow-sm shadow-blue-600/20 border border-blue-500/30 transition duration-200"
+              >
+                <PlusCircle size={15} />
+                <span className="hidden sm:inline">নতুন খবর</span>
+              </Link>
+            )}
+
+            {/* Live Status Badge */}
+            <div className="hidden xl:flex items-center gap-2 bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-xl border border-emerald-200/80 text-xs font-bold">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span>সিস্টেম সচল রয়েছে</span>
+              <span>সিস্টেম লাইভ</span>
             </div>
 
+            {/* View Live Site Link */}
             <Link 
               href="/" 
               target="_blank" 
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200 px-3.5 py-2 rounded-xl shadow-2xs transition duration-200"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200/80 border border-slate-200 px-3 py-2 rounded-xl shadow-2xs transition duration-200"
             >
               <Globe size={14} className="text-teal-600" />
-              <span>ওয়েবসাইট দেখুন</span>
-              <ExternalLink size={12} className="text-slate-400 ml-0.5" />
+              <span className="hidden md:inline">ওয়েবসাইট</span>
+              <ExternalLink size={12} className="text-slate-400" />
             </Link>
           </div>
         </header>
@@ -263,3 +302,4 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     </div>
   );
 }
+
