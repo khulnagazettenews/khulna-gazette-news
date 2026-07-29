@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import TabsWidget from './tabs-widget';
+import CalendarArchiveWidget from './calendar-archive-widget';
 import PrayerWidget from './prayer-widget';
 import AdBanner from './ad-banner';
 import { Smartphone } from 'lucide-react';
@@ -20,6 +21,9 @@ export default function SidebarWidgets({
 }: SidebarWidgetsProps) {
   return (
     <div className="space-y-5">
+      {/* 0. CALENDAR ARCHIVE WIDGET (আর্কাইভ ক্যালেন্ডার) */}
+      <CalendarArchiveWidget />
+
       {/* 1. TABS WIDGET (সর্বশেষ | সর্বাধিক পঠিত) */}
       <TabsWidget latest={latestNews} popular={popularNews} />
 
