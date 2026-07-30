@@ -219,17 +219,17 @@ export default async function HomePage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-50 font-sans">
+    <div className="flex flex-col min-h-screen bg-white font-sans">
       <PublicHeader />
       <BreakingNewsTicker />
 
-      {/* Main Container */}
-      <main className="flex-grow w-full max-w-full px-4 sm:px-8 lg:px-12 pt-3 pb-6 space-y-6">
-        {/* 1. Dhaka Pos        {/* Top Ad slot */}
+      {/* Main Container matching original theme container width */}
+      <main className="flex-grow w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8 space-y-6">
+        {/* Top Ad slot */}
         <AdBanner ad={topAd} fallbackText="বিজ্ঞাপন ব্যানার" className="h-20 sm:h-24" />
 
-        {/* Main 2-Column Grid (Left Main Content 9 Cols + Right Sidebar 3 Cols) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        {/* Main 2-Column Grid (Left Main Content 8/9 Cols + Right Sidebar 4/3 Cols) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-7 items-start">
           {/* Left Column (9 Cols on LG): Hero + Category Blocks + Media Galleries */}
           <div className="lg:col-span-9 space-y-6">
             {/* 2. Main Lead Hero Section */}

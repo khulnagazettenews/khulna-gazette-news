@@ -108,9 +108,42 @@ export default function PublicHeaderClient({ categories, formattedDate }: Public
     setCurrentDate(getBengaliFullDateClient());
   }, []);
 
-  // Split categories: main vs "more" (order > 11)
-  const mainNavCats = categories.filter((c) => c.order <= 11 && c.slug !== 'gazette-exclusive');
-  const moreCats = categories.filter((c) => c.order > 11);
+  // Order categories exactly as khulnagazette.com live menu:
+  // 1. বাংলাদেশ 2. খুলনাঞ্চল 3. খেলা 4. বিনোদন 5. রাজনীতি 6. আন্তর্জাতিক 7. অর্থনীতি 8. শিক্ষা 9. মুক্ত ভাবনা 10. ইসলাম ও জীবন 11. গেজেট এক্সক্লুসিভ
+  const categoryOrderMap: Record<string, number> = {
+    'bangladesh': 1,
+    'khulna': 2,
+    'khulnanchal': 2,
+    'khela': 3,
+    'sports': 3,
+    'entertainment': 4,
+    'politics': 5,
+    'international': 6,
+    'economic': 7,
+    'economy': 7,
+    'education': 8,
+    'free-thinking': 9,
+    'mukto-bhabna': 9,
+    'islam-and-life': 10,
+    'gazette-exclusive': 11,
+  };
+
+  const sortedCategories = [...categories].sort((a, b) => {
+    const orderA = categoryOrderMap[a.slug] || a.order || 99;
+    const orderB = categoryOrderMap[b.slug] || b.order || 99;
+    return orderA - orderB;
+  });
+
+  const mainNavCats = sortedCategories.filter((c) => {
+    const orderVal = categoryOrderMap[c.slug] || c.order || 99;
+    return orderVal <= 10 && c.slug !== 'gazette-exclusive';
+  });
+
+  const moreCats = sortedCategories.filter((c) => {
+    const orderVal = categoryOrderMap[c.slug] || c.order || 99;
+    return orderVal > 11;
+  });
+
   const exclusiveCat = categories.find((c) => c.slug === 'gazette-exclusive');
 
   const handleSearchSubmit = (e: React.FormEvent) => {
@@ -211,23 +244,19 @@ export default function PublicHeaderClient({ categories, formattedDate }: Public
       </div>
 
       {/* 2. BOTTOM NAVIGATION BAR ROW (DESKTOP) */}
-      <div className="border-t border-b border-gray-200 sticky top-0 z-40 bg-white shadow-xs">
-        <div className="w-full max-w-full px-4 sm:px-8 lg:px-12">
-          <div className="hidden xl:flex items-center justify-center space-x-6 lg:space-x-7 text-[1.15rem] lg:text-[1.25rem] text-[#000000] font-bold h-12">
-            {/* Homepage Link with red Home Icon */}
+      <div className="border-t border-b border-gray-200 sticky top-0 z-40 bg-white shadow-2xs">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="hidden xl:flex items-center justify-between text-[18px] text-[#000000] font-light h-10">
+            {/* Homepage Link with red Home Icon & bottom indicator */}
             <Link
               href="/"
-              className={`hover:text-[#ED1C24] py-2 transition flex items-center justify-center relative group ${
-                pathname === '/' ? 'text-[#ED1C24]' : 'text-[#000000]'
+              className={`hover:text-[#ED1C24] py-1.5 transition flex items-center justify-center relative group shrink-0 ${
+                pathname === '/' ? 'text-[#ED1C24]' : 'text-[#ED1C24]'
               }`}
             >
-              <span className="relative py-1 flex items-center justify-center">
-                <i className="fa fa-home text-[#ED1C24] text-xl"></i>
-                <span
-                  className={`absolute left-0 bottom-0 h-[2.5px] bg-[#ED1C24] transition-all duration-300 ${
-                    pathname === '/' ? 'w-full' : 'w-0 group-hover:w-full'
-                  }`}
-                ></span>
+              <span className="relative pb-0.5 flex items-center justify-center">
+                <i className="fa fa-home text-[#ED1C24] text-lg"></i>
+                <span className="absolute left-0 bottom-0 w-full h-[2.5px] bg-[#ED1C24]"></span>
               </span>
             </Link>
 
@@ -240,46 +269,32 @@ export default function PublicHeaderClient({ categories, formattedDate }: Public
                   {hasSub ? (
                     <button
                       onClick={() => toggleDropdown(cat.id)}
-                      className={`flex items-center gap-1 hover:text-[#ED1C24] py-2 transition focus:outline-none relative font-bold ${
+                      className={`flex items-center gap-1 hover:text-[#ED1C24] py-1.5 transition focus:outline-none relative font-light text-[18px] ${
                         isActive ? 'text-[#ED1C24]' : 'text-[#000000]'
                       }`}
                     >
-                      <span className="relative py-1">
-                        {cat.name}
-                        <span
-                          className={`absolute left-0 bottom-0 h-[2.5px] bg-[#ED1C24] transition-all duration-300 ${
-                            isActive ? 'w-full' : 'w-0 group-hover:w-full'
-                          }`}
-                        ></span>
-                      </span>
-                      <ChevronDown size={14} className="text-gray-600 group-hover:text-[#ED1C24]" />
+                      <span>{cat.name}</span>
+                      <ChevronDown size={13} className="text-gray-700 group-hover:text-[#ED1C24]" />
                     </button>
                   ) : (
                     <Link
                       href={`/${cat.slug}`}
-                      className={`hover:text-[#ED1C24] py-2 transition relative group font-bold ${
+                      className={`hover:text-[#ED1C24] py-1.5 transition relative group font-light text-[18px] ${
                         isActive ? 'text-[#ED1C24]' : 'text-[#000000]'
                       }`}
                     >
-                      <span className="relative py-1">
-                        {cat.name}
-                        <span
-                          className={`absolute left-0 bottom-0 h-[2.5px] bg-[#ED1C24] transition-all duration-300 ${
-                            isActive ? 'w-full' : 'w-0 group-hover:w-full'
-                          }`}
-                        ></span>
-                      </span>
+                      <span>{cat.name}</span>
                     </Link>
                   )}
 
-                  {/* Dropdown Menu for subcategories */}
+                  {/* Dropdown Menu for subcategories matching original theme */}
                   {hasSub && (
-                    <div className="absolute left-0 mt-0 w-52 bg-white text-[#000000] rounded-b-lg shadow-xl py-2.5 hidden group-hover:block border-t-2 border-[#ED1C24] transition duration-150 z-50">
+                    <div className="absolute left-0 mt-0 w-52 bg-black text-white shadow-xl py-1 hidden group-hover:block transition duration-150 z-50">
                       {cat.subCategories?.map((sub) => (
                         <Link
                           key={sub.id}
                           href={`/${cat.slug}/${sub.slug}`}
-                          className="block px-4 py-2 hover:bg-red-50 hover:text-[#ED1C24] text-sm sm:text-base font-bold"
+                          className="block px-4 py-2 hover:bg-transparent hover:text-red-500 text-[16px] font-light text-white transition"
                         >
                           {sub.name}
                         </Link>
@@ -294,37 +309,27 @@ export default function PublicHeaderClient({ categories, formattedDate }: Public
             {exclusiveCat && (
               <Link
                 href={`/${exclusiveCat.slug}`}
-                className={`hover:text-[#ED1C24] py-2 transition font-bold relative group ${
+                className={`hover:text-[#ED1C24] py-1.5 transition font-light text-[18px] relative group ${
                   pathname === `/${exclusiveCat.slug}` ? 'text-[#ED1C24]' : 'text-[#000000]'
                 }`}
               >
-                <span className="relative py-1">
-                  {exclusiveCat.name}
-                  <span
-                    className={`absolute left-0 bottom-0 h-[2.5px] bg-[#ED1C24] transition-all duration-300 ${
-                      pathname === `/${exclusiveCat.slug}` ? 'w-full' : 'w-0 group-hover:w-full'
-                    }`}
-                  ></span>
-                </span>
+                <span>{exclusiveCat.name}</span>
               </Link>
             )}
 
             {/* More dropdown */}
             {moreCats.length > 0 && (
               <div className="relative group">
-                <button className="flex items-center gap-1 hover:text-[#ED1C24] py-2 transition focus:outline-none relative font-bold text-[#000000]">
-                  <span className="relative py-1">
-                    <span>আরও</span>
-                    <span className="absolute left-0 bottom-0 h-[2.5px] bg-[#ED1C24] transition-all duration-300 w-0 group-hover:w-full"></span>
-                  </span>
-                  <ChevronDown size={14} className="text-gray-600" />
+                <button className="flex items-center gap-1 hover:text-[#ED1C24] py-1.5 transition focus:outline-none relative font-light text-[18px] text-[#000000]">
+                  <span>আরও</span>
+                  <ChevronDown size={13} className="text-gray-700" />
                 </button>
-                <div className="absolute right-0 mt-0 w-52 bg-white text-[#000000] rounded-b-lg shadow-xl py-2.5 hidden group-hover:block border-t-2 border-[#ED1C24] z-50 transition">
+                <div className="absolute right-0 mt-0 w-52 bg-black text-white shadow-xl py-1 hidden group-hover:block transition z-50">
                   {moreCats.map((cat) => (
                     <Link
                       key={cat.id}
                       href={`/${cat.slug}`}
-                      className="block px-4 py-2 hover:bg-red-50 hover:text-[#ED1C24] text-sm sm:text-base font-bold"
+                      className="block px-4 py-2 hover:bg-transparent hover:text-red-500 text-[16px] font-light text-white transition"
                     >
                       {cat.name}
                     </Link>

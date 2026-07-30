@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Noto+Sans+Bengali:wght@400;500;600;700;800;900&family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Albert+Sans:ital,wght@0,700;1,700&family=Arvo:ital,wght@0,400;1,400&family=Cormorant:ital,wght@0,400;0,500;1,400;1,500&family=Lora:ital,wght@0,400;1,400&family=Montserrat:ital,wght@0,500;0,700;1,500;1,700&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=Overpass:ital,wght@0,300;0,400;1,300;1,400&family=Raleway:ital,wght@0,700;1,700&family=Rubik:ital,wght@0,400;0,800;1,400;1,800&family=Work+Sans:ital,wght@0,400;1,400&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Noto+Sans+Bengali:wght@400;500;600;700;800;900&family=Hind+Siliguri:wght@400;500;600;700&display=swap');
 
 @font-face {
   font-family: 'Bangla';
@@ -24,80 +24,104 @@ html {
 body {
   color: #000000;
   background: #ffffff;
-  font-family: 'Hind Siliguri', 'Noto Sans Bengali', 'Bangla', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  font-size: 18px;
-  font-weight: 400;
-  line-height: 1.6;
-  margin: 0;
-  padding: 0;
+  font-family: 'Bangla', sans-serif;
+  font-size: 21px;
+  font-weight: 300;
+  line-height: 1.2;
+  margin: 0px;
+  padding: 0px;
+  letter-spacing: -0.2px;
+  word-spacing: -1px;
+  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Typography styles for Public Portal */
-h1 {
-  font-family: 'Hind Siliguri', 'Noto Sans Bengali', 'Bangla', sans-serif;
-  font-size: 32px;
-  line-height: 1.3;
-  font-weight: 800;
-  margin-bottom: 12px;
+/* Typography styles matching original khulnagazette.com theme */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0 0 8px;
+  font-family: 'Bangla', sans-serif;
+  font-weight: 300;
+  line-height: 1.15;
+  letter-spacing: -0.2px;
+  word-spacing: -1px;
 }
 
-@media (min-width: 1024px) {
-  h1 {
-    font-size: 34px;
-  }
-}
-
-h2 {
-  font-family: 'Hind Siliguri', 'Noto Sans Bengali', 'Bangla', sans-serif;
-  font-size: 28px;
-  line-height: 1.3;
-  font-weight: 700;
+h1, h2 {
+  font-size: 34px;
+  line-height: 1.25;
 }
 
 h3 {
-  font-family: 'Hind Siliguri', 'Noto Sans Bengali', 'Bangla', sans-serif;
-  font-size: 26px;
-  line-height: 1.3;
-  font-weight: 700;
+  font-size: 28px;
+  line-height: 1.25;
 }
 
 h4 {
-  font-family: 'Hind Siliguri', 'Noto Sans Bengali', 'Bangla', sans-serif;
-  font-size: 22px;
-  line-height: 1.35;
-  font-weight: 700;
+  font-size: 26px;
+  line-height: 1.25;
 }
 
 h5 {
-  font-family: 'Hind Siliguri', 'Noto Sans Bengali', 'Bangla', sans-serif;
-  font-size: 20px;
-  line-height: 1.4;
-  font-weight: 700;
+  font-size: 24px;
+  line-height: 1.25;
+}
+
+/* Font classes for exact elementor & theme matches */
+.kg-title-lead {
+  font-family: 'Bangla', sans-serif;
+  font-size: 32px;
+  line-height: 1.25;
+  font-weight: 400;
+}
+
+.kg-title-card {
+  font-family: 'Bangla', sans-serif;
+  font-size: 22px;
+  line-height: 1.2;
+  font-weight: 400;
+}
+
+.kg-title-subcard {
+  font-family: 'Bangla', sans-serif;
+  font-size: 19px;
+  line-height: 1.2;
+  font-weight: 400;
 }
 
 /* Article Body Typography */
 .prose {
   color: #000000;
-  font-family: 'Hind Siliguri', 'Noto Sans Bengali', 'Bangla', sans-serif;
-  font-size: 20px;
-  line-height: 1.8;
+  font-family: 'Bangla', sans-serif;
+  font-size: 21px;
+  font-weight: 300;
+  line-height: 1.6;
+  letter-spacing: -0.2px;
+  word-spacing: -1px;
 }
 
 .prose h2 {
   font-size: 26px;
-  font-weight: 700;
-  margin-top: 1.5rem;
-  margin-bottom: 0.75rem;
+  font-weight: 300;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
   color: #000000;
+  line-height: 1.2;
 }
 
 .prose p {
-  margin-bottom: 1.25rem;
-  line-height: 1.8;
-  font-size: 20px;
+  margin-bottom: 1rem;
+  line-height: 1.6;
+  font-size: 21px;
   color: #000000;
-  font-weight: 400;
+  font-weight: 300;
+  letter-spacing: -0.2px;
+  word-spacing: -1px;
 }
 
 .prose blockquote {

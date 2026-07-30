@@ -201,31 +201,31 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
               <div className="space-y-4">
                 
                 {/* Title */}
-                <h1 className="text-[28px] sm:text-[32px] lg:text-[34px] font-extrabold text-[#000000] leading-[1.3] tracking-tight">
+                <h1 className="text-[28px] sm:text-[32px] lg:text-[34px] font-light text-[#000000] leading-[1.15] tracking-tight">
                   {news.title}
                 </h1>
 
                 {/* Reporter / Subtitle Tagline */}
-                <div className="text-[20px] sm:text-[22px] font-bold text-[#222222] pt-1">
-                  {news.subtitle || news.reporterName || 'আন্তর্জাতিক ডেস্ক'}
+                <div className="text-[18px] sm:text-[20px] font-light text-[#333333] pt-0.5 leading-[1.2]">
+                  {news.subtitle || news.reporterName || 'গেজেট প্রতিবেদন'}
                 </div>
 
                 {/* Author & Timestamp + Social Share Bar */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between border-y border-gray-200 py-2 text-[13px] sm:text-[14px] text-[#555555] gap-3 my-2">
-                  <div className="flex flex-wrap items-center gap-3 font-normal">
-                    <span className="flex items-center gap-1.5 text-[#333333] font-medium">
-                      <i className="fa fa-user text-gray-600"></i>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between border-y border-gray-200 py-2 text-[14px] text-[#555555] gap-3 my-2 font-light">
+                  <div className="flex flex-wrap items-center gap-3 font-light">
+                    <span className="flex items-center gap-1.5 text-[#333333] font-light">
+                      <i className="fa fa-user text-gray-500"></i>
                       <span>{news.reporterName || news.author?.name || 'খুলনা গেজেট'}</span>
                     </span>
                     {dateStr && (
-                      <span className="flex items-center gap-1.5 text-[#555555]">
-                        <i className="fa fa-calendar text-gray-500"></i>
+                      <span className="flex items-center gap-1.5 text-[#555555] font-light">
+                        <i className="fa fa-calendar text-gray-400"></i>
                         <span>{dateStr}</span>
                       </span>
                     )}
                     {timeStr && (
-                      <span className="flex items-center gap-1.5 text-[#555555]">
-                        <i className="fa fa-clock-o text-gray-500"></i>
+                      <span className="flex items-center gap-1.5 text-[#555555] font-light">
+                        <i className="fa fa-clock-o text-gray-400"></i>
                         <span>{timeStr}</span>
                       </span>
                     )}
@@ -238,7 +238,7 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
                 {/* Featured Image */}
                 {news.featuredImage && (
                   <div className="space-y-1.5 my-3">
-                    <div className="w-full rounded overflow-hidden border border-gray-200 relative group bg-gray-50">
+                    <div className="w-full rounded-none overflow-hidden border border-gray-200 relative group bg-gray-50">
                       <img
                         src={news.featuredImage}
                         alt={news.title}
@@ -246,9 +246,9 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
                       />
                     </div>
                     {(news.imageCaption || news.photoCredit) && (
-                      <div className="text-[12px] text-gray-600 leading-tight flex justify-between gap-4 px-1">
+                      <div className="text-[12px] text-gray-600 leading-tight flex justify-between gap-4 px-1 font-light">
                         <span>{news.imageCaption}</span>
-                        {news.photoCredit && <span className="font-bold shrink-0">ছবি: {news.photoCredit}</span>}
+                        {news.photoCredit && <span className="font-light shrink-0">ছবি: {news.photoCredit}</span>}
                       </div>
                     )}
                   </div>
@@ -256,12 +256,12 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
 
                 {/* Article Main Content */}
                 <div 
-                  className="prose max-w-none text-[#000000] font-normal leading-[1.8] text-[21px] [&_p]:mb-5 [&_p]:text-[#000000] [&_p]:leading-[1.8] [&_p]:text-[21px] [&_strong]:font-extrabold [&_b]:font-extrabold [&_img]:rounded [&_img]:my-4"
+                  className="prose max-w-none text-[#000000] font-light leading-[1.5] text-[20px] [&_p]:mb-4 [&_p]:text-[#000000] [&_p]:leading-[1.5] [&_p]:text-[20px] [&_p]:font-light [&_strong]:font-bold [&_b]:font-bold [&_img]:rounded [&_img]:my-4"
                   dangerouslySetInnerHTML={{ __html: news.content }}
                 />
 
                 {/* Article Bottom Sign-off */}
-                <div className="pt-2 text-[16px] font-bold text-[#000000] italic">
+                <div className="pt-2 text-[16px] font-light text-[#000000]">
                   খুলনা গেজেট/এএজে
                 </div>
 
@@ -281,7 +281,7 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
               {relatedNews.length > 0 && (
                 <div className="space-y-4 pt-4 mt-6">
                   <div className="border-b-2 border-red-600 pb-1">
-                    <h2 className="text-[24px] sm:text-[26px] font-extrabold text-[#000000]">
+                    <h2 className="text-[24px] sm:text-[26px] font-light text-[#000000]">
                       আরও সংবাদ
                     </h2>
                   </div>
@@ -300,7 +300,7 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
                             </div>
                           )}
                           <Link href={`/${item.category?.slug || 'news'}/${item.id}`}>
-                            <h5 className="text-[18px] sm:text-[20px] font-extrabold text-[#000000] group-hover:text-red-600 transition leading-snug line-clamp-3">
+                            <h5 className="text-[18px] sm:text-[20px] font-light text-[#000000] group-hover:text-red-600 transition leading-snug line-clamp-3">
                               {item.title}
                             </h5>
                           </Link>

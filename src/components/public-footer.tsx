@@ -11,22 +11,22 @@ export default async function PublicFooter() {
         <div>
           <ul className="space-y-3">
             <li>
-              <Link href="/bangladesh" className="font-semibold hover:text-red-500 transition-colors">
+              <Link href="/bangladesh" className="font-light hover:text-red-500 transition-colors">
                 বাংলাদেশ
               </Link>
             </li>
             <li>
-              <Link href="/politics" className="font-semibold hover:text-red-500 transition-colors">
+              <Link href="/politics" className="font-light hover:text-red-500 transition-colors">
                 রাজনীতি
               </Link>
             </li>
             <li>
-              <Link href="/economy" className="font-semibold hover:text-red-500 transition-colors">
+              <Link href="/economy" className="font-light hover:text-red-500 transition-colors">
                 অর্থনীতি
               </Link>
             </li>
             <li>
-              <Link href="/international" className="font-semibold hover:text-red-500 transition-colors">
+              <Link href="/international" className="font-light hover:text-red-500 transition-colors">
                 আন্তর্জাতিক
               </Link>
             </li>
@@ -37,22 +37,22 @@ export default async function PublicFooter() {
         <div>
           <ul className="space-y-3">
             <li>
-              <Link href="/khulnanchal" className="font-semibold hover:text-red-500 transition-colors">
+              <Link href="/khulnanchal" className="font-light hover:text-red-500 transition-colors">
                 খুলনাঞ্চল
               </Link>
             </li>
             <li>
-              <Link href="/sports" className="font-semibold hover:text-red-500 transition-colors">
+              <Link href="/sports" className="font-light hover:text-red-500 transition-colors">
                 খেলা
               </Link>
             </li>
             <li>
-              <Link href="/it" className="font-semibold hover:text-red-500 transition-colors">
+              <Link href="/it" className="font-light hover:text-red-500 transition-colors">
                 আইটি
               </Link>
             </li>
             <li>
-              <Link href="/education" className="font-semibold hover:text-red-500 transition-colors">
+              <Link href="/education" className="font-light hover:text-red-500 transition-colors">
                 শিক্ষা
               </Link>
             </li>
@@ -63,22 +63,22 @@ export default async function PublicFooter() {
         <div>
           <ul className="space-y-3">
             <li>
-              <Link href="/lifestyle" className="font-semibold hover:text-red-500 transition-colors">
+              <Link href="/lifestyle" className="font-light hover:text-red-500 transition-colors">
                 লাইফ স্টাইল
               </Link>
             </li>
             <li>
-              <Link href="/entertainment" className="font-semibold hover:text-red-500 transition-colors">
+              <Link href="/entertainment" className="font-light hover:text-red-500 transition-colors">
                 বিনোদন
               </Link>
             </li>
             <li>
-              <Link href="/muktobhabna" className="font-semibold hover:text-red-500 transition-colors">
+              <Link href="/muktobhabna" className="font-light hover:text-red-500 transition-colors">
                 মুক্তভাবনা
               </Link>
             </li>
             <li>
-              <Link href="/islam-and-life" className="font-semibold hover:text-red-500 transition-colors">
+              <Link href="/islam-and-life" className="font-light hover:text-red-500 transition-colors">
                 ইসলাম ও জীবন
               </Link>
             </li>
@@ -89,22 +89,22 @@ export default async function PublicFooter() {
         <div>
           <ul className="space-y-3">
             <li>
-              <Link href="/social-media" className="font-semibold hover:text-red-500 transition-colors">
+              <Link href="/social-media" className="font-light hover:text-red-500 transition-colors">
                 সোশ্যাল মিডিয়া
               </Link>
             </li>
             <li>
-              <Link href="/health" className="font-semibold hover:text-red-500 transition-colors">
+              <Link href="/health" className="font-light hover:text-red-500 transition-colors">
                 চিকিৎসা
               </Link>
             </li>
             <li>
-              <Link href="/weird-news" className="font-semibold hover:text-red-500 transition-colors">
+              <Link href="/weird-news" className="font-light hover:text-red-500 transition-colors">
                 চিত্র বিচিত্র
               </Link>
             </li>
             <li>
-              <Link href="/photo-gallery" className="font-semibold hover:text-red-500 transition-colors">
+              <Link href="/photo-gallery" className="font-light hover:text-red-500 transition-colors">
                 ফটো গ্যালারী
               </Link>
             </li>
@@ -115,22 +115,22 @@ export default async function PublicFooter() {
         <div>
           <ul className="space-y-3">
             <li>
-              <Link href="/about" className="font-semibold hover:text-red-500 transition-colors">
+              <Link href="/about" className="font-light hover:text-red-500 transition-colors">
                 About Us
               </Link>
             </li>
             <li>
-              <Link href="/terms" className="font-semibold hover:text-red-500 transition-colors">
+              <Link href="/terms" className="font-light hover:text-red-500 transition-colors">
                 Terms of Use
               </Link>
             </li>
             <li>
-              <Link href="/privacy" className="font-semibold hover:text-red-500 transition-colors">
+              <Link href="/privacy" className="font-light hover:text-red-500 transition-colors">
                 Privacy Policy
               </Link>
             </li>
             <li>
-              <Link href="/contact" className="font-semibold hover:text-red-500 transition-colors">
+              <Link href="/contact" className="font-light hover:text-red-500 transition-colors">
                 Contact Us
               </Link>
             </li>
@@ -172,8 +172,8 @@ export default async function PublicFooter() {
             </Link>
           </div>
           <div className="text-center md:text-left text-white max-w-2xl">
-            <p className="leading-relaxed text-[17px]">
-              <strong className="text-white font-bold block mb-1">সম্পাদক ও প্রকাশক : মোঃ মাহমুদ আহসান</strong>
+            <p className="leading-relaxed text-[17px] font-light">
+              <strong className="text-white font-light block mb-1">সম্পাদক ও প্রকাশক : মোঃ মাহমুদ আহসান</strong>
               বার্তা বিভাগ : আনসারী কমপ্লেক্স, ১৬০ শের-ই-বাংলা সড়ক, খুলনা ৯১০০।<br />
               Mobile : 01794744579 &nbsp;&nbsp; E-mail : khulnagazette@gmail.com
             </p>
@@ -184,10 +184,10 @@ export default async function PublicFooter() {
       {/* Bottom Footer Copyright & Legal strip */}
       <div className="bg-[#202731] py-5 text-sm text-gray-300">
         <div className="w-full max-w-full px-4 sm:px-8 lg:px-12 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="font-semibold">
+          <p className="font-light">
             এই ওয়েবসাইটের কোনো লেখা, ছবি, অডিও, ভিডিও অনুমতি ছাড়া ব্যবহার বেআইনি।
           </p>
-          <p className="font-semibold">
+          <p className="font-light">
             © 2026 khulnagazette all rights reserved
           </p>
         </div>

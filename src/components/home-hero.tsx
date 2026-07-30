@@ -56,7 +56,7 @@ export default function HomeHero({ news }: HomeHeroProps) {
                   </div>
                 )}
                 <Link href={`/${categorySlug}/${story.id}`} className="block">
-                  <h3 className="text-[14px] sm:text-[15px] font-extrabold text-[#000000] group-hover:text-red-600 transition leading-snug line-clamp-2">
+                  <h3 className="text-[24px] sm:text-[26px] font-bold text-[#000000] group-hover:text-red-600 transition leading-[1.2] line-clamp-2">
                     {story.title}
                   </h3>
                 </Link>
@@ -85,7 +85,7 @@ export default function HomeHero({ news }: HomeHeroProps) {
               </div>
             )}
             <Link href={`/${mainLead.category?.slug || 'news'}/${mainLead.id}`} className="block pt-1">
-              <h1 className="text-xl sm:text-2xl lg:text-[25px] font-extrabold text-red-600 group-hover:text-red-700 transition leading-snug line-clamp-2">
+              <h1 className="text-[32px] sm:text-[36px] lg:text-[40px] font-bold text-red-600 group-hover:text-red-700 transition leading-[1.18] line-clamp-2">
                 {mainLead.title}
               </h1>
             </Link>
@@ -115,7 +115,7 @@ export default function HomeHero({ news }: HomeHeroProps) {
                   </div>
                 )}
                 <Link href={`/${categorySlug}/${story.id}`} className="block">
-                  <h3 className="text-[14px] sm:text-[15px] font-extrabold text-[#000000] group-hover:text-red-600 transition leading-snug line-clamp-2">
+                  <h3 className="text-[24px] sm:text-[26px] font-bold text-[#000000] group-hover:text-red-600 transition leading-[1.2] line-clamp-2">
                     {story.title}
                   </h3>
                 </Link>
@@ -150,7 +150,7 @@ export default function HomeHero({ news }: HomeHeroProps) {
                     </div>
                   )}
                   <Link href={`/${categorySlug}/${story.id}`} className="block">
-                    <h4 className="text-[14px] sm:text-[15px] font-extrabold text-[#000000] group-hover:text-red-600 transition leading-snug line-clamp-2">
+                    <h4 className="text-[22px] sm:text-[24px] font-bold text-[#000000] group-hover:text-red-600 transition leading-[1.25] line-clamp-2">
                       {story.title}
                     </h4>
                   </Link>

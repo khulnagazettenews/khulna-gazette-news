@@ -21,28 +21,8 @@ export default function SidebarWidgets({
 }: SidebarWidgetsProps) {
   return (
     <div className="space-y-5">
-      {/* 0. CALENDAR ARCHIVE WIDGET (আর্কাইভ ক্যালেন্ডার) */}
-      <CalendarArchiveWidget />
-
-      {/* 1. TABS WIDGET (সর্বশেষ | সর্বাধিক পঠিত) */}
-      <TabsWidget latest={latestNews} popular={popularNews} />
-
-      {/* 2. WORLD CUP / SPORTS SPECIAL PROMO BANNER */}
-      <div className="bg-white rounded-xl border border-slate-200/90 shadow-xs overflow-hidden">
-        <div className="bg-[#1e293b] text-white py-2.5 px-4 text-center font-black text-xs tracking-tight">
-          বিশ্বকাপের রোমাঞ্চকর খবর
-        </div>
-        <div className="relative aspect-[16/9] w-full overflow-hidden bg-slate-900">
-          <img
-            src="/uploads/sidebar/world_cup_promo.png"
-            alt="বিশ্বকাপের খবর"
-            className="w-full h-full object-cover hover:scale-105 transition duration-500"
-          />
-        </div>
-      </div>
-
-      {/* 3. EPAPER PROMO BANNER (Exact Size Matching Reference Screenshot) */}
-      <div className="bg-[#1e293b] rounded-2xl border border-slate-700/60 shadow-sm overflow-hidden font-sans">
+      {/* 1. EPAPER PROMO BANNER (TOP POS - ই-পেপার সংস্করণ) */}
+      <div className="bg-[#1e293b] rounded-xl border border-slate-700/60 shadow-sm overflow-hidden font-sans">
         <div className="bg-[#1e293b] text-white py-2.5 px-4 text-center font-extrabold text-sm tracking-tight border-b border-slate-700/50">
           ই-পেপার সংস্করণ
         </div>
@@ -58,6 +38,12 @@ export default function SidebarWidgets({
           </div>
         </Link>
       </div>
+
+      {/* 2. TABS WIDGET (সর্বশেষ | সর্বাধিক পঠিত) */}
+      <TabsWidget latest={latestNews} popular={popularNews} />
+
+      {/* 3. CALENDAR ARCHIVE WIDGET (গেজেট এক্সক্লুসিভ এর পূর্বে আর্কাইভ) */}
+      <CalendarArchiveWidget />
 
       {/* 4. GAZETTE EXCLUSIVE NEWS BOX */}
       <div className="bg-white rounded border border-gray-200 overflow-hidden">

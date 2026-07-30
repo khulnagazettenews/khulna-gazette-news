@@ -10,10 +10,10 @@ export default function YoutubeBanner() {
           </svg>
         </div>
         <div>
-          <h3 className="text-lg sm:text-xl font-black tracking-tight leading-snug">
+          <h3 className="text-lg sm:text-xl font-light tracking-tight leading-snug">
             খুলনা গেজেট সংক্রান্ত ভিডিও খবর
           </h3>
-          <p className="text-xs sm:text-sm text-red-100 font-medium">
+          <p className="text-xs sm:text-sm text-red-100 font-light">
             ইউটিউবে আমাদের সাম্প্রতিক সব খবর দেখতে চ্যানেলটি সাবস্ক্রাইব করুন
           </p>
         </div>
@@ -22,7 +22,7 @@ export default function YoutubeBanner() {
         href="https://www.youtube.com/@khulnagazette"
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex items-center gap-2 bg-white text-red-700 hover:bg-slate-100 font-black text-xs sm:text-sm px-5 py-2.5 rounded-lg shadow transition shrink-0 uppercase tracking-wide"
+        className="inline-flex items-center gap-2 bg-white text-red-700 hover:bg-slate-100 font-light text-xs sm:text-sm px-5 py-2.5 rounded-lg shadow transition shrink-0 uppercase tracking-wide"
       >
         <span>সাবস্ক্রাইব করুন</span>
       </a>

@@ -49,35 +49,31 @@ export default function PublicNavbar({ categories }: NavbarProps) {
   };
 
   return (
-    <nav className="bg-white border-b border-gray-200 sticky top-0 z-40 shadow-sm text-[1.15rem] font-bold">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-12">
+    <nav className="bg-white border-b border-gray-200 sticky top-0 z-40 text-[18px] font-normal">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6">
+        <div className="flex items-center justify-start gap-4 sm:gap-6 h-10 overflow-x-auto no-scrollbar">
           {/* Mobile menu toggle */}
-          <div className="flex xl:hidden">
+          <div className="flex xl:hidden shrink-0">
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
               className="text-[#000000] hover:text-[#ED1C24] focus:outline-none"
             >
-              {mobileOpen ? <X size={24} /> : <Menu size={24} />}
+              {mobileOpen ? <X size={22} /> : <Menu size={22} />}
             </button>
           </div>
 
           {/* Desktop Nav menu */}
-          <div className="hidden xl:flex items-center space-x-6 w-full text-[#000000] font-bold">
-            {/* Homepage Link with Home Icon */}
+          <div className="hidden xl:flex items-center space-x-6 text-[#000000] font-normal text-[22px] whitespace-nowrap">
+            {/* Homepage Link with Red Home Icon & Bottom Line matching screenshot */}
             <Link
               href="/"
-              className={`hover:text-[#ED1C24] py-3.5 transition flex items-center justify-center relative group ${
-                pathname === '/' ? 'text-[#ED1C24]' : 'text-[#000000]'
+              className={`py-1.5 transition flex items-center justify-center relative group shrink-0 ${
+                pathname === '/' ? 'text-[#ED1C24]' : 'text-[#ED1C24]'
               }`}
             >
-              <span className="relative py-1">
-                <Home size={20} className="text-[#ED1C24] fill-current" />
-                <span
-                  className={`absolute left-0 bottom-0 h-[2.5px] bg-[#ED1C24] transition-all duration-300 ${
-                    pathname === '/' ? 'w-full' : 'w-0 group-hover:w-full'
-                  }`}
-                ></span>
+              <span className="relative pb-1">
+                <Home size={22} className="text-[#ED1C24] fill-current" />
+                <span className="absolute left-0 bottom-0 w-full h-[2.5px] bg-[#ED1C24]"></span>
               </span>
             </Link>
 
@@ -90,46 +86,32 @@ export default function PublicNavbar({ categories }: NavbarProps) {
                   {hasSub ? (
                     <button
                       onClick={() => toggleDropdown(cat.id)}
-                      className={`flex items-center gap-1 hover:text-[#ED1C24] py-3.5 transition focus:outline-none relative font-bold ${
+                      className={`flex items-center gap-1 hover:text-[#ED1C24] py-1.5 transition focus:outline-none relative font-light text-[22px] ${
                         isActive ? 'text-[#ED1C24]' : 'text-[#000000]'
                       }`}
                     >
-                      <span className="relative py-1">
-                        {cat.name}
-                        <span
-                          className={`absolute left-0 bottom-0 h-[2.5px] bg-[#ED1C24] transition-all duration-300 ${
-                            isActive ? 'w-full' : 'w-0 group-hover:w-full'
-                          }`}
-                        ></span>
-                      </span>
-                      <ChevronDown size={14} className="text-gray-600 group-hover:text-[#ED1C24]" />
+                      <span>{cat.name}</span>
+                      <ChevronDown size={14} className="text-gray-700 group-hover:text-[#ED1C24]" />
                     </button>
                   ) : (
                     <Link
                       href={`/${cat.slug}`}
-                      className={`hover:text-[#ED1C24] py-3.5 transition relative group font-bold ${
+                      className={`hover:text-[#ED1C24] py-1.5 transition relative group font-light text-[22px] ${
                         isActive ? 'text-[#ED1C24]' : 'text-[#000000]'
                       }`}
                     >
-                      <span className="relative py-1">
-                        {cat.name}
-                        <span
-                          className={`absolute left-0 bottom-0 h-[2.5px] bg-[#ED1C24] transition-all duration-300 ${
-                            isActive ? 'w-full' : 'w-0 group-hover:w-full'
-                          }`}
-                        ></span>
-                      </span>
+                      <span>{cat.name}</span>
                     </Link>
                   )}
 
-                  {/* Dropdown Menu for subcategories */}
+                  {/* Dropdown Menu for subcategories matching original khulnagazette.com theme */}
                   {hasSub && (
-                    <div className="absolute left-0 mt-0 w-48 bg-white text-[#262626] rounded-b-lg shadow-xl py-2 hidden group-hover:block border-t-2 border-[#ED1C24] transition duration-150">
+                    <div className="absolute left-0 mt-0 w-52 bg-black text-white shadow-xl py-1 hidden group-hover:block transition duration-150 z-50">
                       {cat.subCategories?.map((sub) => (
                         <Link
                           key={sub.id}
                           href={`/${cat.slug}/${sub.slug}`}
-                          className="block px-4 py-2 hover:bg-red-50 hover:text-[#ED1C24] text-xs font-semibold"
+                          className="block px-4 py-2 hover:bg-transparent hover:text-red-500 text-[16px] font-normal text-white transition"
                         >
                           {sub.name}
                         </Link>
@@ -144,15 +126,10 @@ export default function PublicNavbar({ categories }: NavbarProps) {
             {exclusiveCat && (
               <Link
                 href={`/${exclusiveCat.slug}`}
-                className={`hover:text-[#ED1C24] py-3.5 transition font-bold relative group`}
+                className={`hover:text-[#ED1C24] py-2 transition font-normal relative group`}
               >
-                <span className="relative py-1">
+                <span className="relative py-0.5">
                   {exclusiveCat.name}
-                  <span
-                    className={`absolute left-0 bottom-0 h-[2px] bg-[#ED1C24] transition-all duration-300 ${
-                      pathname === `/${exclusiveCat.slug}` ? 'w-full' : 'w-0 group-hover:w-full'
-                    }`}
-                  ></span>
                 </span>
               </Link>
             )}
@@ -160,19 +137,18 @@ export default function PublicNavbar({ categories }: NavbarProps) {
             {/* More dropdown */}
             {moreCats.length > 0 && (
               <div className="relative group">
-                <button className="flex items-center gap-1 hover:text-[#ED1C24] py-3.5 transition focus:outline-none relative">
-                  <span className="relative py-1">
+                <button className="flex items-center gap-1 hover:text-[#ED1C24] py-2 transition focus:outline-none relative font-normal">
+                  <span className="relative py-0.5">
                     <span>আরও</span>
-                    <span className="absolute left-0 bottom-0 h-[2px] bg-[#ED1C24] transition-all duration-300 w-0 group-hover:w-full"></span>
                   </span>
                   <ChevronDown size={14} />
                 </button>
-                <div className="absolute right-0 mt-0 w-48 bg-white text-[#262626] rounded-b-lg shadow-xl py-2 hidden group-hover:block border-t-2 border-[#ED1C24] transition">
+                <div className="absolute right-0 mt-0 w-56 bg-black text-white shadow-xl py-1 hidden group-hover:block transition z-50">
                   {moreCats.map((cat) => (
                     <Link
                       key={cat.id}
                       href={`/${cat.slug}`}
-                      className="block px-4 py-2 hover:bg-red-50 hover:text-[#ED1C24] text-xs font-semibold"
+                      className="block px-4 py-2 hover:bg-transparent hover:text-red-500 text-[16px] font-normal text-white transition"
                     >
                       {cat.name}
                     </Link>
