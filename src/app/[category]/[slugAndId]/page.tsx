@@ -177,7 +177,7 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
         />
         <ViewsIncrement newsId={news.id} />
 
-        <main className="flex-grow max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 py-5 space-y-5 w-full">
+        <main className="flex-grow w-full max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 py-5 space-y-5">
           {/* Breadcrumb Bar */}
           <div className="text-xs text-gray-600 flex items-center gap-1.5 select-none border-b border-gray-200 pb-2.5">
             <Link href="/" className="hover:text-red-600 flex items-center gap-1">
@@ -195,18 +195,18 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
             )}
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             {/* Left Column: Article Details + Share Bar + Content + More News Grid */}
-            <div className="lg:col-span-2 space-y-5">
-              <div className="space-y-4">
+            <div className="lg:col-span-8 space-y-5">
+              <div className="space-y-3">
                 
                 {/* Title */}
-                <h1 className="text-[28px] sm:text-[32px] lg:text-[34px] font-light text-[#000000] leading-[1.15] tracking-tight">
+                <h1 className="text-[28px] sm:text-[32px] lg:text-[34px] font-bold text-[#000000] leading-[1.25] tracking-tight">
                   {news.title}
                 </h1>
 
-                {/* Reporter / Subtitle Tagline */}
-                <div className="text-[18px] sm:text-[20px] font-light text-[#333333] pt-0.5 leading-[1.2]">
+                {/* Reporter Tagline */}
+                <div className="text-[15px] font-bold text-[#444444]">
                   {news.subtitle || news.reporterName || 'গেজেট প্রতিবেদন'}
                 </div>
 
@@ -318,7 +318,7 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
             </div>
 
             {/* Right Column: Sidebar Widgets & App Banner */}
-            <div className="space-y-6">
+            <div className="lg:col-span-4 space-y-6">
               {/* Latest / Most Read Tabs Widget */}
               <TabsWidget latest={serializeList(latestNews)} popular={serializeList(popularNews)} />
 
