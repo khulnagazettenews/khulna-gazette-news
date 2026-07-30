@@ -46,7 +46,9 @@ export default function OpinionWidget({ items }: OpinionWidgetProps) {
                   <h4 className="text-sm font-light text-gray-900 group-hover:text-red-600 transition leading-snug line-clamp-3">
                     {item.title}
                   </h4>
-            </Link>
+                </Link>
+              </div>
+            </div>
           );
         })}
       </div>
