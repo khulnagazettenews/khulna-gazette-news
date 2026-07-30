@@ -245,7 +245,7 @@ export default function PublicHeaderClient({ categories, formattedDate }: Public
 
       {/* 2. BOTTOM NAVIGATION BAR ROW (DESKTOP) */}
       <div className="border-t border-b border-gray-200 sticky top-0 z-40 bg-white shadow-2xs">
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full max-w-full px-4 sm:px-8 lg:px-12">
           <div className="hidden xl:flex items-center justify-between text-[18px] text-[#000000] font-light h-10">
             {/* Homepage Link with red Home Icon & bottom indicator */}
             <Link
