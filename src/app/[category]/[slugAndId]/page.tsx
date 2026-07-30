@@ -84,21 +84,36 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
   });
 
   if (news && news.status === 'PUBLISHED') {
-    // Fetch 12 related / more news items by category
-    let relatedNews = await prisma.news.findMany({
-      where: {
-        categoryId: news.categoryId,
-        status: 'PUBLISHED',
-        NOT: { id: news.id },
-      },
-      take: 12,
-      orderBy: { publishedAt: 'desc' },
-      include: {
-        category: true,
-      },
-    });
+    // Run all supporting queries in PARALLEL via Promise.all for instant speed
+    const [relatedNewsFetched, latestNews, popularNews, sidebarAd] = await Promise.all([
+      prisma.news.findMany({
+        where: {
+          categoryId: news.categoryId,
+          status: 'PUBLISHED',
+          NOT: { id: news.id },
+        },
+        take: 12,
+        orderBy: { publishedAt: 'desc' },
+        include: { category: true },
+      }),
+      prisma.news.findMany({
+        where: { status: 'PUBLISHED' },
+        orderBy: { publishedAt: 'desc' },
+        take: 6,
+        include: { category: true },
+      }),
+      prisma.news.findMany({
+        where: { status: 'PUBLISHED' },
+        orderBy: { viewCount: 'desc' },
+        take: 6,
+        include: { category: true },
+      }),
+      prisma.advertisement.findFirst({
+        where: { position: 'sidebar_banner', status: 'ACTIVE' },
+      }),
+    ]);
 
-    // Fallback to latest published news if category has fewer articles
+    let relatedNews = relatedNewsFetched;
     if (relatedNews.length < 12) {
       const additional = await prisma.news.findMany({
         where: {
@@ -107,27 +122,10 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
         },
         take: 12 - relatedNews.length,
         orderBy: { publishedAt: 'desc' },
-        include: {
-          category: true,
-        },
+        include: { category: true },
       });
       relatedNews = [...relatedNews, ...additional];
     }
-
-    // Sidebar details
-    const latestNews = await prisma.news.findMany({
-      where: { status: 'PUBLISHED' },
-      orderBy: { publishedAt: 'desc' },
-      take: 8,
-      include: { category: true },
-    });
-
-    const popularNews = await prisma.news.findMany({
-      where: { status: 'PUBLISHED' },
-      orderBy: { viewCount: 'desc' },
-      take: 8,
-      include: { category: true },
-    });
 
     const serializeList = (list: any[]) => {
       return list.map((item) => ({
@@ -137,10 +135,6 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
         updatedAt: item.updatedAt.toISOString(),
       }));
     };
-
-    const sidebarAd = await prisma.advertisement.findFirst({
-      where: { position: 'sidebar_banner', status: 'ACTIVE' },
-    });
 
     const jsonLd = {
       '@context': 'https://schema.org',

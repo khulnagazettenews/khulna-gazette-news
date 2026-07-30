@@ -42,7 +42,8 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
   // Get matching category ids (both parent and its subcategories if any)
   const matchingCatIds = [cat.id, ...cat.subCategories.map((s) => s.id)];
 
-  const [articles, total] = await Promise.all([
+  // 2. Parallel fetch articles, count, latest news & popular news
+  const [articles, total, latestNews, popularNews, sidebarAd] = await Promise.all([
     prisma.news.findMany({
       where: {
         categoryId: { in: matchingCatIds },
@@ -61,24 +62,24 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
         status: 'PUBLISHED',
       },
     }),
+    prisma.news.findMany({
+      where: { status: 'PUBLISHED' },
+      orderBy: { publishedAt: 'desc' },
+      take: 6,
+      include: { category: true },
+    }),
+    prisma.news.findMany({
+      where: { status: 'PUBLISHED' },
+      orderBy: { viewCount: 'desc' },
+      take: 6,
+      include: { category: true },
+    }),
+    prisma.advertisement.findFirst({
+      where: { position: 'sidebar_banner', status: 'ACTIVE' },
+    }),
   ]);
 
   const totalPages = Math.ceil(total / limit);
-
-  // 3. Fetch Sidebar Details
-  const latestNews = await prisma.news.findMany({
-    where: { status: 'PUBLISHED' },
-    orderBy: { publishedAt: 'desc' },
-    take: 6,
-    include: { category: true },
-  });
-
-  const popularNews = await prisma.news.findMany({
-    where: { status: 'PUBLISHED' },
-    orderBy: { viewCount: 'desc' },
-    take: 6,
-    include: { category: true },
-  });
 
   const serializeList = (list: any[]) => {
     return list.map((item) => ({

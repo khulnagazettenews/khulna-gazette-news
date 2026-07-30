@@ -179,9 +179,9 @@ export default function PublicHeaderClient({ categories, formattedDate }: Public
           </button>
 
           {/* Date and Location Text */}
-          <div className="hidden sm:flex flex-col select-none whitespace-nowrap leading-snug">
-            <span className="text-base sm:text-lg font-extrabold text-[#000000] tracking-tight">খুলনা, বাংলাদেশ</span>
-            <span className="text-xs sm:text-sm md:text-[15px] font-bold text-[#333333] mt-0.5">{currentDate}</span>
+          <div className="hidden sm:flex flex-col select-none whitespace-nowrap leading-snug font-light">
+            <span className="text-lg sm:text-[20px] font-light text-[#000000] tracking-tight">খুলনা, বাংলাদেশ</span>
+            <span className="text-sm sm:text-base md:text-[17px] font-light text-[#333333] mt-0.5">{currentDate}</span>
           </div>
         </div>
 
@@ -217,10 +217,10 @@ export default function PublicHeaderClient({ categories, formattedDate }: Public
               <a href="https://www.facebook.com/klngazette" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600 transition" title="Facebook">
                 <i className="fa fa-facebook"></i>
               </a>
-              <a href="https://twitter.com/khulnagazette" target="_blank" rel="noopener noreferrer" className="hover:text-sky-500 transition" title="Twitter">
+              <a href="https://x.com/khulnagazette" target="_blank" rel="noopener noreferrer" className="hover:text-sky-500 transition" title="X (Twitter)">
                 <i className="fa fa-twitter"></i>
               </a>
-              <a href="https://www.youtube.com/channel/UCU_4M-GqxW5k1SONo5OoP4Q" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 transition" title="Youtube">
+              <a href="https://www.youtube.com/@khulnagazette" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 transition" title="Youtube">
                 <i className="fa fa-youtube-play"></i>
               </a>
               <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-pink-600 transition" title="Instagram">
