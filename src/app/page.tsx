@@ -12,8 +12,7 @@ import AdBanner from '@/components/ad-banner';
 import Link from 'next/link';
 import { Camera, Video, Play } from 'lucide-react';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const revalidate = 60; // ISR cache for 60 seconds (Super Fast Instant Loads)
 
 export default async function HomePage() {
   // 1. Fetch Active Special Topic Configuration (very fast query, needed first to get newsIds)
