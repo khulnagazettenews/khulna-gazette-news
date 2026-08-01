@@ -42,7 +42,17 @@ export default function SidebarWidgets({
       {/* 2. TABS WIDGET (সর্বশেষ | সর্বাধিক পঠিত) */}
       <TabsWidget latest={latestNews} popular={popularNews} />
 
-      {/* 3. CALENDAR ARCHIVE WIDGET (গেজেট এক্সক্লুসিভ এর পূর্বে আর্কাইভ) */}
+      {/* 10. PRAYER TIMES WIDGET */}
+      <div className="bg-white rounded-xl border border-slate-200/90 shadow-xs overflow-hidden">
+        <div className="bg-[#1e293b] text-white py-2.5 px-4 text-center font-black text-xs tracking-tight">
+          নামাজের সময়সূচি
+        </div>
+        <div className="p-3">
+          <PrayerWidget />
+        </div>
+      </div>
+
+      {/* 11. CALENDAR ARCHIVE WIDGET (নামাজের সময়সূচির নিচে আর্কাইভ) */}
       <CalendarArchiveWidget />
 
       {/* 4. GAZETTE EXCLUSIVE NEWS BOX */}
@@ -132,16 +142,6 @@ export default function SidebarWidgets({
         </p>
         <div className="bg-red-600 text-white py-1.5 px-2 rounded-lg text-xs font-mono font-black tracking-wider shadow-xs">
           ০১৭১৮-১৩৬৯৪০, ০১৯১৪-৬৫৬৫২৫
-        </div>
-      </div>
-
-      {/* 10. PRAYER TIMES WIDGET */}
-      <div className="bg-white rounded-xl border border-slate-200/90 shadow-xs overflow-hidden">
-        <div className="bg-[#1e293b] text-white py-2.5 px-4 text-center font-black text-xs tracking-tight">
-          নামাজের সময়সূচি
-        </div>
-        <div className="p-3">
-          <PrayerWidget />
         </div>
       </div>
     </div>
