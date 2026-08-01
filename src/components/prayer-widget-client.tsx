@@ -72,12 +72,12 @@ export default function PrayerWidgetClient({ timings }: PrayerWidgetClientProps)
       {list.map((item) => (
         <div key={item.name} className="flex items-center justify-between gap-2.5">
           {/* Left Gray Name Badge */}
-          <div className="bg-[#f1f3f5] text-slate-900 font-bold text-base sm:text-[17px] py-2 flex-1 rounded-md text-center shadow-2xs">
+          <div className="bg-[#f1f3f5] text-slate-800 font-bold text-sm sm:text-base py-1 px-3 flex-1 rounded-md text-center shadow-2xs">
             {item.name}
           </div>
 
           {/* Right Light Blue Time Badge */}
-          <div className="bg-[#e7f5ff] text-[#1971c2] font-bold text-base sm:text-[17px] py-2 flex-1 rounded-md text-center shadow-2xs">
+          <div className="bg-[#e7f5ff] text-[#1971c2] font-bold text-sm sm:text-base py-1 px-3 flex-1 rounded-md text-center shadow-2xs">
             {item.time}
           </div>
         </div>

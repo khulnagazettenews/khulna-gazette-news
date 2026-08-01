@@ -225,13 +225,13 @@ export default async function HomePage() {
       <PublicHeader />
       <BreakingNewsTicker />
 
-      {/* Main Container matching khulnagazette.com standard 1400px width */}
-      <main className="flex-grow w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8 space-y-5">
+      {/* Main Container matching khulnagazette.com exact 1400px width & padding */}
+      <main className="flex-grow w-full max-w-[1400px] mx-auto px-3 sm:px-4 lg:px-6 pt-3.5 pb-8 space-y-4 sm:space-y-5">
         {/* Top Ad slot */}
         <AdBanner ad={topAd} fallbackText="বিজ্ঞাপন ব্যানার" className="h-20 sm:h-24" />
 
-        {/* Main 2-Column Grid (Left Main Content 8/9 Cols + Right Sidebar 4/3 Cols) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-7 items-start">
+        {/* Main 2-Column Grid (Left Main Content 9 Cols + Right Sidebar 3 Cols) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-6 items-start">
           {/* Left Column (9 Cols on LG): Hero + Category Blocks + Media Galleries */}
           <div className="lg:col-span-9 space-y-6">
             {/* 2. Main Lead Hero Section */}

@@ -58,8 +58,8 @@ export default function TabsWidget({ latest, popular }: TabsWidgetProps) {
         </button>
       </div>
 
-      {/* List Items Container matching khulnagazette.com font and layout */}
-      <div className="divide-y divide-gray-200 p-3 max-h-[440px] overflow-y-auto custom-scrollbar">
+      {/* List Items Container matching khulnagazette.com exact height & scrollbar */}
+      <div className="divide-y divide-gray-200 p-3 max-h-[390px] overflow-y-auto custom-scrollbar">
         {list.length === 0 ? (
           <div className="text-center py-6 text-sm text-gray-400 font-medium">কোনো খবর পাওয়া যায়নি।</div>
         ) : (

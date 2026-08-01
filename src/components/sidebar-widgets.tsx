@@ -24,17 +24,17 @@ export default function SidebarWidgets({
       {/* 1. TABS WIDGET (সর্বশেষ | সর্বাধিক পঠিত - TOP POS) */}
       <TabsWidget latest={latestNews} popular={popularNews} />
 
-      {/* 2. GAZETTE EXCLUSIVE NEWS BOX (2ND POS) */}
-      <div className="bg-white rounded border border-gray-200 overflow-hidden shadow-xs">
-        <div className="bg-[#2b354f] text-white py-2.5 px-4 text-center font-bold text-[18px] sm:text-[20px] tracking-tight">
+      {/* 2. GAZETTE EXCLUSIVE NEWS BOX matching user screenshot (Compact) */}
+      <div className="bg-white p-3 rounded border border-gray-200 shadow-2xs space-y-2.5">
+        <div className="bg-[#343e56] text-white py-1.5 px-3 text-center font-bold text-[16px] sm:text-[17px] rounded-xs shadow-2xs">
           গেজেট এক্সক্লুসিভ
         </div>
-        <div className="p-3 divide-y divide-gray-200 space-y-1">
+        <div className="divide-y divide-gray-200">
           {(exclusiveNews.length > 0 ? exclusiveNews : latestNews.slice(0, 3)).map((item) => (
-            <div key={item.id} className="py-3 flex items-start gap-3.5 group first:pt-1 last:pb-1">
+            <div key={item.id} className="py-2.5 flex items-start gap-3 group first:pt-1 last:pb-1">
               <Link
                 href={`/${item.category?.slug || 'news'}/${item.id}`}
-                className="w-24 h-16 shrink-0 overflow-hidden rounded bg-gray-100 block aspect-[4/3] relative shadow-2xs"
+                className="w-20 h-14 shrink-0 overflow-hidden rounded bg-gray-100 block relative shadow-2xs"
               >
                 {item.featuredImage ? (
                   <img
@@ -50,7 +50,7 @@ export default function SidebarWidgets({
               </Link>
               <Link
                 href={`/${item.category?.slug || 'news'}/${item.id}`}
-                className="text-[16px] sm:text-[18px] font-bold text-[#000000] group-hover:text-[#e60023] transition leading-[1.3] line-clamp-2 block flex-1"
+                className="text-[15px] sm:text-[16px] font-bold text-[#000000] group-hover:text-[#e60023] transition leading-[1.3] line-clamp-2 block flex-1"
               >
                 {item.title}
               </Link>
@@ -60,29 +60,29 @@ export default function SidebarWidgets({
       </div>
 
       {/* 3. EPAPER PROMO BANNER (ই-পেপার সংস্করণ) */}
-      <div className="bg-white rounded border border-gray-200 shadow-xs overflow-hidden font-sans">
-        <div className="bg-[#2b354f] text-white py-2.5 px-4 text-center font-bold text-[20px] sm:text-[22px] tracking-tight">
+      <div className="bg-white p-3 rounded border border-gray-200 shadow-2xs space-y-2.5 font-sans">
+        <div className="bg-[#343e56] text-white py-1.5 px-3 text-center font-bold text-[16px] sm:text-[17px] rounded-xs shadow-2xs">
           ই-পেপার সংস্করণ
         </div>
-        <Link href="/epaper" className="block relative aspect-[4/3] w-full overflow-hidden bg-[#243c3b] group p-2">
+        <Link href="/epaper" className="block relative aspect-[4/3] w-full overflow-hidden bg-[#243c3b] group p-1.5 rounded-xs">
           <img
             src="/uploads/sidebar/epaper_promo.jpg"
             alt="ই-পেপার সংস্করণ"
             className="w-full h-full object-cover object-top rounded-xs group-hover:scale-105 transition duration-500 shadow-md"
           />
-          <div className="absolute inset-x-0 bottom-0 bg-[#0f172a]/90 text-white py-2 px-3 text-center text-xs font-bold backdrop-blur-xs flex items-center justify-center gap-1">
+          <div className="absolute inset-x-0 bottom-0 bg-[#0f172a]/90 text-white py-2 px-3 text-center text-sm sm:text-[15px] font-bold backdrop-blur-xs flex items-center justify-center gap-1.5">
             <span>অনলাইনে পৃষ্ঠা উল্টে পড়ুন</span>
-            <span className="text-amber-400">➔</span>
+            <span className="text-amber-400 font-bold text-base">➔</span>
           </div>
         </Link>
       </div>
 
-      {/* 4. PRAYER TIMES WIDGET */}
-      <div className="bg-white rounded border border-gray-200 shadow-xs overflow-hidden">
-        <div className="bg-[#2b354f] text-white py-3 px-4 text-center font-bold text-[22px] sm:text-[24px] tracking-tight">
+      {/* 4. PRAYER TIMES WIDGET matching exact user screenshot */}
+      <div className="bg-white p-3 rounded border border-gray-200 shadow-2xs space-y-2.5">
+        <div className="bg-[#343e56] text-white py-1.5 px-3 text-center font-bold text-[16px] sm:text-[17px] rounded-xs shadow-2xs">
           নামাজের সময়সূচি
         </div>
-        <div className="p-3">
+        <div className="pt-0.5">
           <PrayerWidget />
         </div>
       </div>

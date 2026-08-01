@@ -118,13 +118,13 @@ export default function CalendarArchiveWidget() {
   };
 
   return (
-    <div className="bg-[#f8f9fa] border border-red-200 rounded-lg shadow-sm overflow-hidden font-sans">
+    <div className="bg-white p-3 rounded border border-gray-200 shadow-2xs space-y-2.5 font-sans">
       {/* Header Title */}
-      <div className="bg-[#ef233c] text-white font-black text-center py-2 text-lg sm:text-xl shadow-xs">
+      <div className="bg-[#343e56] text-white py-1.5 px-3 text-center font-bold text-[16px] sm:text-[17px] rounded-xs shadow-2xs">
         আর্কাইভ
       </div>
 
-      <div className="p-3.5 space-y-3">
+      <div className="space-y-2.5 pt-0.5">
         {/* Month Year Banner with Nav Buttons */}
         <div className="flex items-center justify-between text-gray-800 font-extrabold text-lg px-2">
           <button

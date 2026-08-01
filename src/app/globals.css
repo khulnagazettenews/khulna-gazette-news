@@ -18,7 +18,7 @@
 }
 
 html {
-  font-size: 100%;
+  font-size: 108%;
 }
 
 body {
@@ -244,4 +244,22 @@ h5 {
   -moz-osx-font-smoothing: grayscale;
   transform: translateZ(0);
   backface-visibility: hidden;
+}
+
+/* Custom Visible Scrollbar matching khulnagazette.com */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
 }
