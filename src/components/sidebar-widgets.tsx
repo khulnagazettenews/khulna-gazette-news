@@ -21,9 +21,47 @@ export default function SidebarWidgets({
 }: SidebarWidgetsProps) {
   return (
     <div className="space-y-5">
-      {/* 1. EPAPER PROMO BANNER (TOP POS - ই-পেপার সংস্করণ) */}
-      <div className="bg-[#1e293b] rounded-xl border border-slate-700/60 shadow-sm overflow-hidden font-sans">
-        <div className="bg-[#1e293b] text-white py-2.5 px-4 text-center font-extrabold text-sm tracking-tight border-b border-slate-700/50">
+      {/* 1. TABS WIDGET (সর্বশেষ | সর্বাধিক পঠিত - TOP POS) */}
+      <TabsWidget latest={latestNews} popular={popularNews} />
+
+      {/* 2. GAZETTE EXCLUSIVE NEWS BOX (2ND POS) */}
+      <div className="bg-white rounded border border-gray-200 overflow-hidden shadow-xs">
+        <div className="bg-[#2b354f] text-white py-2.5 px-4 text-center font-bold text-[18px] sm:text-[20px] tracking-tight">
+          গেজেট এক্সক্লুসিভ
+        </div>
+        <div className="p-3 divide-y divide-gray-200 space-y-1">
+          {(exclusiveNews.length > 0 ? exclusiveNews : latestNews.slice(0, 3)).map((item) => (
+            <div key={item.id} className="py-3 flex items-start gap-3.5 group first:pt-1 last:pb-1">
+              <Link
+                href={`/${item.category?.slug || 'news'}/${item.id}`}
+                className="w-24 h-16 shrink-0 overflow-hidden rounded bg-gray-100 block aspect-[4/3] relative shadow-2xs"
+              >
+                {item.featuredImage ? (
+                  <img
+                    src={item.featuredImage}
+                    alt={item.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gray-200 flex items-center justify-center text-[10px] text-gray-500 font-bold">
+                    খুলনা গেজেট
+                  </div>
+                )}
+              </Link>
+              <Link
+                href={`/${item.category?.slug || 'news'}/${item.id}`}
+                className="text-[16px] sm:text-[18px] font-bold text-[#000000] group-hover:text-[#e60023] transition leading-[1.3] line-clamp-2 block flex-1"
+              >
+                {item.title}
+              </Link>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* 3. EPAPER PROMO BANNER (ই-পেপার সংস্করণ) */}
+      <div className="bg-white rounded border border-gray-200 shadow-xs overflow-hidden font-sans">
+        <div className="bg-[#2b354f] text-white py-2.5 px-4 text-center font-bold text-[20px] sm:text-[22px] tracking-tight">
           ই-পেপার সংস্করণ
         </div>
         <Link href="/epaper" className="block relative aspect-[4/3] w-full overflow-hidden bg-[#243c3b] group p-2">
@@ -39,12 +77,9 @@ export default function SidebarWidgets({
         </Link>
       </div>
 
-      {/* 2. TABS WIDGET (সর্বশেষ | সর্বাধিক পঠিত) */}
-      <TabsWidget latest={latestNews} popular={popularNews} />
-
-      {/* 10. PRAYER TIMES WIDGET */}
-      <div className="bg-white rounded-xl border border-slate-200/90 shadow-xs overflow-hidden">
-        <div className="bg-[#1e293b] text-white py-2.5 px-4 text-center font-black text-xs tracking-tight">
+      {/* 4. PRAYER TIMES WIDGET */}
+      <div className="bg-white rounded border border-gray-200 shadow-xs overflow-hidden">
+        <div className="bg-[#2b354f] text-white py-3 px-4 text-center font-bold text-[22px] sm:text-[24px] tracking-tight">
           নামাজের সময়সূচি
         </div>
         <div className="p-3">
@@ -52,51 +87,16 @@ export default function SidebarWidgets({
         </div>
       </div>
 
-      {/* 11. CALENDAR ARCHIVE WIDGET (নামাজের সময়সূচির নিচে আর্কাইভ) */}
+      {/* 5. CALENDAR ARCHIVE WIDGET (নামাজের সময়সূচির নিচে আর্কাইভ) */}
       <CalendarArchiveWidget />
 
-      {/* 4. GAZETTE EXCLUSIVE NEWS BOX */}
-      <div className="bg-white rounded border border-gray-200 overflow-hidden">
-        <div className="bg-[#1e293b] text-white py-2 px-3 text-center font-extrabold text-xs tracking-tight">
-          গেজেট এক্সক্লুসিভ
-        </div>
-        <div className="p-3 divide-y divide-gray-100 space-y-2">
-          {(exclusiveNews.length > 0 ? exclusiveNews : latestNews.slice(0, 3)).map((item) => (
-            <div key={item.id} className="pt-2 first:pt-0 flex items-start gap-2.5 group">
-              <Link
-                href={`/${item.category?.slug || 'news'}/${item.id}`}
-                className="w-16 h-12 shrink-0 overflow-hidden rounded bg-gray-100 block aspect-[4/3]"
-              >
-                {item.featuredImage ? (
-                  <img
-                    src={item.featuredImage}
-                    alt={item.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gray-200 flex items-center justify-center text-[9px] text-gray-500 font-bold">
-                    খুলনা গেজেট
-                  </div>
-                )}
-              </Link>
-              <Link
-                href={`/${item.category?.slug || 'news'}/${item.id}`}
-                className="text-[14px] sm:text-[15px] font-bold text-[#000000] group-hover:text-red-600 transition leading-snug line-clamp-2 block flex-1"
-              >
-                {item.title}
-              </Link>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* 5. LIKE US ON FACEBOOK WIDGET */}
+      {/* 6. LIKE US ON FACEBOOK WIDGET */}
       <FacebookWidget />
 
-      {/* 6. APP DOWNLOAD BANNER */}
-      <div className="bg-white rounded-xl border border-slate-200/90 shadow-xs overflow-hidden">
-        <div className="bg-[#1e293b] text-white py-2.5 px-4 text-center font-black text-xs tracking-tight flex items-center justify-center gap-1.5">
-          <Smartphone size={14} className="text-teal-400" />
+      {/* 7. APP DOWNLOAD BANNER */}
+      <div className="bg-white rounded border border-gray-200 shadow-xs overflow-hidden">
+        <div className="bg-[#2b354f] text-white py-2.5 px-2 text-center font-bold text-[16px] sm:text-[18px] tracking-tight flex items-center justify-center gap-1.5 whitespace-nowrap">
+          <Smartphone size={18} className="text-teal-400 shrink-0" />
           <span>খুলনা গেজেটের app পেতে ক্লিক করুন</span>
         </div>
         <a
@@ -113,10 +113,10 @@ export default function SidebarWidgets({
         </a>
       </div>
 
-      {/* 7. SIDEBAR ADVERTISEMENT */}
+      {/* 8. SIDEBAR ADVERTISEMENT */}
       <AdBanner ad={sidebarAd} fallbackText="বিজ্ঞাপন স্পেস" className="h-48" />
 
-      {/* 8. YOUTUBE SUBSCRIBE BANNER */}
+      {/* 9. YOUTUBE SUBSCRIBE BANNER */}
       <a
         href="https://www.youtube.com/@khulnagazette"
         target="_blank"
@@ -129,20 +129,13 @@ export default function SidebarWidgets({
         <span>ইউটিউব চ্যানেলে সাবস্ক্রাইব করুন</span>
       </a>
 
-      {/* 9. DAILY NEWSPAPER ANNOUNCEMENT BANNER */}
-      <div className="bg-[#057a55] text-white rounded-xl p-4 text-center space-y-2 border border-emerald-700 shadow-xs">
-        <div className="w-12 h-12 rounded-full bg-white text-[#057a55] font-black text-xs flex items-center justify-center mx-auto shadow-xs select-none">
-          খুলনা গেজেট
-        </div>
-        <p className="text-xs font-black leading-snug">
-          দৈনিক পত্রিকা হিসেবে তালিকাভুক্ত ও পুনঃপ্রকাশিত হচ্ছে
-        </p>
-        <p className="text-[11px] font-medium text-emerald-100">
-          পত্রিকা পেতে অনুরোধের জন্য যোগাযোগ করুন:
-        </p>
-        <div className="bg-red-600 text-white py-1.5 px-2 rounded-lg text-xs font-mono font-black tracking-wider shadow-xs">
-          ০১৭১৮-১৩৬৯৪০, ০১৯১৪-৬৫৬৫২৫
-        </div>
+      {/* 10. DAILY NEWSPAPER ANNOUNCEMENT BANNER IMAGE */}
+      <div className="w-full bg-white rounded-lg border border-gray-200 shadow-2xs overflow-hidden">
+        <img
+          src="/uploads/sidebar/newspaper_announcement.png"
+          alt="দৈনিক পত্রিকা হিসেবে নিয়মিত ৪ পৃষ্ঠা ৪ রঙে প্রকাশিত হচ্ছে"
+          className="w-full h-auto object-cover block"
+        />
       </div>
     </div>
   );

@@ -17,21 +17,21 @@ export default async function BreakingNewsTicker() {
   if (breakingList.length === 0) return null;
 
   return (
-    <div className="bg-red-600 text-white py-2 border-y border-red-700 overflow-hidden shadow-inner">
-      <div className="w-full max-w-full px-4 sm:px-8 lg:px-12 flex items-center gap-3">
-        <span className="shrink-0 bg-white text-red-600 font-extrabold px-2.5 py-0.5 rounded text-xs select-none shadow">
+    <div className="bg-[#e60023] text-white py-2.5 border-y border-red-700 overflow-hidden shadow-sm">
+      <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-3">
+        <span className="shrink-0 bg-white text-[#e60023] font-black px-3 py-1 rounded text-sm sm:text-base select-none shadow-sm">
           ব্রেকিং নিউজ
         </span>
-        <div className="flex-1 overflow-hidden relative h-5 flex items-center">
+        <div className="flex-1 overflow-hidden relative h-7 flex items-center">
           {/* Marquee Ticker */}
-          <div className="animate-marquee whitespace-nowrap flex gap-12 text-sm font-semibold">
+          <div className="animate-marquee whitespace-nowrap flex gap-12 text-base sm:text-lg lg:text-[20px] font-bold tracking-tight">
             {breakingList.map((item) => (
               <Link 
                 key={item.id} 
                 href={`/${item.category?.slug || 'news'}/${item.id}`} 
-                className="hover:underline flex items-center gap-1.5"
+                className="hover:underline flex items-center gap-2"
               >
-                <span>✦</span>
+                <span className="text-yellow-300">✦</span>
                 <span>{item.title}</span>
               </Link>
             ))}

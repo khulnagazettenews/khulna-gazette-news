@@ -206,12 +206,12 @@ export default function PublicHeaderClient({ categories, formattedDate }: Public
         </div>
 
         {/* Right Side: e-Paper + Social + Search */}
-        <div className="right w-full lg:w-[33%] flex justify-end items-center gap-[35px]">
-          <Link href="/epaper" className="epaper text-[#e60023] text-[22px] font-bold cursor-pointer hover:underline">
+        <div className="right w-full lg:w-[33%] flex flex-col items-end justify-center gap-2.5">
+          <Link href="/epaper" className="epaper text-[#e60023] text-[22px] font-bold cursor-pointer hover:underline leading-none">
             ই-পেপার
           </Link>
 
-          <div className="social flex items-center gap-6 text-[#222222] text-[22px]">
+          <div className="social flex items-center gap-6 text-[#222222] text-[22px] leading-none">
             <a href="https://www.facebook.com/klngazette" target="_blank" rel="noopener noreferrer" className="hover:text-[#e60023] transition" title="Facebook">
               <i className="fa fa-facebook-f"></i>
             </a>

@@ -171,7 +171,7 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
         />
         <ViewsIncrement newsId={news.id} />
 
-        <main className="flex-grow w-full max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 py-5 space-y-5">
+        <main className="flex-grow w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-5 space-y-5">
           {/* Breadcrumb Bar */}
           <div className="text-xs text-gray-600 flex items-center gap-1.5 select-none border-b border-gray-200 pb-2.5">
             <Link href="/" className="hover:text-red-600 flex items-center gap-1">

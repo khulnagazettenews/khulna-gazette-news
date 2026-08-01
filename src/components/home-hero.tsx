@@ -14,6 +14,8 @@ interface HeroNewsItem {
 
 interface HomeHeroProps {
   news: HeroNewsItem[];
+  latestNews?: any[];
+  popularNews?: any[];
 }
 
 export default function HomeHero({ news }: HomeHeroProps) {

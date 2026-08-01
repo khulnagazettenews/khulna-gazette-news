@@ -34,13 +34,13 @@ export default function TabsWidget({ latest, popular }: TabsWidgetProps) {
 
   return (
     <div className="bg-white border border-gray-200 rounded overflow-hidden shadow-xs">
-      {/* 2 Tabs Header in Dark Slate / Black */}
-      <div className="grid grid-cols-2 bg-[#111827] text-white text-[15px] sm:text-[16px] font-bold text-center select-none border-b border-gray-800">
+      {/* 2 Tabs Header in Dark Slate / Black matching khulnagazette.com */}
+      <div className="grid grid-cols-2 bg-[#111827] text-white text-[16px] sm:text-[18px] font-bold text-center select-none border-b border-gray-800">
         <button
           onClick={() => setActiveTab('latest')}
-          className={`py-2.5 transition flex items-center justify-center gap-1.5 cursor-pointer ${
+          className={`py-3 transition flex items-center justify-center gap-1.5 cursor-pointer ${
             activeTab === 'latest'
-              ? 'bg-[#1f2937] text-white border-b-2 border-red-600 font-bold'
+              ? 'bg-[#1f2937] text-white border-b-3 border-[#e60023] font-bold'
               : 'text-gray-300 hover:text-white hover:bg-gray-800'
           }`}
         >
@@ -48,9 +48,9 @@ export default function TabsWidget({ latest, popular }: TabsWidgetProps) {
         </button>
         <button
           onClick={() => setActiveTab('popular')}
-          className={`py-2.5 transition border-l border-gray-800 flex items-center justify-center gap-1.5 cursor-pointer ${
+          className={`py-3 transition border-l border-gray-800 flex items-center justify-center gap-1.5 cursor-pointer ${
             activeTab === 'popular'
-              ? 'bg-[#1f2937] text-white border-b-2 border-red-600 font-bold'
+              ? 'bg-[#1f2937] text-white border-b-3 border-[#e60023] font-bold'
               : 'text-gray-300 hover:text-white hover:bg-gray-800'
           }`}
         >
@@ -58,16 +58,16 @@ export default function TabsWidget({ latest, popular }: TabsWidgetProps) {
         </button>
       </div>
 
-      {/* List Items Container */}
-      <div className="divide-y divide-gray-150 p-2.5 max-h-[420px] overflow-y-auto custom-scrollbar">
+      {/* List Items Container matching khulnagazette.com font and layout */}
+      <div className="divide-y divide-gray-200 p-3 max-h-[440px] overflow-y-auto custom-scrollbar">
         {list.length === 0 ? (
           <div className="text-center py-6 text-sm text-gray-400 font-medium">কোনো খবর পাওয়া যায়নি।</div>
         ) : (
-          list.slice(0, 8).map((item) => (
-            <div key={item.id} className="py-2.5 flex items-start gap-3 group first:pt-1 last:pb-1">
+          list.slice(0, 10).map((item) => (
+            <div key={item.id} className="py-3 flex items-start gap-3.5 group first:pt-1 last:pb-1">
               <Link
                 href={`/${item.category?.slug || 'news'}/${item.id}`}
-                className="w-20 h-14 shrink-0 overflow-hidden rounded bg-gray-100 block relative"
+                className="w-24 h-16 shrink-0 overflow-hidden rounded bg-gray-100 block relative shadow-2xs"
               >
                 {item.featuredImage ? (
                   <img
@@ -85,7 +85,7 @@ export default function TabsWidget({ latest, popular }: TabsWidgetProps) {
               <div className="space-y-1 flex-1 min-w-0">
                 <Link
                   href={`/${item.category?.slug || 'news'}/${item.id}`}
-                  className="text-[14px] sm:text-[15px] font-bold text-[#000000] group-hover:text-red-600 transition leading-[1.25] line-clamp-2 block"
+                  className="text-[15px] sm:text-[17px] font-bold text-[#000000] group-hover:text-[#e60023] transition leading-[1.3] line-clamp-2 block"
                 >
                   {item.title}
                 </Link>
