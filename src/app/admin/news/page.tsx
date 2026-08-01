@@ -116,13 +116,23 @@ export default function NewsManagementList() {
           </p>
         </div>
 
-        <Link
-          href="/admin/news/new"
-          className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-extrabold text-xs sm:text-sm px-5 py-3 rounded-2xl shadow-md shadow-red-600/20 transition transform hover:-translate-y-0.5 active:translate-y-0 shrink-0"
-        >
-          <PlusCircle size={18} />
-          <span>নতুন সংবাদ লিখুন</span>
-        </Link>
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          <Link
+            href="/admin/reorder"
+            className="inline-flex items-center justify-center gap-1.5 bg-slate-900 hover:bg-slate-800 text-amber-400 font-extrabold text-xs sm:text-sm px-4 py-3 rounded-2xl shadow-xs transition"
+            title="হোমপেজ নিউজ পজিশন ও সিকোয়েন্স সেট করুন"
+          >
+            <span>⭐ পজিশন সেটিং (Reorder)</span>
+          </Link>
+
+          <Link
+            href="/admin/news/new"
+            className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-extrabold text-xs sm:text-sm px-5 py-3 rounded-2xl shadow-md shadow-red-600/20 transition transform hover:-translate-y-0.5 active:translate-y-0 shrink-0"
+          >
+            <PlusCircle size={18} />
+            <span>নতুন সংবাদ লিখুন</span>
+          </Link>
+        </div>
       </div>
 
       {/* 2. Filter Bar & Search */}

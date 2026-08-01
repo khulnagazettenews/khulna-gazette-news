@@ -19,22 +19,20 @@ interface HomeHeroProps {
 export default function HomeHero({ news }: HomeHeroProps) {
   if (!news || news.length === 0) return null;
 
-  // 15 Top News Articles Layout matching Admin Dashboard Position config:
-  // - news[0], news[1]: Position 1 & 2 -> Left Stacked Side Leads (3 cols)
-  // - news[2]: Position 3 -> Main Featured Lead (CENTER Column - 6 cols)
-  // - news[3], news[4]: Position 4 & 5 -> Right Stacked Side Leads (3 cols)
-  // - news[5] to news[14]: Positions 6 to 15 -> 10 Articles Grid below (3 columns)
-  const leftLeads = news.length >= 2 ? news.slice(0, 2) : [];
-  const mainLead = news.length >= 3 ? news[2] : news[0];
-  const rightLeads = news.length >= 5 ? news.slice(3, 5) : [];
-  const gridNews = news.length > 5 ? news.slice(5, 15) : [];
+  // Layout matching user reference screenshot:
+  // - news[0], news[1]: Left 2 stacked side news cards (4 cols)
+  // - news[2]: Main Lead (Center featured news card with RED title - 8 cols)
+  // - news[3] to news[14]: Up to 12 news cards arranged in 3-column grid rows below
+  const leftLeads = news.length >= 2 ? news.slice(0, 2) : [news[0]];
+  const mainLead = news.length >= 3 ? news[2] : (news.length > 2 ? news[1] : news[0]);
+  const gridNews = news.length > 3 ? news.slice(3, 15) : [];
 
   return (
-    <div className="bg-white p-3.5 sm:p-4 rounded-lg border border-gray-200 shadow-2xs space-y-4">
-      {/* 1. TOP LEAD SECTION: 3 Columns (Left 3 cols, Center Lead 6 cols, Right 3 cols) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-4 items-stretch">
-        {/* Left Column (3 cols): 2 Stacked Cards */}
-        <div className="lg:col-span-3 flex flex-col justify-between space-y-3.5">
+    <div className="bg-white p-3 sm:p-4 rounded border border-gray-200 shadow-2xs space-y-4">
+      {/* 1. TOP HERO SECTION: Left (2 stacked cards - 4 cols) + Center (1 Main Lead card - 8 cols) */}
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-start">
+        {/* Left Column (4 cols): 2 Stacked News Items */}
+        <div className="md:col-span-4 flex flex-col justify-between space-y-3">
           {leftLeads.map((story) => {
             const categorySlug = story.category?.slug || 'news';
             return (
@@ -47,7 +45,7 @@ export default function HomeHero({ news }: HomeHeroProps) {
                     <img
                       src={story.featuredImage}
                       alt={story.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                      className="w-full h-full object-cover group-hover:scale-[1.02] transition duration-300"
                     />
                   </Link>
                 ) : (
@@ -55,8 +53,8 @@ export default function HomeHero({ news }: HomeHeroProps) {
                     খুলনা গেজেট
                   </div>
                 )}
-                <Link href={`/${categorySlug}/${story.id}`} className="block">
-                  <h3 className="text-[24px] sm:text-[26px] font-bold text-[#000000] group-hover:text-red-600 transition leading-[1.2] line-clamp-2">
+                <Link href={`/${categorySlug}/${story.id}`} className="block pt-0.5">
+                  <h3 className="text-[16px] sm:text-[18px] lg:text-[19px] font-bold text-[#000000] group-hover:text-red-600 transition leading-[1.25] line-clamp-2">
                     {story.title}
                   </h3>
                 </Link>
@@ -65,9 +63,9 @@ export default function HomeHero({ news }: HomeHeroProps) {
           })}
         </div>
 
-        {/* Center Column (6 cols): Main Featured Lead Story */}
+        {/* Center Main Lead (8 cols): Large Featured Story with RED Title */}
         {mainLead && (
-          <div className="lg:col-span-6 group space-y-2 flex flex-col justify-start">
+          <div className="md:col-span-8 group space-y-2 flex flex-col justify-start">
             {mainLead.featuredImage ? (
               <Link
                 href={`/${mainLead.category?.slug || 'news'}/${mainLead.id}`}
@@ -85,54 +83,26 @@ export default function HomeHero({ news }: HomeHeroProps) {
               </div>
             )}
             <Link href={`/${mainLead.category?.slug || 'news'}/${mainLead.id}`} className="block pt-1">
-              <h1 className="text-[32px] sm:text-[36px] lg:text-[40px] font-bold text-red-600 group-hover:text-red-700 transition leading-[1.18] line-clamp-2">
-                {mainLead.title}
+              <h1 className="text-[21px] sm:text-[24px] lg:text-[26px] font-bold text-[#d91414] group-hover:text-red-700 transition leading-[1.2] line-clamp-2">
+                ‘{mainLead.title.replace(/^[‘'“"]|[’'"”]$/g, '')}’
               </h1>
             </Link>
           </div>
         )}
-
-        {/* Right Column (3 cols): 2 Stacked Cards */}
-        <div className="lg:col-span-3 flex flex-col justify-between space-y-3.5">
-          {rightLeads.map((story) => {
-            const categorySlug = story.category?.slug || 'news';
-            return (
-              <div key={story.id} className="group space-y-1.5 flex flex-col justify-start">
-                {story.featuredImage ? (
-                  <Link
-                    href={`/${categorySlug}/${story.id}`}
-                    className="block aspect-[16/10] overflow-hidden rounded bg-gray-100"
-                  >
-                    <img
-                      src={story.featuredImage}
-                      alt={story.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
-                    />
-                  </Link>
-                ) : (
-                  <div className="w-full aspect-[16/10] bg-gray-100 rounded flex items-center justify-center text-gray-400 font-bold text-xs">
-                    খুলনা গেজেট
-                  </div>
-                )}
-                <Link href={`/${categorySlug}/${story.id}`} className="block">
-                  <h3 className="text-[24px] sm:text-[26px] font-bold text-[#000000] group-hover:text-red-600 transition leading-[1.2] line-clamp-2">
-                    {story.title}
-                  </h3>
-                </Link>
-              </div>
-            );
-          })}
-        </div>
       </div>
 
-      {/* Bottom 10-News Grid Section */}
+      {/* 2. GRID OF 3-COLUMN NEWS CARDS BELOW TOP HERO */}
       {gridNews.length > 0 && (
-        <div className="border-t border-gray-200/80 pt-3.5">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5 lg:gap-4">
-            {gridNews.map((story) => {
+        <div className="border-t border-gray-200/90 pt-3.5">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-4 gap-y-4">
+            {gridNews.map((story, index) => {
               const categorySlug = story.category?.slug || 'news';
+              const isFirstRow = index < 3;
               return (
-                <div key={story.id} className="group space-y-1.5">
+                <div 
+                  key={story.id} 
+                  className={`group space-y-1.5 ${!isFirstRow ? 'sm:border-t sm:border-gray-200/80 sm:pt-3.5' : ''}`}
+                >
                   {story.featuredImage ? (
                     <Link
                       href={`/${categorySlug}/${story.id}`}
@@ -141,7 +111,7 @@ export default function HomeHero({ news }: HomeHeroProps) {
                       <img
                         src={story.featuredImage}
                         alt={story.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                        className="w-full h-full object-cover group-hover:scale-[1.02] transition duration-300"
                       />
                     </Link>
                   ) : (
@@ -149,10 +119,10 @@ export default function HomeHero({ news }: HomeHeroProps) {
                       খুলনা গেজেট
                     </div>
                   )}
-                  <Link href={`/${categorySlug}/${story.id}`} className="block">
-                    <h4 className="text-[22px] sm:text-[24px] font-bold text-[#000000] group-hover:text-red-600 transition leading-[1.25] line-clamp-2">
+                  <Link href={`/${categorySlug}/${story.id}`} className="block pt-0.5">
+                    <h3 className="text-[16px] sm:text-[17px] lg:text-[18px] font-bold text-[#000000] group-hover:text-red-600 transition leading-[1.25] line-clamp-2">
                       {story.title}
-                    </h4>
+                    </h3>
                   </Link>
                 </div>
               );

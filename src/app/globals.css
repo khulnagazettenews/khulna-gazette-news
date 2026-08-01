@@ -146,27 +146,94 @@ h5 {
   animation-play-state: paused;
 }
 
-/* Admin Portal Typography Scope - High Contrast Reset */
+/* Admin Portal Typography Scope - Universal Bangla Font & Full Scaling Reset */
 .admin-portal, 
+.admin-portal *, 
 .admin-portal input, 
 .admin-portal select, 
 .admin-portal textarea, 
-.admin-portal button {
-  font-family: 'Hind Siliguri', 'Plus Jakarta Sans', 'Noto Sans Bengali', system-ui, -apple-system, sans-serif !important;
-  letter-spacing: -0.01em;
+.admin-portal button,
+.admin-portal table,
+.admin-portal th,
+.admin-portal td,
+.admin-portal label,
+.admin-portal span,
+.admin-portal p,
+.admin-portal a {
+  font-family: 'Bangla', 'Noto Sans Bengali', 'Hind Siliguri', system-ui, -apple-system, sans-serif !important;
+}
+
+.admin-portal {
+  font-size: 17px !important;
+  line-height: 1.5;
+}
+
+/* Comprehensive font size scaling across full admin dashboard UI */
+.admin-portal .text-\[10px\],
+.admin-portal .text-\[11px\],
+.admin-portal .text-\[12px\],
+.admin-portal .text-xs {
+  font-size: 0.9375rem !important; /* 15px */
+  line-height: 1.4 !important;
+}
+
+.admin-portal .text-\[13px\],
+.admin-portal .text-\[14px\],
+.admin-portal .text-sm {
+  font-size: 1.0625rem !important; /* 17px */
+  line-height: 1.5 !important;
+}
+
+.admin-portal .text-base {
+  font-size: 1.1875rem !important; /* 19px */
+  line-height: 1.5 !important;
+}
+
+.admin-portal .text-lg {
+  font-size: 1.3125rem !important; /* 21px */
+  line-height: 1.4 !important;
+}
+
+.admin-portal .text-xl {
+  font-size: 1.5rem !important; /* 24px */
+  line-height: 1.3 !important;
+}
+
+.admin-portal .text-2xl {
+  font-size: 1.75rem !important; /* 28px */
+  line-height: 1.3 !important;
+}
+
+.admin-portal .text-3xl {
+  font-size: 2.125rem !important; /* 34px */
+  line-height: 1.25 !important;
+}
+
+/* Form controls & Data Tables clear sizing */
+.admin-portal input, 
+.admin-portal select, 
+.admin-portal textarea, 
+.admin-portal button,
+.admin-portal td,
+.admin-portal label {
+  font-size: 1.05rem !important;
+}
+
+.admin-portal th {
+  font-size: 0.95rem !important;
+  font-weight: 700 !important;
 }
 
 .admin-portal h1, 
 .admin-portal h2, 
 .admin-portal h3, 
 .admin-portal h4, 
-.admin-portal h5 {
-  font-family: 'Hind Siliguri', 'Plus Jakarta Sans', 'Noto Sans Bengali', sans-serif !important;
+.admin-portal h5,
+.admin-portal h6 {
+  font-family: 'Bangla', 'Noto Sans Bengali', 'Hind Siliguri', sans-serif !important;
   color: inherit !important;
-  font-size: inherit !important;
-  line-height: inherit !important;
+  line-height: 1.3 !important;
   margin-bottom: 0;
-  letter-spacing: -0.015em;
 }
 
 /* E-Paper Ultra-Sharp Image Rendering */
