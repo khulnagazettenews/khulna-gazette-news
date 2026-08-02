@@ -68,83 +68,78 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-50">
+    <div className="flex flex-col min-h-screen bg-white font-sans text-gray-900">
       <PublicHeader />
       
-      <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <main className="flex-grow w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
-          {/* Main search results listing */}
-          <div className="lg:col-span-2 space-y-6">
-            <h2 className="text-xl sm:text-2xl font-black text-gray-900 border-l-4 border-red-600 pl-2.5">
-              অনুসন্ধান ফলাফল: "{query}" ({total}টি খবর পাওয়া গেছে)
-            </h2>
+          {/* Main search results listing (9 Cols) */}
+          <div className="lg:col-span-9 space-y-6">
+            <div className="border-b-2 border-[#FF0000] pb-1.5 mb-6">
+              <h1 className="text-[22px] sm:text-[26px] font-bold text-[#000000]">
+                অনুসন্ধান ফলাফল: "{query}" ({total}টি খবর পাওয়া গেছে)
+              </h1>
+            </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-7">
               {articles.map((item) => (
-                <div key={item.id} className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm flex flex-col justify-between group">
-                  <div>
-                    {item.featuredImage && (
-                      <Link href={`/${item.category?.slug || 'news'}/${item.id}`} className="block aspect-video overflow-hidden bg-gray-50">
-                        <img src={item.featuredImage} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
-                      </Link>
-                    )}
-                    <div className="p-4 space-y-2">
-                      <Link href={`/${item.category?.slug || 'news'}/${item.id}`}>
-                        <h3 className="text-sm font-bold text-gray-900 hover:text-red-655 transition leading-snug line-clamp-2">
-                          {item.title}
-                        </h3>
-                      </Link>
-                      <p className="text-xs text-gray-500 leading-relaxed line-clamp-2">
-                        {item.content.replace(/<[^>]*>/g, '')}
-                      </p>
+                <div key={item.id} className="group flex flex-col justify-start">
+                  {item.featuredImage ? (
+                    <Link href={`/${item.category?.slug || 'news'}/${item.id}`} className="block aspect-[16/9] w-full overflow-hidden bg-gray-100 mb-2.5 rounded-sm">
+                      <img src={item.featuredImage} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
+                    </Link>
+                  ) : (
+                    <div className="aspect-[16/9] w-full rounded-sm bg-gray-100 flex items-center justify-center text-gray-400 text-xs font-bold mb-2.5">
+                      খুলনা গেজেট
                     </div>
-                  </div>
-
-                  <div className="p-4 border-t border-gray-100 flex items-center justify-between text-[10px] text-gray-400 font-medium">
-                    <span>{item.reporterName || 'স্টাফ রিপোর্টার'}</span>
-                    <span>
-                      {item.publishedAt && new Date(item.publishedAt).toLocaleDateString('bn-BD', {
-                        month: 'short',
-                        day: 'numeric',
-                      })}
-                    </span>
-                  </div>
+                  )}
+                  <Link href={`/${item.category?.slug || 'news'}/${item.id}`}>
+                    <h2 className="text-[17px] sm:text-[18px] font-bold text-[#000000] group-hover:text-[#e60023] transition leading-snug line-clamp-3">
+                      {item.title}
+                    </h2>
+                  </Link>
                 </div>
               ))}
             </div>
 
             {articles.length === 0 && (
-              <div className="text-center py-12 text-gray-400 bg-white rounded-xl border border-gray-200 shadow-sm">
+              <div className="text-center py-16 text-gray-400 text-base font-medium">
                 দুঃখিত, কোনো সংবাদ পাওয়া যায়নি। ভিন্ন কিছু লিখে অনুসন্ধান করুন।
               </div>
             )}
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex justify-center gap-2 pt-6">
-                {page > 1 && (
+              <div className="flex items-center gap-1.5 pt-8 text-[13px] text-[#444444] font-medium flex-wrap select-none">
+                <span className="mr-1 text-gray-600 font-semibold">পৃষ্ঠা সমূহ :</span>
+                {Array.from({ length: Math.min(7, totalPages) }, (_, i) => i + 1).map((p) => (
                   <Link
-                    href={`/search?q=${encodeURIComponent(query)}&page=${page - 1}`}
-                    className="bg-white border border-gray-300 text-gray-600 text-xs px-4 py-2 rounded-lg hover:bg-gray-150 transition"
+                    key={p}
+                    href={`/search?q=${encodeURIComponent(query)}&page=${p}`}
+                    className={`px-2.5 py-1 text-sm font-semibold rounded transition ${
+                      p === page
+                        ? 'bg-[#888888] text-white'
+                        : 'bg-[#eeeeee] text-[#333333] hover:bg-[#e60023] hover:text-white'
+                    }`}
                   >
-                    পূর্ববর্তী
+                    {p}
                   </Link>
-                )}
+                ))}
                 {page < totalPages && (
                   <Link
                     href={`/search?q=${encodeURIComponent(query)}&page=${page + 1}`}
-                    className="bg-white border border-gray-300 text-gray-600 text-xs px-4 py-2 rounded-lg hover:bg-gray-150 transition"
+                    className="bg-[#eeeeee] text-[#333333] hover:bg-[#e60023] hover:text-white px-2.5 py-1 text-sm font-semibold rounded transition ml-1"
                   >
-                    পরবর্তী
+                    »
                   </Link>
                 )}
               </div>
             )}
           </div>
 
-          {/* Sidebar */}
-          <div className="space-y-6">
+          {/* Sidebar (3 Cols) */}
+          <div className="lg:col-span-3 space-y-6">
             <TabsWidget latest={serializeList(latestNews)} popular={serializeList(popularNews)} />
             <PrayerWidget />
           </div>

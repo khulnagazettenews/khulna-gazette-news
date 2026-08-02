@@ -233,12 +233,12 @@ export default function PublicHeaderClient({ categories, formattedDate }: Public
 
       {/* ================= NAVBAR matching user exact specification ================= */}
       <nav className="navbar border-t border-[#efefef] bg-white sticky top-0 z-40">
-        <ul className="max-w-[1400px] mx-auto flex items-center justify-center gap-[28px] lg:gap-[34px] py-4 px-4 list-none overflow-x-auto whitespace-nowrap select-none no-scrollbar">
+        <ul className="max-w-[1400px] mx-auto flex items-center justify-center gap-[24px] lg:gap-[32px] py-3.5 px-4 list-none whitespace-nowrap select-none overflow-visible">
           
           {/* Home Active Icon */}
-          <li className={`cursor-pointer transition hover:text-[#e60023] ${pathname === '/' ? 'active text-[#e60023] text-[28px]' : 'text-[24px] text-[#000000]'}`}>
+          <li className={`cursor-pointer transition hover:text-[#e60023] ${pathname === '/' ? 'active text-[#e60023] text-[26px]' : 'text-[22px] text-[#000000]'}`}>
             <Link href="/" className="flex items-center justify-center">
-              <i className={`fa fa-home ${pathname === '/' ? 'border-b-3 border-[#e60023] pb-3.5' : ''}`}></i>
+              <i className={`fa fa-home ${pathname === '/' ? 'border-b-3 border-[#e60023] pb-3' : ''}`}></i>
             </Link>
           </li>
 
@@ -267,31 +267,31 @@ export default function PublicHeaderClient({ categories, formattedDate }: Public
             return (
               <li
                 key={cat.id}
-                className={`relative group text-[24px] cursor-pointer transition hover:text-[#e60023] ${
-                  isActive ? 'active text-[#e60023] text-[28px]' : 'text-[#000000]'
+                className={`relative group text-[21px] lg:text-[23px] cursor-pointer transition hover:text-[#e60023] py-1 ${
+                  isActive ? 'active text-[#e60023] font-bold' : 'text-[#000000]'
                 }`}
               >
                 {hasSub ? (
-                  <div className="flex items-center gap-1.5">
-                    <Link href={`/${cat.slug}`} className={`${isActive ? 'border-b-3 border-[#e60023] pb-3.5' : ''}`}>
+                  <div className="flex items-center gap-1">
+                    <Link href={`/${cat.slug}`} className={`${isActive ? 'border-b-3 border-[#e60023] pb-3' : ''}`}>
                       {cat.name}
                     </Link>
-                    <ChevronDown size={18} className="text-gray-700 group-hover:text-[#e60023] inline" />
+                    <i className="fa fa-caret-down text-xs text-gray-700 group-hover:text-[#e60023] inline-block ml-0.5"></i>
                   </div>
                 ) : (
-                  <Link href={`/${cat.slug}`} className={`${isActive ? 'border-b-3 border-[#e60023] pb-3.5' : ''}`}>
+                  <Link href={`/${cat.slug}`} className={`${isActive ? 'border-b-3 border-[#e60023] pb-3' : ''}`}>
                     {cat.name}
                   </Link>
                 )}
 
                 {/* Submenu Dropdown */}
                 {hasSub && (
-                  <div className="absolute left-0 mt-2 w-52 bg-[#111827] text-white shadow-xl py-2 hidden group-hover:block transition duration-150 z-50 rounded-b text-base">
+                  <div className="absolute left-0 top-full mt-1 w-52 bg-white text-[#222222] shadow-2xl py-2 hidden group-hover:block transition duration-150 z-50 rounded border border-gray-200 text-base">
                     {subList?.map((sub: any) => (
                       <Link
                         key={sub.slug}
                         href={`/${cat.slug}/${sub.slug}`}
-                        className="block px-4 py-2 hover:bg-[#e60023] text-[18px] font-normal text-white transition"
+                        className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition"
                       >
                         {sub.name}
                       </Link>
@@ -304,42 +304,42 @@ export default function PublicHeaderClient({ categories, formattedDate }: Public
 
           {/* Exclusive Section */}
           {exclusiveCat && (
-            <li className={`text-[24px] cursor-pointer transition hover:text-[#e60023] ${pathname === `/${exclusiveCat.slug}` ? 'active text-[#e60023] text-[28px]' : 'text-[#000000]'}`}>
-              <Link href={`/${exclusiveCat.slug}`} className={`${pathname === `/${exclusiveCat.slug}` ? 'border-b-3 border-[#e60023] pb-3.5' : ''}`}>
+            <li className={`text-[21px] lg:text-[23px] cursor-pointer transition hover:text-[#e60023] py-1 ${pathname === `/${exclusiveCat.slug}` ? 'active text-[#e60023] font-bold' : 'text-[#000000]'}`}>
+              <Link href={`/${exclusiveCat.slug}`} className={`${pathname === `/${exclusiveCat.slug}` ? 'border-b-3 border-[#e60023] pb-3' : ''}`}>
                 {exclusiveCat.name}
               </Link>
             </li>
           )}
 
           {/* More Dropdown */}
-          <li className="relative group text-[24px] cursor-pointer transition hover:text-[#e60023] text-[#000000]">
-            <div className="flex items-center gap-1.5">
+          <li className="relative group text-[21px] lg:text-[23px] cursor-pointer transition hover:text-[#e60023] text-[#000000] py-1">
+            <div className="flex items-center gap-1">
               <span>আরও</span>
-              <ChevronDown size={18} className="text-gray-700 group-hover:text-[#e60023] inline" />
+              <i className="fa fa-caret-down text-xs text-gray-700 group-hover:text-[#e60023] inline-block ml-0.5"></i>
             </div>
-            <div className="absolute right-0 mt-2 w-60 bg-[#111827] text-white shadow-xl py-2 hidden group-hover:block transition z-50 rounded-b text-base">
-              <Link href="/sports" className="block px-4 py-2 hover:bg-[#e60023] text-[18px] font-normal text-white transition">
+            <div className="absolute right-0 top-full mt-1 w-60 bg-white text-[#222222] shadow-2xl py-2 hidden group-hover:block transition z-50 rounded border border-gray-200 text-base">
+              <Link href="/sports" className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition">
                 ফুটবল বিশ্বকাপ-২০২৬
               </Link>
-              <Link href="/photo-gallery" className="block px-4 py-2 hover:bg-[#e60023] text-[18px] font-normal text-white transition">
+              <Link href="/photo-gallery" className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition">
                 ফটো গ্যালারি
               </Link>
-              <Link href="/video-gallery" className="block px-4 py-2 hover:bg-[#e60023] text-[18px] font-normal text-white transition">
+              <Link href="/video-gallery" className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition">
                 ভিডিও গ্যালারি
               </Link>
-              <Link href="/technology" className="block px-4 py-2 hover:bg-[#e60023] text-[18px] font-normal text-white transition">
+              <Link href="/technology" className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition">
                 আইটি
               </Link>
-              <Link href="/health" className="block px-4 py-2 hover:bg-[#e60023] text-[18px] font-normal text-white transition">
+              <Link href="/health" className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition">
                 চিকিৎসা
               </Link>
-              <Link href="/literature" className="block px-4 py-2 hover:bg-[#e60023] text-[18px] font-normal text-white transition">
+              <Link href="/literature" className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition">
                 সাহিত্য
               </Link>
-              <Link href="/chitro-bichitro" className="block px-4 py-2 hover:bg-[#e60023] text-[18px] font-normal text-white transition">
+              <Link href="/chitro-bichitro" className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition">
                 চিত্র বিচিত্র
               </Link>
-              <Link href="/social-media" className="block px-4 py-2 hover:bg-[#e60023] text-[18px] font-normal text-white transition">
+              <Link href="/social-media" className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition">
                 সোশ্যাল মিডিয়া
               </Link>
             </div>

@@ -35,19 +35,19 @@ export default function CategoryBlock({
   };
 
   return (
-    <div className="space-y-2.5">
-      {/* Category Section Header: Red top border matching original site */}
-      <div className="flex items-center justify-between border-t-2 border-red-600 pt-1.5 border-b border-gray-200 pb-1">
-        <h2 className="text-[22px] sm:text-[24px] font-bold text-[#000000]">
+    <div className="space-y-3">
+      {/* Category Section Header: Red bottom border matching khulnagazette.com */}
+      <div className="flex items-center justify-between border-b-2 border-[#FF0000] pb-1">
+        <h2 className="text-[22px] sm:text-[24px] font-bold text-[#000000] leading-none">
           {title}
         </h2>
-        <Link href={`/${slug}`} className="text-xs text-red-600 font-bold hover:underline">
+        <Link href={`/${slug}`} className="text-xs text-[#e60023] font-bold hover:underline">
           আরও খবর
         </Link>
       </div>
 
       {/* Block Content Container */}
-      <div className="bg-white p-3 sm:p-4 rounded-lg border border-gray-200/90 shadow-2xs">
+      <div className="bg-white">
         {variant === 'sports' || variant === 'entertainment' ? (
           /* 2x2 Grid Variant for Sports & Entertainment */
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
@@ -66,11 +66,11 @@ export default function CategoryBlock({
                 </Link>
               )}
               <Link href={`/${slug}/${lead.id}`} className="block pt-0.5">
-                <h3 className="text-[20px] sm:text-[22px] font-bold text-[#000000] group-hover:text-red-600 transition leading-[1.25] line-clamp-2">
+                <h3 className="text-[19px] sm:text-[21px] font-bold text-[#000000] group-hover:text-[#e60023] transition leading-[1.25] line-clamp-2">
                   {lead.title}
                 </h3>
               </Link>
-              <p className="text-sm text-gray-700 leading-relaxed line-clamp-2 font-light">
+              <p className="text-sm text-gray-600 leading-relaxed line-clamp-2 font-normal">
                 {getExcerpt(lead.content)}
               </p>
             </div>
@@ -92,7 +92,7 @@ export default function CategoryBlock({
                     </Link>
                   )}
                   <Link href={`/${slug}/${item.id}`} className="block pt-0.5">
-                    <h4 className="text-[16px] sm:text-[17px] font-bold text-[#000000] group-hover:text-red-600 transition leading-[1.25] line-clamp-2">
+                    <h4 className="text-[16px] sm:text-[17px] font-bold text-[#000000] group-hover:text-[#e60023] transition leading-[1.25] line-clamp-2">
                       {item.title}
                     </h4>
                   </Link>
@@ -118,11 +118,11 @@ export default function CategoryBlock({
                 </Link>
               )}
               <Link href={`/${slug}/${lead.id}`} className="block pt-0.5">
-                <h3 className="text-[20px] sm:text-[22px] font-bold text-[#000000] group-hover:text-red-600 transition leading-[1.25] line-clamp-2">
+                <h3 className="text-[19px] sm:text-[21px] font-bold text-[#000000] group-hover:text-[#e60023] transition leading-[1.25] line-clamp-2">
                   {lead.title}
                 </h3>
               </Link>
-              <p className="text-sm text-gray-700 leading-relaxed line-clamp-2 font-light">
+              <p className="text-sm text-gray-600 leading-relaxed line-clamp-2 font-normal">
                 {getExcerpt(lead.content)}
               </p>
             </div>
@@ -144,7 +144,7 @@ export default function CategoryBlock({
                       />
                     </div>
                   )}
-                  <h4 className="text-[16px] sm:text-[17px] font-bold text-[#000000] group-hover:text-red-600 transition leading-snug line-clamp-2 flex-1">
+                  <h4 className="text-[16px] sm:text-[17px] font-bold text-[#000000] group-hover:text-[#e60023] transition leading-snug line-clamp-2 flex-1">
                     {item.title}
                   </h4>
                 </Link>

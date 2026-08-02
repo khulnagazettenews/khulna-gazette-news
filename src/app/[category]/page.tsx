@@ -36,7 +36,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
 
   // 2. Paginated Fetch of all news items in category (including direct subcategory articles)
   const page = parseInt(searchParams.page || '1');
-  const limit = 12;
+  const limit = 18;
   const skip = (page - 1) * limit;
 
   // Get matching category ids (both parent and its subcategories if any)
@@ -91,122 +91,126 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-50">
+    <div className="flex flex-col min-h-screen bg-white font-sans text-gray-900">
       <PublicHeader />
 
-      <main className="flex-grow w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-5">
+      <main className="flex-grow w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
         
-        {/* Breadcrumb */}
-        <div className="text-xs text-gray-500 mb-6 flex items-center gap-1.5 select-none">
-          <Link href="/" className="hover:text-red-650">হোম</Link>
-          <span>/</span>
-          <span className="font-semibold text-gray-700">{cat.name}</span>
-        </div>
-
-        {/* Content columns */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Content columns (Left 9 Cols + Right 3 Cols Sidebar) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
-          {/* Left Column: News grid */}
-          <div className="lg:col-span-2 space-y-6">
+          {/* Left Column: Category title + 3-Col News grid + Pagination */}
+          <div className="lg:col-span-9 space-y-6">
             
-            {/* Category header and subcategories tag list */}
-            <div className="space-y-4">
-              <h2 className="text-xl sm:text-2xl font-black text-gray-900 border-l-4 border-red-600 pl-2.5">
-                {cat.name} ({total}টি খবর)
-              </h2>
-              
-              {cat.subCategories.length > 0 && (
-                <div className="flex flex-wrap gap-2 py-2 border-y border-gray-150">
-                  <span className="text-xs text-gray-400 font-bold self-center mr-1">উপ-বিভাগ:</span>
-                  {cat.subCategories.map((sub) => (
-                    <Link
-                      key={sub.id}
-                      href={`/${cat.slug}/${sub.slug}`}
-                      className="text-xs font-semibold bg-white border border-gray-250 text-gray-700 hover:bg-red-50 hover:text-red-600 px-3 py-1 rounded transition"
-                    >
-                      {sub.name}
-                    </Link>
-                  ))}
-                </div>
-              )}
+            {/* Category Header with Red Underline */}
+            <div className="border-b-2 border-[#FF0000] pb-1.5 mb-6">
+              <h1 className="text-[24px] sm:text-[28px] font-bold text-[#000000] leading-none">
+                {cat.name}
+              </h1>
             </div>
 
-            {/* Articles List */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {articles.map((item) => (
-                <div 
-                  key={item.id} 
-                  className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm flex flex-col justify-between hover:shadow-md transition duration-200 group"
-                >
-                  <div>
-                    {item.featuredImage && (
-                      <Link href={`/${item.category?.slug || category}/${item.id}`} className="block aspect-video overflow-hidden bg-gray-50">
-                        <img 
-                          src={item.featuredImage} 
-                          alt={item.title} 
-                          className="w-full h-full object-cover group-hover:scale-105 transition duration-300" 
-                        />
-                      </Link>
-                    )}
-                    
-                    <div className="p-4 space-y-2">
-                      <Link href={`/${item.category?.slug || category}/${item.id}`}>
-                        <h3 className="text-sm sm:text-base font-black text-gray-900 hover:text-red-600 transition leading-snug line-clamp-2">
-                          {item.title}
-                        </h3>
-                      </Link>
-                      <p className="text-xs text-gray-500 leading-relaxed line-clamp-2">
-                        {item.content.replace(/<[^>]*>/g, '')}
-                      </p>
-                    </div>
-                  </div>
+            {/* Subcategories bar if available */}
+            {cat.subCategories && cat.subCategories.length > 0 && (
+              <div className="flex flex-wrap gap-2 pb-4 border-b border-gray-200 -mt-2 mb-4">
+                <span className="text-xs text-gray-500 font-bold self-center mr-1">উপ-বিভাগ:</span>
+                {cat.subCategories.map((sub) => (
+                  <Link
+                    key={sub.id}
+                    href={`/${cat.slug}/${sub.slug}`}
+                    className="text-xs font-semibold bg-gray-100 border border-gray-200 text-gray-800 hover:bg-[#e60023] hover:text-white px-3 py-1 rounded transition"
+                  >
+                    {sub.name}
+                  </Link>
+                ))}
+              </div>
+            )}
 
-                  <div className="p-4 border-t border-gray-100 flex items-center justify-between text-[10px] text-gray-400 font-medium">
-                    <span>{item.reporterName || 'স্টাফ রিপোর্টার'}</span>
-                    <span>
-                      {item.publishedAt && new Date(item.publishedAt).toLocaleDateString('bn-BD', {
-                        month: 'short',
-                        day: 'numeric'
-                      })}
-                    </span>
-                  </div>
+            {/* 3-Column Articles Grid matching screenshot */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-7">
+              {articles.map((item) => (
+                <div key={item.id} className="group flex flex-col justify-start">
+                  {item.featuredImage ? (
+                    <Link href={`/${item.category?.slug || category}/${item.id}`} className="block aspect-[16/9] w-full overflow-hidden bg-gray-100 mb-2.5 rounded-sm">
+                      <img 
+                        src={item.featuredImage} 
+                        alt={item.title} 
+                        className="w-full h-full object-cover group-hover:scale-105 transition duration-300" 
+                      />
+                    </Link>
+                  ) : (
+                    <div className="aspect-[16/9] w-full rounded-sm bg-gray-100 flex items-center justify-center text-gray-400 text-xs font-bold mb-2.5">
+                      খুলনা গেজেট
+                    </div>
+                  )}
+                  
+                  <Link href={`/${item.category?.slug || category}/${item.id}`}>
+                    <h2 className="text-[17px] sm:text-[18px] font-bold text-[#000000] group-hover:text-[#e60023] transition leading-snug line-clamp-3">
+                      {item.title}
+                    </h2>
+                  </Link>
                 </div>
               ))}
             </div>
 
             {articles.length === 0 && (
-              <div className="text-center py-12 text-gray-400">এই বিভাগে কোনো সংবাদ পাওয়া যায়নি।</div>
+              <div className="text-center py-16 text-gray-400 text-base font-medium">এই বিভাগে কোনো সংবাদ পাওয়া যায়নি।</div>
             )}
 
-            {/* Pagination Controls */}
+            {/* Numeric WP-Style Pagination Bar matching exact screenshot */}
             {totalPages > 1 && (
-              <div className="flex justify-center gap-2 pt-6 border-t border-gray-150">
-                {page > 1 && (
+              <div className="flex items-center gap-1.5 pt-8 text-[13px] text-[#444444] font-medium flex-wrap select-none">
+                <span className="mr-1 text-gray-600 font-semibold">পৃষ্ঠা সমূহ :</span>
+                
+                {Array.from({ length: Math.min(7, totalPages) }, (_, i) => i + 1).map((p) => (
                   <Link
-                    href={`/${category}?page=${page - 1}`}
-                    className="bg-white border border-gray-300 text-gray-650 text-xs px-4 py-2 rounded-lg hover:bg-gray-150 transition"
+                    key={p}
+                    href={`/${category}?page=${p}`}
+                    className={`px-2.5 py-1 text-sm font-semibold rounded transition ${
+                      p === page
+                        ? 'bg-[#888888] text-white'
+                        : 'bg-[#eeeeee] text-[#333333] hover:bg-[#e60023] hover:text-white'
+                    }`}
                   >
-                    পূর্ববর্তী
+                    {p}
                   </Link>
+                ))}
+
+                {totalPages > 7 && (
+                  <>
+                    <span className="px-1 text-gray-500 font-bold">.</span>
+                    <Link
+                      href={`/${category}?page=${totalPages}`}
+                      className="bg-[#eeeeee] text-[#333333] hover:bg-[#e60023] hover:text-white px-2.5 py-1 text-sm font-semibold rounded transition"
+                    >
+                      {totalPages}
+                    </Link>
+                  </>
                 )}
+
                 {page < totalPages && (
                   <Link
                     href={`/${category}?page=${page + 1}`}
-                    className="bg-white border border-gray-300 text-gray-655 text-xs px-4 py-2 rounded-lg hover:bg-gray-150 transition"
+                    className="bg-[#eeeeee] text-[#333333] hover:bg-[#e60023] hover:text-white px-2.5 py-1 text-sm font-semibold rounded transition ml-1"
                   >
-                    পরবর্তী
+                    »
                   </Link>
                 )}
               </div>
             )}
           </div>
 
-          {/* Right Column: Sidebar Widgets */}
-          <div className="space-y-6">
+          {/* Right Column: Sidebar Widgets matching screenshot */}
+          <div className="lg:col-span-3 space-y-6">
             <TabsWidget 
               latest={serializeList(latestNews)} 
               popular={serializeList(popularNews)} 
             />
+
+            {/* App Download Promo Box */}
+            <div className="bg-[#1f2937] text-white p-3 rounded-lg text-center font-bold text-sm tracking-wide">
+              খুলনা গেজেট app পেতে ক্লিক করুন
+            </div>
+
             <PrayerWidget />
           </div>
         </div>

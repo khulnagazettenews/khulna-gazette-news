@@ -171,55 +171,58 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
         />
         <ViewsIncrement newsId={news.id} />
 
-        <main className="flex-grow w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-5 space-y-5">
-          {/* Breadcrumb Bar */}
-          <div className="text-xs text-gray-600 flex items-center gap-1.5 select-none border-b border-gray-200 pb-2.5">
-            <Link href="/" className="hover:text-red-600 flex items-center gap-1">
-              <i className="fa fa-home text-gray-700 text-sm"></i>
+        <main className="flex-grow w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-4">
+          {/* Top Double Line Divider */}
+          <div className="w-full h-1.5 border-y border-gray-200/80 bg-gray-50/50 mb-2"></div>
+
+          {/* Breadcrumb Bar (Even Bigger Font & Icon Size) */}
+          <div className="bg-[#eeeef8] px-5 py-3 rounded-md text-[18px] sm:text-[20px] text-[#222233] flex items-center gap-2.5 select-none mb-4 font-bold border border-[#dfdfef]">
+            <Link href="/" className="hover:text-red-600 flex items-center gap-1.5">
+              <i className="fa fa-home text-gray-900 text-[20px] sm:text-[22px]"></i>
             </Link>
-            <span className="text-gray-400">›</span>
-            <Link href={`/${news.category?.slug || 'news'}`} className="hover:text-red-600 font-bold text-gray-800">
+            <span className="text-gray-700 font-bold text-[20px] sm:text-[22px]">»</span>
+            <Link href={`/${news.category?.slug || 'news'}`} className="hover:text-red-600 text-gray-900 font-bold">
               {news.category?.name || 'সংবাদ'}
             </Link>
             {news.subCategory && (
               <>
-                <span className="text-gray-400">›</span>
-                <span className="text-gray-600 font-medium">{news.subCategory.name}</span>
+                <span className="text-gray-700 font-bold text-[20px] sm:text-[22px]">,</span>
+                <span className="text-gray-900 font-bold">{news.subCategory.name}</span>
               </>
             )}
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             {/* Left Column: Article Details + Share Bar + Content + More News Grid */}
-            <div className="lg:col-span-8 space-y-5">
-              <div className="space-y-3">
+            <div className="lg:col-span-8 space-y-4">
+              <div className="space-y-2">
                 
                 {/* Title */}
-                <h1 className="text-[28px] sm:text-[32px] lg:text-[34px] font-bold text-[#000000] leading-[1.25] tracking-tight">
+                <h1 className="text-[26px] sm:text-[30px] font-bold text-[#000000] leading-[1.3] tracking-normal mb-1">
                   {news.title}
                 </h1>
 
                 {/* Reporter Tagline */}
-                <div className="text-[15px] font-bold text-[#444444]">
-                  {news.subtitle || news.reporterName || 'গেজেট প্রতিবেদন'}
-                </div>
+                <h2 className="text-[15px] font-normal text-[#222222] mb-2">
+                  {news.reporterName || news.subtitle || 'নিজস্ব প্রতিবেদক, খুলনা গেজেট'}
+                </h2>
 
                 {/* Author & Timestamp + Social Share Bar */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between border-y border-gray-200 py-2 text-[14px] text-[#555555] gap-3 my-2 font-light">
-                  <div className="flex flex-wrap items-center gap-3 font-light">
-                    <span className="flex items-center gap-1.5 text-[#333333] font-light">
-                      <i className="fa fa-user text-gray-500"></i>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between border-y border-gray-200/90 py-1.5 text-[13px] text-[#444444] gap-2 my-2 font-normal">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <span className="flex items-center gap-1 text-[#222222]">
+                      <i className="fa fa-user text-black"></i>
                       <span>{news.reporterName || news.author?.name || 'খুলনা গেজেট'}</span>
                     </span>
                     {dateStr && (
-                      <span className="flex items-center gap-1.5 text-[#555555] font-light">
-                        <i className="fa fa-calendar text-gray-400"></i>
+                      <span className="flex items-center gap-1 text-[#444444]">
+                        <i className="fa fa-calendar text-black"></i>
                         <span>{dateStr}</span>
                       </span>
                     )}
                     {timeStr && (
-                      <span className="flex items-center gap-1.5 text-[#555555] font-light">
-                        <i className="fa fa-clock-o text-gray-400"></i>
+                      <span className="flex items-center gap-1 text-[#444444]">
+                        <i className="fa fa-clock-o text-black"></i>
                         <span>{timeStr}</span>
                       </span>
                     )}
@@ -231,16 +234,16 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
 
                 {/* Featured Image */}
                 {news.featuredImage && (
-                  <div className="space-y-1.5 my-3">
-                    <div className="w-full rounded-none overflow-hidden border border-gray-200 relative group bg-gray-50">
+                  <div className="space-y-1.5 my-4">
+                    <div className="w-full rounded-none overflow-hidden relative group bg-gray-50">
                       <img
                         src={news.featuredImage}
                         alt={news.title}
-                        className="w-full h-auto object-cover max-h-[520px]"
+                        className="w-full h-auto object-cover max-h-[550px]"
                       />
                     </div>
                     {(news.imageCaption || news.photoCredit) && (
-                      <div className="text-[12px] text-gray-600 leading-tight flex justify-between gap-4 px-1 font-light">
+                      <div className="text-[13px] text-gray-600 leading-tight flex justify-between gap-4 px-1 font-light">
                         <span>{news.imageCaption}</span>
                         {news.photoCredit && <span className="font-light shrink-0">ছবি: {news.photoCredit}</span>}
                       </div>
@@ -250,12 +253,12 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
 
                 {/* Article Main Content */}
                 <div 
-                  className="prose max-w-none text-[#000000] font-light leading-[1.5] text-[20px] [&_p]:mb-4 [&_p]:text-[#000000] [&_p]:leading-[1.5] [&_p]:text-[20px] [&_p]:font-light [&_strong]:font-bold [&_b]:font-bold [&_img]:rounded [&_img]:my-4"
+                  className="prose max-w-none text-[#111111] font-normal leading-[1.8] text-[18px] sm:text-[19px] [&_p]:mb-5 [&_p]:text-[#111111] [&_p]:leading-[1.8] [&_p]:text-[18px] sm:[&_p]:text-[19px] [&_p]:font-normal [&_strong]:font-bold [&_b]:font-bold [&_img]:rounded [&_img]:my-4"
                   dangerouslySetInnerHTML={{ __html: news.content }}
                 />
 
                 {/* Article Bottom Sign-off */}
-                <div className="pt-2 text-[16px] font-light text-[#000000]">
+                <div className="pt-2 text-[16px] font-normal text-[#333333] italic">
                   খুলনা গেজেট/এএজে
                 </div>
 
@@ -273,32 +276,30 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
 
               {/* "আরও সংবাদ" (More News) Grid Section */}
               {relatedNews.length > 0 && (
-                <div className="space-y-4 pt-4 mt-6">
+                <div className="space-y-4 pt-4 mt-8">
                   <div className="border-b-2 border-red-600 pb-1">
-                    <h2 className="text-[24px] sm:text-[26px] font-light text-[#000000]">
+                    <h2 className="text-[22px] sm:text-[24px] font-bold text-[#000000]">
                       আরও সংবাদ
                     </h2>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
                     {relatedNews.map((item) => (
-                      <div key={item.id} className="bg-white rounded border border-gray-200 overflow-hidden flex flex-col justify-between group p-2.5 space-y-2 hover:shadow-xs transition">
-                        <div>
-                          {item.featuredImage ? (
-                            <Link href={`/${item.category?.slug || 'news'}/${item.id}`} className="block aspect-[16/10] overflow-hidden rounded bg-gray-100 mb-2">
-                              <img src={item.featuredImage} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
-                            </Link>
-                          ) : (
-                            <div className="aspect-[16/10] w-full rounded bg-gray-100 flex items-center justify-center text-gray-400 text-xs font-bold mb-2">
-                              খুলনা গেজেট
-                            </div>
-                          )}
-                          <Link href={`/${item.category?.slug || 'news'}/${item.id}`}>
-                            <h5 className="text-[18px] sm:text-[20px] font-light text-[#000000] group-hover:text-red-600 transition leading-snug line-clamp-3">
-                              {item.title}
-                            </h5>
+                      <div key={item.id} className="bg-white group space-y-2">
+                        {item.featuredImage ? (
+                          <Link href={`/${item.category?.slug || 'news'}/${item.id}`} className="block aspect-[16/10] overflow-hidden rounded bg-gray-100 mb-2">
+                            <img src={item.featuredImage} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
                           </Link>
-                        </div>
+                        ) : (
+                          <div className="aspect-[16/10] w-full rounded bg-gray-100 flex items-center justify-center text-gray-400 text-xs font-bold mb-2">
+                            খুলনা গেজেট
+                          </div>
+                        )}
+                        <Link href={`/${item.category?.slug || 'news'}/${item.id}`}>
+                          <h5 className="text-[17px] sm:text-[18px] font-bold text-[#000000] group-hover:text-red-600 transition leading-snug line-clamp-3">
+                            {item.title}
+                          </h5>
+                        </Link>
                       </div>
                     ))}
                   </div>
@@ -405,88 +406,88 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-50 font-sans">
+    <div className="flex flex-col min-h-screen bg-white font-sans">
       <PublicHeader />
-      <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Breadcrumb */}
-        <div className="text-xs text-gray-500 mb-6 flex items-center gap-1.5 select-none">
-          <Link href="/" className="hover:text-red-650 flex items-center gap-1">
-            <Home size={14} />
-            <span>হোম</span>
+      <main className="flex-grow w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-5 space-y-4">
+        {/* Breadcrumb Bar */}
+        <div className="bg-[#eeeef8] px-4 py-2 rounded text-sm text-[#444455] flex items-center gap-2 select-none mb-4 font-medium border border-[#e0e4f8]">
+          <Link href="/" className="hover:text-red-600 flex items-center gap-1">
+            <i className="fa fa-home text-gray-800"></i>
           </Link>
-          <span>/</span>
-          <Link href={`/${parentCat.slug}`} className="hover:text-red-650">{parentCat.name}</Link>
-          <span>/</span>
-          <span className="font-semibold text-gray-700">{subCat.name}</span>
+          <span className="text-gray-600 font-bold">»</span>
+          <Link href={`/${parentCat.slug}`} className="hover:text-red-600 font-bold text-gray-800">
+            {parentCat.name}
+          </Link>
+          <span className="text-gray-600 font-bold">,</span>
+          <span className="font-bold text-gray-900">{subCat.name}</span>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-6">
-            <h2 className="text-xl sm:text-2xl font-black text-gray-900 border-l-4 border-red-600 pl-2.5 mb-6">
-              {parentCat.name} &gt; {subCat.name} ({total}টি খবর)
-            </h2>
+        {/* Content Columns (9 Cols Left + 3 Cols Right Sidebar) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <div className="lg:col-span-9 space-y-6">
+            
+            {/* Category Title Header */}
+            <div className="border-b-2 border-[#FF0000] pb-1 mb-4">
+              <h1 className="text-[22px] sm:text-[26px] font-bold text-[#000000]">
+                {parentCat.name} › {subCat.name}
+              </h1>
+            </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {/* 3-Column Articles Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
               {articles.map((item) => (
-                <div key={item.id} className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm flex flex-col justify-between group">
+                <div key={item.id} className="bg-white group space-y-2.5 flex flex-col justify-between">
                   <div>
-                    {item.featuredImage && (
-                      <Link href={`/${category}/${item.id}`} className="block aspect-video overflow-hidden bg-gray-50">
+                    {item.featuredImage ? (
+                      <Link href={`/${category}/${item.id}`} className="block aspect-[16/10] overflow-hidden rounded bg-gray-100 mb-2">
                         <img src={item.featuredImage} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
                       </Link>
+                    ) : (
+                      <div className="aspect-[16/10] w-full rounded bg-gray-100 flex items-center justify-center text-gray-400 text-xs font-bold mb-2">
+                        খুলনা গেজেট
+                      </div>
                     )}
-                    <div className="p-4 space-y-2">
-                      <Link href={`/${category}/${item.id}`}>
-                        <h3 className="text-sm font-bold text-gray-900 hover:text-red-600 transition leading-snug line-clamp-2">
-                          {item.title}
-                        </h3>
-                      </Link>
-                      <p className="text-xs text-gray-500 leading-relaxed line-clamp-2">
-                        {item.content.replace(/<[^>]*>/g, '')}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="p-4 border-t border-gray-100 flex items-center justify-between text-[10px] text-gray-400 font-medium">
-                    <span>{item.reporterName || 'স্টাফ রিপোর্টার'}</span>
-                    <span>
-                      {item.publishedAt && new Date(item.publishedAt).toLocaleDateString('bn-BD', {
-                        month: 'short',
-                        day: 'numeric',
-                      })}
-                    </span>
+                    <Link href={`/${category}/${item.id}`}>
+                      <h3 className="text-[16px] sm:text-[17px] font-bold text-[#000000] group-hover:text-red-600 transition leading-snug line-clamp-3">
+                        {item.title}
+                      </h3>
+                    </Link>
                   </div>
                 </div>
               ))}
             </div>
 
             {articles.length === 0 && (
-              <div className="text-center py-12 text-gray-400">এই বিভাগে কোনো সংবাদ পাওয়া যায়নি।</div>
+              <div className="text-center py-12 text-gray-400 text-base font-medium">এই বিভাগে কোনো সংবাদ পাওয়া যায়নি।</div>
             )}
 
-            {/* Pagination */}
+            {/* Numeric Pagination */}
             {totalPages > 1 && (
-              <div className="flex justify-center gap-2 pt-6">
+              <div className="flex justify-center gap-2 pt-6 border-t border-gray-200">
                 {page > 1 && (
                   <Link
                     href={`/${category}/${slugAndId}?page=${page - 1}`}
-                    className="bg-white border border-gray-300 text-gray-600 text-xs px-4 py-2 rounded-lg hover:bg-gray-150 transition"
+                    className="bg-white border border-gray-300 text-gray-700 text-sm font-bold px-4 py-2 rounded hover:bg-red-600 hover:text-white transition"
                   >
-                    পূর্ববর্তী
+                    « পূর্ববর্তী
                   </Link>
                 )}
+                <span className="px-4 py-2 text-sm font-bold text-gray-700 select-none">
+                  পৃষ্ঠা {page} / {totalPages}
+                </span>
                 {page < totalPages && (
                   <Link
                     href={`/${category}/${slugAndId}?page=${page + 1}`}
-                    className="bg-white border border-gray-300 text-gray-600 text-xs px-4 py-2 rounded-lg hover:bg-gray-150 transition"
+                    className="bg-white border border-gray-300 text-gray-700 text-sm font-bold px-4 py-2 rounded hover:bg-red-600 hover:text-white transition"
                   >
-                    পরবর্তী
+                    পরবর্তী »
                   </Link>
                 )}
               </div>
             )}
           </div>
 
-          <div className="space-y-6">
+          <div className="lg:col-span-3 space-y-6">
             <TabsWidget latest={serializeList(latestNews)} popular={serializeList(popularNews)} />
             <PrayerWidget />
           </div>
