@@ -31,10 +31,11 @@ export default function HomeHero({ news }: HomeHeroProps) {
   const gridNews = news.length > 1 ? news.slice(1, 13) : [];
 
   return (
-    <div className="bg-white p-3 sm:p-4 rounded border border-gray-200 shadow-2xs space-y-4">
+    <div className="space-y-6">
       {/* 1. TOP HERO MAIN LEAD SECTION: Exact Match with User Reference Image */}
       {mainLead && (
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 items-center border-b border-gray-200/90 pb-5">
+        <div className="bg-white rounded-2xl p-6 sm:p-8 border border-gray-100 shadow-lg shadow-gray-200/50">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 items-center">
           {/* Left Side: Large Red Heading + Description */}
           <div className="order-2 md:order-1 md:col-span-5 flex flex-col justify-center space-y-3.5 pt-2 md:pt-0">
             <Link href={`/${mainLead.category?.slug || 'news'}/${mainLead.id}`} className="group block">
@@ -68,6 +69,7 @@ export default function HomeHero({ news }: HomeHeroProps) {
               </div>
             )}
           </div>
+        </div>
         </div>
       )}
 

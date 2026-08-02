@@ -18,20 +18,18 @@
 }
 
 html {
-  font-size: 108%;
+  font-size: 100%;
 }
 
 body {
   color: #000000;
   background: #ffffff;
-  font-family: 'Bangla', sans-serif;
-  font-size: 21px;
-  font-weight: 300;
-  line-height: 1.2;
+  font-family: 'Bangla', 'Noto Sans Bengali', 'Hind Siliguri', 'SolaimanLipi', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
   margin: 0px;
   padding: 0px;
-  letter-spacing: -0.2px;
-  word-spacing: -1px;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -45,11 +43,9 @@ h4,
 h5,
 h6 {
   margin: 0 0 8px;
-  font-family: 'Bangla', sans-serif;
-  font-weight: 300;
-  line-height: 1.15;
-  letter-spacing: -0.2px;
-  word-spacing: -1px;
+  font-family: 'Bangla', 'Noto Sans Bengali', 'Hind Siliguri', 'SolaimanLipi', sans-serif;
+  font-weight: 700;
+  line-height: 1.25;
 }
 
 h1, h2 {
