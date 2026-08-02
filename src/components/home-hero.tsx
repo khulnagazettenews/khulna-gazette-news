@@ -34,17 +34,17 @@ export default function HomeHero({ news }: HomeHeroProps) {
     <div className="space-y-6">
       {/* 1. TOP HERO MAIN LEAD SECTION: Exact Match with User Reference Image */}
       {mainLead && (
-        <div className="bg-white rounded-2xl p-6 sm:p-8 border border-gray-100 shadow-lg shadow-gray-200/50">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 items-center">
+        <div className="bg-white rounded-xl sm:rounded-2xl p-3.5 sm:p-6 lg:p-8 border border-gray-100 shadow-md sm:shadow-lg shadow-gray-200/50">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6 lg:gap-8 items-center">
           {/* Left Side: Large Red Heading + Description */}
-          <div className="order-2 md:order-1 md:col-span-5 flex flex-col justify-center space-y-3.5 pt-2 md:pt-0">
+          <div className="order-2 md:order-1 md:col-span-5 flex flex-col justify-center space-y-2.5 sm:space-y-3.5 pt-1 md:pt-0">
             <Link href={`/${mainLead.category?.slug || 'news'}/${mainLead.id}`} className="group block">
-              <h1 className="text-[26px] sm:text-[30px] lg:text-[34px] font-bold text-[#e60023] group-hover:text-red-700 transition leading-[1.28] line-clamp-3">
+              <h1 className="text-[21px] sm:text-[26px] lg:text-[34px] font-bold text-[#e60023] group-hover:text-red-700 transition leading-[1.25] sm:leading-[1.28] line-clamp-3">
                 ‘{mainLead.title.replace(/^[‘'“"]|[’'"”]$/g, '')}’
               </h1>
             </Link>
             {mainLead.content && (
-              <p className="text-[16px] sm:text-[17px] text-[#222222] leading-[1.7] font-normal line-clamp-6">
+              <p className="text-[14px] sm:text-[16px] lg:text-[17px] text-[#222222] leading-[1.6] sm:leading-[1.7] font-normal line-clamp-4 sm:line-clamp-6">
                 {getExcerpt(mainLead.content)}...
               </p>
             )}
