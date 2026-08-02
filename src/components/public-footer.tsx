@@ -5,8 +5,7 @@ export default async function PublicFooter() {
   return (
     <footer className="bg-[#151515] text-white text-[17px] mt-12">
       {/* Top Footer Section with 6 columns */}
-      <div className="w-full max-w-full px-4 sm:px-8 lg:px-12 py-12 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
-
+      <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
         {/* Col 1 */}
         <div>
           <ul className="space-y-3">
@@ -37,7 +36,7 @@ export default async function PublicFooter() {
         <div>
           <ul className="space-y-3">
             <li>
-              <Link href="/khulnanchal" className="font-light hover:text-red-500 transition-colors">
+              <Link href="/khulna" className="font-light hover:text-red-500 transition-colors">
                 খুলনাঞ্চল
               </Link>
             </li>
@@ -47,7 +46,7 @@ export default async function PublicFooter() {
               </Link>
             </li>
             <li>
-              <Link href="/it" className="font-light hover:text-red-500 transition-colors">
+              <Link href="/technology" className="font-light hover:text-red-500 transition-colors">
                 আইটি
               </Link>
             </li>
@@ -63,23 +62,23 @@ export default async function PublicFooter() {
         <div>
           <ul className="space-y-3">
             <li>
-              <Link href="/lifestyle" className="font-light hover:text-red-500 transition-colors">
-                লাইফ স্টাইল
-              </Link>
-            </li>
-            <li>
               <Link href="/entertainment" className="font-light hover:text-red-500 transition-colors">
                 বিনোদন
               </Link>
             </li>
             <li>
-              <Link href="/muktobhabna" className="font-light hover:text-red-500 transition-colors">
+              <Link href="/free-thinking" className="font-light hover:text-red-500 transition-colors">
                 মুক্তভাবনা
               </Link>
             </li>
             <li>
-              <Link href="/islam-and-life" className="font-light hover:text-red-500 transition-colors">
+              <Link href="/islam-life" className="font-light hover:text-red-500 transition-colors">
                 ইসলাম ও জীবন
+              </Link>
+            </li>
+            <li>
+              <Link href="/health" className="font-light hover:text-red-500 transition-colors">
+                চিকিৎসা
               </Link>
             </li>
           </ul>
@@ -94,18 +93,18 @@ export default async function PublicFooter() {
               </Link>
             </li>
             <li>
-              <Link href="/health" className="font-light hover:text-red-500 transition-colors">
-                চিকিৎসা
-              </Link>
-            </li>
-            <li>
-              <Link href="/weird-news" className="font-light hover:text-red-500 transition-colors">
+              <Link href="/chitro-bichitro" className="font-light hover:text-red-500 transition-colors">
                 চিত্র বিচিত্র
               </Link>
             </li>
             <li>
               <Link href="/photo-gallery" className="font-light hover:text-red-500 transition-colors">
                 ফটো গ্যালারী
+              </Link>
+            </li>
+            <li>
+              <Link href="/video-gallery" className="font-light hover:text-red-500 transition-colors">
+                ভিডিও গ্যালারী
               </Link>
             </li>
           </ul>
@@ -159,7 +158,7 @@ export default async function PublicFooter() {
 
       {/* Middle Footer Section with Logo and Editorial details */}
       <div className="border-t border-[#333] bg-[#151515] py-8">
-        <div className="w-full max-w-full px-4 sm:px-8 lg:px-12 flex flex-col md:flex-row items-center justify-start gap-12">
+        <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-start gap-8 lg:gap-12">
           <div className="flex-shrink-0">
             <Link href="/">
               <Image
@@ -167,12 +166,12 @@ export default async function PublicFooter() {
                 alt="খুলনা গেজেট"
                 width={240}
                 height={60}
-                className="h-16 w-auto max-w-full object-contain"
+                className="h-14 sm:h-16 w-auto max-w-full object-contain"
               />
             </Link>
           </div>
           <div className="text-center md:text-left text-white max-w-2xl">
-            <p className="leading-relaxed text-[17px] font-light">
+            <p className="leading-relaxed text-[16px] sm:text-[17px] font-light">
               <strong className="text-white font-light block mb-1">সম্পাদক ও প্রকাশক : মোঃ মাহমুদ আহসান</strong>
               বার্তা বিভাগ : আনসারী কমপ্লেক্স, ১৬০ শের-ই-বাংলা সড়ক, খুলনা ৯১০০।<br />
               Mobile : 01794744579 &nbsp;&nbsp; E-mail : khulnagazette@gmail.com
@@ -183,7 +182,7 @@ export default async function PublicFooter() {
 
       {/* Bottom Footer Copyright & Legal strip */}
       <div className="bg-[#202731] py-5 text-sm text-gray-300">
-        <div className="w-full max-w-full px-4 sm:px-8 lg:px-12 flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-center sm:text-left">
           <p className="font-light">
             এই ওয়েবসাইটের কোনো লেখা, ছবি, অডিও, ভিডিও অনুমতি ছাড়া ব্যবহার বেআইনি।
           </p>

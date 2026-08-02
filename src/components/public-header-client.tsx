@@ -173,20 +173,49 @@ export default function PublicHeaderClient({ categories, formattedDate }: Public
 
   return (
     <header className="w-full bg-white font-sans border-b border-[#e5e5e5]">
-      {/* ================= TOP HEADER matching user exact specification ================= */}
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col lg:flex-row justify-between items-center gap-4 lg:gap-0">
-        
+      {/* ================= TOP HEADER matching user exact mobile & desktop specification ================= */}
+      {/* Mobile Top Header (100% Match with khulnagazette.com mobile screen) */}
+      <div className="lg:hidden px-3 py-2.5 flex items-center justify-between border-b border-gray-100">
+        {/* Left: Hamburger Icon */}
+        <button
+          onClick={() => setMobileOpen(!mobileOpen)}
+          className="text-[#222222] hover:text-[#e60023] focus:outline-none p-1 cursor-pointer"
+          title="মেনু"
+        >
+          <i className={`fa ${mobileOpen ? 'fa-times' : 'fa-bars'} text-[22px]`}></i>
+        </button>
+
+        {/* Center: Mobile Logo */}
+        <Link href="/" className="flex justify-center">
+          <img
+            src="/logo.png"
+            alt="Khulna Gazette"
+            className="w-[175px] sm:w-[210px] h-auto object-contain"
+          />
+        </Link>
+
+        {/* Right: e-Paper Link & Search Icon */}
+        <div className="flex items-center gap-2.5">
+          <Link href="/epaper" className="text-[#e60023] text-[16px] sm:text-[18px] font-bold hover:underline">
+            ই-পেপার
+          </Link>
+          <button onClick={() => setSearchOpen(!searchOpen)} className="text-[#222222] hover:text-[#e60023] p-1" title="Search">
+            <i className="fa fa-search text-[17px]"></i>
+          </button>
+        </div>
+      </div>
+
+      {/* Desktop Top Header (100% Match with khulnagazette.com desktop screen) */}
+      <div className="hidden lg:flex max-w-[1400px] mx-auto px-8 py-4 justify-between items-center">
         {/* Left Side: Hamburger Menu + Location/Date */}
-        <div className="left flex items-start gap-6 w-full lg:w-[33%] justify-start">
-          <div className="menu">
-            <button
-              onClick={() => setMobileOpen(!mobileOpen)}
-              className="text-[#222222] hover:text-[#e60023] focus:outline-none p-1 cursor-pointer transition"
-              title="মেনু"
-            >
-              <i className={`fa ${mobileOpen ? 'fa-times' : 'fa-bars'} text-[28px]`}></i>
-            </button>
-          </div>
+        <div className="left flex items-center gap-6 w-[33%] justify-start">
+          <button
+            onClick={() => setMobileOpen(!mobileOpen)}
+            className="text-[#222222] hover:text-[#e60023] focus:outline-none p-1 cursor-pointer transition"
+            title="মেনু"
+          >
+            <i className={`fa ${mobileOpen ? 'fa-times' : 'fa-bars'} text-[28px]`}></i>
+          </button>
 
           <div className="date select-none">
             <h4 className="text-[22px] font-bold text-[#000000] leading-tight">খুলনা, বাংলাদেশ</h4>
@@ -195,7 +224,7 @@ export default function PublicHeaderClient({ categories, formattedDate }: Public
         </div>
 
         {/* Logo Center */}
-        <div className="logo w-full lg:w-[34%] text-center flex justify-center">
+        <div className="logo w-[34%] text-center flex justify-center">
           <Link href="/">
             <img
               src="/logo.png"
@@ -206,7 +235,7 @@ export default function PublicHeaderClient({ categories, formattedDate }: Public
         </div>
 
         {/* Right Side: e-Paper + Social + Search */}
-        <div className="right w-full lg:w-[33%] flex flex-col items-end justify-center gap-2.5">
+        <div className="right w-[33%] flex flex-col items-end justify-center gap-2.5">
           <Link href="/epaper" className="epaper text-[#e60023] text-[22px] font-bold cursor-pointer hover:underline leading-none">
             ই-পেপার
           </Link>
@@ -232,8 +261,8 @@ export default function PublicHeaderClient({ categories, formattedDate }: Public
       </div>
 
       {/* ================= NAVBAR matching user exact specification ================= */}
-      <nav className="navbar border-t border-[#efefef] bg-white sticky top-0 z-40">
-        <ul className="max-w-[1400px] mx-auto flex items-center justify-center gap-[24px] lg:gap-[32px] py-3.5 px-4 list-none whitespace-nowrap select-none overflow-visible">
+      <nav className="navbar border-t border-[#efefef] bg-white sticky top-0 z-40 hidden md:block">
+        <ul className="max-w-[1400px] mx-auto flex items-center justify-center gap-[24px] lg:gap-[32px] py-3 px-4 list-none whitespace-nowrap select-none overflow-visible">
           
           {/* Home Active Icon */}
           <li className={`cursor-pointer transition hover:text-[#e60023] ${pathname === '/' ? 'active text-[#e60023] text-[26px]' : 'text-[22px] text-[#000000]'}`}>
@@ -371,88 +400,116 @@ export default function PublicHeaderClient({ categories, formattedDate }: Public
         </div>
       )}
 
-      {/* Mobile Drawer Navigation (When hamburger clicked) */}
+      {/* Mobile Drawer Navigation Overlay (Exact Match with khulnagazette.com Screenshot) */}
       {mobileOpen && (
-        <div className="bg-white text-[#262626] border-b border-gray-200 xl:hidden">
-          <div className="max-w-7xl mx-auto px-4 py-3 space-y-1">
-            <div className="flex flex-col pb-3 mb-2 border-b border-gray-100 text-xs font-bold text-gray-800 leading-tight">
-              <span>খুলনা, বাংলাদেশ</span>
-              <span className="text-[11px] text-gray-500 font-normal mt-0.5">{currentDate}</span>
+        <div className="fixed inset-0 z-50 bg-black/60 flex justify-start animate-fadeIn">
+          {/* Main Slide-out Drawer Panel */}
+          <div className="w-[82%] max-w-[340px] bg-white h-full overflow-y-auto shadow-2xl flex flex-col justify-start relative">
+            
+            {/* Top Light Grey Header with Red Home Icon */}
+            <div className="bg-[#e5e5e5] px-5 py-4 flex items-center justify-start border-b border-gray-300">
+              <Link href="/" onClick={() => setMobileOpen(false)} className="text-[#e60023] text-[24px]">
+                <i className="fa fa-home"></i>
+              </Link>
             </div>
 
-            <Link
-              href="/"
+            {/* Nav Menu Links List */}
+            <div className="px-5 py-3 divide-y divide-gray-100 font-sans">
+              <Link
+                href="/bangladesh"
+                onClick={() => setMobileOpen(false)}
+                className="block py-3 text-[19px] font-bold text-[#222222] hover:text-[#e60023]"
+              >
+                বাংলাদেশ
+              </Link>
+
+              {/* খুলনাঞ্চল with Caret Down */}
+              <div>
+                <button
+                  onClick={() => toggleDropdown('khulna')}
+                  className="w-full flex items-center justify-between py-3 text-[19px] font-bold text-[#222222] hover:text-[#e60023] text-left focus:outline-none"
+                >
+                  <span>খুলনাঞ্চল</span>
+                  <i className={`fa fa-caret-down text-sm transition transform ${activeDropdown === 'khulna' ? 'rotate-180' : ''}`}></i>
+                </button>
+                {activeDropdown === 'khulna' && (
+                  <div className="pl-4 pb-2 space-y-2 text-[17px] font-medium text-gray-700">
+                    <Link href="/khulna/khulna" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">খুলনা</Link>
+                    <Link href="/khulna/kustia" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">কুষ্টিয়া</Link>
+                    <Link href="/khulna/chuadanga" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">চুয়াডাঙ্গা</Link>
+                    <Link href="/khulna/jhineidha" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">ঝিনাইদহ</Link>
+                    <Link href="/khulna/narail" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">নড়াইল</Link>
+                    <Link href="/khulna/bagerhat" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">বাগেরহাট</Link>
+                    <Link href="/khulna/magura" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">মাগুরা</Link>
+                    <Link href="/khulna/meherpur" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">মেহেরপুর</Link>
+                    <Link href="/khulna/jashore" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">যশোর</Link>
+                    <Link href="/khulna/satkhira" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">সাতক্ষীরা</Link>
+                  </div>
+                )}
+              </div>
+
+              <Link href="/sports" onClick={() => setMobileOpen(false)} className="block py-3 text-[19px] font-bold text-[#222222] hover:text-[#e60023]">
+                খেলা
+              </Link>
+              <Link href="/entertainment" onClick={() => setMobileOpen(false)} className="block py-3 text-[19px] font-bold text-[#222222] hover:text-[#e60023]">
+                বিনোদন
+              </Link>
+              <Link href="/politics" onClick={() => setMobileOpen(false)} className="block py-3 text-[19px] font-bold text-[#222222] hover:text-[#e60023]">
+                রাজনীতি
+              </Link>
+              <Link href="/international" onClick={() => setMobileOpen(false)} className="block py-3 text-[19px] font-bold text-[#222222] hover:text-[#e60023]">
+                আন্তর্জাতিক
+              </Link>
+              <Link href="/economy" onClick={() => setMobileOpen(false)} className="block py-3 text-[19px] font-bold text-[#222222] hover:text-[#e60023]">
+                অর্থনীতি
+              </Link>
+              <Link href="/education" onClick={() => setMobileOpen(false)} className="block py-3 text-[19px] font-bold text-[#222222] hover:text-[#e60023]">
+                শিক্ষা
+              </Link>
+              <Link href="/free-thinking" onClick={() => setMobileOpen(false)} className="block py-3 text-[19px] font-bold text-[#222222] hover:text-[#e60023]">
+                মুক্ত ভাবনা
+              </Link>
+              <Link href="/islam-life" onClick={() => setMobileOpen(false)} className="block py-3 text-[19px] font-bold text-[#222222] hover:text-[#e60023]">
+                ইসলাম ও জীবন
+              </Link>
+              <Link href="/exclusive" onClick={() => setMobileOpen(false)} className="block py-3 text-[19px] font-bold text-[#222222] hover:text-[#e60023]">
+                গেজেট এক্সক্লুসিভ
+              </Link>
+
+              {/* আরও with Caret Down */}
+              <div>
+                <button
+                  onClick={() => toggleDropdown('more')}
+                  className="w-full flex items-center justify-between py-3 text-[19px] font-bold text-[#222222] hover:text-[#e60023] text-left focus:outline-none"
+                >
+                  <span>আরও</span>
+                  <i className={`fa fa-caret-down text-sm transition transform ${activeDropdown === 'more' ? 'rotate-180' : ''}`}></i>
+                </button>
+                {activeDropdown === 'more' && (
+                  <div className="pl-4 pb-2 space-y-2 text-[17px] font-medium text-gray-700">
+                    <Link href="/sports" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">ফুটবল বিশ্বকাপ-২০২৬</Link>
+                    <Link href="/photo-gallery" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">ফটো গ্যালারি</Link>
+                    <Link href="/video-gallery" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">ভিডিও গ্যালারি</Link>
+                    <Link href="/technology" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">আইটি</Link>
+                    <Link href="/health" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">চিকিৎসা</Link>
+                    <Link href="/literature" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">সাহিত্য</Link>
+                    <Link href="/chitro-bichitro" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">চিত্র বিচিত্র</Link>
+                    <Link href="/social-media" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">সোশ্যাল মিডিয়া</Link>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Top Right Circle Close Button (X) Outside Drawer */}
+          <div className="pt-6 pl-4">
+            <button
               onClick={() => setMobileOpen(false)}
-              className={`block px-3 py-2 rounded-md hover:bg-gray-50 text-base font-semibold ${
-                pathname === '/' ? 'text-[#ED1C24]' : ''
-              }`}
+              className="w-10 h-10 rounded-full border border-gray-400 bg-white/90 text-gray-700 hover:text-black flex items-center justify-center shadow-lg cursor-pointer"
+              title="বন্ধ করুন"
             >
-              হোম
-            </Link>
-
-            {categories.map((cat) => {
-              const hasSub = cat.subCategories && cat.subCategories.length > 0;
-              const isDropdownActive = activeDropdown === cat.id;
-              const isActive = pathname ? (pathname === `/${cat.slug}` || pathname.startsWith(`/${cat.slug}/`)) : false;
-
-              return (
-                <div key={cat.id} className="space-y-1">
-                  {hasSub ? (
-                    <div>
-                      <button
-                        onClick={() => toggleDropdown(cat.id)}
-                        className={`w-full flex items-center justify-between px-3 py-2 rounded-md hover:bg-gray-50 text-base font-semibold text-left focus:outline-none ${
-                          isActive ? 'text-[#ED1C24]' : ''
-                        }`}
-                      >
-                        <span>{cat.name}</span>
-                        <ChevronDown size={16} className={`transform transition ${isDropdownActive ? 'rotate-180' : ''}`} />
-                      </button>
-
-                      {isDropdownActive && (
-                        <div className="pl-6 bg-gray-50/50 rounded-md py-1">
-                          {cat.subCategories?.map((sub) => (
-                            <Link
-                              key={sub.id}
-                              href={`/${cat.slug}/${sub.slug}`}
-                              onClick={() => setMobileOpen(false)}
-                              className="block px-3 py-2 text-sm text-slate-600 hover:text-[#ED1C24]"
-                            >
-                              {sub.name}
-                            </Link>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    <Link
-                      href={`/${cat.slug}`}
-                      onClick={() => setMobileOpen(false)}
-                      className={`block px-3 py-2 rounded-md hover:bg-gray-50 text-base font-semibold ${
-                        isActive ? 'text-[#ED1C24]' : ''
-                      }`}
-                    >
-                      {cat.name}
-                    </Link>
-                  )}
-                </div>
-              );
-            })}
-
-            <Link
-              href="/photo-gallery"
-              onClick={() => setMobileOpen(false)}
-              className="block px-3 py-2 rounded-md hover:bg-gray-50 text-base font-semibold"
-            >
-              ফটো গ্যালারি
-            </Link>
-            <Link
-              href="/video-gallery"
-              onClick={() => setMobileOpen(false)}
-              className="block px-3 py-2 rounded-md hover:bg-gray-50 text-base font-semibold"
-            >
-              ভিডিও গ্যালারি
-            </Link>
+              <i className="fa fa-times text-xl"></i>
+            </button>
           </div>
         </div>
       )}

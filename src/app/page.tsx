@@ -306,12 +306,12 @@ export default async function HomePage() {
               {/* Photo Gallery */}
               {photos.length > 0 && (
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between border-t-2 border-red-600 pt-2.5">
+                  <div className="flex items-center justify-between border-b-2 border-[#FF0000] pb-1.5">
                     <h3 className="text-base sm:text-lg font-black text-gray-900 flex items-center gap-2">
-                      <Camera size={20} className="text-red-600" />
+                      <Camera size={20} className="text-[#e60023]" />
                       <span>ফটো গ্যালারি</span>
                     </h3>
-                    <Link href="/photo-gallery" className="text-xs text-red-600 font-bold hover:underline">
+                    <Link href="/photo-gallery" className="text-xs text-[#e60023] font-bold hover:underline">
                       সব ছবি দেখুন
                     </Link>
                   </div>
@@ -333,12 +333,12 @@ export default async function HomePage() {
               {/* Video Gallery */}
               {videos.length > 0 && (
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between border-t-2 border-red-600 pt-2.5">
+                  <div className="flex items-center justify-between border-b-2 border-[#FF0000] pb-1.5">
                     <h3 className="text-base sm:text-lg font-black text-gray-900 flex items-center gap-2">
-                      <Video size={20} className="text-red-600" />
+                      <Video size={20} className="text-[#e60023]" />
                       <span>ভিডিও গ্যালারি</span>
                     </h3>
-                    <Link href="/video-gallery" className="text-xs text-red-600 font-bold hover:underline">
+                    <Link href="/video-gallery" className="text-xs text-[#e60023] font-bold hover:underline">
                       সব ভিডিও দেখুন
                     </Link>
                   </div>

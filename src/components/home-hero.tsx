@@ -73,10 +73,10 @@ export default function HomeHero({ news }: HomeHeroProps) {
         </div>
       )}
 
-      {/* 2. GRID OF 3-COLUMN NEWS CARDS BELOW TOP HERO */}
+      {/* 2. GRID OF NEWS CARDS BELOW TOP HERO (2-cols on mobile, 3-cols on tablet/desktop) */}
       {gridNews.length > 0 && (
         <div className="pt-1">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-4 gap-y-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-3.5 gap-y-4">
             {gridNews.map((story, index) => {
               const categorySlug = story.category?.slug || 'news';
               const isFirstRow = index < 3;
