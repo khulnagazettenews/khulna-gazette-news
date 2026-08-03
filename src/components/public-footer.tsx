@@ -110,14 +110,40 @@ export default async function PublicFooter() {
           </ul>
         </div>
 
-        {/* Col 5 */}
+        {/* Col 5 - Features & Quick Links */}
         <div>
           <ul className="space-y-3">
             <li>
-              <Link href="/about" className="font-light hover:text-red-500 transition-colors">
-                About Us
+              <Link href="/converter" className="font-light hover:text-red-500 transition-colors flex items-center gap-1.5">
+                <span className="text-red-500 font-bold">•</span> কনভার্টার
               </Link>
             </li>
+            <li>
+              <Link href="/greeting-cards" className="font-light hover:text-red-500 transition-colors flex items-center gap-1.5">
+                <span className="text-red-500 font-bold">•</span> শুভেচ্ছা কার্ড
+              </Link>
+            </li>
+            <li>
+              <Link href="/jobs" className="font-light hover:text-red-500 transition-colors flex items-center gap-1.5">
+                <span className="text-red-500 font-bold">•</span> খুলনা গেজেটে চাকরি
+              </Link>
+            </li>
+            <li>
+              <Link href="/about" className="font-light hover:text-red-500 transition-colors">
+                আমাদের সম্পর্কে
+              </Link>
+            </li>
+            <li>
+              <Link href="/contact" className="font-light hover:text-red-500 transition-colors">
+                যোগাযোগ
+              </Link>
+            </li>
+          </ul>
+        </div>
+
+        {/* Col 6 - Legal & App Download */}
+        <div className="flex flex-col justify-start space-y-4">
+          <ul className="space-y-2 text-sm text-gray-300">
             <li>
               <Link href="/terms" className="font-light hover:text-red-500 transition-colors">
                 Terms of Use
@@ -128,21 +154,13 @@ export default async function PublicFooter() {
                 Privacy Policy
               </Link>
             </li>
-            <li>
-              <Link href="/contact" className="font-light hover:text-red-500 transition-colors">
-                Contact Us
-              </Link>
-            </li>
           </ul>
-        </div>
 
-        {/* Col 6 - App Download */}
-        <div className="flex flex-col justify-start">
           <a
             href="https://play.google.com/store/apps/details?id=com.kg.khl"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block transition hover:opacity-90 max-w-[140px]"
+            className="inline-block transition hover:opacity-90 max-w-[140px] pt-1"
           >
             <Image
               src="/google-play.png"
