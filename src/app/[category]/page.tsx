@@ -126,11 +126,11 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
             )}
 
             {/* Articles List/Grid: 1-column horizontal row list on mobile, 3-column stacked grid on desktop */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-x-6 sm:gap-y-7">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-x-6 sm:gap-y-7">
               {articles.map((item) => (
                 <div key={item.id} className="group flex flex-row sm:flex-col items-center sm:items-start gap-3 sm:gap-2 border-b border-gray-150 sm:border-b-0 pb-3 sm:pb-0 last:border-b-0">
                   {item.featuredImage ? (
-                    <Link href={`/${item.category?.slug || category}/${item.id}`} className="block w-24 h-16 sm:w-full sm:h-auto sm:aspect-[16/10] shrink-0 overflow-hidden bg-gray-100 rounded-sm">
+                    <Link href={`/${item.category?.slug || category}/${item.id}`} className="block w-28 h-20 sm:w-full sm:h-auto sm:aspect-[16/10] shrink-0 overflow-hidden bg-gray-100 rounded">
                       <img 
                         src={item.featuredImage} 
                         alt={item.title} 
@@ -138,13 +138,13 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
                       />
                     </Link>
                   ) : (
-                    <div className="w-24 h-16 sm:w-full sm:h-auto sm:aspect-[16/10] shrink-0 rounded-sm bg-gray-100 flex items-center justify-center text-gray-400 text-xs font-bold">
+                    <div className="w-28 h-20 sm:w-full sm:h-auto sm:aspect-[16/10] shrink-0 rounded bg-gray-100 flex items-center justify-center text-gray-400 text-xs font-bold">
                       খুলনা গেজেট
                     </div>
                   )}
                   
                   <Link href={`/${item.category?.slug || category}/${item.id}`} className="block flex-1 min-w-0">
-                    <h2 className="text-[17px] sm:text-[19px] font-bold text-[#000000] group-hover:text-[#e60023] transition leading-[1.28] line-clamp-2 sm:line-clamp-3 break-words">
+                    <h2 className="text-[18px] sm:text-[19px] font-bold text-[#000000] group-hover:text-[#e60023] transition leading-[1.28] line-clamp-2 sm:line-clamp-3 break-words">
                       {item.title}
                     </h2>
                   </Link>

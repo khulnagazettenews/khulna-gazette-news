@@ -100,34 +100,41 @@ h5 {
   font-weight: 400;
 }
 
-/* Article Body Typography */
-.prose {
-  color: #000000;
-  font-family: 'Bangla', sans-serif;
-  font-size: 21px;
-  font-weight: 300;
-  line-height: 1.6;
-  letter-spacing: -0.2px;
-  word-spacing: -1px;
-}
-
-.prose h1, .prose h2, .prose h3, .prose h4 {
-  font-size: 26px;
-  font-weight: 700;
-  margin-top: 1.25rem;
-  margin-bottom: 0.5rem;
-  color: #000000;
-  line-height: 1.2;
+/* Article Body Typography (100% Exact Match for khulnagazette.com/bangladesh/482579/) */
+.prose,
+.prose p,
+.prose span,
+.prose div {
+  color: #000000 !important;
+  font-family: 'Bangla', 'SolaimanLipi', sans-serif !important;
+  font-size: 21px !important;
+  font-weight: 300 !important;
+  line-height: 1.45 !important;
+  letter-spacing: -0.2px !important;
+  word-spacing: -1px !important;
 }
 
 .prose p {
-  margin-bottom: 1rem;
-  line-height: 1.6;
-  font-size: 21px;
-  color: #000000;
-  font-weight: 300;
-  letter-spacing: -0.2px;
-  word-spacing: -1px;
+  margin-top: 0 !important;
+  margin-bottom: 1rem !important;
+}
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4 {
+  color: #000000 !important;
+  font-family: 'Bangla', 'SolaimanLipi', sans-serif !important;
+  font-size: 26px !important;
+  font-weight: 700 !important;
+  margin-top: 1.25rem !important;
+  margin-bottom: 0.5rem !important;
+  line-height: 1.25 !important;
+}
+
+.prose strong,
+.prose b {
+  font-weight: 700 !important;
 }
 
 .prose blockquote {

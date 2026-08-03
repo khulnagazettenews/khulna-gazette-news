@@ -198,13 +198,13 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
               <div className="space-y-2">
                 
                 {/* Title */}
-                <h1 className="text-[25px] sm:text-[30px] lg:text-[34px] font-bold text-[#000000] leading-[1.3] tracking-normal mb-3 sm:mb-4 break-words">
+                <h1 className="text-[25px] sm:text-[30px] lg:text-[34px] font-bold text-[#000000] leading-[1.25] tracking-normal mb-2 break-words">
                   {news.title}
                 </h1>
 
                 {/* Reporter Tagline */}
-                <h2 className="text-[15px] sm:text-[16px] font-normal text-[#222222] mb-2.5">
-                  {news.reporterName || news.subtitle || 'নিজস্ব প্রতিবেদক, খুলনা গেজেট'}
+                <h2 className="text-[15px] sm:text-[16px] font-normal text-[#222222] mb-2">
+                  {news.reporterName || news.subtitle || 'গেজেট প্রতিবেদন'}
                 </h2>
 
                 {/* Author & Timestamp + Social Share Bar */}
@@ -234,7 +234,7 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
 
                 {/* Featured Image */}
                 {news.featuredImage && (
-                  <div className="space-y-1.5 my-3.5 sm:my-5">
+                  <div className="space-y-1.5 my-3">
                     <div className="w-full rounded-none overflow-hidden relative group bg-gray-50">
                       <img
                         src={news.featuredImage}
@@ -253,7 +253,7 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
 
                 {/* Article Main Content */}
                 <div 
-                  className="prose max-w-none text-[#000000] font-light leading-[1.6] text-[21px] break-words [&_p]:mb-4 [&_p]:text-[#000000] [&_p]:leading-[1.6] [&_p]:text-[21px] [&_p]:font-light [&_strong]:font-bold [&_b]:font-bold [&_img]:rounded [&_img]:my-3 [&_iframe]:w-full [&_iframe]:aspect-video"
+                  className="prose max-w-none text-[#000000] font-light leading-[1.45] text-[21px] break-words [&_p]:mt-0 [&_p]:mb-4 [&_p]:text-[#000000] [&_p]:leading-[1.45] [&_p]:text-[21px] [&_p]:font-light [&_strong]:font-bold [&_b]:font-bold [&_h2]:mb-3 [&_h2]:mt-4 [&_img]:rounded [&_img]:my-3 [&_iframe]:w-full [&_iframe]:aspect-video"
                   dangerouslySetInnerHTML={{ __html: news.content }}
                 />
 

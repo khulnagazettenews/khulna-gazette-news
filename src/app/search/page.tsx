@@ -82,20 +82,20 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
               </h1>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-7">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-x-6 sm:gap-y-7">
               {articles.map((item) => (
-                <div key={item.id} className="group flex flex-col justify-start">
+                <div key={item.id} className="group flex flex-row sm:flex-col items-center sm:items-start gap-3 sm:gap-2 border-b border-gray-150 sm:border-b-0 pb-3 sm:pb-0 last:border-b-0">
                   {item.featuredImage ? (
-                    <Link href={`/${item.category?.slug || 'news'}/${item.id}`} className="block aspect-[16/9] w-full overflow-hidden bg-gray-100 mb-2.5 rounded-sm">
+                    <Link href={`/${item.category?.slug || 'news'}/${item.id}`} className="block w-28 h-20 sm:w-full sm:h-auto sm:aspect-[16/10] shrink-0 overflow-hidden bg-gray-100 rounded">
                       <img src={item.featuredImage} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
                     </Link>
                   ) : (
-                    <div className="aspect-[16/9] w-full rounded-sm bg-gray-100 flex items-center justify-center text-gray-400 text-xs font-bold mb-2.5">
+                    <div className="w-28 h-20 sm:w-full sm:h-auto sm:aspect-[16/10] shrink-0 rounded bg-gray-100 flex items-center justify-center text-gray-400 text-xs font-bold">
                       খুলনা গেজেট
                     </div>
                   )}
-                  <Link href={`/${item.category?.slug || 'news'}/${item.id}`}>
-                    <h2 className="text-[17px] sm:text-[18px] font-bold text-[#000000] group-hover:text-[#e60023] transition leading-snug line-clamp-3">
+                  <Link href={`/${item.category?.slug || 'news'}/${item.id}`} className="block flex-1 min-w-0">
+                    <h2 className="text-[18px] sm:text-[19px] font-bold text-[#000000] group-hover:text-[#e60023] transition leading-[1.28] line-clamp-2 sm:line-clamp-3 break-words">
                       {item.title}
                     </h2>
                   </Link>
