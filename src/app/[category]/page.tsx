@@ -144,7 +144,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
                   )}
                   
                   <Link href={`/${item.category?.slug || category}/${item.id}`} className="block flex-1 min-w-0">
-                    <h2 className="text-[17px] sm:text-[19px] font-bold text-[#000000] group-hover:text-[#e60023] transition leading-snug line-clamp-2 sm:line-clamp-3 break-words">
+                    <h2 className="text-[17px] sm:text-[19px] font-bold text-[#000000] group-hover:text-[#e60023] transition leading-[1.28] line-clamp-2 sm:line-clamp-3 break-words">
                       {item.title}
                     </h2>
                   </Link>

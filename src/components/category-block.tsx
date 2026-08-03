@@ -92,7 +92,7 @@ export default function CategoryBlock({
                     </Link>
                   )}
                   <Link href={`/${slug}/${item.id}`} className="block pt-0.5 flex-1 min-w-0">
-                    <h4 className="text-[18px] sm:text-[18px] font-bold text-[#000000] group-hover:text-[#e60023] transition leading-snug line-clamp-2 break-words">
+                    <h4 className="text-[18px] sm:text-[18px] font-bold text-[#000000] group-hover:text-[#e60023] transition leading-[1.28] line-clamp-2 break-words">
                       {item.title}
                     </h4>
                   </Link>
@@ -118,11 +118,11 @@ export default function CategoryBlock({
                 </Link>
               )}
               <Link href={`/${slug}/${lead.id}`} className="block pt-0.5">
-                <h3 className="text-[21px] sm:text-[23px] font-bold text-[#000000] group-hover:text-[#e60023] transition leading-snug line-clamp-2 break-words">
+                <h3 className="text-[21px] sm:text-[23px] font-bold text-[#000000] group-hover:text-[#e60023] transition leading-[1.28] line-clamp-2 break-words">
                   {lead.title}
                 </h3>
               </Link>
-              <p className="text-sm sm:text-base text-gray-600 leading-relaxed line-clamp-2 font-normal">
+              <p className="text-sm sm:text-base text-gray-600 leading-[1.6] line-clamp-2 font-normal">
                 {getExcerpt(lead.content)}
               </p>
             </div>
@@ -144,7 +144,7 @@ export default function CategoryBlock({
                       />
                     </div>
                   )}
-                  <h4 className="text-[18px] sm:text-[18px] font-bold text-[#000000] group-hover:text-[#e60023] transition leading-snug line-clamp-2 flex-1 break-words">
+                  <h4 className="text-[18px] sm:text-[18px] font-bold text-[#000000] group-hover:text-[#e60023] transition leading-[1.28] line-clamp-2 flex-1 break-words">
                     {item.title}
                   </h4>
                 </Link>
