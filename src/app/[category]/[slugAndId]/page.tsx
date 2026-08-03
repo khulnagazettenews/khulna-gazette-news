@@ -283,20 +283,20 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
                     </h2>
                   </div>
 
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3.5 sm:gap-5">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-5">
                     {relatedNews.map((item) => (
-                      <div key={item.id} className="bg-white group space-y-1.5 sm:space-y-2">
+                      <div key={item.id} className="bg-white group flex flex-row sm:flex-col items-center sm:items-start gap-3 sm:gap-2 border-b border-gray-100 sm:border-b-0 pb-3 sm:pb-0 last:border-b-0">
                         {item.featuredImage ? (
-                          <Link href={`/${item.category?.slug || 'news'}/${item.id}`} className="block aspect-[16/10] overflow-hidden rounded bg-gray-100 mb-1.5 sm:mb-2">
+                          <Link href={`/${item.category?.slug || 'news'}/${item.id}`} className="block w-28 h-20 sm:w-full sm:h-auto sm:aspect-[16/10] shrink-0 overflow-hidden rounded bg-gray-100 mb-0 sm:mb-2">
                             <img src={item.featuredImage} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
                           </Link>
                         ) : (
-                          <div className="aspect-[16/10] w-full rounded bg-gray-100 flex items-center justify-center text-gray-400 text-xs font-bold mb-1.5 sm:mb-2">
+                          <div className="w-28 h-20 sm:w-full sm:h-auto sm:aspect-[16/10] shrink-0 rounded bg-gray-100 flex items-center justify-center text-gray-400 text-xs font-bold mb-0 sm:mb-2">
                             খুলনা গেজেট
                           </div>
                         )}
-                        <Link href={`/${item.category?.slug || 'news'}/${item.id}`}>
-                          <h5 className="text-[14px] sm:text-[18px] font-bold text-[#000000] group-hover:text-red-600 transition leading-snug line-clamp-2 sm:line-clamp-3 break-words">
+                        <Link href={`/${item.category?.slug || 'news'}/${item.id}`} className="block flex-1 min-w-0">
+                          <h5 className="text-[18px] sm:text-[18px] font-bold text-[#000000] group-hover:text-red-600 transition leading-snug line-clamp-2 sm:line-clamp-3 break-words">
                             {item.title}
                           </h5>
                         </Link>
