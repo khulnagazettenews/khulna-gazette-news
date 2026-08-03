@@ -32,13 +32,15 @@ body {
   margin: 0px;
   padding: 0px;
   overflow-x: hidden;
-  max-w: 100vw;
+  width: 100%;
+  max-width: 100vw;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
 }
 
 /* Global Responsive Image & Video Fluid Media Reset */
-img, video, canvas, svg {
+img, video, canvas, svg, iframe {
   max-width: 100%;
   height: auto;
 }

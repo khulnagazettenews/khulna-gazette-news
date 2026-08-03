@@ -104,6 +104,21 @@ export default function PublicHeaderClient({ categories, formattedDate }: Public
     setCurrentDate(getBengaliFullDateClient());
   }, []);
 
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileOpen]);
+
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
+
   // Defined Navigation Bar Items strictly matching khulnagazette.com order:
   // 1. বাংলাদেশ 2. খুলনাঞ্চল 3. খেলা 4. বিনোদন 5. রাজনীতি 6. আন্তর্জাতিক 7. অর্থনীতি 8. শিক্ষা 9. মুক্ত ভাবনা 10. ইসলাম ও জীবন 11. গেজেট এক্সক্লুসিভ
   const navOrderMap: Record<string, number> = {
@@ -402,7 +417,12 @@ export default function PublicHeaderClient({ categories, formattedDate }: Public
 
       {/* Mobile Drawer Navigation Overlay (Exact Match with khulnagazette.com Screenshot) */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-50 bg-black/60 flex justify-start animate-fadeIn">
+        <div 
+          className="fixed inset-0 z-50 bg-black/60 flex justify-start animate-fadeIn"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setMobileOpen(false);
+          }}
+        >
           {/* Main Slide-out Drawer Panel */}
           <div className="w-[82%] max-w-[340px] bg-white h-full overflow-y-auto shadow-2xl flex flex-col justify-start relative">
             

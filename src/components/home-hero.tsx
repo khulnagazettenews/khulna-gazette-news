@@ -31,20 +31,20 @@ export default function HomeHero({ news }: HomeHeroProps) {
   const gridNews = news.length > 1 ? news.slice(1, 13) : [];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5 sm:space-y-6">
       {/* 1. TOP HERO MAIN LEAD SECTION: Exact Match with User Reference Image */}
       {mainLead && (
-        <div className="bg-white rounded-xl sm:rounded-2xl p-3.5 sm:p-6 lg:p-8 border border-gray-100 shadow-md sm:shadow-lg shadow-gray-200/50">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6 lg:gap-8 items-center">
+        <div className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-6 lg:p-8 border border-gray-100 shadow-sm sm:shadow-lg shadow-gray-200/50">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-3.5 sm:gap-6 lg:gap-8 items-center">
           {/* Left Side: Large Red Heading + Description */}
-          <div className="order-2 md:order-1 md:col-span-5 flex flex-col justify-center space-y-2.5 sm:space-y-3.5 pt-1 md:pt-0">
+          <div className="order-2 md:order-1 md:col-span-5 flex flex-col justify-center space-y-2 sm:space-y-3.5 pt-1 md:pt-0">
             <Link href={`/${mainLead.category?.slug || 'news'}/${mainLead.id}`} className="group block">
               <h1 className="text-[21px] sm:text-[26px] lg:text-[34px] font-bold text-[#e60023] group-hover:text-red-700 transition leading-[1.25] sm:leading-[1.28] line-clamp-3">
                 ‘{mainLead.title.replace(/^[‘'“"]|[’'"”]$/g, '')}’
               </h1>
             </Link>
             {mainLead.content && (
-              <p className="text-[14px] sm:text-[16px] lg:text-[17px] text-[#222222] leading-[1.6] sm:leading-[1.7] font-normal line-clamp-4 sm:line-clamp-6">
+              <p className="text-[14px] sm:text-[16px] lg:text-[17px] text-[#222222] leading-[1.6] sm:leading-[1.7] font-normal line-clamp-3 sm:line-clamp-6">
                 {getExcerpt(mainLead.content)}...
               </p>
             )}
@@ -55,16 +55,16 @@ export default function HomeHero({ news }: HomeHeroProps) {
             {mainLead.featuredImage ? (
               <Link
                 href={`/${mainLead.category?.slug || 'news'}/${mainLead.id}`}
-                className="block aspect-[16/10] overflow-hidden rounded-xl bg-gray-100 shadow-xs"
+                className="block aspect-[16/10] overflow-hidden rounded-lg sm:rounded-xl bg-gray-100 shadow-2xs"
               >
                 <img
                   src={mainLead.featuredImage}
                   alt={mainLead.title}
-                  className="w-full h-full object-cover group-hover:scale-[1.01] transition duration-300 rounded-xl"
+                  className="w-full h-full object-cover group-hover:scale-[1.01] transition duration-300 rounded-lg sm:rounded-xl"
                 />
               </Link>
             ) : (
-              <div className="w-full aspect-[16/10] bg-gray-100 rounded-xl flex items-center justify-center text-gray-400 font-bold text-base">
+              <div className="w-full aspect-[16/10] bg-gray-100 rounded-lg sm:rounded-xl flex items-center justify-center text-gray-400 font-bold text-base">
                 খুলনা গেজেট
               </div>
             )}
@@ -73,22 +73,22 @@ export default function HomeHero({ news }: HomeHeroProps) {
         </div>
       )}
 
-      {/* 2. GRID OF NEWS CARDS BELOW TOP HERO (2-cols on mobile, 3-cols on tablet/desktop) */}
+      {/* 2. GRID OF NEWS CARDS BELOW TOP HERO (1-col on mobile list, 3-cols on desktop grid) */}
       {gridNews.length > 0 && (
         <div className="pt-1">
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-3.5 gap-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-x-4 sm:gap-y-5">
             {gridNews.map((story, index) => {
               const categorySlug = story.category?.slug || 'news';
               const isFirstRow = index < 3;
               return (
                 <div 
                   key={story.id} 
-                  className={`group space-y-1.5 ${!isFirstRow ? 'sm:border-t sm:border-gray-200/80 sm:pt-3.5' : ''}`}
+                  className={`group flex flex-row sm:flex-col items-center sm:items-start gap-2.5 sm:gap-1.5 border-b border-gray-100 sm:border-b-0 pb-2.5 sm:pb-0 last:border-b-0 ${!isFirstRow ? 'sm:border-t sm:border-gray-200/80 sm:pt-3.5' : ''}`}
                 >
                   {story.featuredImage ? (
                     <Link
                       href={`/${categorySlug}/${story.id}`}
-                      className="block aspect-[16/10] overflow-hidden rounded bg-gray-100"
+                      className="block w-24 h-16 sm:w-full sm:h-auto sm:aspect-[16/10] shrink-0 overflow-hidden rounded bg-gray-100"
                     >
                       <img
                         src={story.featuredImage}
@@ -97,12 +97,12 @@ export default function HomeHero({ news }: HomeHeroProps) {
                       />
                     </Link>
                   ) : (
-                    <div className="w-full aspect-[16/10] bg-gray-100 rounded flex items-center justify-center text-gray-400 font-bold text-xs">
+                    <div className="w-24 h-16 sm:w-full sm:h-auto sm:aspect-[16/10] shrink-0 bg-gray-100 rounded flex items-center justify-center text-gray-400 font-bold text-xs">
                       খুলনা গেজেট
                     </div>
                   )}
-                  <Link href={`/${categorySlug}/${story.id}`} className="block pt-0.5">
-                    <h3 className="text-[16px] sm:text-[17px] lg:text-[18px] font-bold text-[#000000] group-hover:text-red-600 transition leading-[1.25] line-clamp-2">
+                  <Link href={`/${categorySlug}/${story.id}`} className="block pt-0.5 flex-1 min-w-0">
+                    <h3 className="text-[16px] sm:text-[17px] lg:text-[18px] font-bold text-[#000000] group-hover:text-red-600 transition leading-snug sm:leading-[1.25] line-clamp-2 break-words">
                       {story.title}
                     </h3>
                   </Link>

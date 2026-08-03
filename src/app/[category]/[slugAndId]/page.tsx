@@ -175,30 +175,30 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
           {/* Top Double Line Divider */}
           <div className="w-full h-1.5 border-y border-gray-200/80 bg-gray-50/50 mb-2"></div>
 
-          {/* Breadcrumb Bar (Even Bigger Font & Icon Size) */}
-          <div className="bg-[#eeeef8] px-5 py-3 rounded-md text-[18px] sm:text-[20px] text-[#222233] flex items-center gap-2.5 select-none mb-4 font-bold border border-[#dfdfef]">
-            <Link href="/" className="hover:text-red-600 flex items-center gap-1.5">
-              <i className="fa fa-home text-gray-900 text-[20px] sm:text-[22px]"></i>
+          {/* Breadcrumb Bar */}
+          <div className="bg-[#eeeef8] px-3.5 sm:px-5 py-2.5 sm:py-3 rounded-md text-[15px] sm:text-[18px] text-[#222233] flex flex-wrap items-center gap-2 select-none mb-3 sm:mb-4 font-bold border border-[#dfdfef]">
+            <Link href="/" className="hover:text-red-600 flex items-center gap-1">
+              <i className="fa fa-home text-gray-900 text-[18px] sm:text-[20px]"></i>
             </Link>
-            <span className="text-gray-700 font-bold text-[20px] sm:text-[22px]">»</span>
+            <span className="text-gray-700 font-bold text-[18px] sm:text-[20px]">»</span>
             <Link href={`/${news.category?.slug || 'news'}`} className="hover:text-red-600 text-gray-900 font-bold">
               {news.category?.name || 'সংবাদ'}
             </Link>
             {news.subCategory && (
               <>
-                <span className="text-gray-700 font-bold text-[20px] sm:text-[22px]">,</span>
+                <span className="text-gray-700 font-bold text-[18px] sm:text-[20px]">,</span>
                 <span className="text-gray-900 font-bold">{news.subCategory.name}</span>
               </>
             )}
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
             {/* Left Column: Article Details + Share Bar + Content + More News Grid */}
             <div className="lg:col-span-8 space-y-4">
               <div className="space-y-2">
                 
                 {/* Title */}
-                <h1 className="text-[26px] sm:text-[30px] font-bold text-[#000000] leading-[1.3] tracking-normal mb-1">
+                <h1 className="text-[24px] sm:text-[28px] lg:text-[32px] font-bold text-[#000000] leading-[1.3] tracking-normal mb-1.5 break-words">
                   {news.title}
                 </h1>
 
@@ -208,8 +208,8 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
                 </h2>
 
                 {/* Author & Timestamp + Social Share Bar */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between border-y border-gray-200/90 py-1.5 text-[13px] text-[#444444] gap-2 my-2 font-normal">
-                  <div className="flex flex-wrap items-center gap-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between border-y border-gray-200/90 py-1.5 text-[13px] text-[#444444] gap-2.5 my-2 font-normal">
+                  <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
                     <span className="flex items-center gap-1 text-[#222222]">
                       <i className="fa fa-user text-black"></i>
                       <span>{news.reporterName || news.author?.name || 'খুলনা গেজেট'}</span>
@@ -234,7 +234,7 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
 
                 {/* Featured Image */}
                 {news.featuredImage && (
-                  <div className="space-y-1.5 my-4">
+                  <div className="space-y-1.5 my-3 sm:my-4">
                     <div className="w-full rounded-none overflow-hidden relative group bg-gray-50">
                       <img
                         src={news.featuredImage}
@@ -243,7 +243,7 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
                       />
                     </div>
                     {(news.imageCaption || news.photoCredit) && (
-                      <div className="text-[13px] text-gray-600 leading-tight flex justify-between gap-4 px-1 font-light">
+                      <div className="text-[12px] sm:text-[13px] text-gray-600 leading-tight flex justify-between gap-4 px-1 font-light">
                         <span>{news.imageCaption}</span>
                         {news.photoCredit && <span className="font-light shrink-0">ছবি: {news.photoCredit}</span>}
                       </div>
@@ -253,20 +253,20 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
 
                 {/* Article Main Content */}
                 <div 
-                  className="prose max-w-none text-[#111111] font-normal leading-[1.8] text-[18px] sm:text-[19px] [&_p]:mb-5 [&_p]:text-[#111111] [&_p]:leading-[1.8] [&_p]:text-[18px] sm:[&_p]:text-[19px] [&_p]:font-normal [&_strong]:font-bold [&_b]:font-bold [&_img]:rounded [&_img]:my-4"
+                  className="prose max-w-none text-[#111111] font-normal leading-[1.8] text-[18px] sm:text-[19px] lg:text-[20px] break-words [&_p]:mb-4 sm:[&_p]:mb-5 [&_p]:text-[#111111] [&_p]:leading-[1.8] [&_p]:text-[18px] sm:[&_p]:text-[19px] lg:[&_p]:text-[20px] [&_p]:font-normal [&_strong]:font-bold [&_b]:font-bold [&_img]:rounded [&_img]:my-3 sm:[&_img]:my-4 [&_iframe]:w-full [&_iframe]:aspect-video"
                   dangerouslySetInnerHTML={{ __html: news.content }}
                 />
 
                 {/* Article Bottom Sign-off */}
-                <div className="pt-2 text-[16px] font-normal text-[#333333] italic">
+                <div className="pt-2 text-[15px] sm:text-[16px] font-normal text-[#333333] italic">
                   খুলনা গেজেট/এএজে
                 </div>
 
                 {/* Tags */}
                 {news.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-2 pt-4 border-t border-gray-150 mt-6">
+                  <div className="flex flex-wrap gap-1.5 sm:gap-2 pt-3 sm:pt-4 border-t border-gray-150 mt-5 sm:mt-6">
                     {news.tags.map((t) => (
-                      <span key={t.id} className="text-xs bg-gray-100 text-gray-800 px-3 py-1 rounded border border-gray-200 font-bold">
+                      <span key={t.id} className="text-[11px] sm:text-xs bg-gray-100 text-gray-800 px-2.5 py-0.5 sm:py-1 rounded border border-gray-200 font-bold">
                         # {t.name}
                       </span>
                     ))}
@@ -276,27 +276,27 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
 
               {/* "আরও সংবাদ" (More News) Grid Section */}
               {relatedNews.length > 0 && (
-                <div className="space-y-4 pt-4 mt-8">
+                <div className="space-y-3 sm:space-y-4 pt-3 sm:pt-4 mt-6 sm:mt-8">
                   <div className="border-b-2 border-red-600 pb-1">
-                    <h2 className="text-[22px] sm:text-[24px] font-bold text-[#000000]">
+                    <h2 className="text-[20px] sm:text-[24px] font-bold text-[#000000]">
                       আরও সংবাদ
                     </h2>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3.5 sm:gap-5">
                     {relatedNews.map((item) => (
-                      <div key={item.id} className="bg-white group space-y-2">
+                      <div key={item.id} className="bg-white group space-y-1.5 sm:space-y-2">
                         {item.featuredImage ? (
-                          <Link href={`/${item.category?.slug || 'news'}/${item.id}`} className="block aspect-[16/10] overflow-hidden rounded bg-gray-100 mb-2">
+                          <Link href={`/${item.category?.slug || 'news'}/${item.id}`} className="block aspect-[16/10] overflow-hidden rounded bg-gray-100 mb-1.5 sm:mb-2">
                             <img src={item.featuredImage} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
                           </Link>
                         ) : (
-                          <div className="aspect-[16/10] w-full rounded bg-gray-100 flex items-center justify-center text-gray-400 text-xs font-bold mb-2">
+                          <div className="aspect-[16/10] w-full rounded bg-gray-100 flex items-center justify-center text-gray-400 text-xs font-bold mb-1.5 sm:mb-2">
                             খুলনা গেজেট
                           </div>
                         )}
                         <Link href={`/${item.category?.slug || 'news'}/${item.id}`}>
-                          <h5 className="text-[17px] sm:text-[18px] font-bold text-[#000000] group-hover:text-red-600 transition leading-snug line-clamp-3">
+                          <h5 className="text-[14px] sm:text-[18px] font-bold text-[#000000] group-hover:text-red-600 transition leading-snug line-clamp-2 sm:line-clamp-3 break-words">
                             {item.title}
                           </h5>
                         </Link>

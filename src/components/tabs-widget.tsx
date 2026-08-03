@@ -85,7 +85,7 @@ export default function TabsWidget({ latest, popular }: TabsWidgetProps) {
               <div className="space-y-1 flex-1 min-w-0">
                 <Link
                   href={`/${item.category?.slug || 'news'}/${item.id}`}
-                  className="text-[15px] sm:text-[17px] font-bold text-[#000000] group-hover:text-[#e60023] transition leading-[1.3] line-clamp-2 block"
+                  className="text-[17px] sm:text-[18px] font-bold text-[#000000] group-hover:text-[#e60023] transition leading-snug line-clamp-2 block break-words"
                 >
                   {item.title}
                 </Link>
