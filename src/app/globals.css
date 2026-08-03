@@ -103,17 +103,17 @@ h5 {
 /* Article Body Typography */
 .prose {
   color: #000000;
-  font-family: 'SolaimanLipi', 'Bangla', sans-serif;
+  font-family: 'Bangla', sans-serif;
   font-size: 21px;
   font-weight: 300;
-  line-height: 1.65;
+  line-height: 1.6;
   letter-spacing: -0.2px;
   word-spacing: -1px;
 }
 
-.prose h2 {
+.prose h1, .prose h2, .prose h3, .prose h4 {
   font-size: 26px;
-  font-weight: 300;
+  font-weight: 700;
   margin-top: 1.25rem;
   margin-bottom: 0.5rem;
   color: #000000;
@@ -121,8 +121,8 @@ h5 {
 }
 
 .prose p {
-  margin-bottom: 1.25rem;
-  line-height: 1.65;
+  margin-bottom: 1rem;
+  line-height: 1.6;
   font-size: 21px;
   color: #000000;
   font-weight: 300;
