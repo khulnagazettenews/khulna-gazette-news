@@ -198,17 +198,17 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
               <div className="space-y-2">
                 
                 {/* Title */}
-                <h1 className="text-[24px] sm:text-[28px] lg:text-[32px] font-bold text-[#000000] leading-[1.3] tracking-normal mb-1.5 break-words">
+                <h1 className="text-[26px] sm:text-[30px] lg:text-[36px] font-bold text-[#000000] leading-[1.3] tracking-normal mb-2 break-words">
                   {news.title}
                 </h1>
 
                 {/* Reporter Tagline */}
-                <h2 className="text-[15px] font-normal text-[#222222] mb-2">
+                <h2 className="text-[16px] sm:text-[17px] font-normal text-[#222222] mb-2">
                   {news.reporterName || news.subtitle || 'নিজস্ব প্রতিবেদক, খুলনা গেজেট'}
                 </h2>
 
                 {/* Author & Timestamp + Social Share Bar */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between border-y border-gray-200/90 py-1.5 text-[13px] text-[#444444] gap-2.5 my-2 font-normal">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between border-y border-gray-200/90 py-2 text-[14px] text-[#444444] gap-2.5 my-2 font-normal">
                   <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
                     <span className="flex items-center gap-1 text-[#222222]">
                       <i className="fa fa-user text-black"></i>
@@ -243,7 +243,7 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
                       />
                     </div>
                     {(news.imageCaption || news.photoCredit) && (
-                      <div className="text-[12px] sm:text-[13px] text-gray-600 leading-tight flex justify-between gap-4 px-1 font-light">
+                      <div className="text-[13px] sm:text-[14px] text-gray-600 leading-tight flex justify-between gap-4 px-1 font-light">
                         <span>{news.imageCaption}</span>
                         {news.photoCredit && <span className="font-light shrink-0">ছবি: {news.photoCredit}</span>}
                       </div>
@@ -253,7 +253,7 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
 
                 {/* Article Main Content */}
                 <div 
-                  className="prose max-w-none text-[#111111] font-normal leading-[1.8] text-[18px] sm:text-[19px] lg:text-[20px] break-words [&_p]:mb-4 sm:[&_p]:mb-5 [&_p]:text-[#111111] [&_p]:leading-[1.8] [&_p]:text-[18px] sm:[&_p]:text-[19px] lg:[&_p]:text-[20px] [&_p]:font-normal [&_strong]:font-bold [&_b]:font-bold [&_img]:rounded [&_img]:my-3 sm:[&_img]:my-4 [&_iframe]:w-full [&_iframe]:aspect-video"
+                  className="prose max-w-none text-[#111111] font-normal leading-[1.85] text-[20px] sm:text-[21px] lg:text-[22px] break-words [&_p]:mb-4 sm:[&_p]:mb-5 [&_p]:text-[#111111] [&_p]:leading-[1.85] [&_p]:text-[20px] sm:[&_p]:text-[21px] lg:[&_p]:text-[22px] [&_p]:font-normal [&_strong]:font-bold [&_b]:font-bold [&_img]:rounded [&_img]:my-3 sm:[&_img]:my-4 [&_iframe]:w-full [&_iframe]:aspect-video"
                   dangerouslySetInnerHTML={{ __html: news.content }}
                 />
 

@@ -67,7 +67,7 @@ export default function TabsWidget({ latest, popular }: TabsWidgetProps) {
             <div key={item.id} className="py-3 flex items-start gap-3.5 group first:pt-1 last:pb-1">
               <Link
                 href={`/${item.category?.slug || 'news'}/${item.id}`}
-                className="w-24 h-16 shrink-0 overflow-hidden rounded bg-gray-100 block relative shadow-2xs"
+                className="w-28 h-20 shrink-0 overflow-hidden rounded bg-gray-100 block relative shadow-2xs"
               >
                 {item.featuredImage ? (
                   <img
@@ -85,7 +85,7 @@ export default function TabsWidget({ latest, popular }: TabsWidgetProps) {
               <div className="space-y-1 flex-1 min-w-0">
                 <Link
                   href={`/${item.category?.slug || 'news'}/${item.id}`}
-                  className="text-[17px] sm:text-[18px] font-bold text-[#000000] group-hover:text-[#e60023] transition leading-snug line-clamp-2 block break-words"
+                  className="text-[18px] sm:text-[18px] font-bold text-[#000000] group-hover:text-[#e60023] transition leading-snug line-clamp-2 block break-words"
                 >
                   {item.title}
                 </Link>
