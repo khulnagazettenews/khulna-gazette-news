@@ -275,7 +275,6 @@ export default function JobApplicationClient() {
               <select
                 value={dobDay}
                 onChange={(e) => setDobDay(e.target.value)}
-                required
                 className="w-full rounded-md border border-gray-300 px-3 py-2.5 text-base outline-none focus:border-gray-500 bg-white"
               >
                 <option value="">দিন</option>
@@ -287,7 +286,6 @@ export default function JobApplicationClient() {
               <select
                 value={dobMonth}
                 onChange={(e) => setDobMonth(e.target.value)}
-                required
                 className="w-full rounded-md border border-gray-300 px-3 py-2.5 text-base outline-none focus:border-gray-500 bg-white"
               >
                 <option value="">মাস</option>
@@ -299,7 +297,6 @@ export default function JobApplicationClient() {
               <select
                 value={dobYear}
                 onChange={(e) => setDobYear(e.target.value)}
-                required
                 className="w-full rounded-md border border-gray-300 px-3 py-2.5 text-base outline-none focus:border-gray-500 bg-white"
               >
                 <option value="">বছর</option>
@@ -666,13 +663,28 @@ export default function JobApplicationClient() {
             />
           </div>
 
+          {/* Error alert if any */}
+          {errorMsg && (
+            <div className="p-4 bg-red-50 border border-red-200 text-red-700 text-sm font-semibold rounded-md">
+              {errorMsg}
+            </div>
+          )}
+
           {/* Submit Button */}
           <div className="flex justify-end pt-3">
             <button
               type="submit"
-              className="w-full sm:w-auto bg-[#e60023] hover:bg-red-700 text-white font-bold px-8 py-3 rounded-md transition text-base shadow-sm cursor-pointer"
+              disabled={loading}
+              className="w-full sm:w-auto bg-[#e60023] hover:bg-red-700 disabled:bg-gray-400 text-white font-bold px-8 py-3 rounded-md transition text-base shadow-sm cursor-pointer flex items-center justify-center gap-2"
             >
-              জমা/সাবমিট
+              {loading ? (
+                <>
+                  <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                  জমা হচ্ছে...
+                </>
+              ) : (
+                'জমা/সাবমিট'
+              )}
             </button>
           </div>
 
