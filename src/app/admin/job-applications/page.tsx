@@ -12,7 +12,7 @@ import {
   UserCheck, 
   Phone, 
   Mail, 
-  Facebook, 
+  Globe, 
   FileText, 
   MapPin, 
   GraduationCap, 
@@ -318,7 +318,7 @@ export default function AdminJobApplicationsPage() {
                 <div>
                   <span className="text-xs text-slate-500 font-bold block">ফেসবুক প্রোফাইল</span>
                   <a href={selectedApp.facebookLink} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline text-xs flex items-center gap-1 font-semibold">
-                    <Facebook className="w-3.5 h-3.5" /> প্রোফাইল দেখুন
+                    <Globe className="w-3.5 h-3.5" /> প্রোফাইল দেখুন
                   </a>
                 </div>
               )}
