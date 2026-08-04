@@ -137,11 +137,39 @@ export default function JobApplicationClient() {
 
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({});
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setErrorMsg('');
+    setFieldErrors({});
+
+    // Field-level Validation
+    const newErrors: { [key: string]: string } = {};
+    if (!position) {
+      newErrors.position = 'অনুগ্রহ করে আবেদনের পদ নির্বাচন করুন *';
+    }
+    if (!fullName.trim()) {
+      newErrors.fullName = 'অনুগ্রহ করে আপনার পুরো নাম লিখুন *';
+    }
+    if (!mobile.trim()) {
+      newErrors.mobile = 'অনুগ্রহ করে মোবাইল নম্বর প্রদান করুন *';
+    } else if (!/^(?:\+88)?01[3-9]\d{8}$/.test(mobile.trim())) {
+      newErrors.mobile = 'অনুগ্রহ করে ১১ ডিজিটের সঠিক মোবাইল নম্বর লিখুন (যেমন: 01712345678)';
+    }
+    if (!email.trim()) {
+      newErrors.email = 'অনুগ্রহ করে ই-মেইল ঠিকানা প্রদান করুন *';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      newErrors.email = 'অনুগ্রহ করে সঠিক ই-মেইল ঠিকানা লিখুন (যেমন: name@example.com)';
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setFieldErrors(newErrors);
+      setErrorMsg('ফর্মে কিছু তথ্য অসম্পূর্ণ বা ভুল রয়েছে। অনুগ্রহ করে লাল চিহ্নিত ঘরগুলো সঠিকভাবে পূরণ করুন।');
+      setLoading(false);
+      return;
+    }
 
     try {
       const dobFormatted = (dobDay && dobMonth && dobYear) ? `${dobDay} ${dobMonth}, ${dobYear}` : '';
@@ -224,8 +252,9 @@ export default function JobApplicationClient() {
             <select
               value={position}
               onChange={(e) => setPosition(e.target.value)}
-              required
-              className="w-full rounded-md border border-gray-300 px-3.5 py-2.5 text-base outline-none focus:border-gray-500 bg-white"
+              className={`w-full rounded-md border px-3.5 py-2.5 text-base outline-none bg-white transition ${
+                fieldErrors.position ? 'border-red-500 bg-red-50/20' : 'border-gray-300 focus:border-gray-500'
+              }`}
             >
               <option value="">পদ নির্বাচন করুন *</option>
               <option value="সহ-সম্পাদক / সাব এডিটর">সহ-সম্পাদক / সাব এডিটর (Sub Editor)</option>
@@ -252,24 +281,35 @@ export default function JobApplicationClient() {
               <option value="শিক্ষানবিশ / ইন্টার্নশিপ">শিক্ষানবিশ / ইন্টার্নশিপ (Intern)</option>
               <option value="অন্যান্য">অন্যান্য (Other)</option>
             </select>
+            {fieldErrors.position && (
+              <p className="text-xs text-red-600 mt-1 font-semibold flex items-center gap-1">
+                <span>⚠️</span> {fieldErrors.position}
+              </p>
+            )}
           </div>
 
           {/* Full Name */}
           <div>
             <input
               type="text"
-              required
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               placeholder="আপনার নাম: *"
-              className="w-full rounded-md border border-gray-300 px-3.5 py-2.5 text-base outline-none focus:border-gray-500"
+              className={`w-full rounded-md border px-3.5 py-2.5 text-base outline-none transition ${
+                fieldErrors.fullName ? 'border-red-500 bg-red-50/20' : 'border-gray-300 focus:border-gray-500'
+              }`}
             />
+            {fieldErrors.fullName && (
+              <p className="text-xs text-red-600 mt-1 font-semibold flex items-center gap-1">
+                <span>⚠️</span> {fieldErrors.fullName}
+              </p>
+            )}
           </div>
 
           {/* Date of Birth in 100% Bengali */}
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
             <span className="shrink-0 text-base font-medium text-gray-700 sm:min-w-[7rem]">
-              জন্মতারিখ: *
+              জন্মতারিখ:
             </span>
             <div className="grid w-full flex-1 grid-cols-3 gap-2.5">
               <select
@@ -311,24 +351,36 @@ export default function JobApplicationClient() {
           <div>
             <input
               type="tel"
-              required
               value={mobile}
               onChange={(e) => setMobile(e.target.value)}
               placeholder="মোবাইল নম্বর: *"
-              className="w-full rounded-md border border-gray-300 px-3.5 py-2.5 text-base outline-none focus:border-gray-500"
+              className={`w-full rounded-md border px-3.5 py-2.5 text-base outline-none transition ${
+                fieldErrors.mobile ? 'border-red-500 bg-red-50/20' : 'border-gray-300 focus:border-gray-500'
+              }`}
             />
+            {fieldErrors.mobile && (
+              <p className="text-xs text-red-600 mt-1 font-semibold flex items-center gap-1">
+                <span>⚠️</span> {fieldErrors.mobile}
+              </p>
+            )}
           </div>
 
           {/* Email Address */}
           <div>
             <input
               type="email"
-              required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="ই-মেইল ঠিকানা *"
-              className="w-full rounded-md border border-gray-300 px-3.5 py-2.5 text-base outline-none focus:border-gray-500"
+              placeholder="ই-মেইল ঠিকানা: *"
+              className={`w-full rounded-md border px-3.5 py-2.5 text-base outline-none transition ${
+                fieldErrors.email ? 'border-red-500 bg-red-50/20' : 'border-gray-300 focus:border-gray-500'
+              }`}
             />
+            {fieldErrors.email && (
+              <p className="text-xs text-red-600 mt-1 font-semibold flex items-center gap-1">
+                <span>⚠️</span> {fieldErrors.email}
+              </p>
+            )}
           </div>
 
           {/* Facebook Link */}
