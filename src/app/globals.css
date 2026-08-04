@@ -284,3 +284,21 @@ h5 {
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #64748b;
 }
+
+.kg-tab-scrollbar::-webkit-scrollbar {
+  width: 10px;
+}
+
+.kg-tab-scrollbar::-webkit-scrollbar-track {
+  background: #f8fafc;
+  border-left: 1px solid #e2e8f0;
+}
+
+.kg-tab-scrollbar::-webkit-scrollbar-thumb {
+  background: #64748b;
+  border-radius: 4px;
+}
+
+.kg-tab-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}

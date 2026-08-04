@@ -22,85 +22,72 @@ export default function TabsWidget({ latest, popular }: TabsWidgetProps) {
 
   const list = activeTab === 'popular' ? popular : latest;
 
-  const getTimeAgo = (dateVal?: string | Date | null) => {
-    if (!dateVal) return '';
-    const date = new Date(dateVal);
-    const diffMin = Math.floor((Date.now() - date.getTime()) / (1000 * 60));
-    if (diffMin < 60) return `${diffMin} মিনিট আগে`;
-    const diffHours = Math.floor(diffMin / 60);
-    if (diffHours < 24) return `${diffHours} ঘণ্টা আগে`;
-    return date.toLocaleDateString('bn-BD', { month: 'short', day: 'numeric' });
-  };
-
   return (
-    <div className="bg-white border border-gray-200 rounded overflow-hidden shadow-xs">
-      {/* 2 Tabs Header in Dark Slate / Black matching khulnagazette.com */}
-      <div className="grid grid-cols-2 bg-[#111827] text-white text-[16px] sm:text-[18px] font-bold text-center select-none border-b border-gray-800">
+    <div className="bg-white border border-gray-300 rounded-none shadow-2xs font-sans overflow-hidden">
+      {/* 2 Tabs Header: 100% Exact Match with khulnagazette.com reference screenshot */}
+      <div className="grid grid-cols-2 bg-[#2b333e] text-white select-none border-b border-gray-300">
         <button
+          type="button"
           onClick={() => setActiveTab('latest')}
-          className={`py-3 transition flex items-center justify-center gap-1.5 cursor-pointer ${
+          className={`py-2.5 px-3 text-[17px] sm:text-[18px] font-bold text-center tracking-tight transition cursor-pointer ${
             activeTab === 'latest'
-              ? 'bg-[#1f2937] text-white border-b-3 border-[#e60023] font-bold'
-              : 'text-gray-300 hover:text-white hover:bg-gray-800'
+              ? 'bg-[#000000] text-white'
+              : 'bg-[#2b333e] text-[#d1d5db] hover:text-white hover:bg-[#232a34]'
           }`}
         >
-          <span>সর্বশেষ</span>
+          সর্বশেষ
         </button>
         <button
+          type="button"
           onClick={() => setActiveTab('popular')}
-          className={`py-3 transition border-l border-gray-800 flex items-center justify-center gap-1.5 cursor-pointer ${
+          className={`py-2.5 px-3 text-[17px] sm:text-[18px] font-bold text-center tracking-tight transition border-l border-gray-700 cursor-pointer ${
             activeTab === 'popular'
-              ? 'bg-[#1f2937] text-white border-b-3 border-[#e60023] font-bold'
-              : 'text-gray-300 hover:text-white hover:bg-gray-800'
+              ? 'bg-[#000000] text-white'
+              : 'bg-[#2b333e] text-[#d1d5db] hover:text-white hover:bg-[#232a34]'
           }`}
         >
-          <span>সর্বাধিক পঠিত</span>
+          সর্বাধিক পঠিত
         </button>
       </div>
 
-      {/* List Items Container matching khulnagazette.com exact height & scrollbar */}
-      <div className="divide-y divide-gray-200 p-3 max-h-[390px] overflow-y-auto custom-scrollbar">
+      {/* List Items Container matching exact scrollbar & spacing from screenshot */}
+      <div className="max-h-[390px] overflow-y-auto kg-tab-scrollbar bg-white">
         {list.length === 0 ? (
-          <div className="text-center py-6 text-sm text-gray-400 font-medium">কোনো খবর পাওয়া যায়নি।</div>
+          <div className="text-center py-8 text-sm text-gray-400 font-medium">কোনো খবর পাওয়া যায়নি।</div>
         ) : (
-          list.slice(0, 10).map((item) => (
-            <div key={item.id} className="py-3 flex items-start gap-3.5 group first:pt-1 last:pb-1">
-              <Link
-                href={`/${item.category?.slug || 'news'}/${item.id}`}
-                className="w-28 h-20 shrink-0 overflow-hidden rounded bg-gray-100 block relative shadow-2xs"
-              >
-                {item.featuredImage ? (
-                  <img
-                    src={item.featuredImage}
-                    alt={item.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gray-200 flex items-center justify-center text-[10px] text-gray-500 font-bold">
-                    খুলনা গেজেট
-                  </div>
-                )}
-              </Link>
-
-              <div className="space-y-1 flex-1 min-w-0">
+          <div className="divide-y divide-gray-200/90">
+            {list.slice(0, 15).map((item) => (
+              <div key={item.id} className="p-3 flex items-start gap-3 group hover:bg-slate-50/60 transition">
+                {/* Left Thumbnail Image */}
                 <Link
                   href={`/${item.category?.slug || 'news'}/${item.id}`}
-                  className="text-[18px] sm:text-[18px] font-bold text-[#000000] group-hover:text-[#e60023] transition leading-[1.28] line-clamp-2 block break-words"
+                  className="w-[110px] sm:w-[120px] h-[70px] sm:h-[75px] shrink-0 overflow-hidden bg-gray-100 block relative border border-gray-100"
+                >
+                  {item.featuredImage ? (
+                    <img
+                      src={item.featuredImage}
+                      alt={item.title}
+                      className="w-full h-full object-cover group-hover:scale-[1.03] transition duration-300"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gray-200 flex items-center justify-center text-[10px] text-gray-500 font-bold">
+                      খুলনা গেজেট
+                    </div>
+                  )}
+                </Link>
+
+                {/* Right Title Text (Exact Match with user screenshot) */}
+                <Link
+                  href={`/${item.category?.slug || 'news'}/${item.id}`}
+                  className="text-[16px] sm:text-[17px] font-bold text-[#111111] group-hover:text-[#e60023] transition leading-[1.3] line-clamp-3 block flex-1 font-sans pt-0.5"
                 >
                   {item.title}
                 </Link>
-                {item.publishedAt && (
-                  <span className="text-[13px] text-gray-500 block font-medium">
-                    {getTimeAgo(item.publishedAt)}
-                  </span>
-                )}
               </div>
-            </div>
-          ))
+            ))}
+          </div>
         )}
       </div>
     </div>
   );
 }
-
-
