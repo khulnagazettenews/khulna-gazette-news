@@ -16,7 +16,8 @@ import {
   Image as ImageIcon,
   User as UserIcon,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Star
 } from 'lucide-react';
 
 interface NewsItem {
@@ -72,6 +73,37 @@ export default function NewsManagementList() {
     e.preventDefault();
     setPage(1);
     fetchNewsList();
+  };
+
+  const handleSetMainLead = async (newsItem: NewsItem) => {
+    if (!confirm(`"${newsItem.title}"-সংবাদটিকে হোমপেজের মেইন লিড (MAIN LEAD) হিসেবে সেট করতে চান?`)) {
+      return;
+    }
+    try {
+      const resFetch = await fetch('/api/reorder?category=top_news');
+      const dataFetch = await resFetch.json();
+      const currentList: NewsItem[] = dataFetch.news || [];
+
+      const filtered = currentList.filter((n) => n.id !== newsItem.id);
+      const updatedNewsIds = [newsItem.id, ...filtered.map((n) => n.id)];
+
+      const resSave = await fetch('/api/reorder', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          category: 'top_news',
+          newsIds: updatedNewsIds,
+        }),
+      });
+
+      if (resSave.ok) {
+        alert(`"${newsItem.title}" সফলভাবে হোমপেজের মেইন লিড (MAIN LEAD) হিসেবে সেট করা হয়েছে!`);
+      } else {
+        alert('মেইন লিড সেট করতে সমস্যা হয়েছে');
+      }
+    } catch (err) {
+      alert('সার্ভারে সমস্যা হয়েছে');
+    }
   };
 
   const handleDelete = async (id: string) => {
@@ -300,14 +332,25 @@ export default function NewsManagementList() {
                     <td className="px-6 py-3.5 text-right">
                       <div className="flex items-center justify-end gap-1.5">
                         {item.status === 'PUBLISHED' && (
-                          <Link
-                            href={`/${item.category?.slug || 'news'}/${item.id}`}
-                            target="_blank"
-                            className="p-1.5 text-slate-500 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition"
-                            title="ওয়েবসাইটে দেখুন"
-                          >
-                            <ExternalLink size={15} />
-                          </Link>
+                          <>
+                            <button
+                              type="button"
+                              onClick={() => handleSetMainLead(item)}
+                              className="px-2 py-1 text-[11px] font-bold text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-lg transition flex items-center gap-1 cursor-pointer"
+                              title="হোমপেজের মেইন লিড (MAIN LEAD) হিসেবে সেট করুন"
+                            >
+                              <Star size={12} className="fill-amber-500 text-amber-500" />
+                              <span>মেইন লিড</span>
+                            </button>
+                            <Link
+                              href={`/${item.category?.slug || 'news'}/${item.id}`}
+                              target="_blank"
+                              className="p-1.5 text-slate-500 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition"
+                              title="ওয়েবসাইটে দেখুন"
+                            >
+                              <ExternalLink size={15} />
+                            </Link>
+                          </>
                         )}
                         <Link
                           href={`/admin/news/${item.id}/edit`}

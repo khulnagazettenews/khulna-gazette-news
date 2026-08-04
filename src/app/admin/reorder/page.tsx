@@ -86,10 +86,10 @@ export default function AdminReorderPage() {
     setNewsList(updated);
   };
 
-  const makeCenterLead = (index: number) => {
-    // Center Lead is position 3 (index 2)
-    if (index === 2) return;
-    moveItem(index, 2);
+  const makeMainLead = (index: number) => {
+    // Main Lead is Position #1 (index 0)
+    if (index === 0) return;
+    moveItem(index, 0);
   };
 
   const removeItem = (index: number) => {
@@ -103,7 +103,7 @@ export default function AdminReorderPage() {
       alert('এই খবরটি ইতিমধ্যে গ্রিডে রয়েছে');
       return;
     }
-    setNewsList([...newsList, item]);
+    setNewsList([item, ...newsList]);
     setModalOpen(false);
   };
 
@@ -163,7 +163,9 @@ export default function AdminReorderPage() {
   );
 
   // Render a Single Grid Card Component
-  const renderGridCard = (item: NewsItem | undefined, index: number, isCenterLead: boolean = false) => {
+  const renderGridCard = (item: NewsItem | undefined, index: number) => {
+    const isMainLead = index === 0 && selectedCategory === 'top_news';
+
     if (!item) {
       return (
         <div 
@@ -171,7 +173,7 @@ export default function AdminReorderPage() {
           className="border-2 border-dashed border-slate-300 rounded-2xl p-6 flex flex-col items-center justify-center text-slate-400 hover:border-red-400 hover:text-red-600 transition cursor-pointer bg-slate-50/50 min-h-[160px]"
         >
           <Plus size={24} />
-          <span className="text-xs font-bold mt-1">পজিশন #{index + 1} ফাকা রয়েছে</span>
+          <span className="text-xs font-bold mt-1">পজিশন #{index + 1} খালি রয়েছে</span>
           <span className="text-[10px] text-slate-400 mt-0.5">খবর যুক্ত করতে ক্লিক করুন</span>
         </div>
       );
@@ -185,14 +187,14 @@ export default function AdminReorderPage() {
         onDragOver={(e) => handleDragOver(e, index)}
         onDragEnd={handleDragEnd}
         className={`bg-white rounded-2xl border transition-all duration-200 overflow-hidden flex flex-col justify-between group ${
-          isCenterLead
+          isMainLead
             ? 'border-2 border-red-500 shadow-xl ring-4 ring-red-500/15 bg-gradient-to-b from-red-50/40 via-white to-white'
             : 'border-slate-200/90 shadow-xs hover:shadow-md hover:border-slate-300'
         }`}
       >
         {/* Card Header Tag */}
         <div className={`px-3 py-1.5 flex items-center justify-between border-b text-[11px] font-black ${
-          isCenterLead 
+          isMainLead 
             ? 'bg-gradient-to-r from-red-600 to-rose-600 text-white border-red-600' 
             : 'bg-slate-50 text-slate-700 border-slate-100'
         }`}>
@@ -200,18 +202,18 @@ export default function AdminReorderPage() {
             <span className="cursor-grab active:cursor-grabbing hover:opacity-80 p-0.5" title="মাউস দিয়ে ড্রাগ করুন">
               <GripVertical size={14} />
             </span>
-            <span>{isCenterLead ? '⭐ পজিশন #৩ (সেন্টার মেইন লিড)' : `পজিশন #${index + 1}`}</span>
+            <span>{isMainLead ? '⭐ পজিশন #১ (মেইন লিড / MAIN LEAD)' : `পজিশন #${index + 1}`}</span>
           </div>
 
           {item.category && (
-            <span className={`text-[10px] px-2 py-0.5 rounded ${isCenterLead ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-800'}`}>
+            <span className={`text-[10px] px-2 py-0.5 rounded ${isMainLead ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-800'}`}>
               {item.category.name}
             </span>
           )}
         </div>
 
         {/* Thumbnail Image */}
-        <div className={`relative overflow-hidden bg-slate-100 ${isCenterLead ? 'aspect-[16/9]' : 'aspect-video'}`}>
+        <div className={`relative overflow-hidden bg-slate-100 ${isMainLead ? 'aspect-[16/9]' : 'aspect-video'}`}>
           {item.featuredImage ? (
             <img src={item.featuredImage} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
           ) : (
@@ -219,30 +221,31 @@ export default function AdminReorderPage() {
               <Newspaper size={24} />
             </div>
           )}
-          {isCenterLead && (
-            <span className="absolute top-2 left-2 bg-red-600 text-white font-extrabold text-[10px] px-2 py-0.5 rounded shadow-md">
-              MAIN LEAD
+          {isMainLead && (
+            <span className="absolute top-2 left-2 bg-red-600 text-white font-extrabold text-[10px] px-2.5 py-1 rounded shadow-md uppercase tracking-wider flex items-center gap-1">
+              <Star size={12} className="fill-white text-white" />
+              MAIN LEAD (প্রচ্ছদের সেরা খবর)
             </span>
           )}
         </div>
 
         {/* Title Content */}
         <div className="p-3 space-y-1.5 flex-1 flex flex-col justify-between">
-          <h4 className={`font-extrabold text-slate-900 leading-snug line-clamp-2 ${isCenterLead ? 'text-sm sm:text-base text-red-950 font-black' : 'text-xs'}`}>
+          <h4 className={`font-extrabold text-slate-900 leading-snug line-clamp-2 ${isMainLead ? 'text-sm sm:text-base text-red-950 font-black' : 'text-xs'}`}>
             {item.title}
           </h4>
 
           {/* Action Bar */}
           <div className="flex items-center justify-between border-t border-slate-100 pt-2 mt-2 gap-1">
-            {selectedCategory === 'top_news' && index !== 2 && (
+            {selectedCategory === 'top_news' && index !== 0 && (
               <button
                 type="button"
-                onClick={() => makeCenterLead(index)}
-                className="text-[10px] font-black text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 px-2 py-1 rounded-lg transition flex items-center gap-1"
-                title="সেন্টার মেইন লিড বানান"
+                onClick={() => makeMainLead(index)}
+                className="text-[10px] font-black text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 px-2.5 py-1 rounded-lg transition flex items-center gap-1 cursor-pointer"
+                title="মেইন লিড খবর হিসেবে সেট করুন"
               >
                 <Star size={12} className="fill-amber-500 text-amber-500" />
-                <span>লিড করুন</span>
+                <span>মেইন লিড বানান</span>
               </button>
             )}
 
