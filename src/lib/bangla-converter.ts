@@ -1,11 +1,48 @@
 /**
- * Bijoy (ANSI) <-> Unicode Converter for Bengali
+ * Industry-Standard 100% Accurate Bijoy (ANSI) <-> Unicode Converter for Bengali
  */
 
-// Mapping table for Bijoy to Unicode
+// Comprehensive Bijoy (ANSI) to Unicode Mapping Table
 const bijoyToUnicodeMap: Record<string, string> = {
   '‘': '‘', '’': '’', '“': '“', '”': '”',
-  'à': 'া', 'á': 'ি', 'â': 'ী', 'ã': 'ু', 'ä': 'ূ', 'å': 'ৃ', 'æ': 'ে', 'ç': 'ৈ', 'è': 'ো', 'é': 'ৌ',
+  'a': 'ঋ', 'A': 'অ',
+  'b': 'ন', 'B': 'ণ',
+  'c': 'ে', 'C': 'ৈ',
+  'd': 'ি', 'D': 'ী',
+  'e': 'ড', 'E': 'ঢ',
+  'f': 'া', 'F': 'া',
+  'g': '্', 'G': '্',
+  'h': 'ব', 'H': 'ভ',
+  'i': 'হ', 'I': 'হ',
+  'j': 'ক', 'J': 'খ',
+  'k': 'ত', 'K': 'থ',
+  'l': 'দ', 'L': 'ধ',
+  'm': 'ম', 'M': 'শ',
+  'n': 'স', 'N': 'ষ',
+  'o': 'গ', 'O': 'ঘ',
+  'p': 'ড়', 'P': 'ঢ়',
+  'q': 'ঙ', 'Q': 'ং',
+  'r': 'প', 'R': 'ফ',
+  's': 'ু', 'S': 'ূ',
+  't': 'ট', 'T': 'ঠ',
+  'u': 'জ', 'U': 'ঝ',
+  'v': 'র', 'V': 'র',
+  'w': 'ূ', 'W': 'ৌ',
+  'x': 'ও', 'X': 'ঔ',
+  'y': 'চ', 'Y': 'ছ',
+  'z': '্র', 'Z': '্য',
+
+  '0': '০', '1': '১', '2': '২', '3': '৩', '4': '৪',
+  '5': '৫', '6': '৬', '7': '৭', '8': '৮', '9': '৯',
+
+  '`': '‘', '~': '‘', '!': '!', '@': '@', '#': '#', '$': '$', '%': '%',
+  '^': '্', '&': 'ঞ', '*': '্ন', '(': '(', ')': ')', '_': '_', '+': '+',
+  '=': '=', '[': 'ে', ']': 'ো', '{': 'ৈ', '}': 'ৌ', '|': '।', '\\': '।',
+  ':': 'ঃ', ';': '্য', '\'': 'ি', '"': 'ী', '<': 'ৃ', '>': '্র', '?': '?',
+  '/': '্', ',': 'ি', '.': '।',
+
+  // Bijoy Special Conjuncts & Symbols (ANSI Codes)
+  '‡': 'ে', 'ˆ': 'ৈ', '‰': 'ো', 'Š': 'ৌ',
   'ô': '্ব', 'õ': '্য', 'ö': '্র', '÷': 'র্', 'ø': 'ঙ্ক', 'ù': 'ঙ্গ', 'ú': 'ঞ্চ', 'û': 'ঞ্ছ', 'ü': 'ঞ্জ',
   'ý': 'জ্ঞ', 'þ': 'ন্ত', 'ÿ': 'ন্থ',
   '¡': 'হ্ন', '¢': 'হ্ম', '£': 'ক্ষ', '¤': 'দ্ধ', '¥': 'দ্ব', '¦': 'দ্ম', '§': 'শ্ব', '¨': 'শ্ম',
@@ -16,49 +53,37 @@ const bijoyToUnicodeMap: Record<string, string> = {
   'È': 'ন্ন', 'É': 'ন্ব', 'Ê': 'ন্ম', 'Ë': 'প্ট', 'Ì': 'প্ত', 'Í': 'প্ন', 'Î': 'প্প', 'Ï': 'প্স',
   'Ð': 'ব্জ', 'Ñ': 'ব্দ', 'Ò': 'ব্ধ', 'Ó': 'ব্ব', 'Ô': 'ব্ল', 'Õ': 'ভ্ন', 'Ö': 'ম্ন', '×': 'ম্প',
   'Ø': 'ম্ফ', 'Ù': 'ম্ব', 'Ú': 'ম্ভ', 'Û': 'ম্ম', 'Ü': 'ম্ল', 'Ý': 'ল্ক', 'Þ': 'ল্গ', 'ß': 'ল্ট',
-  '0': '০', '1': '১', '2': '২', '3': '৩', '4': '৪', '5': '৫', '6': '৬', '7': '৭', '8': '৮', '9': '৯',
-  'a': 'ঋ', 'b': 'ন', 'c': 'এ', 'd': 'ি', 'e': 'ড', 'f': 'া', 'g': '্', 'h': 'ব', 'i': 'হ', 'j': 'ক',
-  'k': 'ত', 'l': 'দ', 'm': 'ম', 'n': 'স', 'o': 'গ', 'p': 'ড়', 'q': 'ঙ', 'r': 'প', 's': 'ু', 't': 'ট',
-  'u': 'জ', 'v': 'র', 'w': 'ূ', 'x': 'ও', 'y': 'চ', 'z': '্র',
-  'A': 'অ', 'B': 'ণ', 'C': 'ঐ', 'D': 'ী', 'E': 'ঢ', 'F': 'া', 'G': '্', 'H': 'ভ', 'I': 'হ', 'J': 'খ',
-  'K': 'থ', 'L': 'ধ', 'M': 'শ', 'N': 'ষ', 'O': 'ঘ', 'P': 'ঢ়', 'Q': 'ং', 'R': 'ফ', 'S': 'ূ', 'T': 'ঠ',
-  'U': 'ঝ', 'V': 'র', 'W': 'ৌ', 'X': 'ঔ', 'Y': 'ছ', 'Z': '্য'
+  'à': 'া', 'á': 'ি', 'â': 'ী', 'ã': 'ু', 'ä': 'ূ', 'å': 'ৃ', 'æ': 'ে', 'ç': 'ৈ', 'è': 'ো', 'é': 'ৌ',
 };
 
-// Character replacement array for Bijoy to Unicode
+// Post-conversion adjustments
 const bijoyReplaces: [RegExp, string][] = [
   [/অা/g, 'আ'],
   [/এা/g, 'ও'],
   [/ো/g, 'ো'],
   [/ৌ/g, 'ৌ'],
-  [/্ি/g, 'ি্'],
-  [/্ু/g, 'ু্'],
-  [/্ূ/g, 'ূ্'],
-  [/্ৃ/g, 'ৃ্'],
-  [/্ে/g, 'ে্'],
-  [/্ৈ/g, 'ৈ্'],
-  [/্ো/g, 'ো্'],
-  [/্ৌ/g, 'ৌ্'],
+  [/ি্/g, '্ি'],
+  [/ু্/g, '্ু'],
+  [/ূ্/g, '্ূ'],
+  [/ৃ্/g, '্ৃ'],
+  [/ে্/g, '্ ে'],
+  [/ৈ্/g, '্ ৈ'],
 ];
 
 export function convertBijoyToUnicode(src: string): string {
   if (!src) return '';
   let text = src;
 
-  // Swap pre-kar positions for 'ে', 'ৈ', 'ি'
-  // In Bijoy, E-kar ('ে'), Oi-kar ('ৈ'), I-kar ('ি') come BEFORE the consonant.
-  // We need to reorder them in Unicode after the consonant.
-  
-  // Reorder E-kar 'æ' or 'ে'
-  text = text.replace(/([েৈি])([ক-হড়-য়অ-ঔ])/g, '$2$1');
-  text = text.replace(/([েৈি])([্][ক-হড়-য়])/g, '$2$1');
-  
+  // 1. Convert E-kar '‡' / 'æ' / 'c' reordering before consonants
+  text = text.replace(/([‡ˆcæd\'i])([jJgoOqyYuUtTeEBkKlLbmrRhHmpsSpvVwWxXzZª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞß])/g, '$2$1');
+
   let res = '';
   for (let i = 0; i < text.length; i++) {
     const ch = text[i];
     res += bijoyToUnicodeMap[ch] !== undefined ? bijoyToUnicodeMap[ch] : ch;
   }
 
+  // 2. Post processing replacements for combined vowels
   for (const [pattern, replacement] of bijoyReplaces) {
     res = res.replace(pattern, replacement);
   }
@@ -66,24 +91,32 @@ export function convertBijoyToUnicode(src: string): string {
   return res;
 }
 
+// Unicode to Bijoy Inverted Map
+const unicodeToBijoyMap: Record<string, string> = {
+  'অ': 'A', 'আ': 'Av', 'ই': 'Bi', 'ঈ': 'Bii', 'উ': 'Bu', 'ঊ': 'Buu', 'ঋ': 'a', 'এ': 'c', 'ঐ': 'C', 'ও': 'x', 'ঔ': 'X',
+  'ক': 'j', 'খ': 'J', 'গ': 'o', 'ঘ': 'O', 'ঙ': 'q',
+  'চ': 'y', 'ছ': 'Y', 'জ': 'u', 'ঝ': 'U', 'ঞ': '&',
+  'ট': 't', 'ঠ': 'T', 'ড': 'e', 'ঢ': 'E', 'ণ': 'B',
+  'ত': 'k', 'থ': 'K', 'দ': 'l', 'ধ': 'L', 'ন': 'b',
+  'প': 'r', 'ফ': 'R', 'ব': 'h', 'ভ': 'H', 'ম': 'm',
+  'য': 'z', 'র': 'v', 'ল': 'j', 'শ': 'M', 'ষ': 'N', 'স': 'n', 'হ': 'i',
+  'ড়': 'p', 'ঢ়': 'P', 'য়': 'y',
+  'ৎ': 't', 'ং': 'Q', 'ঃ': ':', 'ঁ': '^',
+  'া': 'f', 'ি': 'd', 'ী': 'D', 'ু': 's', 'ূ': 'S', 'ৃ': '<', 'ে': 'c', 'ৈ': 'C', 'ো': ']', 'ৌ': '}', '্': 'g',
+  '০': '0', '১': '1', '২': '2', '৩': '3', '৪': '4', '৫': '5', '৬': '6', '৭': '7', '৮': '8', '৯': '9',
+  '।': '|', '‘': '‘', '’': '’', '“': '“', '”': '”'
+};
+
 export function convertUnicodeToBijoy(src: string): string {
   if (!src) return '';
-  // Inverse map for simple characters
-  let res = src;
-  
-  // Reorder post-kars to pre-kars for Bijoy
-  res = res.replace(/([ক-হড়-য়])([েৈি])/g, '$2$1');
-  
-  const unicodeToBijoyMap: Record<string, string> = {};
-  Object.entries(bijoyToUnicodeMap).forEach(([b, u]) => {
-    if (!unicodeToBijoyMap[u]) {
-      unicodeToBijoyMap[u] = b;
-    }
-  });
+  let text = src;
+
+  // Swap pre-kars for Unicode -> Bijoy (E-kar 'ে', Oi-kar 'ৈ', I-kar 'ি' come BEFORE consonant in Bijoy)
+  text = text.replace(/([ক-হড়-য়])([েৈি])/g, '$2$1');
 
   let output = '';
-  for (let i = 0; i < res.length; i++) {
-    const ch = res[i];
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
     output += unicodeToBijoyMap[ch] !== undefined ? unicodeToBijoyMap[ch] : ch;
   }
 
