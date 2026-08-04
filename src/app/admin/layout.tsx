@@ -27,7 +27,8 @@ import {
   PlusCircle,
   Search,
   Bell,
-  Home
+  Home,
+  Briefcase
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
@@ -96,9 +97,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     navigation.push({ name: 'বিজ্ঞাপন ম্যানেজমেন্ট', href: '/admin/advertisements', icon: Megaphone });
   }
 
-  // 6. Comments
+  // 6. Comments & Job Applications
   if (['SUPER_ADMIN', 'ADMIN', 'EDITOR'].includes(role)) {
-    navigation.push({ name: 'মন্তব্যসমূহ', href: '/admin/comments', icon: MessageSquare });
+    navigation.push(
+      { name: 'মন্তব্যসমূহ', href: '/admin/comments', icon: MessageSquare },
+      { name: 'চাকরির আবেদনসমূহ', href: '/admin/job-applications', icon: Briefcase }
+    );
   }
 
   // 7. Users & Roles

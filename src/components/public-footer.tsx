@@ -114,27 +114,27 @@ export default async function PublicFooter() {
         <div>
           <ul className="space-y-3">
             <li>
-              <Link href="/converter" className="font-light hover:text-red-500 transition-colors flex items-center gap-1.5">
-                <span className="text-red-500 font-bold">•</span> কনভার্টার
+              <Link href="/converter" className="font-normal text-white hover:text-red-500 transition-colors flex items-center gap-1.5">
+                <span className="text-[#e60023] font-extrabold text-lg">•</span> কনভার্টার
               </Link>
             </li>
             <li>
-              <Link href="/greeting-cards" className="font-light hover:text-red-500 transition-colors flex items-center gap-1.5">
-                <span className="text-red-500 font-bold">•</span> শুভেচ্ছা কার্ড
+              <Link href="/greeting-cards" className="font-normal text-white hover:text-red-500 transition-colors flex items-center gap-1.5">
+                <span className="text-[#e60023] font-extrabold text-lg">•</span> শুভেচ্ছা কার্ড
               </Link>
             </li>
             <li>
-              <Link href="/jobs" className="font-light hover:text-red-500 transition-colors flex items-center gap-1.5">
-                <span className="text-red-500 font-bold">•</span> খুলনা গেজেটে চাকরি
+              <Link href="/jobs" className="font-normal text-white hover:text-red-500 transition-colors flex items-center gap-1.5">
+                <span className="text-[#e60023] font-extrabold text-lg">•</span> খুলনা গেজেটে চাকরি
               </Link>
             </li>
             <li>
-              <Link href="/about" className="font-light hover:text-red-500 transition-colors">
+              <Link href="/about" className="font-normal text-white hover:text-red-500 transition-colors block">
                 আমাদের সম্পর্কে
               </Link>
             </li>
             <li>
-              <Link href="/contact" className="font-light hover:text-red-500 transition-colors">
+              <Link href="/contact" className="font-normal text-white hover:text-red-500 transition-colors block">
                 যোগাযোগ
               </Link>
             </li>

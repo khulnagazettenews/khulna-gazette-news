@@ -172,3 +172,25 @@ model TopNews {
   updatedAt DateTime @updatedAt
 }
 
+model JobApplication {
+  id               String   @id @default(uuid()) @map("_id")
+  position         String
+  fullName         String
+  dob              String?
+  mobile           String
+  email            String
+  facebookLink     String?
+  presentAddress   String?
+  permanentAddress String?
+  educations       String?
+  currentJobs      String?
+  experiences      String?
+  workLinks        String?
+  photoUrl         String?
+  nidUrl           String?
+  notes            String?
+  status           String   @default("PENDING")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
