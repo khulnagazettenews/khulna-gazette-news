@@ -39,6 +39,14 @@ body {
   -webkit-text-size-adjust: 100%;
 }
 
+/* Ensure all form inputs, select dropdowns, textareas, and buttons inherit exact site Bangla font */
+input,
+select,
+textarea,
+button {
+  font-family: 'Bangla', 'Noto Sans Bengali', 'Hind Siliguri', 'SolaimanLipi', sans-serif;
+}
+
 /* Global Responsive Image & Video Fluid Media Reset */
 img, video, canvas, svg, iframe {
   max-width: 100%;
