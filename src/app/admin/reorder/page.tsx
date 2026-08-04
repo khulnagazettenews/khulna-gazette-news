@@ -388,47 +388,24 @@ export default function AdminReorderPage() {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-              {/* Left Column: 2 Stacked Cards (Position #1 & #2) */}
-              <div className="lg:col-span-3 space-y-4">
-                <div className="text-[11px] font-bold text-blue-400 border-b border-slate-800 pb-1">
-                  বাম পাশের কার্ড ১ & ২ (Positions 1-2)
+              {/* Main Lead Banner (Position #1) */}
+              <div className="lg:col-span-12 space-y-3">
+                <div className="text-[11px] font-black text-red-400 border-b border-slate-800 pb-1 flex items-center justify-between">
+                  <span>⭐ প্রচ্ছদের প্রধান খবর (MAIN LEAD) — Position #1</span>
+                  <span className="text-white text-[10px] bg-red-600 px-2.5 py-0.5 rounded font-extrabold">MAIN LEAD BANNER</span>
                 </div>
                 {renderGridCard(newsList[0], 0)}
-                {renderGridCard(newsList[1], 1)}
               </div>
 
-              {/* Center Column: Big Main Lead Card (Position #3) */}
-              <div className="lg:col-span-6 space-y-3">
-                <div className="text-[11px] font-black text-red-400 border-b border-slate-800 pb-1 flex items-center justify-between">
-                  <span>⭐ সেন্টার মেইন লিড সংবাদ (Position 3)</span>
-                  <span className="text-white text-[10px] bg-red-600 px-2 py-0.5 rounded">MAIN LEAD</span>
-                </div>
-                {renderGridCard(newsList[2], 2, true)}
-
-                {/* Sub-grid of 4 cards right under lead (Positions #4, #5, #6, #7) */}
-                <div className="pt-3 border-t border-slate-800 space-y-2">
-                  <span className="text-[11px] font-bold text-amber-400 block">লিডের নিচের ৪টি সাব-কার্ড (Positions 4-7):</span>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-                    {[3, 4, 5, 6].map((idx) => (
-                      <div key={idx} className="scale-95 origin-top">
-                        {renderGridCard(newsList[idx], idx)}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Sidebar Guide */}
-              <div className="lg:col-span-3 bg-slate-950/80 p-4 rounded-2xl border border-slate-800 space-y-3 text-xs">
-                <h4 className="font-bold text-teal-400 border-b border-slate-800 pb-2">
-                  গ্রিড গাইডলাইন
-                </h4>
-                <p className="text-[11px] text-slate-300 leading-relaxed">
-                  মাউস দিয়ে যে কোনো কার্ড ড্রাগ করে অন্য কার্ডের উপর ছেড়ে দিন, স্বয়ংক্রিয়ভাবে স্থান পরিবর্তন হবে।
-                </p>
-                <div className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
-                  <span className="font-bold text-red-400 block text-[11px]">পজিশন ৩:</span>
-                  <span className="text-[10px] text-slate-400">এই খবরটি মূল সাইটের কেন্দ্রে সবচেয়ে বড় ছবি ও হেডলাইনে দেখাবে।</span>
+              {/* Sub-grid of remaining top news cards (Positions #2 to #12) */}
+              <div className="lg:col-span-12 pt-3 border-t border-slate-800 space-y-3">
+                <span className="text-[11px] font-bold text-amber-400 block">অন্যান্য প্রধান খবরসমূহ (Positions 2-15):</span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                  {Array.from({ length: 14 }, (_, i) => i + 1).map((idx) => (
+                    <div key={idx}>
+                      {renderGridCard(newsList[idx], idx)}
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -462,7 +439,7 @@ export default function AdminReorderPage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {newsList.map((item, idx) => renderGridCard(item, idx, idx === 0))}
+            {newsList.map((item, idx) => renderGridCard(item, idx))}
           </div>
         </div>
       )}
