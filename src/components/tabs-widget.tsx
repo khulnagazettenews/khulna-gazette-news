@@ -34,16 +34,16 @@ export default function TabsWidget({ latest, popular }: TabsWidgetProps) {
   };
 
   return (
-    <div className="bg-white border border-gray-200 rounded-none shadow-2xs font-sans overflow-hidden">
-      {/* 2 Tabs Header: Exact Match with khulnagazette.com design */}
-      <div className="grid grid-cols-2 bg-[#1b2537] text-white select-none border-b border-gray-200">
+    <div className="bg-white border border-gray-200 rounded shadow-2xs font-sans overflow-hidden">
+      {/* 2 Tabs Header: Thinner tab bar */}
+      <div className="grid grid-cols-2 bg-[#343e56] text-white select-none border-b border-gray-200">
         <button
           type="button"
           onClick={() => setActiveTab('latest')}
-          className={`py-2.5 px-3 text-[16px] sm:text-[17px] font-bold text-center tracking-tight transition cursor-pointer ${
+          className={`w-full py-1 px-2 text-[15px] sm:text-[16px] font-bold text-center transition cursor-pointer leading-tight flex items-center justify-center ${
             activeTab === 'latest'
-              ? 'bg-[#0f172a] text-white font-extrabold'
-              : 'bg-[#1b2537] text-[#cbd5e1] hover:text-white hover:bg-[#131b2a]'
+              ? 'bg-[#000000] text-white font-extrabold'
+              : 'bg-[#343e56] text-white hover:bg-[#283145]'
           }`}
         >
           সর্বশেষ
@@ -51,10 +51,10 @@ export default function TabsWidget({ latest, popular }: TabsWidgetProps) {
         <button
           type="button"
           onClick={() => setActiveTab('popular')}
-          className={`py-2.5 px-3 text-[16px] sm:text-[17px] font-bold text-center tracking-tight transition border-l border-slate-700/60 cursor-pointer ${
+          className={`w-full py-1 px-2 text-[15px] sm:text-[16px] font-bold text-center transition cursor-pointer leading-tight flex items-center justify-center ${
             activeTab === 'popular'
-              ? 'bg-[#0f172a] text-white font-extrabold'
-              : 'bg-[#1b2537] text-[#cbd5e1] hover:text-white hover:bg-[#131b2a]'
+              ? 'bg-[#000000] text-white font-extrabold'
+              : 'bg-[#343e56] text-white hover:bg-[#283145]'
           }`}
         >
           সর্বাধিক পঠিত
@@ -62,23 +62,23 @@ export default function TabsWidget({ latest, popular }: TabsWidgetProps) {
       </div>
 
       {/* List Items Container matching exact scrollbar & spacing */}
-      <div className="max-h-[390px] overflow-y-auto kg-tab-scrollbar bg-white">
+      <div className="max-h-[390px] overflow-y-auto kg-tab-scrollbar bg-white p-3">
         {list.length === 0 ? (
           <div className="text-center py-8 text-sm text-gray-400 font-medium">কোনো খবর পাওয়া যায়নি।</div>
         ) : (
-          <div className="divide-y divide-gray-150">
+          <div className="divide-y divide-gray-200">
             {list.slice(0, 15).map((item) => (
-              <div key={item.id} className="p-3 flex items-start gap-3 group hover:bg-slate-50/70 transition">
+              <div key={item.id} className="py-2.5 flex items-start gap-3 group first:pt-0 last:pb-0">
                 {/* Left Thumbnail Image */}
                 <Link
                   href={`/${item.category?.slug || 'news'}/${item.id}`}
-                  className="w-[92px] sm:w-[98px] h-[62px] sm:h-[66px] shrink-0 overflow-hidden bg-gray-100 block relative border border-gray-100"
+                  className="w-[92px] sm:w-[98px] h-[62px] sm:h-[66px] shrink-0 overflow-hidden rounded bg-gray-100 block relative border border-gray-100 shadow-2xs"
                 >
                   {item.featuredImage ? (
                     <img
                       src={item.featuredImage}
                       alt={item.title}
-                      className="w-full h-full object-cover group-hover:scale-[1.04] transition duration-300"
+                      className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
                     />
                   ) : (
                     <div className="w-full h-full bg-gray-200 flex items-center justify-center text-[10px] text-gray-500 font-bold">
@@ -91,7 +91,7 @@ export default function TabsWidget({ latest, popular }: TabsWidgetProps) {
                 <div className="flex-1 min-w-0">
                   <Link
                     href={`/${item.category?.slug || 'news'}/${item.id}`}
-                    className="text-[15px] sm:text-[16px] font-bold text-gray-900 group-hover:text-[#e60023] transition leading-[1.3] line-clamp-2 block font-sans"
+                    className="text-[15px] sm:text-[16px] font-bold text-[#111827] group-hover:text-[#e60023] transition leading-[1.3] line-clamp-2 block font-sans"
                   >
                     {item.title}
                   </Link>
