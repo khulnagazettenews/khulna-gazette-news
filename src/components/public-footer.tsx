@@ -3,210 +3,157 @@ import Image from 'next/image';
 
 export default async function PublicFooter() {
   return (
-    <footer className="bg-[#151515] text-white text-[17px] mt-12">
-      {/* Top Footer Section with 6 columns */}
-      <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
-        {/* Col 1 */}
-        <div>
-          <ul className="space-y-3">
-            <li>
-              <Link href="/bangladesh" className="font-light hover:text-red-500 transition-colors">
-                বাংলাদেশ
-              </Link>
-            </li>
-            <li>
-              <Link href="/politics" className="font-light hover:text-red-500 transition-colors">
-                রাজনীতি
-              </Link>
-            </li>
-            <li>
-              <Link href="/economy" className="font-light hover:text-red-500 transition-colors">
-                অর্থনীতি
-              </Link>
-            </li>
-            <li>
-              <Link href="/international" className="font-light hover:text-red-500 transition-colors">
-                আন্তর্জাতিক
-              </Link>
-            </li>
-          </ul>
+    <footer className="bg-[#1c1c1c] text-white font-sans mt-12 select-none">
+      {/* Top Footer Section */}
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-wrap lg:flex-nowrap justify-between gap-6 lg:gap-10 border-b border-[#333]">
+        {/* Links Col 1 */}
+        <div className="flex flex-col gap-2">
+          <Link href="/bangladesh" className="text-white hover:text-[#ff4444] transition duration-300 text-[15px] sm:text-[17px]">
+            বাংলাদেশ
+          </Link>
+          <Link href="/politics" className="text-white hover:text-[#ff4444] transition duration-300 text-[15px] sm:text-[17px]">
+            রাজনীতি
+          </Link>
+          <Link href="/economy" className="text-white hover:text-[#ff4444] transition duration-300 text-[15px] sm:text-[17px]">
+            অর্থনীতি
+          </Link>
+          <Link href="/international" className="text-white hover:text-[#ff4444] transition duration-300 text-[15px] sm:text-[17px]">
+            আন্তর্জাতিক
+          </Link>
         </div>
 
-        {/* Col 2 */}
-        <div>
-          <ul className="space-y-3">
-            <li>
-              <Link href="/khulna" className="font-light hover:text-red-500 transition-colors">
-                খুলনাঞ্চল
-              </Link>
-            </li>
-            <li>
-              <Link href="/sports" className="font-light hover:text-red-500 transition-colors">
-                খেলা
-              </Link>
-            </li>
-            <li>
-              <Link href="/technology" className="font-light hover:text-red-500 transition-colors">
-                আইটি
-              </Link>
-            </li>
-            <li>
-              <Link href="/education" className="font-light hover:text-red-500 transition-colors">
-                শিক্ষা
-              </Link>
-            </li>
-          </ul>
+        {/* Links Col 2 */}
+        <div className="flex flex-col gap-2">
+          <Link href="/khulna" className="text-white hover:text-[#ff4444] transition duration-300 text-[15px] sm:text-[17px]">
+            খুলনাঞ্চল
+          </Link>
+          <Link href="/sports" className="text-white hover:text-[#ff4444] transition duration-300 text-[15px] sm:text-[17px]">
+            খেলা
+          </Link>
+          <Link href="/technology" className="text-white hover:text-[#ff4444] transition duration-300 text-[15px] sm:text-[17px]">
+            আইটি
+          </Link>
+          <Link href="/education" className="text-white hover:text-[#ff4444] transition duration-300 text-[15px] sm:text-[17px]">
+            শিক্ষা
+          </Link>
         </div>
 
-        {/* Col 3 */}
-        <div>
-          <ul className="space-y-3">
-            <li>
-              <Link href="/entertainment" className="font-light hover:text-red-500 transition-colors">
-                বিনোদন
-              </Link>
-            </li>
-            <li>
-              <Link href="/free-thinking" className="font-light hover:text-red-500 transition-colors">
-                মুক্তভাবনা
-              </Link>
-            </li>
-            <li>
-              <Link href="/islam-life" className="font-light hover:text-red-500 transition-colors">
-                ইসলাম ও জীবন
-              </Link>
-            </li>
-            <li>
-              <Link href="/health" className="font-light hover:text-red-500 transition-colors">
-                চিকিৎসা
-              </Link>
-            </li>
-          </ul>
+        {/* Links Col 3 */}
+        <div className="flex flex-col gap-2">
+          <Link href="/lifestyle" className="text-white hover:text-[#ff4444] transition duration-300 text-[15px] sm:text-[17px]">
+            লাইফ স্টাইল
+          </Link>
+          <Link href="/entertainment" className="text-white hover:text-[#ff4444] transition duration-300 text-[15px] sm:text-[17px]">
+            বিনোদন
+          </Link>
+          <Link href="/free-thinking" className="text-white hover:text-[#ff4444] transition duration-300 text-[15px] sm:text-[17px]">
+            মুক্তভাবনা
+          </Link>
+          <Link href="/islam-life" className="text-white hover:text-[#ff4444] transition duration-300 text-[15px] sm:text-[17px]">
+            ইসলাম ও জীবন
+          </Link>
         </div>
 
-        {/* Col 4 */}
-        <div>
-          <ul className="space-y-3">
-            <li>
-              <Link href="/social-media" className="font-light hover:text-red-500 transition-colors">
-                সোশ্যাল মিডিয়া
-              </Link>
-            </li>
-            <li>
-              <Link href="/chitro-bichitro" className="font-light hover:text-red-500 transition-colors">
-                চিত্র বিচিত্র
-              </Link>
-            </li>
-            <li>
-              <Link href="/photo-gallery" className="font-light hover:text-red-500 transition-colors">
-                ফটো গ্যালারী
-              </Link>
-            </li>
-            <li>
-              <Link href="/video-gallery" className="font-light hover:text-red-500 transition-colors">
-                ভিডিও গ্যালারী
-              </Link>
-            </li>
-          </ul>
+        {/* Links Col 4 */}
+        <div className="flex flex-col gap-2">
+          <Link href="/social-media" className="text-white hover:text-[#ff4444] transition duration-300 text-[15px] sm:text-[17px]">
+            সোশ্যাল মিডিয়া
+          </Link>
+          <Link href="/health" className="text-white hover:text-[#ff4444] transition duration-300 text-[15px] sm:text-[17px]">
+            চিকিৎসা
+          </Link>
+          <Link href="/chitro-bichitro" className="text-white hover:text-[#ff4444] transition duration-300 text-[15px] sm:text-[17px]">
+            চিত্র বিচিত্র
+          </Link>
+          <Link href="/photo-gallery" className="text-white hover:text-[#ff4444] transition duration-300 text-[15px] sm:text-[17px]">
+            ফটো গ্যালারী
+          </Link>
         </div>
 
-        {/* Col 5 - Features & Quick Links */}
-        <div>
-          <ul className="space-y-3">
-            <li>
-              <Link href="/converter" className="font-normal text-white hover:text-red-500 transition-colors flex items-center gap-1.5">
-                <span className="text-[#e60023] font-extrabold text-lg">•</span> কনভার্টার
-              </Link>
-            </li>
-            <li>
-              <Link href="/greeting-cards" className="font-normal text-white hover:text-red-500 transition-colors flex items-center gap-1.5">
-                <span className="text-[#e60023] font-extrabold text-lg">•</span> শুভেচ্ছা কার্ড
-              </Link>
-            </li>
-            <li>
-              <Link href="/jobs" className="font-normal text-white hover:text-red-500 transition-colors flex items-center gap-1.5">
-                <span className="text-[#e60023] font-extrabold text-lg">•</span> খুলনা গেজেটে চাকরি
-              </Link>
-            </li>
-            <li>
-              <Link href="/about" className="font-normal text-white hover:text-red-500 transition-colors block">
-                আমাদের সম্পর্কে
-              </Link>
-            </li>
-            <li>
-              <Link href="/contact" className="font-normal text-white hover:text-red-500 transition-colors block">
-                যোগাযোগ
-              </Link>
-            </li>
-          </ul>
+        {/* Links Col 5 */}
+        <div className="flex flex-col gap-2">
+          <Link href="/about" className="text-white hover:text-[#ff4444] transition duration-300 text-[14px] sm:text-[16px]">
+            About Us
+          </Link>
+          <Link href="/terms" className="text-white hover:text-[#ff4444] transition duration-300 text-[14px] sm:text-[16px]">
+            Terms of Use
+          </Link>
+          <Link href="/privacy" className="text-white hover:text-[#ff4444] transition duration-300 text-[14px] sm:text-[16px]">
+            Privacy Policy
+          </Link>
+          <Link href="/contact" className="text-white hover:text-[#ff4444] transition duration-300 text-[14px] sm:text-[16px]">
+            Contact Us
+          </Link>
         </div>
 
-        {/* Col 6 - Legal & App Download */}
-        <div className="flex flex-col justify-start space-y-4">
-          <ul className="space-y-2 text-sm text-gray-300">
-            <li>
-              <Link href="/terms" className="font-light hover:text-red-500 transition-colors">
-                Terms of Use
-              </Link>
-            </li>
-            <li>
-              <Link href="/privacy" className="font-light hover:text-red-500 transition-colors">
-                Privacy Policy
-              </Link>
-            </li>
-          </ul>
+        {/* Feature Links & Playstore Badge Column */}
+        <div className="shrink-0 flex flex-col gap-3.5 items-start">
+          <div className="flex flex-col gap-2 font-bold text-[15px] sm:text-[17px]">
+            <Link href="/converter" className="text-white hover:text-[#ff4444] transition duration-300 flex items-center gap-1.5">
+              <span className="text-[#ed0022] font-extrabold">•</span> কনভার্টার
+            </Link>
+            <Link href="/greeting-cards" className="text-white hover:text-[#ff4444] transition duration-300 flex items-center gap-1.5">
+              <span className="text-[#ed0022] font-extrabold">•</span> শুভেচ্ছা কার্ড
+            </Link>
+            <Link href="/jobs" className="text-white hover:text-[#ff4444] transition duration-300 flex items-center gap-1.5">
+              <span className="text-[#ed0022] font-extrabold">•</span> খুলনা গেজেটে চাকরি
+            </Link>
+          </div>
 
           <a
             href="https://play.google.com/store/apps/details?id=com.kg.khl"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block transition hover:opacity-90 max-w-[140px] pt-1"
+            className="inline-block transition hover:opacity-90 mt-1"
           >
-            <Image
+            <img
               src="/google-play.png"
-              alt="Get it on Google Play"
-              width={140}
-              height={42}
-              className="w-full h-auto object-contain"
+              alt="Google Play"
+              className="w-[150px] sm:w-[170px] h-auto object-contain rounded"
             />
           </a>
         </div>
-
       </div>
 
-      {/* Middle Footer Section with Logo and Editorial details */}
-      <div className="border-t border-[#333] bg-[#151515] py-8">
-        <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-start gap-8 lg:gap-12">
-          <div className="flex-shrink-0">
-            <Link href="/">
-              <Image
-                src="/logo-footer.png"
-                alt="খুলনা গেজেট"
-                width={240}
-                height={60}
-                className="h-14 sm:h-16 w-auto max-w-full object-contain"
-              />
-            </Link>
-          </div>
-          <div className="text-center md:text-left text-white max-w-2xl">
-            <p className="leading-relaxed text-[16px] sm:text-[17px] font-light">
-              <strong className="text-white font-light block mb-1">সম্পাদক ও প্রকাশক : মোঃ মাহমুদ আহসান</strong>
-              বার্তা বিভাগ : আনসারী কমপ্লেক্স, ১৬০ শের-ই-বাংলা সড়ক, খুলনা ৯১০০।<br />
-              Mobile : 01794744579 &nbsp;&nbsp; E-mail : khulnagazette@gmail.com
-            </p>
-          </div>
+      {/* Middle Footer Section */}
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col md:flex-row items-center gap-6 lg:gap-10 text-center md:text-left">
+        <div className="shrink-0">
+          <Link href="/">
+            <Image
+              src="/logo-footer.png"
+              alt="Logo"
+              width={260}
+              height={65}
+              className="w-[200px] md:w-[260px] h-auto object-contain"
+            />
+          </Link>
+        </div>
+
+        <div className="space-y-1">
+          <h3 className="text-[17px] md:text-[19px] font-bold">
+            সম্পাদক ও প্রকাশক : মোঃ মাহমুদ আহসান
+          </h3>
+
+          <p className="text-[15px] md:text-[17px] text-gray-200 font-normal">
+            বার্তা বিভাগ : আনসারী কমপ্লেক্স, ১৬০ শের-ই-বাংলা সড়ক, খুলনা ৯১০০।
+          </p>
+
+          <p className="text-[15px] md:text-[17px] text-gray-200 font-normal">
+            Mobile : 01794744579 &nbsp;&nbsp;&nbsp; E-mail : khulnagazette@gmail.com
+          </p>
         </div>
       </div>
 
-      {/* Bottom Footer Copyright & Legal strip */}
-      <div className="bg-[#202731] py-5 text-sm text-gray-300">
-        <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-center sm:text-left">
-          <p className="font-light">
+      {/* Bottom Copyright Section */}
+      <div className="bg-[#2c3547] py-3.5 border-t border-[#262f3d]">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-2 text-xs sm:text-sm text-gray-200 text-center md:text-left font-normal">
+          <div>
             এই ওয়েবসাইটের কোনো লেখা, ছবি, অডিও, ভিডিও অনুমতি ছাড়া ব্যবহার বেআইনি।
-          </p>
-          <p className="font-light">
+          </div>
+
+          <div>
             © 2026 khulnagazette all rights reserved
-          </p>
+          </div>
         </div>
       </div>
     </footer>
