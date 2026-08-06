@@ -12,8 +12,7 @@ import Link from 'next/link';
 import { Calendar, User, Home, Clock } from 'lucide-react';
 import SidebarWidgets from '@/components/sidebar-widgets';
 import AdBanner from '@/components/ad-banner';
-
-export const revalidate = 60; // Cache for 60 seconds (ISR)
+import { Metadata } from 'next';
 
 interface RouteProps {
   params: {
@@ -55,6 +54,72 @@ function formatBengaliDateTime(dateInput?: Date | string | null) {
   return {
     dateStr: `${monthName} ${dayNum}, ${yearNum}`,
     timeStr: `${hoursStr}:${minutesStr} ${period}`
+  };
+}
+
+export const revalidate = 60; // Cache for 60 seconds (ISR)
+
+export async function generateMetadata({ params }: RouteProps): Promise<Metadata> {
+  const { category, slugAndId } = params;
+  let candidateId = slugAndId;
+  if (slugAndId.length >= 36) {
+    candidateId = slugAndId.slice(-36);
+  }
+
+  const news = await prisma.news.findFirst({
+    where: {
+      OR: [
+        { id: candidateId },
+        { id: slugAndId },
+        { slug: slugAndId },
+      ],
+    },
+    include: { category: true, author: true, tags: true },
+  });
+
+  if (!news) {
+    return {
+      title: 'সংবাদ পাওয়া যায়নি | খুলনা গেজেট',
+      description: 'অনুরোধকৃত সংবাদটি পাওয়া যায়নি।',
+    };
+  }
+
+  const articleTitle = `${news.title} | খুলনা গেজেট`;
+  const description = news.metaDescription || news.subtitle || news.title;
+  const imageUrl = news.featuredImage || `${process.env.NEXTAUTH_URL || 'https://khulnagazette.com'}/logo.png`;
+  const canonicalUrl = `${process.env.NEXTAUTH_URL || 'https://khulnagazette.com'}/${news.category?.slug || 'news'}/${news.id}`;
+
+  return {
+    title: articleTitle,
+    description: description,
+    keywords: news.tags?.map(t => t.name) || [news.category?.name || 'সংবাদ', 'খুলনা গেজেট'],
+    alternates: {
+      canonical: canonicalUrl,
+    },
+    openGraph: {
+      title: news.title,
+      description: description,
+      url: canonicalUrl,
+      siteName: 'খুলনা গেজেট',
+      type: 'article',
+      publishedTime: news.publishedAt?.toISOString(),
+      modifiedTime: news.updatedAt.toISOString(),
+      authors: [news.reporterName || news.author?.name || 'খুলনা গেজেট'],
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: news.title,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: news.title,
+      description: description,
+      images: [imageUrl],
+    },
   };
 }
 
@@ -195,11 +260,15 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
             {/* Left Column: Article Details + Share Bar + Content + More News Grid */}
-            <div className="lg:col-span-8 space-y-4">
+            <article className="lg:col-span-8 space-y-4" itemScope itemType="https://schema.org/NewsArticle">
+              <meta itemProp="headline" content={news.title} />
+              <meta itemProp="datePublished" content={news.publishedAt ? new Date(news.publishedAt).toISOString() : new Date(news.createdAt).toISOString()} />
+              <meta itemProp="dateModified" content={new Date(news.updatedAt).toISOString()} />
+
               <div className="space-y-3">
                 
                 {/* Title */}
-                <h1 className="text-[22px] sm:text-[28px] lg:text-[32px] font-bold text-[#000000] leading-[1.3] tracking-normal mb-2 break-words">
+                <h1 itemProp="headline" className="text-[22px] sm:text-[28px] lg:text-[32px] font-bold text-[#000000] leading-[1.3] tracking-normal mb-2 break-words">
                   {news.title}
                 </h1>
 
@@ -211,9 +280,9 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
                 {/* Author & Timestamp + Social Share Bar */}
                 <div className="flex flex-wrap items-center justify-between border-y border-gray-200 py-2 text-[13px] text-gray-600 gap-2.5 my-2">
                   <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-gray-700 font-medium">
-                    <span className="flex items-center gap-1">
+                    <span className="flex items-center gap-1" itemProp="author" itemScope itemType="https://schema.org/Person">
                       <User size={14} className="text-gray-500" />
-                      <span>{news.reporterName || news.author?.name || 'খুলনা গেজেট'}</span>
+                      <span itemProp="name">{news.reporterName || news.author?.name || 'খুলনা গেজেট'}</span>
                     </span>
                     {dateStr && (
                       <span className="flex items-center gap-1 text-gray-500">
@@ -235,25 +304,28 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
 
                 {/* Featured Image */}
                 {news.featuredImage && (
-                  <div className="space-y-1.5 my-3">
+                  <figure className="space-y-1.5 my-3" itemProp="image" itemScope itemType="https://schema.org/ImageObject">
                     <div className="w-full rounded overflow-hidden relative bg-gray-50 border border-gray-100 shadow-2xs">
                       <img
                         src={news.featuredImage}
                         alt={news.title}
+                        itemProp="url"
+                        loading="eager"
                         className="w-full h-auto object-cover max-h-[500px]"
                       />
                     </div>
                     {(news.imageCaption || news.photoCredit) && (
-                      <div className="text-[13px] text-gray-600 leading-tight flex justify-between gap-4 px-1 font-sans">
+                      <figcaption className="text-[13px] text-gray-600 leading-tight flex justify-between gap-4 px-1 font-sans">
                         <span>{news.imageCaption}</span>
                         {news.photoCredit && <span className="shrink-0 font-medium">ছবি: {news.photoCredit}</span>}
-                      </div>
+                      </figcaption>
                     )}
-                  </div>
+                  </figure>
                 )}
 
                 {/* Article Main Content */}
                 <div 
+                  itemProp="articleBody"
                   className="prose max-w-none text-[#111827] font-normal leading-[1.65] text-[18px] sm:text-[20px] break-words [&_p]:mt-0 [&_p]:mb-4 [&_p]:text-[#111827] [&_p]:leading-[1.65] [&_p]:text-[18px] sm:[&_p]:text-[20px] [&_p]:font-normal [&_strong]:font-bold [&_b]:font-bold [&_h2]:mb-3 [&_h2]:mt-4 [&_img]:rounded [&_img]:my-3 [&_iframe]:w-full [&_iframe]:aspect-video"
                   dangerouslySetInnerHTML={{ __html: news.content }}
                 />
@@ -311,7 +383,7 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
               <div className="pt-6 border-t border-gray-200">
                 <CommentSection newsId={news.id} />
               </div>
-            </div>
+            </article>
 
             {/* Right Column: Sidebar Widgets */}
             <div className="lg:col-span-4">
