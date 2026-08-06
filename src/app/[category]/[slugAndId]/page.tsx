@@ -10,6 +10,7 @@ import SocialShareBar from '@/components/social-share-bar';
 import AppPromoBanner from '@/components/app-promo-banner';
 import Link from 'next/link';
 import { Calendar, User, Home, Clock } from 'lucide-react';
+import SidebarWidgets from '@/components/sidebar-widgets';
 import AdBanner from '@/components/ad-banner';
 
 export const revalidate = 60; // Cache for 60 seconds (ISR)
@@ -176,18 +177,18 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
           <div className="w-full h-1.5 border-y border-gray-200/80 bg-gray-50/50 mb-2"></div>
 
           {/* Breadcrumb Bar */}
-          <div className="bg-[#eeeef8] px-3.5 sm:px-5 py-2.5 sm:py-3 rounded-md text-[15px] sm:text-[18px] text-[#222233] flex flex-wrap items-center gap-2 select-none mb-3 sm:mb-4 font-bold border border-[#dfdfef]">
-            <Link href="/" className="hover:text-red-600 flex items-center gap-1">
-              <i className="fa fa-home text-gray-900 text-[18px] sm:text-[20px]"></i>
+          <div className="bg-[#eef2f7] px-3 sm:px-4 py-1.5 sm:py-2 rounded text-[14px] sm:text-[16px] text-gray-800 flex flex-wrap items-center gap-1.5 select-none mb-3 font-semibold border border-gray-200">
+            <Link href="/" className="hover:text-red-600 flex items-center gap-1 text-gray-700">
+              <Home size={16} className="text-gray-700" />
             </Link>
-            <span className="text-gray-700 font-bold text-[18px] sm:text-[20px]">»</span>
-            <Link href={`/${news.category?.slug || 'news'}`} className="hover:text-red-600 text-gray-900 font-bold">
+            <span className="text-gray-400 font-bold text-xs">/</span>
+            <Link href={`/${news.category?.slug || 'news'}`} className="hover:text-red-600 text-gray-800 font-bold">
               {news.category?.name || 'সংবাদ'}
             </Link>
             {news.subCategory && (
               <>
-                <span className="text-gray-700 font-bold text-[18px] sm:text-[20px]">,</span>
-                <span className="text-gray-900 font-bold">{news.subCategory.name}</span>
+                <span className="text-gray-400 font-bold text-xs">/</span>
+                <span className="text-gray-700 font-medium">{news.subCategory.name}</span>
               </>
             )}
           </div>
@@ -195,34 +196,34 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
             {/* Left Column: Article Details + Share Bar + Content + More News Grid */}
             <div className="lg:col-span-8 space-y-4">
-              <div className="space-y-2">
+              <div className="space-y-3">
                 
                 {/* Title */}
-                <h1 className="text-[25px] sm:text-[30px] lg:text-[34px] font-bold text-[#000000] leading-[1.25] tracking-normal mb-2 break-words">
+                <h1 className="text-[22px] sm:text-[28px] lg:text-[32px] font-bold text-[#000000] leading-[1.3] tracking-normal mb-2 break-words">
                   {news.title}
                 </h1>
 
                 {/* Reporter Tagline */}
-                <h2 className="text-[15px] sm:text-[16px] font-normal text-[#222222] mb-2">
+                <h2 className="text-[14px] sm:text-[15px] font-normal text-gray-600 mb-2">
                   {news.reporterName || news.subtitle || 'গেজেট প্রতিবেদন'}
                 </h2>
 
                 {/* Author & Timestamp + Social Share Bar */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between border-y border-gray-200/90 py-1.5 text-[13px] text-[#444444] gap-2.5 my-2 font-normal">
-                  <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
-                    <span className="flex items-center gap-1 text-[#222222]">
-                      <i className="fa fa-user text-black"></i>
+                <div className="flex flex-wrap items-center justify-between border-y border-gray-200 py-2 text-[13px] text-gray-600 gap-2.5 my-2">
+                  <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-gray-700 font-medium">
+                    <span className="flex items-center gap-1">
+                      <User size={14} className="text-gray-500" />
                       <span>{news.reporterName || news.author?.name || 'খুলনা গেজেট'}</span>
                     </span>
                     {dateStr && (
-                      <span className="flex items-center gap-1 text-[#444444]">
-                        <i className="fa fa-calendar text-black"></i>
-                        <span>{dateStr}</span>
+                      <span className="flex items-center gap-1 text-gray-500">
+                        <Calendar size={14} className="text-gray-400" />
+                        <span>প্রকাশিত: {dateStr}</span>
                       </span>
                     )}
                     {timeStr && (
-                      <span className="flex items-center gap-1 text-[#444444]">
-                        <i className="fa fa-clock-o text-black"></i>
+                      <span className="flex items-center gap-1 text-gray-500">
+                        <Clock size={14} className="text-gray-400" />
                         <span>{timeStr}</span>
                       </span>
                     )}
@@ -235,17 +236,17 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
                 {/* Featured Image */}
                 {news.featuredImage && (
                   <div className="space-y-1.5 my-3">
-                    <div className="w-full rounded-none overflow-hidden relative group bg-gray-50">
+                    <div className="w-full rounded overflow-hidden relative bg-gray-50 border border-gray-100 shadow-2xs">
                       <img
                         src={news.featuredImage}
                         alt={news.title}
-                        className="w-full h-auto object-cover max-h-[550px]"
+                        className="w-full h-auto object-cover max-h-[500px]"
                       />
                     </div>
                     {(news.imageCaption || news.photoCredit) && (
-                      <div className="text-[13px] text-gray-600 leading-tight flex justify-between gap-4 px-1 font-light">
+                      <div className="text-[13px] text-gray-600 leading-tight flex justify-between gap-4 px-1 font-sans">
                         <span>{news.imageCaption}</span>
-                        {news.photoCredit && <span className="font-light shrink-0">ছবি: {news.photoCredit}</span>}
+                        {news.photoCredit && <span className="shrink-0 font-medium">ছবি: {news.photoCredit}</span>}
                       </div>
                     )}
                   </div>
@@ -253,12 +254,12 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
 
                 {/* Article Main Content */}
                 <div 
-                  className="prose max-w-none text-[#000000] font-light leading-[1.45] text-[21px] break-words [&_p]:mt-0 [&_p]:mb-4 [&_p]:text-[#000000] [&_p]:leading-[1.45] [&_p]:text-[21px] [&_p]:font-light [&_strong]:font-bold [&_b]:font-bold [&_h2]:mb-3 [&_h2]:mt-4 [&_img]:rounded [&_img]:my-3 [&_iframe]:w-full [&_iframe]:aspect-video"
+                  className="prose max-w-none text-[#111827] font-normal leading-[1.65] text-[18px] sm:text-[20px] break-words [&_p]:mt-0 [&_p]:mb-4 [&_p]:text-[#111827] [&_p]:leading-[1.65] [&_p]:text-[18px] sm:[&_p]:text-[20px] [&_p]:font-normal [&_strong]:font-bold [&_b]:font-bold [&_h2]:mb-3 [&_h2]:mt-4 [&_img]:rounded [&_img]:my-3 [&_iframe]:w-full [&_iframe]:aspect-video"
                   dangerouslySetInnerHTML={{ __html: news.content }}
                 />
 
                 {/* Article Bottom Sign-off */}
-                <div className="pt-2 text-[15px] sm:text-[16px] font-normal text-[#333333] italic">
+                <div className="pt-3 border-t border-gray-100 text-[14px] sm:text-[15px] font-medium text-gray-600 italic">
                   খুলনা গেজেট/এএজে
                 </div>
 
@@ -312,19 +313,14 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
               </div>
             </div>
 
-            {/* Right Column: Sidebar Widgets & App Banner */}
-            <div className="lg:col-span-4 space-y-6">
-              {/* Latest / Most Read Tabs Widget */}
-              <TabsWidget latest={serializeList(latestNews)} popular={serializeList(popularNews)} />
-
-              {/* Mobile App Download Banner */}
-              <AppPromoBanner />
-
-              {/* Sidebar Advertisement */}
-              <AdBanner ad={sidebarAd} fallbackText="বিজ্ঞাপন ব্যানার" className="h-60" />
-
-              {/* Prayer Times Widget */}
-              <PrayerWidget />
+            {/* Right Column: Sidebar Widgets */}
+            <div className="lg:col-span-4">
+              <SidebarWidgets
+                latestNews={serializeList(latestNews)}
+                popularNews={serializeList(popularNews)}
+                exclusiveNews={serializeList(latestNews.slice(0, 4))}
+                sidebarAd={sidebarAd}
+              />
             </div>
           </div>
         </main>

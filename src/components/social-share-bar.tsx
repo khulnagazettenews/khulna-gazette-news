@@ -19,16 +19,27 @@ export default function SocialShareBar({ title, url }: SocialShareBarProps) {
   };
 
   return (
-    <div className="flex items-center gap-1 select-none shrink-0 print:hidden">
+    <div className="flex items-center gap-1.5 select-none shrink-0 print:hidden">
       {/* Facebook */}
       <a
         href={`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="w-6 h-6 rounded-full bg-[#1877F2] hover:opacity-90 text-white flex items-center justify-center transition text-[11px]"
-        title="Facebook-এ শেয়ার করুন"
+        className="w-7 h-7 rounded-xs bg-[#3b5998] hover:opacity-90 text-white flex items-center justify-center transition text-xs shadow-2xs"
+        title="Facebook"
       >
         <i className="fa fa-facebook"></i>
+      </a>
+
+      {/* Messenger */}
+      <a
+        href={`https://www.facebook.com/dialog/send?link=${encodedUrl}&app_id=291494419107518&redirect_uri=${encodedUrl}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="w-7 h-7 rounded-xs bg-[#0084ff] hover:opacity-90 text-white flex items-center justify-center transition text-xs shadow-2xs"
+        title="Messenger"
+      >
+        <i className="fa fa-comment font-bold"></i>
       </a>
 
       {/* Twitter / X */}
@@ -36,21 +47,10 @@ export default function SocialShareBar({ title, url }: SocialShareBarProps) {
         href={`https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="w-6 h-6 rounded-full bg-[#1DA1F2] hover:opacity-90 text-white flex items-center justify-center transition text-[11px]"
-        title="Twitter-এ শেয়ার করুন"
+        className="w-7 h-7 rounded-xs bg-[#1da1f2] hover:opacity-90 text-white flex items-center justify-center transition text-xs shadow-2xs"
+        title="Twitter"
       >
         <i className="fa fa-twitter"></i>
-      </a>
-
-      {/* Instagram */}
-      <a
-        href="https://www.instagram.com"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="w-6 h-6 rounded-full bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 hover:opacity-90 text-white flex items-center justify-center transition text-[11px]"
-        title="Instagram"
-      >
-        <i className="fa fa-instagram"></i>
       </a>
 
       {/* WhatsApp */}
@@ -58,30 +58,19 @@ export default function SocialShareBar({ title, url }: SocialShareBarProps) {
         href={`https://api.whatsapp.com/send?text=${encodedTitle}%20${encodedUrl}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="w-6 h-6 rounded-full bg-[#25D366] hover:opacity-90 text-white flex items-center justify-center transition text-[11px]"
-        title="WhatsApp-এ শেয়ার করুন"
+        className="w-7 h-7 rounded-xs bg-[#25d366] hover:opacity-90 text-white flex items-center justify-center transition text-xs shadow-2xs"
+        title="WhatsApp"
       >
         <i className="fa fa-whatsapp"></i>
-      </a>
-
-      {/* Messenger */}
-      <a
-        href={`fb-messenger://share/?link=${encodedUrl}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="w-6 h-6 rounded-full bg-[#0084FF] hover:opacity-90 text-white flex items-center justify-center transition text-[11px]"
-        title="Messenger-এ শেয়ার করুন"
-      >
-        <i className="fa fa-commenting"></i>
       </a>
 
       {/* Print */}
       <button
         onClick={handlePrint}
-        className="w-6 h-6 text-gray-700 hover:text-black flex items-center justify-center transition cursor-pointer text-sm ml-1"
+        className="w-7 h-7 rounded-xs bg-[#555555] hover:bg-gray-700 text-white flex items-center justify-center transition text-xs shadow-2xs cursor-pointer"
         title="প্রিন্ট করুন"
       >
-        <i className="fa fa-print"></i>
+        <Printer size={14} />
       </button>
     </div>
   );
