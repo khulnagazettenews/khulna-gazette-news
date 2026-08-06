@@ -120,7 +120,7 @@ export default function CalendarArchiveWidget() {
   return (
     <div className="bg-white p-2.5 rounded border border-gray-200 shadow-2xs space-y-2 font-sans">
       {/* Header Title */}
-      <div className="bg-[#343e56] text-white py-1.5 px-3 text-center font-bold text-[15px] sm:text-[16px] rounded-xs shadow-2xs">
+      <div className="bg-[#353d4c] text-white py-1.5 px-3 text-center font-bold text-[16px] sm:text-[17px] rounded-xs shadow-2xs leading-normal">
         আর্কাইভ
       </div>
 

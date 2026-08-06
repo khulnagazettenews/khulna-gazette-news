@@ -26,7 +26,7 @@ export default function SidebarWidgets({
 
       {/* 2. GAZETTE EXCLUSIVE NEWS BOX matching khulnagazette.com design */}
       <div className="bg-white p-3 rounded border border-gray-200 shadow-2xs space-y-2.5">
-        <div className="bg-[#343e56] text-white py-1.5 px-3 text-center font-bold text-[16px] sm:text-[17px] rounded-xs shadow-2xs">
+        <div className="bg-[#353d4c] text-white py-1.5 px-3 text-center font-bold text-[16px] sm:text-[17px] rounded-xs shadow-2xs leading-normal">
           গেজেট এক্সক্লুসিভ
         </div>
         <div className="divide-y divide-gray-200">
@@ -61,7 +61,7 @@ export default function SidebarWidgets({
 
       {/* 3. EPAPER PROMO BANNER (ই-পেপার সংস্করণ) */}
       <div className="bg-white p-3 rounded border border-gray-200 shadow-2xs space-y-2.5 font-sans">
-        <div className="bg-[#343e56] text-white py-1.5 px-3 text-center font-bold text-[16px] sm:text-[17px] rounded-xs shadow-2xs">
+        <div className="bg-[#353d4c] text-white py-1.5 px-3 text-center font-bold text-[16px] sm:text-[17px] rounded-xs shadow-2xs leading-normal">
           ই-পেপার সংস্করণ
         </div>
         <Link href="/epaper" className="block relative aspect-[4/3] w-full overflow-hidden bg-[#243c3b] group p-1.5 rounded-xs">
@@ -79,7 +79,7 @@ export default function SidebarWidgets({
 
       {/* 4. PRAYER TIMES WIDGET matching exact user screenshot */}
       <div className="bg-white p-2.5 rounded border border-gray-200 shadow-2xs space-y-2">
-        <div className="bg-[#343e56] text-white py-1.5 px-3 text-center font-bold text-[15px] sm:text-[16px] rounded-xs shadow-2xs">
+        <div className="bg-[#353d4c] text-white py-1.5 px-3 text-center font-bold text-[16px] sm:text-[17px] rounded-xs shadow-2xs leading-normal">
           নামাজের সময়সূচি
         </div>
         <div>
