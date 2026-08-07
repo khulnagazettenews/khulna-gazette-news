@@ -2,6 +2,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 
 export async function GET() {
   try {
@@ -47,6 +48,13 @@ export async function POST(req: Request) {
     const video = await prisma.galleryVideo.create({
       data: dataObj,
     });
+
+    try {
+      revalidatePath('/');
+      revalidatePath('/video-gallery');
+    } catch (revalErr) {
+      console.warn('Revalidation warning:', revalErr);
+    }
 
     return NextResponse.json(video);
   } catch (error: any) {
