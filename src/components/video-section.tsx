@@ -46,6 +46,13 @@ const FALLBACK_VIDEOS: VideoItem[] = [
     description: 'খুলনাঞ্চলের কৃষি পণ্য ও রফতানি বাণিজ্য আপডেট...',
     youtubeUrl: 'https://www.youtube.com/watch?v=kJQP7kiw5Fk',
   },
+  {
+    id: 'kg-5',
+    title: 'খুলনা শহরের ইতিহাস ও রূপসা নদীর তীরবর্তী বিশেষ ভিডিওচিত্র',
+    categoryTag: 'ইতিহাস ও ঐতিহ্য',
+    description: 'রূপসা নদী ও খুলনা শহরের ঐতিহাসিক বিবরণচিত্র...',
+    youtubeUrl: 'https://www.youtube.com/watch?v=5qap5aO4i9A',
+  },
 ];
 
 export default function VideoSection({ videos = [] }: VideoSectionProps) {
@@ -66,8 +73,8 @@ export default function VideoSection({ videos = [] }: VideoSectionProps) {
     ? `https://img.youtube.com/vi/${activeYtId}/hqdefault.jpg`
     : '';
 
-  const sideVideos = displayVideos.filter((_, idx) => idx !== activeIdx).slice(0, 3);
-  const playlistVideos = sideVideos.length > 0 ? sideVideos : displayVideos.slice(1, 4);
+  const sideVideos = displayVideos.filter((_, idx) => idx !== activeIdx).slice(0, 4);
+  const playlistVideos = sideVideos.length > 0 ? sideVideos : displayVideos.slice(1, 5);
 
   const handleSelectVideo = (video: VideoItem) => {
     const foundIndex = displayVideos.findIndex((v) => v.id === video.id);

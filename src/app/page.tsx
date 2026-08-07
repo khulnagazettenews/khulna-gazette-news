@@ -131,7 +131,7 @@ export default async function HomePage() {
     // Videos
     prisma.galleryVideo.findMany({
       orderBy: { order: 'asc' },
-      take: 6,
+      take: 10,
     }),
     // Advertisements
     prisma.advertisement.findMany({
