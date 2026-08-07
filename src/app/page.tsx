@@ -9,6 +9,8 @@ import SpecialTopicSection from '@/components/special-topic-section';
 import OpinionWidget from '@/components/opinion-widget';
 import YoutubeBanner from '@/components/youtube-banner';
 import AdBanner from '@/components/ad-banner';
+import VideoSection from '@/components/video-section';
+import PhotoSection from '@/components/photo-section';
 import Link from 'next/link';
 import { Camera, Video, Play } from 'lucide-react';
 
@@ -124,12 +126,12 @@ export default async function HomePage() {
     // Photos
     prisma.galleryPhoto.findMany({
       orderBy: { order: 'asc' },
-      take: 4,
+      take: 5,
     }),
     // Videos
     prisma.galleryVideo.findMany({
       orderBy: { order: 'asc' },
-      take: 3,
+      take: 6,
     }),
     // Advertisements
     prisma.advertisement.findMany({
@@ -301,81 +303,8 @@ export default async function HomePage() {
             {/* 14. Gazette Exclusive Section */}
             <CategoryBlock title="গেজেট এক্সক্লুসিভ" slug="gazette-exclusive" news={exclusiveNews as any} />
 
-            {/* 15. Photo & Video Gallery */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-4 border-t border-gray-200">
-              {/* Photo Gallery */}
-              {photos.length > 0 && (
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between border-b-2 border-[#FF0000] pb-1.5">
-                    <h3 className="text-base sm:text-lg font-black text-gray-900 flex items-center gap-2">
-                      <Camera size={20} className="text-[#e60023]" />
-                      <span>ফটো গ্যালারি</span>
-                    </h3>
-                    <Link href="/photo-gallery" className="text-xs text-[#e60023] font-bold hover:underline">
-                      সব ছবি দেখুন
-                    </Link>
-                  </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
-                    {photos.map((ph) => (
-                      <div key={ph.id} className="relative aspect-square rounded-lg overflow-hidden group shadow-sm border border-gray-100">
-                        <img src={ph.imageUrl} alt={ph.caption || 'Gallery image'} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
-                        {ph.caption && (
-                          <div className="absolute inset-x-0 bottom-0 bg-black/60 text-white p-2 text-[10px] truncate leading-tight select-none">
-                            {ph.caption}
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Video Gallery */}
-              {videos.length > 0 && (
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between border-b-2 border-[#FF0000] pb-1.5">
-                    <h3 className="text-base sm:text-lg font-black text-gray-900 flex items-center gap-2">
-                      <Video size={20} className="text-[#e60023]" />
-                      <span>ভিডিও গ্যালারি</span>
-                    </h3>
-                    <Link href="/video-gallery" className="text-xs text-[#e60023] font-bold hover:underline">
-                      সব ভিডিও দেখুন
-                    </Link>
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    {videos.map((vid) => {
-                      const ytId = getYoutubeId(vid.youtubeUrl);
-                      const thumb = ytId ? `https://img.youtube.com/vi/${ytId}/mqdefault.jpg` : '';
-                      return (
-                        <div key={vid.id} className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col justify-between group">
-                          <div className="relative aspect-video w-full bg-slate-900 flex items-center justify-center overflow-hidden">
-                            {thumb && <img src={thumb} alt={vid.title} className="w-full h-full object-cover opacity-85 group-hover:scale-105 transition duration-300" />}
-                            <a 
-                              href={vid.youtubeUrl} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="absolute w-9 h-9 bg-red-600 text-white rounded-full flex items-center justify-center hover:bg-red-700 transition shadow-lg"
-                            >
-                              <Play size={15} className="ml-0.5 fill-current" />
-                            </a>
-                          </div>
-                          <div className="p-2.5 text-left">
-                            <a 
-                              href={vid.youtubeUrl} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="text-xs font-bold text-gray-800 hover:text-red-600 transition leading-snug line-clamp-2 block"
-                            >
-                              {vid.title}
-                            </a>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-            </div>
+            {/* Prothom Alo Style Photo Section */}
+            <PhotoSection photos={serializeList(photos)} newsWithPhotos={serializeList(heroNews)} />
           </div>
 
           {/* Right Column (3 Cols on LG): Full Sidebar Widgets */}
@@ -389,6 +318,9 @@ export default async function HomePage() {
           </div>
         </div>
       </main>
+
+      {/* Dhaka Post Style Video Section right before Footer */}
+      <VideoSection videos={serializeList(videos)} />
 
       <PublicFooter />
     </div>

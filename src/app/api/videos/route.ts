@@ -17,11 +17,11 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session || !['SUPER_ADMIN', 'ADMIN', 'EDITOR', 'SUB_EDITOR'].includes((session.user as any).role)) {
+    if (!session || !['SUPER_ADMIN', 'ADMIN', 'EDITOR', 'SUB_EDITOR', 'REPORTER', 'CONTRIBUTOR'].includes((session.user as any).role)) {
       return NextResponse.json({ error: 'অননুমোদিত অ্যাক্সেস' }, { status: 403 });
     }
 
-    const { youtubeUrl, title, order } = await req.json();
+    const { youtubeUrl, title, categoryTag, description, order } = await req.json();
 
     if (!youtubeUrl || !title) {
       return NextResponse.json({ error: 'শিরোনাম ও ইউটিউব লিংক আবশ্যক।' }, { status: 400 });
@@ -32,16 +32,28 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'সঠিক ইউটিউব লিংক প্রদান করুন।' }, { status: 400 });
     }
 
+    const dataObj: any = {
+      youtubeUrl: youtubeUrl.trim(),
+      title: title.trim(),
+      order: order ? parseInt(order) : 0,
+    };
+    if (categoryTag && categoryTag.trim()) {
+      dataObj.categoryTag = categoryTag.trim();
+    }
+    if (description && description.trim()) {
+      dataObj.description = description.trim();
+    }
+
     const video = await prisma.galleryVideo.create({
-      data: {
-        youtubeUrl,
-        title,
-        order: order ? parseInt(order) : 0,
-      },
+      data: dataObj,
     });
 
     return NextResponse.json(video);
-  } catch (error) {
-    return NextResponse.json({ error: 'ভিডিও সংরক্ষণ করতে সমস্যা হয়েছে।' }, { status: 500 });
+  } catch (error: any) {
+    console.error('Error saving video to gallery:', error);
+    return NextResponse.json(
+      { error: error?.message || 'ভিডিও সংরক্ষণ করতে সমস্যা হয়েছে।' },
+      { status: 500 }
+    );
   }
 }

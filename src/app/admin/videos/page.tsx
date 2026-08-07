@@ -16,6 +16,8 @@ interface GalleryVideo {
   id: string;
   youtubeUrl: string;
   title: string;
+  categoryTag?: string;
+  description?: string;
   order: number;
 }
 
@@ -26,6 +28,8 @@ export default function VideoGalleryManagement() {
   // Form State
   const [youtubeUrl, setYoutubeUrl] = useState('');
   const [title, setTitle] = useState('');
+  const [categoryTag, setCategoryTag] = useState('');
+  const [description, setDescription] = useState('');
   const [order, setOrder] = useState('0');
   
   const [submitting, setSubmitting] = useState(false);
@@ -75,6 +79,8 @@ export default function VideoGalleryManagement() {
         body: JSON.stringify({
           youtubeUrl,
           title: title.trim(),
+          categoryTag: categoryTag.trim(),
+          description: description.trim(),
           order: parseInt(order) || 0,
         }),
       });
@@ -84,6 +90,8 @@ export default function VideoGalleryManagement() {
         setSuccess('ভিডিও গ্যালারিতে নতুন ভিডিও সফলভাবে যুক্ত করা হয়েছে!');
         setYoutubeUrl('');
         setTitle('');
+        setCategoryTag('');
+        setDescription('');
         setOrder('0');
         fetchVideos();
       } else {
@@ -170,8 +178,30 @@ export default function VideoGalleryManagement() {
                 required
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="যেমন: খুলনা প্রেস ক্লাবের বার্ষিক সাধারণ সভা"
+                placeholder="যেমন: শেখ হাসিনা দেশে ফিরলে কারাগারে যেতে হবে: আইনমন্ত্রী"
                 className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl font-bold focus:outline-none focus:border-red-500 focus:bg-white transition"
+              />
+            </div>
+
+            <div>
+              <label className="block mb-1.5 font-bold text-slate-900">রেড ব্যানার টেক্সট/ট্যাগ (অপশনাল)</label>
+              <input
+                type="text"
+                value={categoryTag}
+                onChange={(e) => setCategoryTag(e.target.value)}
+                placeholder="যেমন: হাসিনা ফিরলে আইনের মুখোমুখি হতে হবে"
+                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl font-bold focus:outline-none focus:border-red-500 focus:bg-white transition"
+              />
+            </div>
+
+            <div>
+              <label className="block mb-1.5 font-bold text-slate-900">সংক্ষিপ্ত বিবরণ (অপশনাল)</label>
+              <textarea
+                rows={2}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="যেমন: সাবেক প্রধানমন্ত্রী শেখ হাসিনার দেশে ফেরার প্রসঙ্গে আইনমন্ত্রী অ্যাডভোকেট মো. আসাদুজ্জামান বলেছেন..."
+                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-bold focus:outline-none focus:border-red-500 focus:bg-white transition font-medium"
               />
             </div>
 
@@ -182,7 +212,7 @@ export default function VideoGalleryManagement() {
                 required
                 value={youtubeUrl}
                 onChange={(e) => setYoutubeUrl(e.target.value)}
-                placeholder="যেমন: https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                placeholder="যেমন: https://www.youtube.com/watch?v=M7lc1UVf-VE"
                 className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl font-bold focus:outline-none focus:border-red-500 focus:bg-white transition"
               />
             </div>
