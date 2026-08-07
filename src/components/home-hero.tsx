@@ -34,42 +34,59 @@ export default function HomeHero({ news }: HomeHeroProps) {
     <div className="space-y-5 sm:space-y-6">
       {/* 1. TOP HERO MAIN LEAD SECTION: Exact Match with User Reference Image */}
       {mainLead && (
-        <div className="bg-white rounded-xl sm:rounded-2xl p-3.5 sm:p-6 lg:p-8 border border-gray-100 shadow-sm sm:shadow-lg shadow-gray-200/50">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-3.5 sm:gap-6 lg:gap-8 items-center">
-          {/* Left Side: Large Red Heading + Description */}
-          <div className="order-2 md:order-1 md:col-span-5 flex flex-col justify-center space-y-2.5 sm:space-y-3.5 pt-1 md:pt-0">
-            <Link href={`/${mainLead.category?.slug || 'news'}/${mainLead.id}`} className="group block">
-              <h1 className="text-[24px] sm:text-[28px] lg:text-[36px] font-bold text-[#e60023] group-hover:text-red-700 transition leading-[1.28] line-clamp-3">
-                ‘{mainLead.title.replace(/^[‘'“"]|[’'"”]$/g, '')}’
-              </h1>
-            </Link>
-            {mainLead.content && (
-              <p className="text-[16px] sm:text-[17px] lg:text-[18px] text-[#222222] leading-[1.65] sm:leading-[1.7] font-normal line-clamp-3 sm:line-clamp-6">
-                {getExcerpt(mainLead.content)}...
-              </p>
-            )}
-          </div>
+        <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-7 border border-gray-200/80 shadow-sm">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-5 sm:gap-6 lg:gap-8 items-stretch">
+            {/* Left Side: Large Red Heading + Description + Bottom Link (6 cols on MD / 50%) */}
+            <div className="order-2 md:order-1 md:col-span-6 flex flex-col justify-between h-full space-y-3.5 py-0.5">
+              <div className="space-y-3 sm:space-y-4">
+                <Link href={`/${mainLead.category?.slug || 'news'}/${mainLead.id}`} className="group block -mt-1.5 sm:-mt-2">
+                  <h1 className="text-[24px] sm:text-[28px] lg:text-[34px] font-bold text-[#e60023] group-hover:text-red-700 transition leading-[1.28]">
+                    ‘{mainLead.title.replace(/^[‘'“"]|[’'"”]$/g, '')}’
+                  </h1>
+                </Link>
 
-          {/* Right Side: Featured Image with rounded corners */}
-          <div className="order-1 md:order-2 md:col-span-7 group">
-            {mainLead.featuredImage ? (
-              <Link
-                href={`/${mainLead.category?.slug || 'news'}/${mainLead.id}`}
-                className="block aspect-[16/10] overflow-hidden rounded-lg sm:rounded-xl bg-gray-100 shadow-2xs"
-              >
-                <img
-                  src={mainLead.featuredImage}
-                  alt={mainLead.title}
-                  className="w-full h-full object-cover group-hover:scale-[1.01] transition duration-300 rounded-lg sm:rounded-xl"
-                />
-              </Link>
-            ) : (
-              <div className="w-full aspect-[16/10] bg-gray-100 rounded-lg sm:rounded-xl flex items-center justify-center text-gray-400 font-bold text-base">
-                খুলনা গেজেট
+                {mainLead.content && (
+                  <p className="text-[16px] sm:text-[17px] lg:text-[18px] text-[#222222] leading-[1.65] sm:leading-[1.75] font-normal line-clamp-5 sm:line-clamp-7">
+                    {getExcerpt(mainLead.content)}...
+                  </p>
+                )}
               </div>
-            )}
+
+              {/* Bottom metadata / read more link aligning with exact bottom edge of image */}
+              <div className="pt-2.5 border-t border-gray-100 flex items-center justify-between text-sm sm:text-base font-bold text-[#e60023] shrink-0">
+                <span className="text-[#e60023] font-extrabold text-sm sm:text-base">
+                  {mainLead.category?.name || 'বিশেষ সংবাদ'}
+                </span>
+                <Link
+                  href={`/${mainLead.category?.slug || 'news'}/${mainLead.id}`}
+                  className="text-[#e60023] font-bold hover:underline inline-flex items-center gap-1.5"
+                >
+                  <span>বিস্তারিত সংবাদ পড়ুন</span>
+                  <span className="text-base sm:text-lg">↗</span>
+                </Link>
+              </div>
+            </div>
+
+            {/* Right Side: Featured Image (6 cols on MD / 50%) */}
+            <div className="order-1 md:order-2 md:col-span-6 group flex flex-col h-full">
+              {mainLead.featuredImage ? (
+                <Link
+                  href={`/${mainLead.category?.slug || 'news'}/${mainLead.id}`}
+                  className="block w-full h-full aspect-[16/10] md:aspect-auto min-h-[250px] sm:min-h-[300px] overflow-hidden rounded-none bg-slate-100 shadow-xs relative"
+                >
+                  <img
+                    src={mainLead.featuredImage}
+                    alt={mainLead.title}
+                    className="w-full h-full object-cover group-hover:scale-[1.01] transition duration-300 rounded-none"
+                  />
+                </Link>
+              ) : (
+                <div className="w-full h-full min-h-[250px] sm:min-h-[300px] bg-gray-100 rounded-none flex items-center justify-center text-gray-400 font-bold text-base">
+                  খুলনা গেজেট
+                </div>
+              )}
+            </div>
           </div>
-        </div>
         </div>
       )}
 

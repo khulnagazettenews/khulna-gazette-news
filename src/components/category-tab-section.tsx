@@ -86,7 +86,7 @@ export default function CategoryTabSection({
         {/* More Categories Link */}
         <Link
           href={`/${activeSlug}`}
-          className="text-xs text-red-600 font-bold hover:underline shrink-0 pl-2 border-l border-gray-200 flex items-center gap-1"
+          className="text-sm sm:text-base text-red-600 font-bold hover:underline shrink-0 pl-2 border-l border-gray-200 flex items-center gap-1"
         >
           <span>আরও</span>
           <span>»</span>

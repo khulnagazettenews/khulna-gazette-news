@@ -41,7 +41,7 @@ export default function CategoryBlock({
         <h2 className="text-[22px] sm:text-[24px] font-bold text-[#000000] leading-none">
           {title}
         </h2>
-        <Link href={`/${slug}`} className="text-xs text-[#e60023] font-bold hover:underline">
+        <Link href={`/${slug}`} className="text-sm sm:text-base text-[#e60023] font-bold hover:underline">
           আরও খবর
         </Link>
       </div>
