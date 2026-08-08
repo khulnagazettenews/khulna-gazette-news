@@ -30,7 +30,7 @@ export default function SidebarWidgets({
           গেজেট এক্সক্লুসিভ
         </div>
         <div className="divide-y divide-gray-200">
-          {(exclusiveNews.length > 0 ? exclusiveNews.slice(0, 3) : latestNews.slice(0, 3)).map((item) => (
+          {(exclusiveNews.length > 0 ? exclusiveNews.slice(0, 5) : latestNews.slice(0, 5)).map((item) => (
             <div key={item.id} className="py-2.5 flex items-start gap-3 group first:pt-1 last:pb-1">
               <Link
                 href={`/${item.category?.slug || 'news'}/${item.id}`}
@@ -78,14 +78,7 @@ export default function SidebarWidgets({
       </div>
 
       {/* 4. PRAYER TIMES WIDGET matching exact user screenshot */}
-      <div className="bg-white p-2.5 rounded border border-gray-200 shadow-2xs space-y-2">
-        <div className="bg-[#353d4c] text-white py-1.5 px-3 text-center font-bold text-[16px] sm:text-[17px] rounded-xs shadow-2xs leading-normal">
-          নামাজের সময়সূচি
-        </div>
-        <div>
-          <PrayerWidget />
-        </div>
-      </div>
+      <PrayerWidget />
 
       {/* 5. CALENDAR ARCHIVE WIDGET (নামাজের সময়সূচির নিচে আর্কাইভ) */}
       <CalendarArchiveWidget />

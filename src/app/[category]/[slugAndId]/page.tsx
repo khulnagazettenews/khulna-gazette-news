@@ -151,7 +151,7 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
 
   if (news && news.status === 'PUBLISHED') {
     // Run all supporting queries in PARALLEL via Promise.all for instant speed
-    const [relatedNewsFetched, latestNews, popularNews, sidebarAd] = await Promise.all([
+    const [relatedNewsFetched, latestNews, popularNews, exclusiveNews, sidebarAd] = await Promise.all([
       prisma.news.findMany({
         where: {
           categoryId: news.categoryId,
@@ -165,12 +165,17 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
       prisma.news.findMany({
         where: { status: 'PUBLISHED' },
         orderBy: { publishedAt: 'desc' },
-        take: 6,
+        take: 10,
         include: { category: true },
       }),
       prisma.news.findMany({
         where: { status: 'PUBLISHED' },
         orderBy: { viewCount: 'desc' },
+        take: 10,
+        include: { category: true },
+      }),
+      prisma.news.findMany({
+        where: { isFeatured: true, status: 'PUBLISHED' },
         take: 6,
         include: { category: true },
       }),
@@ -390,7 +395,7 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
               <SidebarWidgets
                 latestNews={serializeList(latestNews)}
                 popularNews={serializeList(popularNews)}
-                exclusiveNews={serializeList(latestNews.slice(0, 4))}
+                exclusiveNews={serializeList(exclusiveNews)}
                 sidebarAd={sidebarAd}
               />
             </div>

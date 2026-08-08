@@ -33,6 +33,7 @@ const toEnglishNumber = (numStr: string) => {
 
 export default function PrayerWidgetClient({ timings }: PrayerWidgetClientProps) {
   const parseTo12hBengali = (val: string, name: string) => {
+    if (!val) return '--:--';
     let cleanVal = toEnglishNumber(val).trim();
     const isPm = cleanVal.toLowerCase().includes('pm');
     const isAm = cleanVal.toLowerCase().includes('am');
@@ -41,6 +42,8 @@ export default function PrayerWidgetClient({ timings }: PrayerWidgetClientProps)
     const [hStr, mStr] = cleanVal.split(':');
     let h = parseInt(hStr, 10);
     const m = mStr || '00';
+
+    if (isNaN(h)) return val;
 
     if (isPm && h < 12) h += 12;
     if (isAm && h === 12) h = 0;
@@ -68,20 +71,30 @@ export default function PrayerWidgetClient({ timings }: PrayerWidgetClientProps)
   ];
 
   return (
-    <div className="w-full font-sans select-none space-y-1">
-      {list.map((item) => (
-        <div key={item.name} className="flex items-center justify-between gap-2">
-          {/* Left Gray Name Badge */}
-          <div className="bg-[#f1f3f5] text-slate-800 font-bold text-xs sm:text-[13px] py-0.5 px-2 flex-1 rounded text-center shadow-2xs">
-            {item.name}
-          </div>
-
-          {/* Right Light Blue Time Badge */}
-          <div className="bg-[#e7f5ff] text-[#1971c2] font-bold text-xs sm:text-[13px] py-0.5 px-2 flex-1 rounded text-center shadow-2xs">
-            {item.time}
-          </div>
+    <div className="w-full bg-white p-2 rounded-lg border border-gray-200 shadow-2xs select-none">
+      <div className="rounded overflow-hidden border border-gray-200">
+        {/* Dark Header Banner */}
+        <div className="bg-[#343a40] text-white py-2 px-3 text-center font-bold text-[16px] sm:text-[17px] leading-snug">
+          নামাজের সময়সূচি
         </div>
-      ))}
+
+        {/* Prayer Time Rows */}
+        <div className="bg-white p-2.5 space-y-2">
+          {list.map((item) => (
+            <div key={item.name} className="flex items-center justify-between gap-2.5">
+              {/* Left Gray Name Badge */}
+              <div className="bg-[#f1f3f5] text-[#000000] font-bold text-[14px] sm:text-[15px] py-1.5 px-2.5 flex-1 rounded text-center leading-tight">
+                {item.name}
+              </div>
+
+              {/* Right Light Blue Time Badge */}
+              <div className="bg-[#e7f5ff] text-[#1d4ed8] font-bold text-[14px] sm:text-[15px] py-1.5 px-2.5 flex-1 rounded text-center leading-tight">
+                {item.time}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

@@ -23,7 +23,7 @@ export default async function BreakingNewsTicker() {
         <div className="relative shrink-0 flex items-center">
           <span className="bg-[#ed0022] text-white font-extrabold px-3 py-1 text-xs sm:text-sm rounded-xs select-none shadow-2xs flex items-center gap-1.5 z-10">
             <span className="w-2 h-2 rounded-full bg-white animate-pulse"></span>
-            ব্রেকিং নিউজ
+            ব্রেকিং
           </span>
           {/* Decorative Polygon Arrow */}
           <div className="w-0 h-0 border-y-[13px] border-y-transparent border-l-[10px] border-l-[#ed0022] z-10"></div>

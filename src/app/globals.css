@@ -160,7 +160,7 @@ h5 {
 }
 
 .animate-marquee {
-  animation: marquee 35s linear infinite;
+  animation: marquee 55s linear infinite;
   display: inline-flex;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

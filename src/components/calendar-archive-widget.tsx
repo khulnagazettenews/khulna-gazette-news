@@ -118,112 +118,115 @@ export default function CalendarArchiveWidget() {
   };
 
   return (
-    <div className="bg-white p-2.5 rounded border border-gray-200 shadow-2xs space-y-2 font-sans">
-      {/* Header Title */}
-      <div className="bg-[#353d4c] text-white py-1.5 px-3 text-center font-bold text-[16px] sm:text-[17px] rounded-xs shadow-2xs leading-normal">
-        আর্কাইভ
-      </div>
-
-      <div className="space-y-2">
-        {/* Month Year Banner with Nav Buttons */}
-        <div className="flex items-center justify-between text-gray-800 font-extrabold text-base px-1">
-          <button
-            onClick={handlePrevMonth}
-            className="p-0.5 rounded hover:bg-gray-200 text-gray-700 transition cursor-pointer"
-            aria-label="Previous Month"
-          >
-            <ChevronLeft size={18} />
-          </button>
-          <span className="tracking-tight text-base font-bold">
-            {banglaMonths[currentMonth]} {toBanglaNum(currentYear)}
-          </span>
-          <button
-            onClick={handleNextMonth}
-            className="p-0.5 rounded hover:bg-gray-200 text-gray-700 transition cursor-pointer"
-            aria-label="Next Month"
-          >
-            <ChevronRight size={18} />
-          </button>
+    <div className="w-full bg-white p-2 rounded-lg border border-gray-200 shadow-2xs select-none">
+      <div className="rounded overflow-hidden border border-gray-200">
+        {/* Dark Header Banner */}
+        <div className="bg-[#343a40] text-white py-1.5 px-2 text-center font-bold text-[16px] sm:text-[17px] leading-snug">
+          আর্কাইভ
         </div>
 
-        {/* Dropdown Pickers */}
-        <div className="grid grid-cols-2 gap-1.5">
-          <select
-            value={currentMonth}
-            onChange={(e) => setCurrentMonth(Number(e.target.value))}
-            className="bg-white border border-red-200 rounded px-1.5 py-0.5 text-xs font-semibold text-gray-800 outline-none focus:ring-1 focus:ring-red-500 cursor-pointer text-center"
-          >
-            {banglaMonths.map((month, index) => (
-              <option key={month} value={index}>
-                {month}
-              </option>
-            ))}
-          </select>
-
-          <select
-            value={currentYear}
-            onChange={(e) => setCurrentYear(Number(e.target.value))}
-            className="bg-white border border-red-200 rounded px-1.5 py-0.5 text-xs font-semibold text-gray-800 outline-none focus:ring-1 focus:ring-red-500 cursor-pointer text-center"
-          >
-            {years.map((yr) => (
-              <option key={yr} value={yr}>
-                {toBanglaNum(yr)}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Calendar Grid Container */}
-        <div className="bg-white rounded border border-gray-150 p-1.5 shadow-2xs">
-          {/* Weekday Labels */}
-          <div className="grid grid-cols-7 text-center font-bold text-[11px] text-gray-600 mb-1 border-b border-gray-100 pb-0.5">
-            {weekDaysBn.map((day) => (
-              <div key={day} className="py-0.5">
-                {day}
-              </div>
-            ))}
+        {/* Content Body */}
+        <div className="bg-white p-2 sm:p-2.5 space-y-2">
+          {/* Month Year Banner with Nav Buttons */}
+          <div className="flex items-center justify-between text-[#000000] font-bold text-[14px] sm:text-[15px] px-1">
+            <button
+              onClick={handlePrevMonth}
+              className="p-0.5 rounded hover:bg-gray-200 text-gray-800 transition cursor-pointer"
+              aria-label="Previous Month"
+            >
+              <ChevronLeft size={18} />
+            </button>
+            <span className="tracking-tight font-bold text-[#000000]">
+              {banglaMonths[currentMonth]} {toBanglaNum(currentYear)}
+            </span>
+            <button
+              onClick={handleNextMonth}
+              className="p-0.5 rounded hover:bg-gray-200 text-gray-800 transition cursor-pointer"
+              aria-label="Next Month"
+            >
+              <ChevronRight size={18} />
+            </button>
           </div>
 
-          {/* Days Grid */}
-          <div className="grid grid-cols-7 text-center gap-y-0.5 gap-x-0.5 text-[11px] font-semibold">
-            {days.map((item, idx) => {
-              if (!item.isCurrentMonth) {
+          {/* Dropdown Pickers */}
+          <div className="grid grid-cols-2 gap-1.5">
+            <select
+              value={currentMonth}
+              onChange={(e) => setCurrentMonth(Number(e.target.value))}
+              className="bg-white border border-gray-300 rounded px-1.5 py-1 text-[12px] sm:text-[13px] font-bold text-[#000000] outline-none focus:ring-1 focus:ring-red-500 cursor-pointer text-center"
+            >
+              {banglaMonths.map((month, index) => (
+                <option key={month} value={index}>
+                  {month}
+                </option>
+              ))}
+            </select>
+
+            <select
+              value={currentYear}
+              onChange={(e) => setCurrentYear(Number(e.target.value))}
+              className="bg-white border border-gray-300 rounded px-1.5 py-1 text-[12px] sm:text-[13px] font-bold text-[#000000] outline-none focus:ring-1 focus:ring-red-500 cursor-pointer text-center"
+            >
+              {years.map((yr) => (
+                <option key={yr} value={yr}>
+                  {toBanglaNum(yr)}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Calendar Grid Container */}
+          <div className="bg-white rounded border border-gray-200 p-1 sm:p-1.5">
+            {/* Weekday Labels */}
+            <div className="grid grid-cols-7 text-center font-bold text-[11px] sm:text-[12px] text-[#1e293b] mb-1 border-b border-gray-200 pb-0.5">
+              {weekDaysBn.map((day) => (
+                <div key={day} className="py-0.5">
+                  {day}
+                </div>
+              ))}
+            </div>
+
+            {/* Days Grid */}
+            <div className="grid grid-cols-7 text-center gap-y-0.5 gap-x-0.5 text-[12px] sm:text-[13px] font-bold">
+              {days.map((item, idx) => {
+                if (!item.isCurrentMonth) {
+                  return (
+                    <div
+                      key={idx}
+                      className="py-0.5 text-gray-300 pointer-events-none select-none font-normal"
+                    >
+                      {toBanglaNum(item.day)}
+                    </div>
+                  );
+                }
+
+                const isSelected = selectedDay === item.day;
+
                 return (
-                  <div
+                  <button
                     key={idx}
-                    className="py-0.5 text-gray-300 pointer-events-none select-none font-normal"
+                    onClick={() => setSelectedDay(item.day)}
+                    className={`py-0.5 rounded transition-colors text-center cursor-pointer ${
+                      isSelected
+                        ? 'bg-[#1d4ed8] text-white font-bold shadow-2xs'
+                        : 'text-[#000000] hover:bg-gray-100 font-bold'
+                    }`}
                   >
                     {toBanglaNum(item.day)}
-                  </div>
+                  </button>
                 );
-              }
-
-              const isSelected = selectedDay === item.day;
-
-              return (
-                <button
-                  key={idx}
-                  onClick={() => setSelectedDay(item.day)}
-                  className={`py-0.5 rounded transition-colors text-center cursor-pointer ${
-                    isSelected
-                      ? 'bg-blue-100 text-blue-900 font-extrabold shadow-2xs border border-blue-200'
-                      : 'text-gray-800 hover:bg-gray-100'
-                  }`}
-                >
-                  {toBanglaNum(item.day)}
-                </button>
-              );
-            })}
+              })}
+            </div>
           </div>
-        </div>
 
-        {/* Search Archive Button */}
-        <button
-          onClick={handleSearch}
-          className="w-full bg-[#bd081c] hover:bg-red-700 text-white font-bold py-1.5 px-3 rounded text-xs sm:text-sm transition shadow-xs cursor-pointer flex items-center justify-center gap-1"
-        >
-          আর্কাইভ খুঁজুন
-        </button>
+          {/* Search Archive Button */}
+          <button
+            onClick={handleSearch}
+            className="w-full bg-[#bd081c] hover:bg-red-700 text-white font-bold py-1.5 px-3 rounded text-[13px] sm:text-[14px] transition shadow-xs cursor-pointer flex items-center justify-center gap-1"
+          >
+            আর্কাইভ খুঁজুন
+          </button>
+        </div>
       </div>
     </div>
   );

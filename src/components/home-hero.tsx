@@ -61,8 +61,8 @@ export default function HomeHero({ news }: HomeHeroProps) {
                   href={`/${mainLead.category?.slug || 'news'}/${mainLead.id}`}
                   className="text-[#e60023] font-bold hover:underline inline-flex items-center gap-1.5"
                 >
-                  <span>বিস্তারিত সংবাদ পড়ুন</span>
-                  <span className="text-base sm:text-lg">↗</span>
+                  <span>বিস্তারিত</span>
+                  <span className="text-base sm:text-lg font-bold">→</span>
                 </Link>
               </div>
             </div>
