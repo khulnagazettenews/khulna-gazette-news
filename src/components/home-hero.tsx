@@ -72,16 +72,16 @@ export default function HomeHero({ news }: HomeHeroProps) {
               {mainLead.featuredImage ? (
                 <Link
                   href={`/${mainLead.category?.slug || 'news'}/${mainLead.id}`}
-                  className="block w-full h-full aspect-[16/10] md:aspect-auto min-h-[250px] sm:min-h-[300px] overflow-hidden rounded-none bg-slate-100 shadow-xs relative"
+                  className="block w-full h-full aspect-[16/10] md:aspect-auto min-h-[260px] sm:min-h-[310px] lg:min-h-[330px] overflow-hidden rounded-lg bg-slate-100 shadow-xs relative"
                 >
                   <img
                     src={mainLead.featuredImage}
                     alt={mainLead.title}
-                    className="w-full h-full object-cover group-hover:scale-[1.01] transition duration-300 rounded-none"
+                    className="w-full h-full object-cover group-hover:scale-[1.01] transition duration-300 rounded-lg"
                   />
                 </Link>
               ) : (
-                <div className="w-full h-full min-h-[250px] sm:min-h-[300px] bg-gray-100 rounded-none flex items-center justify-center text-gray-400 font-bold text-base">
+                <div className="w-full h-full min-h-[260px] sm:min-h-[310px] lg:min-h-[330px] bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 font-bold text-base">
                   খুলনা গেজেট
                 </div>
               )}
