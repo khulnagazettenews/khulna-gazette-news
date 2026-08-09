@@ -46,8 +46,8 @@ export default function HomeHero({ news }: HomeHeroProps) {
                 </Link>
 
                 {mainLead.content && (
-                  <p className="text-[16px] sm:text-[17px] lg:text-[18px] text-[#222222] leading-[1.65] sm:leading-[1.75] font-normal line-clamp-5 sm:line-clamp-7">
-                    {getExcerpt(mainLead.content)}...
+                  <p className="text-[16px] sm:text-[17px] lg:text-[18px] text-[#222222] leading-[1.65] sm:leading-[1.75] font-normal line-clamp-6">
+                    {getExcerpt(mainLead.content)}
                   </p>
                 )}
               </div>
