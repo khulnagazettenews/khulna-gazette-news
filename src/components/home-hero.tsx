@@ -32,25 +32,25 @@ export default function HomeHero({ news }: HomeHeroProps) {
 
   return (
     <div className="space-y-5 sm:space-y-6">
-      {/* 1. TOP HERO MAIN LEAD SECTION: Exact Match with User Reference Image */}
+      {/* 1. TOP HERO MAIN LEAD SECTION: Modern News Portal Design */}
       {mainLead && (
-        <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-7 border border-gray-200/80 shadow-sm">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-5 sm:gap-6 lg:gap-8 items-stretch">
-            {/* Left Side: Large Red Heading + Description + Bottom Link (6 cols on MD / 50%) */}
-            <div className="order-2 md:order-1 md:col-span-6 flex flex-col justify-between h-full space-y-3.5 py-0.5">
-              <div className="space-y-3 sm:space-y-4">
-                <Link href={`/${mainLead.category?.slug || 'news'}/${mainLead.id}`} className="group block -mt-1.5 sm:-mt-2">
-                  <h1 className="text-[24px] sm:text-[28px] lg:text-[34px] font-bold text-[#e60023] group-hover:text-red-700 transition leading-[1.28]">
+        <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-5 lg:p-6 border border-gray-200/90 shadow-sm hover:shadow-md transition duration-300">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-5 sm:gap-6 lg:gap-8 items-center">
+            {/* Left Side: Category + Large Red Heading + Description + Bottom Link (6 cols on MD / 50%) */}
+            <div className="order-2 md:order-1 md:col-span-6 flex flex-col justify-between h-full space-y-4 py-1">
+              <div className="space-y-3">
+                <Link href={`/${mainLead.category?.slug || 'news'}/${mainLead.id}`} className="group block">
+                  <h1 className="text-[24px] sm:text-[28px] lg:text-[32px] xl:text-[34px] font-bold text-[#e60023] group-hover:text-red-700 transition leading-[1.28]">
                     ‘{mainLead.title.replace(/^[‘'“"]|[’'"”]$/g, '')}’
                   </h1>
                 </Link>
 
                 {mainLead.content && (
                   <p 
-                    className="text-[17px] sm:text-[18px] lg:text-[19px] text-[#222222] leading-[1.65] sm:leading-[1.75] font-normal"
+                    className="text-[16px] sm:text-[17px] lg:text-[18px] text-[#333333] leading-[1.68] font-normal"
                     style={{
                       display: '-webkit-box',
-                      WebkitLineClamp: 7,
+                      WebkitLineClamp: 5,
                       WebkitBoxOrient: 'vertical',
                       overflow: 'hidden',
                     }}
@@ -60,35 +60,36 @@ export default function HomeHero({ news }: HomeHeroProps) {
                 )}
               </div>
 
-              {/* Bottom read more button styled matching user reference image */}
-              <div className="pt-2.5 flex items-center justify-end shrink-0">
+              {/* Bottom read more button styled with rich arrow */}
+              <div className="pt-2 flex items-center justify-end shrink-0">
                 <Link
                   href={`/${mainLead.category?.slug || 'news'}/${mainLead.id}`}
-                  className="bg-white hover:bg-gray-50 text-[#000000] border border-gray-200 shadow-xs rounded-lg px-3.5 py-1.5 font-bold text-sm sm:text-base inline-flex items-center gap-1 justify-center transition"
+                  className="bg-gray-100 hover:bg-[#e60023] text-gray-800 hover:text-white border border-gray-200/80 shadow-2xs rounded-lg px-4 py-1.5 font-bold text-sm sm:text-base inline-flex items-center gap-1.5 transition duration-200 group"
                 >
-                  <span>বিস্তারিত</span>
-                  <svg className="w-4 h-4 text-black stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <span>বিস্তারিত পড়ুন</span>
+                  <svg className="w-4 h-4 text-gray-700 group-hover:text-white stroke-[2.5] transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                   </svg>
                 </Link>
               </div>
             </div>
 
-            {/* Right Side: Featured Image (6 cols on MD / 50%) */}
-            <div className="order-1 md:order-2 md:col-span-6 group flex flex-col h-full">
+            {/* Right Side: Beautiful Featured Image (6 cols on MD / 50%) */}
+            <div className="order-1 md:order-2 md:col-span-6 group">
               {mainLead.featuredImage ? (
                 <Link
                   href={`/${mainLead.category?.slug || 'news'}/${mainLead.id}`}
-                  className="block w-full h-full aspect-[16/10] md:aspect-auto min-h-[260px] sm:min-h-[310px] lg:min-h-[330px] overflow-hidden rounded-lg bg-slate-100 shadow-xs relative"
+                  className="block w-full aspect-[16/10] sm:aspect-[16/9.5] lg:aspect-[16/10] overflow-hidden rounded-xl bg-gray-100 shadow-xs relative"
                 >
                   <img
                     src={mainLead.featuredImage}
                     alt={mainLead.title}
-                    className="w-full h-full object-cover group-hover:scale-[1.01] transition duration-300 rounded-lg"
+                    className="w-full h-full object-cover object-center group-hover:scale-[1.03] transition duration-500 ease-out rounded-xl"
                   />
+                  <div className="absolute inset-0 ring-1 ring-black/5 rounded-xl pointer-events-none" />
                 </Link>
               ) : (
-                <div className="w-full h-full min-h-[260px] sm:min-h-[310px] lg:min-h-[330px] bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 font-bold text-base">
+                <div className="w-full aspect-[16/10] bg-gray-100 rounded-xl flex items-center justify-center text-gray-400 font-bold text-base">
                   খুলনা গেজেট
                 </div>
               )}
