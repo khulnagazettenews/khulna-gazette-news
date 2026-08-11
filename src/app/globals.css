@@ -158,20 +158,17 @@ h5 {
   margin: 1.5rem 0;
 }
 
-/* Custom Marquee Animation - Zero Blur Hardware Accelerated Smooth Ticker */
+/* Custom Marquee Animation - Crystal Clear Gliding Ticker */
 @keyframes marquee {
-  0% { transform: translate3d(0, 0, 0); }
-  100% { transform: translate3d(-50%, 0, 0); }
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
 .animate-marquee {
-  animation: marquee 35s linear infinite;
+  animation: marquee 55s linear infinite;
   display: inline-flex;
-  will-change: transform;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: subpixel-antialiased;
+  -moz-osx-font-smoothing: auto;
   text-rendering: optimizeLegibility;
 }
 

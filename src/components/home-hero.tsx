@@ -20,7 +20,20 @@ interface HomeHeroProps {
 
 function getExcerpt(content: string) {
   if (!content) return '';
-  return content.replace(/<[^>]+>/g, '').trim();
+  let text = content.replace(/<[^>]+>/g, '').trim();
+
+  // Strip requested sentences
+  text = text.replace(/হাসিনাকে ফেরাতে দেশের ২২টি পাবলিক বিশ্ববিদ্যালয়ের ৪০৪ জন শিক্ষক একটি গোপন তৎপরতায় যুক্ত হয়েছেন।?\s*(উক্ত ঘটনার প্রেক্ষিতে খুলনা বিশ্ববিদ্যালয়ের কোনো)?/g, '').trim();
+  text = text.replace(/কর্তৃপক্ষের অনুমোদনক্রমে এই তদন্ত কমিটি গঠন করা হলো।?\s*”?গঠিত কমিটিতে বিজ্ঞান, প্রকৌশল ও প্রযুক্তিবিদ্যা স্কুলের ডিন প্রফেসর ড\. মো\. আশরাফুল আলমকে সভাপতি এবং ছাত্র বিষয়ক পরিচালক অধ্যাপক ড\. মো\. সালাউদ্দীনকে সদস্য-সচিব করা হয়েছে।?\s*(এছাড়াও কমিটির অন্য)?/g, '').trim();
+  text = text.replace(/কর্তৃপক্ষের অনুমোদনক্রমে এই তদন্ত কমিটি গঠন করা হলো।?/g, '').trim();
+
+  // Deduplicate phrases
+  text = text.replace(/বিভিন্ন গণমাধ্যম ও নানা সূত্রের খবরে জানা গেছে,?\s*বিভিন্ন গণমাধ্যম ও নানা সূত্রের খবরে জানা গেছে/g, 'বিভিন্ন গণমাধ্যম ও নানা সূত্রের খবরে জানা গেছে');
+
+  if (/[\“\"\'\‘]?সম্প্রতি/.test(text)) {
+    text = text.replace(/([\“\"\'\‘]?)সম্প্রতি/g, '$1সম্প্রতি বিভিন্ন গণমাধ্যম ও নানা সূত্রের খবরে জানা গেছে,');
+  }
+  return text.trim();
 }
 
 export default function HomeHero({ news }: HomeHeroProps) {
@@ -32,25 +45,29 @@ export default function HomeHero({ news }: HomeHeroProps) {
 
   return (
     <div className="space-y-5 sm:space-y-6">
-      {/* 1. TOP HERO MAIN LEAD SECTION: Modern News Portal Design */}
+      {/* 1. TOP HERO MAIN LEAD SECTION: Clean Frameless News Layout */}
       {mainLead && (
-        <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-5 lg:p-6 border border-gray-200/90 shadow-sm hover:shadow-md transition duration-300">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-5 sm:gap-6 lg:gap-8 items-center">
-            {/* Left Side: Category + Large Red Heading + Description + Bottom Link (6 cols on MD / 50%) */}
-            <div className="order-2 md:order-1 md:col-span-6 flex flex-col justify-between h-full space-y-4 py-1">
-              <div className="space-y-3">
+        <div className="bg-white py-1">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-5 sm:gap-6 lg:gap-8 items-stretch">
+            {/* Left Side: Large Red Heading + Description + Bottom Link (order-1 on MD/LG, 5 cols - Equal Baseline) */}
+            <div className="order-2 md:order-1 md:col-span-5 flex flex-col justify-between h-full space-y-3 py-0">
+              <div className="space-y-2.5">
                 <Link href={`/${mainLead.category?.slug || 'news'}/${mainLead.id}`} className="group block">
-                  <h1 className="text-[24px] sm:text-[28px] lg:text-[32px] xl:text-[34px] font-bold text-[#e60023] group-hover:text-red-700 transition leading-[1.28]">
+                  <h1 className="text-[24px] sm:text-[28px] lg:text-[31px] xl:text-[33px] font-bold text-[#e60023] group-hover:text-red-700 transition leading-[1.28]">
                     ‘{mainLead.title.replace(/^[‘'“"]|[’'"”]$/g, '')}’
                   </h1>
                 </Link>
 
                 {mainLead.content && (
                   <p 
-                    className="text-[16px] sm:text-[17px] lg:text-[18px] text-[#333333] leading-[1.68] font-normal"
+                    className="text-[#333333]"
                     style={{
+                      fontFamily: 'solaimanLipi, SolaimanLipi, solaimanlipi, Vrinda, serif',
+                      fontSize: '16px',
+                      fontWeight: 400,
+                      lineHeight: '25.12px',
                       display: '-webkit-box',
-                      WebkitLineClamp: 5,
+                      WebkitLineClamp: 7,
                       WebkitBoxOrient: 'vertical',
                       overflow: 'hidden',
                     }}
@@ -60,13 +77,13 @@ export default function HomeHero({ news }: HomeHeroProps) {
                 )}
               </div>
 
-              {/* Bottom read more button styled with rich arrow */}
+              {/* Bottom read more button aligned on exact same baseline as image bottom */}
               <div className="pt-2 flex items-center justify-end shrink-0">
                 <Link
                   href={`/${mainLead.category?.slug || 'news'}/${mainLead.id}`}
                   className="bg-gray-100 hover:bg-[#e60023] text-gray-800 hover:text-white border border-gray-200/80 shadow-2xs rounded-lg px-4 py-1.5 font-bold text-sm sm:text-base inline-flex items-center gap-1.5 transition duration-200 group"
                 >
-                  <span>বিস্তারিত পড়ুন</span>
+                  <span>বিস্তারিত</span>
                   <svg className="w-4 h-4 text-gray-700 group-hover:text-white stroke-[2.5] transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                   </svg>
@@ -74,12 +91,12 @@ export default function HomeHero({ news }: HomeHeroProps) {
               </div>
             </div>
 
-            {/* Right Side: Beautiful Featured Image (6 cols on MD / 50%) */}
-            <div className="order-1 md:order-2 md:col-span-6 group">
+            {/* Right Side: Featured Image Column (order-2 on MD/LG, 7 cols - Aligned Top & Bottom Baseline) */}
+            <div className="order-1 md:order-2 md:col-span-7 group flex flex-col justify-between h-full py-0">
               {mainLead.featuredImage ? (
                 <Link
                   href={`/${mainLead.category?.slug || 'news'}/${mainLead.id}`}
-                  className="block w-full aspect-[16/10] sm:aspect-[16/9.5] lg:aspect-[16/10] overflow-hidden rounded-xl bg-gray-100 shadow-xs relative"
+                  className="block w-full h-full min-h-[250px] sm:min-h-[280px] lg:min-h-[310px] overflow-hidden rounded-xl bg-gray-100 shadow-xs relative"
                 >
                   <img
                     src={mainLead.featuredImage}
@@ -89,7 +106,7 @@ export default function HomeHero({ news }: HomeHeroProps) {
                   <div className="absolute inset-0 ring-1 ring-black/5 rounded-xl pointer-events-none" />
                 </Link>
               ) : (
-                <div className="w-full aspect-[16/10] bg-gray-100 rounded-xl flex items-center justify-center text-gray-400 font-bold text-base">
+                <div className="w-full h-full min-h-[250px] sm:min-h-[280px] lg:min-h-[310px] bg-gray-100 rounded-xl flex items-center justify-center text-gray-400 font-bold text-base">
                   খুলনা গেজেট
                 </div>
               )}
