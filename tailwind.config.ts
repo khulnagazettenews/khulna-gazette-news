@@ -17,6 +17,10 @@ const config: Config = {
       },
       fontFamily: {
         sans: [
+          "solaimanLipi",
+          "SolaimanLipi",
+          "solaimanlipi",
+          "Vrinda",
           "Bangla",
           "Noto Sans Bengali",
           "Hind Siliguri",

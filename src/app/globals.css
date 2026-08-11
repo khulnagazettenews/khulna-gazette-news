@@ -25,7 +25,7 @@ html {
 body {
   color: #000000;
   background: #ffffff;
-  font-family: 'Bangla', 'Noto Sans Bengali', 'Hind Siliguri', 'SolaimanLipi', sans-serif;
+  font-family: solaimanLipi, SolaimanLipi, solaimanlipi, Vrinda, 'Bangla', 'Noto Sans Bengali', 'Hind Siliguri', sans-serif;
   font-size: 16px;
   font-weight: 400;
   line-height: 1.5;
@@ -44,7 +44,7 @@ input,
 select,
 textarea,
 button {
-  font-family: 'Bangla', 'Noto Sans Bengali', 'Hind Siliguri', 'SolaimanLipi', sans-serif;
+  font-family: solaimanLipi, SolaimanLipi, solaimanlipi, Vrinda, 'Bangla', 'Noto Sans Bengali', 'Hind Siliguri', sans-serif;
 }
 
 /* Global Responsive Image & Video Fluid Media Reset */
@@ -53,7 +53,13 @@ img, video, canvas, svg, iframe {
   height: auto;
 }
 
-/* Typography styles matching original khulnagazette.com theme */
+/* Bangla Real-Time Spellchecker Red Squiggly Underline */
+.bangla-spell-error {
+  text-decoration: underline wavy #ef4444 1.5px;
+  text-underline-offset: 3px;
+  background-color: rgba(239, 68, 68, 0.08);
+}
+
 h1,
 h2,
 h3,
@@ -61,7 +67,7 @@ h4,
 h5,
 h6 {
   margin: 0 0 8px;
-  font-family: 'Bangla', 'Noto Sans Bengali', 'Hind Siliguri', 'SolaimanLipi', sans-serif;
+  font-family: solaimanLipi, SolaimanLipi, solaimanlipi, Vrinda, 'Bangla', 'Noto Sans Bengali', 'Hind Siliguri', sans-serif;
   font-weight: 700;
   line-height: 1.25;
 }
@@ -88,21 +94,21 @@ h5 {
 
 /* Font classes for exact elementor & theme matches */
 .kg-title-lead {
-  font-family: 'Bangla', sans-serif;
+  font-family: solaimanLipi, SolaimanLipi, solaimanlipi, Vrinda, 'Bangla', sans-serif;
   font-size: 32px;
   line-height: 1.25;
   font-weight: 400;
 }
 
 .kg-title-card {
-  font-family: 'Bangla', sans-serif;
+  font-family: solaimanLipi, SolaimanLipi, solaimanlipi, Vrinda, 'Bangla', sans-serif;
   font-size: 22px;
   line-height: 1.2;
   font-weight: 400;
 }
 
 .kg-title-subcard {
-  font-family: 'Bangla', sans-serif;
+  font-family: solaimanLipi, SolaimanLipi, solaimanlipi, Vrinda, 'Bangla', sans-serif;
   font-size: 19px;
   line-height: 1.2;
   font-weight: 400;
@@ -114,12 +120,11 @@ h5 {
 .prose span,
 .prose div {
   color: #000000 !important;
-  font-family: 'Bangla', 'SolaimanLipi', sans-serif !important;
-  font-size: 21px !important;
-  font-weight: 300 !important;
-  line-height: 1.45 !important;
-  letter-spacing: -0.2px !important;
-  word-spacing: -1px !important;
+  font-family: solaimanLipi, SolaimanLipi, solaimanlipi, Vrinda, serif !important;
+  font-size: 17.5px !important;
+  font-weight: 400 !important;
+  line-height: 28.8px !important;
+  text-align: justify !important;
 }
 
 .prose p {
@@ -153,15 +158,18 @@ h5 {
   margin: 1.5rem 0;
 }
 
-/* Custom Marquee Animation - Zero Blur Smooth Ticker */
+/* Custom Marquee Animation - Zero Blur Hardware Accelerated Smooth Ticker */
 @keyframes marquee {
-  0% { transform: translateX(100%); }
-  100% { transform: translateX(-100%); }
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
 }
 
 .animate-marquee {
-  animation: marquee 55s linear infinite;
+  animation: marquee 35s linear infinite;
   display: inline-flex;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;

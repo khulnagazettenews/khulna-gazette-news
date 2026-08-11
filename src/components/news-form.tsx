@@ -210,6 +210,8 @@ export default function NewsForm({ initialData, newsId }: NewsFormProps) {
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
+                spellCheck={true}
+                lang="bn"
                 className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-red-600"
                 placeholder="সংবাদের প্রধান শিরোনাম লিখুন"
                 required
@@ -222,6 +224,8 @@ export default function NewsForm({ initialData, newsId }: NewsFormProps) {
                 type="text"
                 value={subtitle}
                 onChange={(e) => setSubtitle(e.target.value)}
+                spellCheck={true}
+                lang="bn"
                 className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-red-600"
                 placeholder="সংবাদের উপ-শিরোনাম লিখুন"
               />

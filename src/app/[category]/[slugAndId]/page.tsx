@@ -331,7 +331,7 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
                 {/* Article Main Content */}
                 <div 
                   itemProp="articleBody"
-                  className="prose max-w-none text-[#111827] font-normal leading-[1.65] text-[18px] sm:text-[20px] break-words [&_p]:mt-0 [&_p]:mb-4 [&_p]:text-[#111827] [&_p]:leading-[1.65] [&_p]:text-[18px] sm:[&_p]:text-[20px] [&_p]:font-normal [&_strong]:font-bold [&_b]:font-bold [&_h2]:mb-3 [&_h2]:mt-4 [&_img]:rounded [&_img]:my-3 [&_iframe]:w-full [&_iframe]:aspect-video"
+                  className="prose max-w-none break-words [&_img]:rounded [&_img]:my-3 [&_iframe]:w-full [&_iframe]:aspect-video"
                   dangerouslySetInnerHTML={{ __html: news.content }}
                 />
 

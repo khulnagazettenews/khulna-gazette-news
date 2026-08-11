@@ -46,23 +46,30 @@ export default function HomeHero({ news }: HomeHeroProps) {
                 </Link>
 
                 {mainLead.content && (
-                  <p className="text-[16px] sm:text-[17px] lg:text-[18px] text-[#222222] leading-[1.65] sm:leading-[1.75] font-normal line-clamp-6">
+                  <p 
+                    className="text-[17px] sm:text-[18px] lg:text-[19px] text-[#222222] leading-[1.65] sm:leading-[1.75] font-normal"
+                    style={{
+                      display: '-webkit-box',
+                      WebkitLineClamp: 7,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden',
+                    }}
+                  >
                     {getExcerpt(mainLead.content)}
                   </p>
                 )}
               </div>
 
-              {/* Bottom metadata / read more link aligning with exact bottom edge of image */}
-              <div className="pt-2.5 border-t border-gray-100 flex items-center justify-between text-sm sm:text-base font-bold text-[#e60023] shrink-0">
-                <span className="text-[#e60023] font-extrabold text-sm sm:text-base">
-                  {mainLead.category?.name || 'বিশেষ সংবাদ'}
-                </span>
+              {/* Bottom read more button styled matching user reference image */}
+              <div className="pt-2.5 flex items-center justify-end shrink-0">
                 <Link
                   href={`/${mainLead.category?.slug || 'news'}/${mainLead.id}`}
-                  className="text-[#e60023] font-bold hover:underline inline-flex items-center gap-1.5"
+                  className="bg-white hover:bg-gray-50 text-[#000000] border border-gray-200 shadow-xs rounded-lg px-3.5 py-1.5 font-bold text-sm sm:text-base inline-flex items-center gap-1 justify-center transition"
                 >
                   <span>বিস্তারিত</span>
-                  <span className="text-base sm:text-lg font-bold">→</span>
+                  <svg className="w-4 h-4 text-black stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                  </svg>
                 </Link>
               </div>
             </div>
