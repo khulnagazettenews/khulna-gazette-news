@@ -48,22 +48,21 @@ export default async function BreakingNewsTicker() {
           </div>
 
           {/* Right Red Ticker Bar with ultra-clear white scrolling text */}
-          <div className="bg-[#cc2b2b] text-white flex-1 overflow-hidden relative flex items-center py-2.5 px-3">
-            <div className="animate-marquee whitespace-nowrap flex items-center gap-12 text-[17px] sm:text-[19px] font-extrabold text-white">
+          <div className="bg-[#cc2b2b] text-white flex-1 overflow-hidden relative flex items-center py-2 px-3">
+            <div className="animate-marquee whitespace-nowrap flex items-center gap-8 text-[17px] sm:text-[19px] font-bold text-white">
               {tickerItems.map((item, idx) => (
                 <Link
                   key={`${item.id}-${idx}`}
                   href={`/${item.category?.slug || 'news'}/${item.id}`}
-                  className="hover:underline flex items-center gap-2 text-white transition decoration-white underline-offset-4 shrink-0 tracking-wide"
+                  className="hover:underline flex items-center gap-3 text-white transition decoration-white underline-offset-4 shrink-0"
                   style={{
-                    fontFamily: 'Bangla, "Noto Sans Bengali", "Hind Siliguri", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-                    WebkitFontSmoothing: 'subpixel-antialiased',
-                    textRendering: 'optimizeLegibility',
-                    textShadow: '0 1px 2px rgba(0,0,0,0.3)',
+                    fontFamily: 'solaimanLipi, SolaimanLipi, "Hind Siliguri", "Noto Sans Bengali", sans-serif',
+                    WebkitFontSmoothing: 'antialiased',
+                    MozOsxFontSmoothing: 'grayscale',
                   }}
                 >
-                  <span className="text-white font-extrabold text-[17px] sm:text-[19px] leading-normal">{item.title}</span>
-                  <span className="text-white/90 font-bold ml-6 select-none text-[18px] sm:text-[20px]">:</span>
+                  <span className="text-white font-bold text-[17px] sm:text-[19px] leading-snug tracking-normal">{item.title}</span>
+                  <span className="text-yellow-300 font-extrabold ml-4 select-none text-[12px] sm:text-[14px]">◆</span>
                 </Link>
               ))}
             </div>

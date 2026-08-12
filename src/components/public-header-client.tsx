@@ -234,7 +234,7 @@ export default function PublicHeaderClient({ categories, formattedDate }: Public
 
           <div className="date select-none">
             <h4 className="text-[22px] font-bold text-[#000000] leading-tight">খুলনা, বাংলাদেশ</h4>
-            <p className="mt-1.5 text-[#222222] text-[18px] leading-tight">{currentDate}</p>
+            <p suppressHydrationWarning className="mt-1.5 text-[#222222] text-[18px] leading-tight">{currentDate}</p>
           </div>
         </div>
 

@@ -74,21 +74,21 @@ export default function PrayerWidgetClient({ timings }: PrayerWidgetClientProps)
     <div className="w-full bg-white p-2 rounded-lg border border-gray-200 shadow-2xs select-none">
       <div className="rounded overflow-hidden border border-gray-200">
         {/* Dark Header Banner */}
-        <div className="bg-[#343a40] text-white py-2 px-3 text-center font-bold text-[16px] sm:text-[17px] leading-snug">
+        <div className="bg-[#343a40] text-white py-1.5 px-2.5 text-center font-bold text-[15px] sm:text-[16px] leading-snug">
           নামাজের সময়সূচি
         </div>
 
         {/* Prayer Time Rows */}
-        <div className="bg-white p-2.5 space-y-2">
+        <div className="bg-white p-2 space-y-1.5">
           {list.map((item) => (
-            <div key={item.name} className="flex items-center justify-between gap-2.5">
+            <div key={item.name} className="flex items-center justify-between gap-2">
               {/* Left Gray Name Badge */}
-              <div className="bg-[#f1f3f5] text-[#000000] font-bold text-[14px] sm:text-[15px] py-1.5 px-2.5 flex-1 rounded text-center leading-tight">
+              <div className="bg-[#f1f3f5] text-[#000000] font-bold text-[13px] sm:text-[14px] py-1 px-2 flex-1 rounded text-center leading-tight">
                 {item.name}
               </div>
 
               {/* Right Light Blue Time Badge */}
-              <div className="bg-[#e7f5ff] text-[#1d4ed8] font-bold text-[14px] sm:text-[15px] py-1.5 px-2.5 flex-1 rounded text-center leading-tight">
+              <div className="bg-[#e7f5ff] text-[#1d4ed8] font-bold text-[13px] sm:text-[14px] py-1 px-2 flex-1 rounded text-center leading-tight">
                 {item.time}
               </div>
             </div>

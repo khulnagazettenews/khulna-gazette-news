@@ -91,12 +91,16 @@ export default function TabsWidget({ latest, popular }: TabsWidgetProps) {
                 <div className="flex-1 min-w-0">
                   <Link
                     href={`/${item.category?.slug || 'news'}/${item.id}`}
-                    className="text-[15px] sm:text-[16px] font-bold text-[#111827] group-hover:text-[#e60023] transition leading-[1.3] line-clamp-2 block font-sans"
+                    className="text-[15px] sm:text-[16px] font-bold text-[#000000] group-hover:text-[#e60023] transition leading-[1.35] line-clamp-2 block"
+                    style={{
+                      fontFamily: 'solaimanLipi, SolaimanLipi, "Hind Siliguri", "Noto Sans Bengali", sans-serif',
+                      WebkitFontSmoothing: 'antialiased',
+                    }}
                   >
                     {item.title}
                   </Link>
                   {item.publishedAt && (
-                    <span className="text-[12px] text-gray-400 block font-medium mt-1">
+                    <span suppressHydrationWarning className="text-[12px] text-gray-400 block font-medium mt-1">
                       {getTimeAgo(item.publishedAt)}
                     </span>
                   )}

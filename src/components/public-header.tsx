@@ -31,6 +31,9 @@ function getBengaliFullDate() {
   }
 
   const monthStarts = [
+    { name: 'মাঘ', m: 0, d: 15 },
+    { name: 'ফাল্গুন', m: 1, d: 14 },
+    { name: 'চৈত্র', m: 2, d: 15 },
     { name: 'বৈশাখ', m: 3, d: 14 },
     { name: 'জ্যৈষ্ঠ', m: 4, d: 15 },
     { name: 'আষাঢ়', m: 5, d: 16 },
@@ -40,9 +43,6 @@ function getBengaliFullDate() {
     { name: 'কার্তিক', m: 9, d: 16 },
     { name: 'অগ্রহায়ণ', m: 10, d: 15 },
     { name: 'পৌষ', m: 11, d: 15 },
-    { name: 'মাঘ', m: 0, d: 15 },
-    { name: 'ফাল্গুন', m: 1, d: 14 },
-    { name: 'চৈত্র', m: 2, d: 15 },
   ];
 
   let bMonthName = '';

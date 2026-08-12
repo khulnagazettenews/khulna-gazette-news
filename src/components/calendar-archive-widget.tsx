@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
@@ -47,11 +47,16 @@ const toBanglaNum = (num: number | string): string => {
 
 export default function CalendarArchiveWidget() {
   const router = useRouter();
-  const today = new Date();
-  
-  const [currentYear, setCurrentYear] = useState<number>(today.getFullYear());
-  const [currentMonth, setCurrentMonth] = useState<number>(today.getMonth()); // 0-11
-  const [selectedDay, setSelectedDay] = useState<number>(today.getDate());
+  const [currentYear, setCurrentYear] = useState<number>(2026);
+  const [currentMonth, setCurrentMonth] = useState<number>(7); // Default August
+  const [selectedDay, setSelectedDay] = useState<number>(12);
+
+  useEffect(() => {
+    const today = new Date();
+    setCurrentYear(today.getFullYear());
+    setCurrentMonth(today.getMonth());
+    setSelectedDay(today.getDate());
+  }, []);
 
   // Generate Year Options (e.g., from 2020 to current year + 1)
   const years = Array.from({ length: 10 }, (_, i) => 2020 + i);
@@ -121,12 +126,12 @@ export default function CalendarArchiveWidget() {
     <div className="w-full bg-white p-2 rounded-lg border border-gray-200 shadow-2xs select-none">
       <div className="rounded overflow-hidden border border-gray-200">
         {/* Dark Header Banner */}
-        <div className="bg-[#343a40] text-white py-1.5 px-2 text-center font-bold text-[16px] sm:text-[17px] leading-snug">
+        <div className="bg-[#343a40] text-white py-1.5 px-2.5 text-center font-bold text-[15px] sm:text-[16px] leading-snug">
           আর্কাইভ
         </div>
 
         {/* Content Body */}
-        <div className="bg-white p-2 sm:p-2.5 space-y-2">
+        <div className="bg-white p-2 space-y-1.5">
           {/* Month Year Banner with Nav Buttons */}
           <div className="flex items-center justify-between text-[#000000] font-bold text-[14px] sm:text-[15px] px-1">
             <button
