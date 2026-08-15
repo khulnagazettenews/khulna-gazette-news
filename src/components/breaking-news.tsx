@@ -56,16 +56,16 @@ export default async function BreakingNewsTicker() {
                   href={`/${item.category?.slug || 'news'}/${item.id}`}
                   className="hover:underline flex items-center gap-3 text-white transition decoration-white underline-offset-4 shrink-0"
                   style={{
-                    fontFamily: 'Bangla, sans-serif',
-                    fontSize: '18px',
-                    fontWeight: 800,
-                    lineHeight: '28px',
-                    letterSpacing: '0.45px',
+                    fontFamily: 'solaimanLipi, SolaimanLipi, solaimanlipi, Vrinda, Bangla, "Noto Sans Bengali", "Hind Siliguri", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                    fontSize: '23px',
+                    fontWeight: 400,
+                    lineHeight: '34.5px',
+                    textAlign: 'start',
                     WebkitFontSmoothing: 'antialiased',
                     MozOsxFontSmoothing: 'grayscale',
                   }}
                 >
-                  <span className="text-white font-extrabold text-[18px] leading-[28px] tracking-[0.45px]">{item.title}</span>
+                  <span className="text-white font-normal text-[23px] leading-[34.5px]">{item.title}</span>
                   <span className="text-yellow-300 font-extrabold ml-4 select-none text-[12px] sm:text-[14px]">◆</span>
                 </Link>
               ))}

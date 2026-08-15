@@ -107,13 +107,13 @@ export default function TabsWidget({ latest, popular }: TabsWidgetProps) {
                 <div className="flex-1 min-w-0 pt-0.5">
                   <Link
                     href={`/${item.category?.slug || 'news'}/${item.id}`}
-                    className="text-[21px] font-normal text-[#000000] group-hover:text-[rgb(0,86,179)] hover:text-[rgb(0,86,179)] transition leading-[22px] tracking-[-0.2px] line-clamp-3 block"
+                    className="text-[23px] font-normal text-[#000000] group-hover:text-[rgb(0,86,179)] hover:text-[rgb(0,86,179)] transition leading-[34.5px] text-start line-clamp-3 block"
                     style={{
-                      fontFamily: 'Bangla, sans-serif',
-                      fontSize: '21px',
+                      fontFamily: 'solaimanLipi, SolaimanLipi, solaimanlipi, Vrinda, Bangla, "Noto Sans Bengali", "Hind Siliguri", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                      fontSize: '23px',
                       fontWeight: 400,
-                      lineHeight: '22px',
-                      letterSpacing: '-0.2px',
+                      lineHeight: '34.5px',
+                      textAlign: 'start',
                       WebkitFontSmoothing: 'antialiased',
                     }}
                   >
