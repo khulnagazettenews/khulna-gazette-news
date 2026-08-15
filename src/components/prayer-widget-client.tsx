@@ -80,12 +80,12 @@ export default function PrayerWidgetClient({ timings }: PrayerWidgetClientProps)
       <div className="rounded-[8px] overflow-hidden border border-gray-200">
         {/* Header Title */}
         <div 
-          className="bg-[#343e56] text-white py-2 px-3 text-center font-normal"
+          className="bg-[#343e56] text-white py-1 px-2 text-center font-normal"
           style={{
             fontFamily: 'Bangla, sans-serif',
-            fontSize: '21px',
+            fontSize: '20px',
             fontWeight: 400,
-            lineHeight: '23.1px',
+            lineHeight: '22px',
             letterSpacing: '-0.2px',
             textAlign: 'center',
           }}

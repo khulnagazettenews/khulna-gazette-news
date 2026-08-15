@@ -35,23 +35,23 @@ export default function TabsWidget({ latest, popular }: TabsWidgetProps) {
 
   return (
     <div className="bg-white border border-gray-200 rounded shadow-2xs font-sans overflow-hidden">
-      {/* 2 Tabs Header */}
+      {/* 2 Tabs Header: Thinner sleek bar */}
       <div className="grid grid-cols-2 bg-[#343e56] text-white select-none border-b border-gray-200">
         <button
           type="button"
           onClick={() => setActiveTab('latest')}
-          className={`w-full py-2 px-3 text-left transition cursor-pointer flex items-center justify-start ${
+          className={`w-full py-1 px-2 text-center transition cursor-pointer flex items-center justify-center ${
             activeTab === 'latest'
               ? 'bg-[#000000] text-white font-normal'
               : 'bg-[#343e56] text-white font-normal hover:bg-[#283145]'
           }`}
           style={{
             fontFamily: 'Bangla, sans-serif',
-            fontSize: '21px',
+            fontSize: '20px',
             fontWeight: 400,
-            lineHeight: '23.1px',
+            lineHeight: '22px',
             letterSpacing: '-0.2px',
-            textAlign: 'left',
+            textAlign: 'center',
           }}
         >
           সর্বশেষ
@@ -59,18 +59,18 @@ export default function TabsWidget({ latest, popular }: TabsWidgetProps) {
         <button
           type="button"
           onClick={() => setActiveTab('popular')}
-          className={`w-full py-2 px-3 text-left transition cursor-pointer flex items-center justify-start ${
+          className={`w-full py-1 px-2 text-center transition cursor-pointer flex items-center justify-center ${
             activeTab === 'popular'
               ? 'bg-[#000000] text-white font-normal'
               : 'bg-[#343e56] text-white font-normal hover:bg-[#283145]'
           }`}
           style={{
             fontFamily: 'Bangla, sans-serif',
-            fontSize: '21px',
+            fontSize: '20px',
             fontWeight: 400,
-            lineHeight: '23.1px',
+            lineHeight: '22px',
             letterSpacing: '-0.2px',
-            textAlign: 'left',
+            textAlign: 'center',
           }}
         >
           সর্বাধিক পঠিত
