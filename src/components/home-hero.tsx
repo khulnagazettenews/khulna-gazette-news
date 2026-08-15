@@ -53,7 +53,7 @@ export default function HomeHero({ news }: HomeHeroProps) {
             <div className="order-2 md:order-1 md:col-span-5 flex flex-col justify-between h-full space-y-3 py-0">
               <div className="space-y-2.5">
                 <Link href={`/${mainLead.category?.slug || 'news'}/${mainLead.id}`} className="group block">
-                  <h1 className="text-[24px] sm:text-[28px] lg:text-[31px] xl:text-[33px] font-bold text-[#e60023] group-hover:text-red-700 transition leading-[1.28]">
+                  <h1 className="text-[24px] sm:text-[28px] lg:text-[31px] xl:text-[33px] font-bold text-[#e60023] group-hover:text-[#000000] hover:text-[#000000] transition leading-[1.28]">
                     ‘{mainLead.title.replace(/^[‘'“"]|[’'"”]$/g, '')}’
                   </h1>
                 </Link>
@@ -62,7 +62,7 @@ export default function HomeHero({ news }: HomeHeroProps) {
                   <p 
                     className="text-[#333333]"
                     style={{
-                      fontFamily: 'solaimanLipi, SolaimanLipi, solaimanlipi, Vrinda, serif',
+                      fontFamily: 'Bangla, sans-serif',
                       fontSize: '16px',
                       fontWeight: 400,
                       lineHeight: '25.12px',
@@ -144,7 +144,16 @@ export default function HomeHero({ news }: HomeHeroProps) {
                     </div>
                   )}
                   <Link href={`/${categorySlug}/${story.id}`} className="block pt-0.5 flex-1 min-w-0">
-                    <h3 className="text-[18px] sm:text-[18px] lg:text-[19px] font-bold text-[#000000] group-hover:text-red-600 transition leading-snug sm:leading-[1.25] line-clamp-2 break-words">
+                    <h3 
+                      className="text-[22px] font-bold text-[#000000] hover:text-[rgb(0,0,116)] transition leading-[26.4px] tracking-[-0.2px] line-clamp-2 break-words"
+                      style={{
+                        fontFamily: 'Bangla, sans-serif',
+                        fontSize: '22px',
+                        fontWeight: 700,
+                        lineHeight: '26.4px',
+                        letterSpacing: '-0.2px',
+                      }}
+                    >
                       {story.title}
                     </h3>
                   </Link>

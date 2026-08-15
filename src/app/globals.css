@@ -5,6 +5,7 @@
   src: url('/fonts/Bangla.woff') format('woff'),
        url('/fonts/Bangla.ttf') format('truetype');
   font-style: normal;
+  font-weight: 400;
   font-display: swap;
 }
 
@@ -25,7 +26,7 @@ html {
 body {
   color: #000000;
   background: #ffffff;
-  font-family: solaimanLipi, SolaimanLipi, solaimanlipi, Vrinda, 'Bangla', 'Noto Sans Bengali', 'Hind Siliguri', sans-serif;
+  font-family: Bangla, sans-serif;
   font-size: 16px;
   font-weight: 400;
   line-height: 1.5;
@@ -44,7 +45,7 @@ input,
 select,
 textarea,
 button {
-  font-family: solaimanLipi, SolaimanLipi, solaimanlipi, Vrinda, 'Bangla', 'Noto Sans Bengali', 'Hind Siliguri', sans-serif;
+  font-family: Bangla, sans-serif;
 }
 
 /* Global Responsive Image & Video Fluid Media Reset */
@@ -67,7 +68,7 @@ h4,
 h5,
 h6 {
   margin: 0 0 8px;
-  font-family: solaimanLipi, SolaimanLipi, solaimanlipi, Vrinda, 'Bangla', 'Noto Sans Bengali', 'Hind Siliguri', sans-serif;
+  font-family: Bangla, sans-serif;
   font-weight: 700;
   line-height: 1.25;
 }
@@ -94,36 +95,48 @@ h5 {
 
 /* Font classes for exact elementor & theme matches */
 .kg-title-lead {
-  font-family: solaimanLipi, SolaimanLipi, solaimanlipi, Vrinda, 'Bangla', sans-serif;
+  font-family: Bangla, sans-serif;
   font-size: 32px;
   line-height: 1.25;
   font-weight: 400;
 }
 
-.kg-title-card {
-  font-family: solaimanLipi, SolaimanLipi, solaimanlipi, Vrinda, 'Bangla', sans-serif;
+.kg-title-card,
+.news-card-title {
+  color: rgb(0, 0, 0);
+  background-color: transparent;
+  font-family: Bangla, sans-serif;
   font-size: 22px;
-  line-height: 1.2;
-  font-weight: 400;
+  font-weight: 700;
+  line-height: 26.4px;
+  letter-spacing: -0.2px;
+  transition: color 0.2s ease-in-out;
+}
+
+.kg-title-card:hover,
+.news-card-title:hover {
+  color: rgb(0, 0, 116);
 }
 
 .kg-title-subcard {
-  font-family: solaimanLipi, SolaimanLipi, solaimanlipi, Vrinda, 'Bangla', sans-serif;
+  font-family: Bangla, sans-serif;
   font-size: 19px;
   line-height: 1.2;
   font-weight: 400;
 }
 
-/* Article Body Typography (100% Exact Match for khulnagazette.com/bangladesh/482579/) */
+/* Article Body Typography */
 .prose,
 .prose p,
 .prose span,
-.prose div {
+.prose div,
+.prose li {
   color: #000000 !important;
-  font-family: solaimanLipi, SolaimanLipi, solaimanlipi, Vrinda, serif !important;
-  font-size: 17.5px !important;
+  font-family: Bangla, sans-serif !important;
+  font-size: 23.5px !important;
   font-weight: 400 !important;
-  line-height: 28.8px !important;
+  line-height: 33px !important;
+  letter-spacing: -0.2px !important;
   text-align: justify !important;
 }
 
@@ -137,7 +150,7 @@ h5 {
 .prose h3,
 .prose h4 {
   color: #000000 !important;
-  font-family: 'Bangla', 'SolaimanLipi', sans-serif !important;
+  font-family: Bangla, sans-serif !important;
   font-size: 26px !important;
   font-weight: 700 !important;
   margin-top: 1.25rem !important;
@@ -190,7 +203,7 @@ h5 {
 .admin-portal span,
 .admin-portal p,
 .admin-portal a {
-  font-family: 'Bangla', 'Noto Sans Bengali', 'Hind Siliguri', system-ui, -apple-system, sans-serif !important;
+  font-family: Bangla, sans-serif !important;
 }
 
 .admin-portal {

@@ -25,37 +25,59 @@ export default function SidebarWidgets({
       <TabsWidget latest={latestNews} popular={popularNews} />
 
       {/* 2. GAZETTE EXCLUSIVE NEWS BOX matching khulnagazette.com design */}
-      <div className="bg-white p-3 rounded border border-gray-200 shadow-2xs space-y-2.5">
-        <div className="bg-[#353d4c] text-white py-1.5 px-3 text-center font-bold text-[16px] sm:text-[17px] rounded-xs shadow-2xs leading-normal">
+      <div className="bg-white rounded border border-gray-200 shadow-2xs overflow-hidden">
+        <div 
+          className="bg-[#353d4c] text-white py-2 px-3 text-center font-normal border-b border-gray-200"
+          style={{
+            fontFamily: 'Bangla, sans-serif',
+            fontSize: '21px',
+            fontWeight: 400,
+            lineHeight: '23.1px',
+            letterSpacing: '-0.2px',
+            textAlign: 'center',
+          }}
+        >
           গেজেট এক্সক্লুসিভ
         </div>
-        <div className="divide-y divide-gray-200">
-          {(exclusiveNews.length > 0 ? exclusiveNews.slice(0, 5) : latestNews.slice(0, 5)).map((item) => (
-            <div key={item.id} className="py-2.5 flex items-start gap-3 group first:pt-1 last:pb-1">
-              <Link
-                href={`/${item.category?.slug || 'news'}/${item.id}`}
-                className="w-[90px] sm:w-[94px] h-[60px] sm:h-[64px] shrink-0 overflow-hidden rounded bg-gray-100 block relative border border-gray-100 shadow-2xs"
-              >
-                {item.featuredImage ? (
-                  <img
-                    src={item.featuredImage}
-                    alt={item.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gray-200 flex items-center justify-center text-[10px] text-gray-500 font-bold">
-                    খুলনা গেজেট
-                  </div>
-                )}
-              </Link>
-              <Link
-                href={`/${item.category?.slug || 'news'}/${item.id}`}
-                className="text-[15px] sm:text-[16px] font-bold text-[#000000] group-hover:text-[#e60023] transition leading-[1.3] line-clamp-2 block flex-1"
-              >
-                {item.title}
-              </Link>
-            </div>
-          ))}
+        <div className="p-3 bg-white">
+          <div className="space-y-3.5 divide-y divide-gray-100">
+            {(exclusiveNews.length > 0 ? exclusiveNews.slice(0, 5) : latestNews.slice(0, 5)).map((item, index) => (
+              <div key={item.id} className={`flex items-start gap-3 group ${index > 0 ? 'pt-3.5' : ''}`}>
+                <Link
+                  href={`/${item.category?.slug || 'news'}/${item.id}`}
+                  className="w-[110px] sm:w-[115px] h-[68px] sm:h-[72px] shrink-0 overflow-hidden rounded-xs bg-gray-100 block relative shadow-2xs border border-gray-100"
+                >
+                  {item.featuredImage ? (
+                    <img
+                      src={item.featuredImage}
+                      alt={item.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gray-200 flex items-center justify-center text-[10px] text-gray-500 font-bold">
+                      খুলনা গেজেট
+                    </div>
+                  )}
+                </Link>
+                <div className="flex-1 min-w-0 pt-0.5">
+                  <Link
+                    href={`/${item.category?.slug || 'news'}/${item.id}`}
+                    className="text-[21px] font-normal text-[#000000] group-hover:text-[rgb(0,86,179)] hover:text-[rgb(0,86,179)] transition leading-[22px] tracking-[-0.2px] line-clamp-3 block"
+                    style={{
+                      fontFamily: 'Bangla, sans-serif',
+                      fontSize: '21px',
+                      fontWeight: 400,
+                      lineHeight: '22px',
+                      letterSpacing: '-0.2px',
+                      WebkitFontSmoothing: 'antialiased',
+                    }}
+                  >
+                    {item.title}
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 

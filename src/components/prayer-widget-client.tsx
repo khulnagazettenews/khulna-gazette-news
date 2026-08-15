@@ -71,24 +71,45 @@ export default function PrayerWidgetClient({ timings }: PrayerWidgetClientProps)
   ];
 
   return (
-    <div className="w-full bg-white p-2 rounded-lg border border-gray-200 shadow-2xs select-none">
-      <div className="rounded overflow-hidden border border-gray-200">
-        {/* Dark Header Banner */}
-        <div className="bg-[#343a40] text-white py-1.5 px-2.5 text-center font-bold text-[15px] sm:text-[16px] leading-snug">
+    <div 
+      className="w-full bg-white rounded-[8px] border border-gray-200 p-[15px] select-none"
+      style={{
+        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
+      }}
+    >
+      <div className="rounded-[8px] overflow-hidden border border-gray-200">
+        {/* Header Title */}
+        <div 
+          className="bg-[#343e56] text-white py-2 px-3 text-center font-normal"
+          style={{
+            fontFamily: 'Bangla, sans-serif',
+            fontSize: '21px',
+            fontWeight: 400,
+            lineHeight: '23.1px',
+            letterSpacing: '-0.2px',
+            textAlign: 'center',
+          }}
+        >
           নামাজের সময়সূচি
         </div>
 
         {/* Prayer Time Rows */}
-        <div className="bg-white p-2 space-y-1.5">
+        <div className="bg-white p-3 space-y-2">
           {list.map((item) => (
-            <div key={item.name} className="flex items-center justify-between gap-2">
-              {/* Left Gray Name Badge */}
-              <div className="bg-[#f1f3f5] text-[#000000] font-bold text-[13px] sm:text-[14px] py-1 px-2 flex-1 rounded text-center leading-tight">
+            <div key={item.name} className="flex items-center justify-between gap-2.5">
+              {/* Left Name Badge */}
+              <div 
+                className="bg-[#f1f3f5] text-[#000000] font-bold text-[15px] py-1.5 px-3 flex-1 rounded text-center leading-tight"
+                style={{ fontFamily: 'Bangla, sans-serif' }}
+              >
                 {item.name}
               </div>
 
-              {/* Right Light Blue Time Badge */}
-              <div className="bg-[#e7f5ff] text-[#1d4ed8] font-bold text-[13px] sm:text-[14px] py-1 px-2 flex-1 rounded text-center leading-tight">
+              {/* Right Time Badge */}
+              <div 
+                className="bg-[#e7f5ff] text-[#1d4ed8] font-bold text-[15px] py-1.5 px-3 flex-1 rounded text-center leading-tight"
+                style={{ fontFamily: 'Bangla, sans-serif' }}
+              >
                 {item.time}
               </div>
             </div>

@@ -35,44 +35,60 @@ export default function TabsWidget({ latest, popular }: TabsWidgetProps) {
 
   return (
     <div className="bg-white border border-gray-200 rounded shadow-2xs font-sans overflow-hidden">
-      {/* 2 Tabs Header: Thinner tab bar */}
+      {/* 2 Tabs Header */}
       <div className="grid grid-cols-2 bg-[#343e56] text-white select-none border-b border-gray-200">
         <button
           type="button"
           onClick={() => setActiveTab('latest')}
-          className={`w-full py-1 px-2 text-[15px] sm:text-[16px] font-bold text-center transition cursor-pointer leading-tight flex items-center justify-center ${
+          className={`w-full py-2 px-3 text-left transition cursor-pointer flex items-center justify-start ${
             activeTab === 'latest'
-              ? 'bg-[#000000] text-white font-extrabold'
-              : 'bg-[#343e56] text-white hover:bg-[#283145]'
+              ? 'bg-[#000000] text-white font-normal'
+              : 'bg-[#343e56] text-white font-normal hover:bg-[#283145]'
           }`}
+          style={{
+            fontFamily: 'Bangla, sans-serif',
+            fontSize: '21px',
+            fontWeight: 400,
+            lineHeight: '23.1px',
+            letterSpacing: '-0.2px',
+            textAlign: 'left',
+          }}
         >
           সর্বশেষ
         </button>
         <button
           type="button"
           onClick={() => setActiveTab('popular')}
-          className={`w-full py-1 px-2 text-[15px] sm:text-[16px] font-bold text-center transition cursor-pointer leading-tight flex items-center justify-center ${
+          className={`w-full py-2 px-3 text-left transition cursor-pointer flex items-center justify-start ${
             activeTab === 'popular'
-              ? 'bg-[#000000] text-white font-extrabold'
-              : 'bg-[#343e56] text-white hover:bg-[#283145]'
+              ? 'bg-[#000000] text-white font-normal'
+              : 'bg-[#343e56] text-white font-normal hover:bg-[#283145]'
           }`}
+          style={{
+            fontFamily: 'Bangla, sans-serif',
+            fontSize: '21px',
+            fontWeight: 400,
+            lineHeight: '23.1px',
+            letterSpacing: '-0.2px',
+            textAlign: 'left',
+          }}
         >
           সর্বাধিক পঠিত
         </button>
       </div>
 
-      {/* List Items Container matching exact scrollbar & spacing */}
-      <div className="max-h-[390px] overflow-y-auto kg-tab-scrollbar bg-white p-3">
+      {/* List Items Container matching exact screenshot layout */}
+      <div className="max-h-[410px] overflow-y-auto kg-tab-scrollbar bg-white p-3">
         {list.length === 0 ? (
           <div className="text-center py-8 text-sm text-gray-400 font-medium">কোনো খবর পাওয়া যায়নি।</div>
         ) : (
-          <div className="divide-y divide-gray-200">
-            {list.slice(0, 15).map((item) => (
-              <div key={item.id} className="py-2.5 flex items-start gap-3 group first:pt-0 last:pb-0">
+          <div className="space-y-3.5 divide-y divide-gray-100">
+            {list.slice(0, 15).map((item, index) => (
+              <div key={item.id} className={`flex items-start gap-3 group ${index > 0 ? 'pt-3.5' : ''}`}>
                 {/* Left Thumbnail Image */}
                 <Link
                   href={`/${item.category?.slug || 'news'}/${item.id}`}
-                  className="w-[92px] sm:w-[98px] h-[62px] sm:h-[66px] shrink-0 overflow-hidden rounded bg-gray-100 block relative border border-gray-100 shadow-2xs"
+                  className="w-[110px] sm:w-[115px] h-[68px] sm:h-[72px] shrink-0 overflow-hidden rounded-xs bg-gray-100 block relative shadow-2xs border border-gray-100"
                 >
                   {item.featuredImage ? (
                     <img
@@ -87,23 +103,22 @@ export default function TabsWidget({ latest, popular }: TabsWidgetProps) {
                   )}
                 </Link>
 
-                {/* Right Title & Time Ago Text */}
-                <div className="flex-1 min-w-0">
+                {/* Right Title Text */}
+                <div className="flex-1 min-w-0 pt-0.5">
                   <Link
                     href={`/${item.category?.slug || 'news'}/${item.id}`}
-                    className="text-[15px] sm:text-[16px] font-bold text-[#000000] group-hover:text-[#e60023] transition leading-[1.35] line-clamp-2 block"
+                    className="text-[21px] font-normal text-[#000000] group-hover:text-[rgb(0,86,179)] hover:text-[rgb(0,86,179)] transition leading-[22px] tracking-[-0.2px] line-clamp-3 block"
                     style={{
-                      fontFamily: 'solaimanLipi, SolaimanLipi, "Hind Siliguri", "Noto Sans Bengali", sans-serif',
+                      fontFamily: 'Bangla, sans-serif',
+                      fontSize: '21px',
+                      fontWeight: 400,
+                      lineHeight: '22px',
+                      letterSpacing: '-0.2px',
                       WebkitFontSmoothing: 'antialiased',
                     }}
                   >
                     {item.title}
                   </Link>
-                  {item.publishedAt && (
-                    <span suppressHydrationWarning className="text-[12px] text-gray-400 block font-medium mt-1">
-                      {getTimeAgo(item.publishedAt)}
-                    </span>
-                  )}
                 </div>
               </div>
             ))}

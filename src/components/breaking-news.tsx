@@ -41,7 +41,7 @@ export default async function BreakingNewsTicker() {
           <div 
             className="bg-black text-white px-4 sm:px-6 py-2.5 flex items-center justify-center font-extrabold text-base sm:text-lg shrink-0 select-none z-10 tracking-wide"
             style={{
-              fontFamily: 'Bangla, "Noto Sans Bengali", "Hind Siliguri", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+              fontFamily: 'Bangla, sans-serif',
             }}
           >
             সর্বশেষ
@@ -56,12 +56,16 @@ export default async function BreakingNewsTicker() {
                   href={`/${item.category?.slug || 'news'}/${item.id}`}
                   className="hover:underline flex items-center gap-3 text-white transition decoration-white underline-offset-4 shrink-0"
                   style={{
-                    fontFamily: 'solaimanLipi, SolaimanLipi, "Hind Siliguri", "Noto Sans Bengali", sans-serif',
+                    fontFamily: 'Bangla, sans-serif',
+                    fontSize: '18px',
+                    fontWeight: 800,
+                    lineHeight: '28px',
+                    letterSpacing: '0.45px',
                     WebkitFontSmoothing: 'antialiased',
                     MozOsxFontSmoothing: 'grayscale',
                   }}
                 >
-                  <span className="text-white font-bold text-[17px] sm:text-[19px] leading-snug tracking-normal">{item.title}</span>
+                  <span className="text-white font-extrabold text-[18px] leading-[28px] tracking-[0.45px]">{item.title}</span>
                   <span className="text-yellow-300 font-extrabold ml-4 select-none text-[12px] sm:text-[14px]">◆</span>
                 </Link>
               ))}
