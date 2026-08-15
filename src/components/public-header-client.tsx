@@ -220,8 +220,8 @@ export default function PublicHeaderClient({ categories, formattedDate }: Public
         </div>
       </div>
 
-      {/* Desktop Top Header (100% Match with khulnagazette.com desktop screen) */}
-      <div className="hidden lg:flex max-w-[1400px] mx-auto px-8 py-4 justify-between items-center">
+      {/* Desktop Top Header (Ultra-wide desktop responsive 1520px) */}
+      <div className="hidden lg:flex max-w-[1520px] mx-auto px-4 sm:px-6 lg:px-8 py-4 justify-between items-center">
         {/* Left Side: Hamburger Menu + Location/Date */}
         <div className="left flex items-center gap-6 w-[33%] justify-start">
           <button
@@ -289,7 +289,7 @@ export default function PublicHeaderClient({ categories, formattedDate }: Public
 
       {/* ================= NAVBAR matching user exact specification ================= */}
       <nav className="navbar border-t border-[#efefef] bg-white sticky top-0 z-40 hidden md:block">
-        <ul className="max-w-[1400px] mx-auto flex items-center justify-center gap-[24px] lg:gap-[32px] py-3 px-4 list-none whitespace-nowrap select-none overflow-visible">
+        <ul className="max-w-[1520px] mx-auto flex items-center justify-center gap-[24px] lg:gap-[32px] py-3 px-4 sm:px-6 lg:px-8 list-none whitespace-nowrap select-none overflow-visible">
           
           {/* Home Active Icon */}
           <li className={`cursor-pointer transition hover:text-[#e60023] ${pathname === '/' ? 'active text-[#e60023] text-[26px]' : 'text-[22px] text-[#000000]'}`}>

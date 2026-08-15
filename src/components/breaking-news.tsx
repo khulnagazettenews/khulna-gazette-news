@@ -35,7 +35,7 @@ export default async function BreakingNewsTicker() {
 
   return (
     <div className="w-full bg-white py-1.5 font-sans">
-      <div className="w-full max-w-[1400px] mx-auto px-3 sm:px-4 lg:px-6">
+      <div className="w-full max-w-[1520px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-stretch overflow-hidden rounded-xs shadow-2xs">
           {/* Left Black Badge "সর্বশেষ" */}
           <div 

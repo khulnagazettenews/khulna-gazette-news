@@ -242,7 +242,7 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
         />
         <ViewsIncrement newsId={news.id} />
 
-        <main className="flex-grow w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-4">
+        <main className="flex-grow w-full max-w-[1520px] mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-4">
           {/* Top Double Line Divider */}
           <div className="w-full h-1.5 border-y border-gray-200/80 bg-gray-50/50 mb-2"></div>
 

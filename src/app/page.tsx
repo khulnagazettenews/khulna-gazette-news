@@ -227,8 +227,8 @@ export default async function HomePage() {
       <PublicHeader />
       <BreakingNewsTicker />
 
-      {/* Main Container matching khulnagazette.com exact 1400px width & padding */}
-      <main className="flex-grow w-full max-w-[1400px] mx-auto px-3 sm:px-4 lg:px-6 pt-3.5 pb-8 space-y-4 sm:space-y-5">
+      {/* Main Container ultra-wide desktop friendly max-w-[1520px] */}
+      <main className="flex-grow w-full max-w-[1520px] mx-auto px-4 sm:px-6 lg:px-8 pt-3.5 pb-8 space-y-4 sm:space-y-5">
         {/* Top Ad slot */}
         <AdBanner ad={topAd} fallbackText="বিজ্ঞাপন ব্যানার" className="h-20 sm:h-24" />
 
