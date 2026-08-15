@@ -71,43 +71,43 @@ export default function PrayerWidgetClient({ timings }: PrayerWidgetClientProps)
   ];
 
   return (
-    <div 
-      className="w-full bg-white rounded-[8px] border border-gray-200 p-[15px] select-none"
-      style={{
-        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
-      }}
-    >
-      <div className="rounded-[8px] overflow-hidden border border-gray-200">
-        {/* Header Title */}
+    <div className="w-full bg-white rounded-[8px] border border-gray-200 p-4 select-none">
+      <div 
+        className="rounded-[8px] overflow-hidden border border-gray-200 bg-white"
+        style={{
+          boxShadow: '0 6px 20px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.08)',
+        }}
+      >
+        {/* Dark Header Title */}
         <div 
-          className="bg-[#343e56] text-white py-1 px-2 text-center font-normal"
+          className="bg-[#353e54] text-white py-2.5 px-3 text-center font-bold"
           style={{
             fontFamily: 'Bangla, sans-serif',
             fontSize: '20px',
-            fontWeight: 400,
             lineHeight: '22px',
             letterSpacing: '-0.2px',
             textAlign: 'center',
+            textShadow: '0px 1px 2px rgba(0, 0, 0, 0.5)',
           }}
         >
           নামাজের সময়সূচি
         </div>
 
         {/* Prayer Time Rows */}
-        <div className="bg-white p-3 space-y-2">
+        <div className="bg-white p-3 space-y-2.5">
           {list.map((item) => (
-            <div key={item.name} className="flex items-center justify-between gap-2.5">
-              {/* Left Name Badge */}
+            <div key={item.name} className="flex items-center justify-between gap-3">
+              {/* Left Grey Name Pill */}
               <div 
-                className="bg-[#f1f3f5] text-[#000000] font-bold text-[15px] py-1.5 px-3 flex-1 rounded text-center leading-tight"
+                className="bg-[#f1f3f5] text-[#333333] font-bold text-[16px] py-1.5 px-3 flex-1 rounded-[8px] text-center leading-tight shadow-2xs"
                 style={{ fontFamily: 'Bangla, sans-serif' }}
               >
                 {item.name}
               </div>
 
-              {/* Right Time Badge */}
+              {/* Right Blue Time Pill */}
               <div 
-                className="bg-[#e7f5ff] text-[#1d4ed8] font-bold text-[15px] py-1.5 px-3 flex-1 rounded text-center leading-tight"
+                className="bg-[#e7f5ff] text-[#1c7ed6] font-bold text-[16px] py-1.5 px-3 flex-1 rounded-[8px] text-center leading-tight shadow-2xs"
                 style={{ fontFamily: 'Bangla, sans-serif' }}
               >
                 {item.time}
