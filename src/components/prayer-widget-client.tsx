@@ -71,35 +71,35 @@ export default function PrayerWidgetClient({ timings }: PrayerWidgetClientProps)
   ];
 
   return (
-    <div className="w-full bg-white rounded-[8px] border border-gray-200 p-4 select-none">
+    <div className="w-full bg-white rounded-[8px] border border-gray-200 p-2.5 select-none">
       <div 
-        className="rounded-[8px] overflow-hidden border border-gray-200 bg-white"
+        className="rounded-[6px] overflow-hidden border border-gray-200 bg-white"
         style={{
-          boxShadow: '0 6px 20px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.08)',
+          boxShadow: '0 4px 14px rgba(0, 0, 0, 0.1), 0 1px 4px rgba(0, 0, 0, 0.06)',
         }}
       >
         {/* Dark Header Title */}
         <div 
-          className="bg-[#353e54] text-white py-2.5 px-3 text-center font-bold"
+          className="bg-[#353d4c] text-white py-1 px-2 text-center font-normal border-b border-gray-200"
           style={{
             fontFamily: 'Bangla, sans-serif',
             fontSize: '20px',
+            fontWeight: 400,
             lineHeight: '22px',
             letterSpacing: '-0.2px',
             textAlign: 'center',
-            textShadow: '0px 1px 2px rgba(0, 0, 0, 0.5)',
           }}
         >
           নামাজের সময়সূচি
         </div>
 
         {/* Prayer Time Rows */}
-        <div className="bg-white p-3 space-y-2.5">
+        <div className="bg-white p-2 space-y-1.5">
           {list.map((item) => (
-            <div key={item.name} className="flex items-center justify-between gap-3">
+            <div key={item.name} className="flex items-center justify-between gap-2">
               {/* Left Grey Name Pill */}
               <div 
-                className="bg-[#f1f3f5] text-[#333333] font-bold text-[16px] py-1.5 px-3 flex-1 rounded-[8px] text-center leading-tight shadow-2xs"
+                className="bg-[#f1f3f5] text-[#333333] font-bold text-[14px] py-1 px-2 flex-1 rounded-[6px] text-center leading-tight shadow-2xs"
                 style={{ fontFamily: 'Bangla, sans-serif' }}
               >
                 {item.name}
@@ -107,7 +107,7 @@ export default function PrayerWidgetClient({ timings }: PrayerWidgetClientProps)
 
               {/* Right Blue Time Pill */}
               <div 
-                className="bg-[#e7f5ff] text-[#1c7ed6] font-bold text-[16px] py-1.5 px-3 flex-1 rounded-[8px] text-center leading-tight shadow-2xs"
+                className="bg-[#e7f5ff] text-[#1c7ed6] font-bold text-[14px] py-1 px-2 flex-1 rounded-[6px] text-center leading-tight shadow-2xs"
                 style={{ fontFamily: 'Bangla, sans-serif' }}
               >
                 {item.time}

@@ -126,7 +126,17 @@ export default function CalendarArchiveWidget() {
     <div className="w-full bg-white p-2 rounded-lg border border-gray-200 shadow-2xs select-none">
       <div className="rounded overflow-hidden border border-gray-200">
         {/* Dark Header Banner */}
-        <div className="bg-[#343a40] text-white py-1.5 px-2.5 text-center font-bold text-[15px] sm:text-[16px] leading-snug">
+        <div 
+          className="bg-[#353d4c] text-white py-1 px-2 text-center font-normal border-b border-gray-200"
+          style={{
+            fontFamily: 'Bangla, sans-serif',
+            fontSize: '20px',
+            fontWeight: 400,
+            lineHeight: '22px',
+            letterSpacing: '-0.2px',
+            textAlign: 'center',
+          }}
+        >
           আর্কাইভ
         </div>
 

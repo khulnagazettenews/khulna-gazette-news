@@ -82,8 +82,18 @@ export default function SidebarWidgets({
       </div>
 
       {/* 3. EPAPER PROMO BANNER (ই-পেপার সংস্করণ) */}
-      <div className="bg-white p-3 rounded border border-gray-200 shadow-2xs space-y-2.5 font-sans">
-        <div className="bg-[#353d4c] text-white py-1.5 px-3 text-center font-bold text-[16px] sm:text-[17px] rounded-xs shadow-2xs leading-normal">
+      <div className="bg-white rounded border border-gray-200 shadow-2xs overflow-hidden font-sans">
+        <div 
+          className="bg-[#353d4c] text-white py-1 px-2 text-center font-normal border-b border-gray-200"
+          style={{
+            fontFamily: 'Bangla, sans-serif',
+            fontSize: '20px',
+            fontWeight: 400,
+            lineHeight: '22px',
+            letterSpacing: '-0.2px',
+            textAlign: 'center',
+          }}
+        >
           ই-পেপার সংস্করণ
         </div>
         <Link href="/epaper" className="block relative aspect-[4/3] w-full overflow-hidden bg-[#243c3b] group p-1.5 rounded-xs">
@@ -92,7 +102,16 @@ export default function SidebarWidgets({
             alt="ই-পেপার সংস্করণ"
             className="w-full h-full object-cover object-top rounded-xs group-hover:scale-105 transition duration-500 shadow-md"
           />
-          <div className="absolute inset-x-0 bottom-0 bg-[#0f172a]/90 text-white py-2 px-3 text-center text-sm sm:text-[15px] font-bold backdrop-blur-xs flex items-center justify-center gap-1.5">
+          <div 
+            className="absolute inset-x-0 bottom-0 bg-[#353d4c]/95 text-white py-1.5 px-2 text-center flex items-center justify-center gap-1.5"
+            style={{
+              fontFamily: 'Bangla, sans-serif',
+              fontSize: '17px',
+              fontWeight: 400,
+              lineHeight: '22px',
+              letterSpacing: '-0.2px',
+            }}
+          >
             <span>অনলাইনে পৃষ্ঠা উল্টে পড়ুন</span>
             <span className="text-amber-400 font-bold text-base">➔</span>
           </div>

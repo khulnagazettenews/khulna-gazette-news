@@ -39,9 +39,15 @@ export default async function BreakingNewsTicker() {
         <div className="flex items-stretch overflow-hidden rounded-xs shadow-2xs">
           {/* Left Black Badge "সর্বশেষ" */}
           <div 
-            className="bg-black text-white px-4 sm:px-6 py-2.5 flex items-center justify-center font-extrabold text-base sm:text-lg shrink-0 select-none z-10 tracking-wide"
+            className="bg-black text-white px-4 sm:px-6 py-1.5 flex items-center justify-center font-normal shrink-0 select-none z-10"
             style={{
-              fontFamily: 'Bangla, sans-serif',
+              fontFamily: 'solaimanLipi, SolaimanLipi, solaimanlipi, Vrinda, Bangla, "Noto Sans Bengali", "Hind Siliguri", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+              fontSize: '23px',
+              fontWeight: 400,
+              lineHeight: '34.5px',
+              textAlign: 'start',
+              WebkitFontSmoothing: 'antialiased',
+              MozOsxFontSmoothing: 'grayscale',
             }}
           >
             সর্বশেষ
