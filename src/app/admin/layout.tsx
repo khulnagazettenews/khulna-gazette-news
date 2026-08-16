@@ -92,9 +92,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     );
   }
 
-  // 5. Advertisements
-  if (['SUPER_ADMIN', 'ADMIN', 'ADVERTISEMENT_MANAGER'].includes(role)) {
-    navigation.push({ name: 'বিজ্ঞাপন ম্যানেজমেন্ট', href: '/admin/advertisements', icon: Megaphone });
+  // 5. Advertisements & Sidebar Widgets
+  if (['SUPER_ADMIN', 'ADMIN', 'ADVERTISEMENT_MANAGER', 'EDITOR', 'SUB_EDITOR'].includes(role)) {
+    navigation.push({ name: 'বিজ্ঞাপন ও সাইডবার উইজেট', href: '/admin/advertisements', icon: Megaphone });
   }
 
   // 6. Comments & Job Applications

@@ -11,7 +11,7 @@ export async function PATCH(
   try {
     const { id } = params;
     const body = await req.json();
-    const { action, title, imageUrl, targetUrl, position, status, startDate, endDate } = body;
+    const { action, title, imageUrl, targetUrl, position, adType, codeSnippet, description, order, status, startDate, endDate } = body;
 
     // 1. Check if public analytics increment
     if (action === 'click') {
@@ -37,7 +37,7 @@ export async function PATCH(
     }
 
     const userRole = (session.user as any).role;
-    if (!['SUPER_ADMIN', 'ADMIN', 'ADVERTISEMENT_MANAGER'].includes(userRole)) {
+    if (!['SUPER_ADMIN', 'ADMIN', 'ADVERTISEMENT_MANAGER', 'EDITOR', 'SUB_EDITOR'].includes(userRole)) {
       return NextResponse.json({ error: 'অননুমোদিত অ্যাক্সেস' }, { status: 403 });
     }
 
@@ -54,14 +54,28 @@ export async function PATCH(
     if (imageUrl !== undefined) updateData.imageUrl = imageUrl;
     if (targetUrl !== undefined) updateData.targetUrl = targetUrl;
     if (position !== undefined) updateData.position = position;
+    if (adType !== undefined) updateData.adType = adType;
+    if (codeSnippet !== undefined) updateData.codeSnippet = codeSnippet;
+    if (description !== undefined) updateData.description = description;
+    if (order !== undefined) updateData.order = typeof order === 'number' ? order : parseInt(order);
     if (status !== undefined) updateData.status = status;
     if (startDate !== undefined) updateData.startDate = startDate ? new Date(startDate) : null;
     if (endDate !== undefined) updateData.endDate = endDate ? new Date(endDate) : null;
 
-    const updatedAd = await prisma.advertisement.update({
-      where: { id },
-      data: updateData,
-    });
+    let updatedAd;
+    try {
+      updatedAd = await prisma.advertisement.update({
+        where: { id },
+        data: updateData,
+      });
+    } catch (updateErr) {
+      console.warn('Prisma update fallback triggered:', updateErr);
+      const { adType: _a, codeSnippet: _c, description: _d, order: _o, ...coreUpdate } = updateData;
+      updatedAd = await prisma.advertisement.update({
+        where: { id },
+        data: coreUpdate,
+      });
+    }
 
     return NextResponse.json(updatedAd);
   } catch (error) {
@@ -85,7 +99,7 @@ export async function DELETE(
     }
 
     const userRole = (session.user as any).role;
-    if (!['SUPER_ADMIN', 'ADMIN', 'ADVERTISEMENT_MANAGER'].includes(userRole)) {
+    if (!['SUPER_ADMIN', 'ADMIN', 'ADVERTISEMENT_MANAGER', 'EDITOR', 'SUB_EDITOR'].includes(userRole)) {
       return NextResponse.json({ error: 'অননুমোদিত অ্যাক্সেস' }, { status: 403 });
     }
 

@@ -11,6 +11,67 @@ interface SidebarWidgetsProps {
   popularNews: any[];
   exclusiveNews?: any[];
   sidebarAd?: any;
+  sidebarAds?: any[];
+}
+
+function RenderAdItem({ ad }: { ad: any }) {
+  if (!ad) return null;
+
+  if (ad.adType === 'HTML_SCRIPT') {
+    return (
+      <div className="bg-white rounded border border-gray-200 shadow-2xs overflow-hidden p-2 my-2">
+        <div dangerouslySetInnerHTML={{ __html: ad.codeSnippet || '' }} />
+      </div>
+    );
+  }
+
+  if (ad.adType === 'TEXT_IMAGE') {
+    return (
+      <div className="bg-white rounded border border-gray-200 shadow-2xs overflow-hidden p-3.5 space-y-2.5 font-sans my-2">
+        <h4 className="font-bold text-[17px] text-slate-900 leading-snug">{ad.title}</h4>
+        {ad.imageUrl && (
+          <img src={ad.imageUrl} alt={ad.title} className="w-full h-auto rounded-xs object-cover" />
+        )}
+        {ad.description && (
+          <p className="text-slate-600 text-xs leading-relaxed font-medium">{ad.description}</p>
+        )}
+        {ad.targetUrl && (
+          <a
+            href={ad.targetUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 bg-[#0056b3] text-white font-bold text-xs py-1.5 px-3 rounded-md hover:bg-blue-700 transition"
+          >
+            <span>বিস্তারিত দেখুন</span>
+            <span>➔</span>
+          </a>
+        )}
+      </div>
+    );
+  }
+
+  // Default IMAGE type
+  return (
+    <div className="bg-white rounded border border-gray-200 shadow-2xs overflow-hidden font-sans my-2">
+      {ad.title && ad.title !== 'বিজ্ঞাপন ব্যানার' && (
+        <div className="bg-[#353d4c] text-white py-1 px-2.5 text-center font-normal text-[15px] border-b border-gray-200 truncate">
+          {ad.title}
+        </div>
+      )}
+      <a
+        href={ad.targetUrl || '#'}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="block relative w-full overflow-hidden bg-slate-100 group"
+      >
+        <img
+          src={ad.imageUrl}
+          alt={ad.title}
+          className="w-full h-auto object-cover group-hover:scale-105 transition duration-500 block"
+        />
+      </a>
+    </div>
+  );
 }
 
 export default function SidebarWidgets({
@@ -18,7 +79,11 @@ export default function SidebarWidgets({
   popularNews,
   exclusiveNews = [],
   sidebarAd,
+  sidebarAds = [],
 }: SidebarWidgetsProps) {
+  const topAds = sidebarAds.filter(a => a.position === 'sidebar_widget_top');
+  const middleAds = sidebarAds.filter(a => a.position === 'sidebar_widget_middle');
+  const bottomAds = sidebarAds.filter(a => a.position === 'sidebar_widget_bottom' || a.position === 'sidebar_banner');
   return (
     <div className="space-y-5">
       {/* 1. TABS WIDGET (সর্বশেষ | সর্বাধিক পঠিত - 1st) */}
@@ -118,8 +183,18 @@ export default function SidebarWidgets({
         </Link>
       </div>
 
+      {/* DYNAMIC TOP SIDEBAR ADS */}
+      {topAds.map(ad => (
+        <RenderAdItem key={ad.id} ad={ad} />
+      ))}
+
       {/* 4. PRAYER TIMES WIDGET (নামাজের সময়সূচি - 4th) */}
       <PrayerWidget />
+
+      {/* DYNAMIC MIDDLE SIDEBAR ADS */}
+      {middleAds.map(ad => (
+        <RenderAdItem key={ad.id} ad={ad} />
+      ))}
 
       {/* 5. CALENDAR ARCHIVE WIDGET (আর্কাইভ - 5th) */}
       <CalendarArchiveWidget />
@@ -156,7 +231,10 @@ export default function SidebarWidgets({
         </a>
       </div>
 
-
+      {/* DYNAMIC BOTTOM SIDEBAR ADS */}
+      {bottomAds.map(ad => (
+        <RenderAdItem key={ad.id} ad={ad} />
+      ))}
 
       {/* 8. SIDEBAR ADVERTISEMENT */}
       <AdBanner ad={sidebarAd} fallbackText="বিজ্ঞাপন স্পেস" className="h-48" />
@@ -166,9 +244,10 @@ export default function SidebarWidgets({
         href="https://www.youtube.com/@khulnagazette"
         target="_blank"
         rel="noopener noreferrer"
-        className="w-full bg-[#c40404] hover:bg-red-700 text-white py-3 px-4 rounded-xl shadow-xs transition font-black text-xs flex items-center justify-center gap-2 border border-red-800"
+        className="w-full bg-[#c40404] hover:bg-red-700 text-white py-3.5 px-4 rounded-xl shadow-xs transition font-bold text-[18px] sm:text-[20px] flex items-center justify-center gap-2.5 border border-red-800"
+        style={{ fontFamily: 'Bangla, sans-serif' }}
       >
-        <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+        <svg className="w-6 h-6 fill-current shrink-0" viewBox="0 0 24 24">
           <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
         </svg>
         <span>ইউটিউব চ্যানেলে সাবস্ক্রাইব করুন</span>

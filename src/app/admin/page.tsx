@@ -676,7 +676,7 @@ export default async function AdminDashboard() {
                 </Link>
               )}
 
-              {['SUPER_ADMIN', 'ADMIN', 'ADVERTISEMENT_MANAGER'].includes(role) && (
+              {['SUPER_ADMIN', 'ADMIN', 'ADVERTISEMENT_MANAGER', 'EDITOR', 'SUB_EDITOR'].includes(role) && (
                 <Link 
                   href="/admin/advertisements"
                   className="flex items-center justify-between p-3.5 bg-amber-50/70 text-amber-900 hover:bg-amber-100 rounded-2xl transition duration-200 font-bold text-xs border border-amber-200 shadow-2xs group"

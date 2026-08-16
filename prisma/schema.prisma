@@ -147,7 +147,11 @@ model Advertisement {
   title       String
   imageUrl    String
   targetUrl   String?
-  position    String    // e.g. "top_banner", "sidebar_banner"
+  position    String    // e.g. "top_banner", "sidebar_banner", "sidebar_widget_top", "sidebar_widget_middle", "sidebar_widget_bottom"
+  adType      String    @default("IMAGE") // IMAGE, HTML_SCRIPT, TEXT_IMAGE
+  codeSnippet String?   // Custom HTML / JS AdSense code
+  description String?   // Text description for TEXT_IMAGE ads
+  order       Int       @default(0)
   status      String    @default("ACTIVE") // ACTIVE, INACTIVE
   startDate   DateTime?
   endDate     DateTime?

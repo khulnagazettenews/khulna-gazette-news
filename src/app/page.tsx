@@ -157,6 +157,7 @@ export default async function HomePage() {
     // Advertisements
     prisma.advertisement.findMany({
       where: { status: 'ACTIVE' },
+      orderBy: { createdAt: 'desc' },
     }),
     // Exclusive news
     prisma.news.findMany({
@@ -344,6 +345,7 @@ export default async function HomePage() {
               popularNews={serializeList(popularNews)}
               exclusiveNews={serializeList(exclusiveNews)}
               sidebarAd={sidebarAd}
+              sidebarAds={serializeList([...advertisements].sort((a: any, b: any) => (a.order ?? 0) - (b.order ?? 0)))}
             />
           </div>
         </div>

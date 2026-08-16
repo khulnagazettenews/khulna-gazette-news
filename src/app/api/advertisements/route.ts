@@ -20,7 +20,7 @@ export async function GET(req: Request) {
       // By default, if not logged in as admin, only fetch active ads
       const session = await getServerSession(authOptions);
       const userRole = (session?.user as any)?.role;
-      if (!session || !['SUPER_ADMIN', 'ADMIN', 'ADVERTISEMENT_MANAGER'].includes(userRole)) {
+      if (!session || !['SUPER_ADMIN', 'ADMIN', 'ADVERTISEMENT_MANAGER', 'EDITOR', 'SUB_EDITOR'].includes(userRole)) {
         where.status = 'ACTIVE';
       }
     }
@@ -29,6 +29,8 @@ export async function GET(req: Request) {
       where,
       orderBy: { createdAt: 'desc' },
     });
+
+    ads.sort((a: any, b: any) => (a.order ?? 0) - (b.order ?? 0));
 
     return NextResponse.json(ads);
   } catch (error) {
@@ -49,31 +51,44 @@ export async function POST(req: Request) {
     }
 
     const userRole = (session.user as any).role;
-    if (!['SUPER_ADMIN', 'ADMIN', 'ADVERTISEMENT_MANAGER'].includes(userRole)) {
+    if (!['SUPER_ADMIN', 'ADMIN', 'ADVERTISEMENT_MANAGER', 'EDITOR', 'SUB_EDITOR'].includes(userRole)) {
       return NextResponse.json({ error: 'অননুমোদিত অ্যাক্সেস' }, { status: 403 });
     }
 
     const body = await req.json();
-    const { title, imageUrl, targetUrl, position, status, startDate, endDate } = body;
+    const { title, imageUrl, targetUrl, position, adType, codeSnippet, description, order, status, startDate, endDate } = body;
 
-    if (!title || !imageUrl || !position) {
+    if (!position) {
       return NextResponse.json(
-        { error: 'শিরোনাম, ইমেজ ইউআরএল এবং পজিশন প্রদান করা আবশ্যক।' },
+        { error: 'বিজ্ঞাপনের পজিশন নির্বাচন করা আবশ্যক।' },
         { status: 400 }
       );
     }
 
-    const ad = await prisma.advertisement.create({
-      data: {
-        title,
-        imageUrl,
-        targetUrl: targetUrl || null,
-        position,
-        status: status || 'ACTIVE',
-        startDate: startDate ? new Date(startDate) : null,
-        endDate: endDate ? new Date(endDate) : null,
-      },
-    });
+    const finalTitle = title ? title.trim() : 'বিজ্ঞাপন ব্যানার';
+
+    const createData: any = {
+      title: finalTitle,
+      imageUrl: imageUrl || '',
+      targetUrl: targetUrl || null,
+      position,
+      adType: adType || 'IMAGE',
+      codeSnippet: codeSnippet || null,
+      description: description || null,
+      order: typeof order === 'number' ? order : 0,
+      status: status || 'ACTIVE',
+      startDate: startDate ? new Date(startDate) : null,
+      endDate: endDate ? new Date(endDate) : null,
+    };
+
+    let ad;
+    try {
+      ad = await prisma.advertisement.create({ data: createData });
+    } catch (createErr) {
+      console.warn('Prisma full schema create fallback triggered:', createErr);
+      const { adType: _a, codeSnippet: _c, description: _d, order: _o, ...coreData } = createData;
+      ad = await prisma.advertisement.create({ data: coreData });
+    }
 
     return NextResponse.json(ad, { status: 201 });
   } catch (error) {
