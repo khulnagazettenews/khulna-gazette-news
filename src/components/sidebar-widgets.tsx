@@ -21,10 +21,10 @@ export default function SidebarWidgets({
 }: SidebarWidgetsProps) {
   return (
     <div className="space-y-5">
-      {/* 1. TABS WIDGET (সর্বশেষ | সর্বাধিক পঠিত - TOP POS) */}
+      {/* 1. TABS WIDGET (সর্বশেষ | সর্বাধিক পঠিত - 1st) */}
       <TabsWidget latest={latestNews} popular={popularNews} />
 
-      {/* 2. GAZETTE EXCLUSIVE NEWS BOX matching khulnagazette.com design */}
+      {/* 2. GAZETTE EXCLUSIVE NEWS BOX (গেজেট এক্সক্লুসিভ - 2nd) */}
       <div className="bg-white rounded border border-gray-200 shadow-2xs overflow-hidden">
         <div 
           className="bg-[#353d4c] text-white py-2 px-3 text-center font-normal border-b border-gray-200"
@@ -81,7 +81,7 @@ export default function SidebarWidgets({
         </div>
       </div>
 
-      {/* 3. EPAPER PROMO BANNER (ই-পেপার সংস্করণ) */}
+      {/* 3. EPAPER PROMO BANNER (ই-পেপার সংস্করণ - অনলাইনে পৃষ্ঠা উল্টে পড়ুন - 3rd) */}
       <div className="bg-white rounded border border-gray-200 shadow-2xs overflow-hidden font-sans">
         <div 
           className="bg-[#353d4c] text-white py-1 px-2 text-center font-normal border-b border-gray-200"
@@ -118,18 +118,27 @@ export default function SidebarWidgets({
         </Link>
       </div>
 
-      {/* 4. PRAYER TIMES WIDGET matching exact user screenshot */}
+      {/* 4. PRAYER TIMES WIDGET (নামাজের সময়সূচি - 4th) */}
       <PrayerWidget />
 
-      {/* 5. CALENDAR ARCHIVE WIDGET (নামাজের সময়সূচির নিচে আর্কাইভ) */}
+      {/* 5. CALENDAR ARCHIVE WIDGET (আর্কাইভ - 5th) */}
       <CalendarArchiveWidget />
 
-      {/* 6. LIKE US ON FACEBOOK WIDGET */}
+      {/* 6. LIKE US ON FACEBOOK WIDGET (6th) */}
       <FacebookWidget />
 
-      {/* 7. APP DOWNLOAD BANNER */}
+      {/* 7. APP DOWNLOAD BANNER (খুলনা গেজেটের app পেতে ক্লিক করুন - 7th) */}
       <div className="bg-white rounded border border-gray-200 shadow-xs overflow-hidden">
-        <div className="bg-[#2b354f] text-white py-2.5 px-2 text-center font-bold text-[16px] sm:text-[18px] tracking-tight flex items-center justify-center gap-1.5 whitespace-nowrap">
+        <div 
+          className="bg-[#2b354f] text-white py-2 px-2 text-center font-normal flex items-center justify-center gap-1.5 whitespace-nowrap"
+          style={{
+            fontFamily: 'Bangla, sans-serif',
+            fontSize: '19px',
+            fontWeight: 400,
+            lineHeight: '22px',
+            letterSpacing: '-0.2px',
+          }}
+        >
           <Smartphone size={18} className="text-teal-400 shrink-0" />
           <span>খুলনা গেজেটের app পেতে ক্লিক করুন</span>
         </div>
@@ -146,6 +155,8 @@ export default function SidebarWidgets({
           />
         </a>
       </div>
+
+
 
       {/* 8. SIDEBAR ADVERTISEMENT */}
       <AdBanner ad={sidebarAd} fallbackText="বিজ্ঞাপন স্পেস" className="h-48" />
