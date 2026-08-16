@@ -55,16 +55,37 @@ export default async function HomePage() {
     'mukto-bhabna',     // 12: মুক্ত ভাবনা
     'chitro-bichitro',  // 13: চিত্র বিচিত্র
     'social-media',     // 14: সোশ্যাল মিডিয়া
+    'lifestyle',        // 15: লাইফ স্টাইল
   ];
 
-  // Map slugs to Prisma queries
-  const categoryQueries = categorySlugs.map((slug) =>
-    prisma.news.findMany({
+  const slugAliases: Record<string, string[]> = {
+    'bangladesh': ['bangladesh'],
+    'politics': ['politics'],
+    'sports': ['sports', 'khela'],
+    'entertainment': ['entertainment', 'binodon'],
+    'khulna': ['khulna', 'khulnanchal'],
+    'economy': ['economy'],
+    'international': ['international', 'antorjatik'],
+    'education': ['education', 'shikkha'],
+    'islam': ['islam', 'islam-and-life', 'islam-life'],
+    'technology': ['technology', 'it'],
+    'health': ['health', 'chikitsa'],
+    'literature': ['literature', 'sahitto'],
+    'mukto-bhabna': ['mukto-bhabna', 'muktobhabna', 'free-thinking'],
+    'chitro-bichitro': ['chitro-bichitro', 'weird-news'],
+    'social-media': ['social-media'],
+    'lifestyle': ['lifestyle', 'life-style'],
+  };
+
+  // Map slugs to Prisma queries with alias support
+  const categoryQueries = categorySlugs.map((slug) => {
+    const aliases = slugAliases[slug] || [slug];
+    return prisma.news.findMany({
       where: {
         status: 'PUBLISHED',
         OR: [
-          { category: { slug: slug } },
-          { subCategory: { slug: slug } }
+          { category: { slug: { in: aliases } } },
+          { subCategory: { slug: { in: aliases } } }
         ]
       },
       orderBy: { publishedAt: 'desc' },
@@ -73,8 +94,8 @@ export default async function HomePage() {
         category: true,
         author: { select: { name: true, avatar: true } },
       },
-    })
-  );
+    });
+  });
 
   // Setup special topic banner news query (if there are IDs)
   const specialTopicBannerNewsQuery = (activeSpecialTopic?.newsIds && activeSpecialTopic.newsIds.length > 0)
@@ -183,25 +204,31 @@ export default async function HomePage() {
     }));
   };
 
-  // 3. Category results directly map to queried categories (no generic fallback duplicates)
-  const categoryResults = initialCategoryResults;
+  // 3. Category results map with fallback to guarantee side-by-side paired rendering
+  const getCategoryNews = (index: number) => {
+    const res = initialCategoryResults[index];
+    if (res && res.length > 0) return res;
+    // Fallback to heroNews slice so category blocks always render side-by-side
+    const startIdx = (index * 2) % Math.max(1, heroNews.length - 5);
+    return heroNews.slice(startIdx, startIdx + 5);
+  };
 
-  // Map resolved categories back to their variables
-  const bangladeshNews = categoryResults[0];
-  const politicsNews = categoryResults[1];
-  const sportsNews = categoryResults[2];
-  const entertainmentNews = categoryResults[3];
-  const khulnaNews = categoryResults[4];
-  const economyNews = categoryResults[5];
-  const internationalNews = categoryResults[6];
-  const educationNews = categoryResults[7];
-  const islamNews = categoryResults[8];
-  const techNews = categoryResults[9];
-  const healthNews = categoryResults[10];
-  const literatureNews = categoryResults[11];
-  const muktoBhabnaNews = categoryResults[12];
-  const chitroBichitroNews = categoryResults[13];
-  const socialMediaNews = categoryResults[14];
+  const bangladeshNews = getCategoryNews(0);
+  const politicsNews = getCategoryNews(1);
+  const sportsNews = getCategoryNews(2);
+  const entertainmentNews = getCategoryNews(3);
+  const khulnaNews = getCategoryNews(4);
+  const economyNews = getCategoryNews(5);
+  const internationalNews = getCategoryNews(6);
+  const educationNews = getCategoryNews(7);
+  const islamNews = getCategoryNews(8);
+  const techNews = getCategoryNews(9);
+  const healthNews = getCategoryNews(10);
+  const literatureNews = getCategoryNews(11);
+  const muktoBhabnaNews = getCategoryNews(12);
+  const chitroBichitroNews = getCategoryNews(13);
+  const socialMediaNews = getCategoryNews(14);
+  const lifestyleNews = getCategoryNews(15);
 
   // Map special topic banner news maintaining admin ordering
   let specialTopicBannerNews: any[] = [];
@@ -242,10 +269,10 @@ export default async function HomePage() {
             {/* 3. Red YouTube Promo Strip */}
             <YoutubeBanner />
 
-            {/* 4. Category Pair 1: বাংলাদেশ & রাজনীতি */}
+            {/* 4. Category Pair 1: বাংলাদেশ & খুলনাঞ্চল */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <CategoryBlock title="বাংলাদেশ" slug="bangladesh" news={bangladeshNews as any} />
-              <CategoryBlock title="রাজনীতি" slug="politics" news={politicsNews as any} />
+              <CategoryBlock title="খুলনাঞ্চল" slug="khulna" news={khulnaNews as any} />
             </div>
 
             {/* 5. Sports Section (Main image on left + 4 mini cards on right) */}
@@ -256,9 +283,6 @@ export default async function HomePage() {
               variant="sports"
             />
 
-            {/* Middle Ad slot */}
-            <AdBanner ad={middleAd} fallbackText="বিজ্ঞাপন স্পেস" className="h-20 sm:h-24" />
-
             {/* 6. Entertainment Section */}
             <CategoryBlock
               title="বিনোদন"
@@ -267,9 +291,12 @@ export default async function HomePage() {
               variant="entertainment"
             />
 
-            {/* 7. Category Pair 2: খুলনাঞ্চল & অর্থনীতি */}
+            {/* Middle Ad slot */}
+            <AdBanner ad={middleAd} fallbackText="বিজ্ঞাপন স্পেস" className="h-20 sm:h-24" />
+
+            {/* 7. Category Pair 2: রাজনীতি & অর্থনীতি */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <CategoryBlock title="খুলনাঞ্চল" slug="khulna" news={khulnaNews as any} />
+              <CategoryBlock title="রাজনীতি" slug="politics" news={politicsNews as any} />
               <CategoryBlock title="অর্থনীতি" slug="economy" news={economyNews as any} />
             </div>
 
@@ -282,23 +309,26 @@ export default async function HomePage() {
               <CategoryBlock title="ইসলাম ও জীবন" slug="islam" news={islamNews as any} />
             </div>
 
-            {/* 10. IT / Science & Tech Category */}
+            {/* 10. IT / Technology Category */}
             <CategoryBlock title="আইটি" slug="technology" news={techNews as any} />
 
-            {/* 11. Category Pair 4: চিকিৎসা & সাহিত্য */}
+            {/* 11. Category Pair 4: লাইফ স্টাইল & চিকিৎসা */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <CategoryBlock title="লাইফ স্টাইল" slug="lifestyle" news={lifestyleNews as any} />
               <CategoryBlock title="চিকিৎসা" slug="health" news={healthNews as any} />
-              <CategoryBlock title="সাহিত্য" slug="literature" news={literatureNews as any} />
             </div>
 
-            {/* 12. Mukto Bhabna Category */}
-            <CategoryBlock title="মুক্ত ভাবনা" slug="mukto-bhabna" news={muktoBhabnaNews as any} />
+            {/* 12. Literature Category */}
+            <CategoryBlock title="সাহিত্য" slug="literature" news={literatureNews as any} />
 
             {/* 13. Category Pair 5: চিত্র বিচিত্র & সোশ্যাল মিডিয়া */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <CategoryBlock title="চিত্র বিচিত্র" slug="chitro-bichitro" news={chitroBichitroNews as any} />
               <CategoryBlock title="সোশ্যাল মিডিয়া" slug="social-media" news={socialMediaNews as any} />
             </div>
+
+            {/* 14. Mukto Bhabna Category */}
+            <CategoryBlock title="মুক্ত ভাবনা" slug="mukto-bhabna" news={muktoBhabnaNews as any} />
 
             {/* 14. Gazette Exclusive Section */}
             <CategoryBlock title="গেজেট এক্সক্লুসিভ" slug="gazette-exclusive" news={exclusiveNews as any} />
