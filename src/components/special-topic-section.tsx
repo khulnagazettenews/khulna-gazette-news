@@ -112,7 +112,7 @@ export default function SpecialTopicSection({
                     {itemLeft1.featuredImage && (
                       <Link
                         href={`/${itemLeft1.category?.slug || 'news'}/${itemLeft1.id}`}
-                        className="block aspect-[16/10] overflow-hidden rounded-xl bg-slate-100"
+                        className="block aspect-[354/199] overflow-hidden rounded-xl bg-slate-100"
                       >
                         <img
                           src={itemLeft1.featuredImage}
@@ -148,7 +148,7 @@ export default function SpecialTopicSection({
                     {itemLeft2.featuredImage && (
                       <Link
                         href={`/${itemLeft2.category?.slug || 'news'}/${itemLeft2.id}`}
-                        className="block aspect-[16/10] overflow-hidden rounded-xl bg-slate-100"
+                        className="block aspect-[354/199] overflow-hidden rounded-xl bg-slate-100"
                       >
                         <img
                           src={itemLeft2.featuredImage}
@@ -186,7 +186,7 @@ export default function SpecialTopicSection({
 
                 <Link
                   href={`/${itemCenter.category?.slug || 'news'}/${itemCenter.id}`}
-                  className="block aspect-[16/10] sm:aspect-[16/9.5] overflow-hidden rounded-2xl bg-slate-100 mb-4"
+                  className="block aspect-[354/199] overflow-hidden rounded-2xl bg-slate-100 mb-4"
                 >
                   {itemCenter.featuredImage ? (
                     <img
@@ -238,7 +238,7 @@ export default function SpecialTopicSection({
                     {itemRight1.featuredImage && (
                       <Link
                         href={`/${itemRight1.category?.slug || 'news'}/${itemRight1.id}`}
-                        className="block aspect-[16/10] overflow-hidden rounded-xl bg-slate-100"
+                        className="block aspect-[354/199] overflow-hidden rounded-xl bg-slate-100"
                       >
                         <img
                           src={itemRight1.featuredImage}
@@ -277,7 +277,7 @@ export default function SpecialTopicSection({
                     {itemRight2.featuredImage && (
                       <Link
                         href={`/${itemRight2.category?.slug || 'news'}/${itemRight2.id}`}
-                        className="block aspect-[16/10] overflow-hidden rounded-xl bg-slate-100"
+                        className="block aspect-[354/199] overflow-hidden rounded-xl bg-slate-100"
                       >
                         <img
                           src={itemRight2.featuredImage}

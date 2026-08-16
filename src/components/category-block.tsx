@@ -56,7 +56,7 @@ export default function CategoryBlock({
               {lead.featuredImage && (
                 <Link
                   href={`/${slug}/${lead.id}`}
-                  className="block aspect-[16/10] overflow-hidden rounded bg-gray-100"
+                  className="block aspect-[354/199] overflow-hidden rounded bg-gray-100"
                 >
                   <img
                     src={lead.featuredImage}
@@ -82,7 +82,7 @@ export default function CategoryBlock({
                   {item.featuredImage && (
                     <Link
                       href={`/${slug}/${item.id}`}
-                      className="block w-28 h-20 sm:w-full sm:h-auto sm:aspect-[16/10] shrink-0 overflow-hidden rounded bg-gray-100"
+                      className="block w-28 aspect-[354/199] sm:w-full sm:h-auto sm:aspect-[354/199] shrink-0 overflow-hidden rounded bg-gray-100"
                     >
                       <img
                         src={item.featuredImage}
@@ -108,7 +108,7 @@ export default function CategoryBlock({
               {lead.featuredImage && (
                 <Link
                   href={`/${slug}/${lead.id}`}
-                  className="block aspect-[16/10] overflow-hidden rounded bg-gray-100"
+                  className="block aspect-[354/199] overflow-hidden rounded bg-gray-100"
                 >
                   <img
                     src={lead.featuredImage}
@@ -136,7 +136,7 @@ export default function CategoryBlock({
                   className="flex gap-3 group items-center py-1 border-b border-gray-100 last:border-b-0 first:pt-0 last:pb-0"
                 >
                   {item.featuredImage && (
-                    <div className="w-28 h-20 sm:w-20 sm:h-14 rounded overflow-hidden bg-gray-100 shrink-0">
+                    <div className="w-28 aspect-[354/199] sm:w-24 sm:aspect-[354/199] rounded overflow-hidden bg-gray-100 shrink-0">
                       <img
                         src={item.featuredImage}
                         alt={item.title}

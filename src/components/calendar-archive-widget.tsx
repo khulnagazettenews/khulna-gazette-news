@@ -34,7 +34,7 @@ const englishMonths = [
   'December',
 ];
 
-const weekDaysBn = ['রবি', 'সোম', 'মঙ্গল', 'বুধ', 'বৃহ', 'শু', 'শনি'];
+const weekDaysBn = ['রবি', 'সোম', 'মঙ্গল', 'বুধ', 'বৃহ', 'শুক্র', 'শনি'];
 
 const toBanglaNum = (num: number | string): string => {
   const bnDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];

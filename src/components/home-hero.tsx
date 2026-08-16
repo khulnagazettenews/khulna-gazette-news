@@ -54,18 +54,17 @@ export default function HomeHero({ news }: HomeHeroProps) {
               <div className="space-y-2.5">
                 <Link href={`/${mainLead.category?.slug || 'news'}/${mainLead.id}`} className="group block">
                   <h1 className="text-[24px] sm:text-[28px] lg:text-[31px] xl:text-[33px] font-bold text-[#e60023] group-hover:text-[#000000] hover:text-[#000000] transition leading-[1.28]">
-                    ‘{mainLead.title.replace(/^[‘'“"]|[’'"”]$/g, '')}’
+                    {mainLead.title}
                   </h1>
                 </Link>
 
                 {mainLead.content && (
                   <p 
-                    className="text-[#333333]"
+                    className="text-[#333333] text-[17px] sm:text-[19px]"
                     style={{
                       fontFamily: 'Bangla, sans-serif',
-                      fontSize: '16px',
                       fontWeight: 400,
-                      lineHeight: '25.12px',
+                      lineHeight: '1.6',
                       display: '-webkit-box',
                       WebkitLineClamp: 7,
                       WebkitBoxOrient: 'vertical',
@@ -130,7 +129,7 @@ export default function HomeHero({ news }: HomeHeroProps) {
                   {story.featuredImage ? (
                     <Link
                       href={`/${categorySlug}/${story.id}`}
-                      className="block w-28 h-20 sm:w-full sm:h-auto sm:aspect-[16/10] shrink-0 overflow-hidden rounded bg-gray-100"
+                      className="block w-28 aspect-[354/199] sm:w-full sm:h-auto sm:aspect-[354/199] shrink-0 overflow-hidden rounded bg-gray-100"
                     >
                       <img
                         src={story.featuredImage}
@@ -139,7 +138,7 @@ export default function HomeHero({ news }: HomeHeroProps) {
                       />
                     </Link>
                   ) : (
-                    <div className="w-28 h-20 sm:w-full sm:h-auto sm:aspect-[16/10] shrink-0 bg-gray-100 rounded flex items-center justify-center text-gray-400 font-bold text-xs">
+                    <div className="w-28 aspect-[354/199] sm:w-full sm:h-auto sm:aspect-[354/199] shrink-0 bg-gray-100 rounded flex items-center justify-center text-gray-400 font-bold text-xs">
                       খুলনা গেজেট
                     </div>
                   )}

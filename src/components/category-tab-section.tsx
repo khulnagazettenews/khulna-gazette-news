@@ -109,7 +109,7 @@ export default function CategoryTabSection({
                 {/* Image */}
                 <Link
                   href={`/${item.category?.slug || activeSlug}/${item.slug}-${item.id}`}
-                  className="block aspect-[16/10] overflow-hidden bg-slate-200 relative"
+                  className="block aspect-[354/199] overflow-hidden bg-slate-200 relative"
                 >
                   {item.featuredImage ? (
                     <img

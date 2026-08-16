@@ -89,13 +89,13 @@ export default async function PublicFooter() {
         {/* Feature Links & Playstore Badge Column */}
         <div className="shrink-0 flex flex-col gap-3.5 items-start">
           <div className="flex flex-col gap-2 font-bold text-[15px] sm:text-[17px]">
-            <Link href="/converter" className="text-white hover:text-[#ff4444] transition duration-300 flex items-center gap-1.5">
+            <Link href="/converter" className="text-[#ffffff] hover:text-[#ff4444] transition duration-300 flex items-center gap-1.5">
               <span className="text-[#ed0022] font-extrabold">•</span> কনভার্টার
             </Link>
-            <Link href="/greeting-cards" className="text-white hover:text-[#ff4444] transition duration-300 flex items-center gap-1.5">
+            <Link href="/greeting-cards" className="text-[#ffffff] hover:text-[#ff4444] transition duration-300 flex items-center gap-1.5">
               <span className="text-[#ed0022] font-extrabold">•</span> শুভেচ্ছা কার্ড
             </Link>
-            <Link href="/jobs" className="text-white hover:text-[#ff4444] transition duration-300 flex items-center gap-1.5">
+            <Link href="/jobs" className="text-[#ffffff] hover:text-[#ff4444] transition duration-300 flex items-center gap-1.5">
               <span className="text-[#ed0022] font-extrabold">•</span> খুলনা গেজেটে চাকরি
             </Link>
           </div>
@@ -159,4 +159,3 @@ export default async function PublicFooter() {
     </footer>
   );
 }
-
