@@ -1,5 +1,8 @@
 'use client';
 
+import { useState, useEffect } from 'react';
+import { MapPin } from 'lucide-react';
+
 interface Timings {
   fajr: string;
   sunrise: string;
@@ -14,6 +17,25 @@ interface PrayerWidgetClientProps {
   hijriDate?: string;
   gregorianDate?: string;
 }
+
+const BD_DISTRICTS = [
+  { city: 'Khulna', bn: 'খুলনা' },
+  { city: 'Dhaka', bn: 'ঢাকা' },
+  { city: 'Chittagong', bn: 'চট্টগ্রাম' },
+  { city: 'Sylhet', bn: 'সিলেট' },
+  { city: 'Rajshahi', bn: 'রাজশাহী' },
+  { city: 'Barisal', bn: 'বরিশাল' },
+  { city: 'Rangpur', bn: 'রংপুর' },
+  { city: 'Mymensingh', bn: 'ময়মনসিংহ' },
+  { city: 'Comilla', bn: 'কুমিল্লা' },
+  { city: 'Jessore', bn: 'যশোর' },
+  { city: 'Kushtia', bn: 'কুষ্টিয়া' },
+  { city: 'Satkhira', bn: 'সাতক্ষীরা' },
+  { city: 'Bagerhat', bn: 'বাগেরহাট' },
+  { city: 'Cox\'s Bazar', bn: 'কক্সবাজার' },
+  { city: 'Bograbd', bn: 'বগুড়া' },
+  { city: 'Tangail', bn: 'টাঙ্গাইল' },
+];
 
 const toBengaliNumber = (numStr: string) => {
   const bnNums: Record<string, string> = {
@@ -31,7 +53,37 @@ const toEnglishNumber = (numStr: string) => {
   return numStr.replace(/[০-৯]/g, (w) => bnNums[w] || w);
 };
 
-export default function PrayerWidgetClient({ timings }: PrayerWidgetClientProps) {
+export default function PrayerWidgetClient({ timings: initialTimings }: PrayerWidgetClientProps) {
+  const [selectedCity, setSelectedCity] = useState('Khulna');
+  const [timings, setTimings] = useState<Timings>(initialTimings);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (selectedCity === 'Khulna') {
+      setTimings(initialTimings);
+      return;
+    }
+
+    const fetchLiveTimings = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(`/api/prayer-times/live?city=${encodeURIComponent(selectedCity)}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.timings) {
+            setTimings(data.timings);
+          }
+        }
+      } catch (err) {
+        console.error('Error fetching district prayer times:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLiveTimings();
+  }, [selectedCity, initialTimings]);
+
   const parseTo12hBengali = (val: string, name: string) => {
     if (!val) return '--:--';
     let cleanVal = toEnglishNumber(val).trim();
@@ -71,7 +123,7 @@ export default function PrayerWidgetClient({ timings }: PrayerWidgetClientProps)
   ];
 
   return (
-    <div className="w-full bg-white rounded-[8px] border border-gray-200 p-2.5 select-none">
+    <div className="w-full bg-white rounded-[8px] border border-gray-200 p-2.5 select-none font-sans">
       <div 
         className="rounded-[6px] overflow-hidden border border-gray-200 bg-white"
         style={{
@@ -80,21 +132,41 @@ export default function PrayerWidgetClient({ timings }: PrayerWidgetClientProps)
       >
         {/* Dark Header Title */}
         <div 
-          className="bg-[#353d4c] text-white py-1 px-2 text-center font-normal border-b border-gray-200"
+          className="bg-[#353d4c] text-white py-1 px-2 text-center font-normal border-b border-gray-200 flex items-center justify-between"
           style={{
             fontFamily: 'Bangla, sans-serif',
-            fontSize: '20px',
+            fontSize: '18px',
             fontWeight: 400,
             lineHeight: '22px',
-            letterSpacing: '-0.2px',
-            textAlign: 'center',
           }}
         >
-          নামাজের সময়সূচি
+          <span>নামাজের সময়সূচি</span>
+
+          {/* District Selector */}
+          <div className="flex items-center gap-1 bg-slate-800/80 px-2 py-0.5 rounded text-xs border border-slate-700">
+            <MapPin size={12} className="text-amber-400 shrink-0" />
+            <select
+              value={selectedCity}
+              onChange={(e) => setSelectedCity(e.target.value)}
+              className="bg-transparent text-amber-300 font-bold focus:outline-none cursor-pointer text-xs"
+            >
+              {BD_DISTRICTS.map((d) => (
+                <option key={d.city} value={d.city} className="bg-slate-900 text-white">
+                  {d.bn}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         {/* Prayer Time Rows */}
-        <div className="bg-white p-2 space-y-1.5">
+        <div className="bg-white p-2 space-y-1.5 relative">
+          {loading && (
+            <div className="absolute inset-0 bg-white/80 z-10 flex items-center justify-center text-xs font-bold text-slate-600">
+              সময় লোড হচ্ছে...
+            </div>
+          )}
+
           {list.map((item) => (
             <div key={item.name} className="flex items-center justify-between gap-2">
               {/* Left Grey Name Pill */}
@@ -119,3 +191,4 @@ export default function PrayerWidgetClient({ timings }: PrayerWidgetClientProps)
     </div>
   );
 }
+
