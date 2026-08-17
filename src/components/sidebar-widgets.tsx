@@ -244,16 +244,20 @@ export default function SidebarWidgets({
         href="https://www.youtube.com/@khulnagazette"
         target="_blank"
         rel="noopener noreferrer"
-        className="w-full bg-[#2b354f] hover:bg-[#21293e] text-white py-2 px-3 rounded-none shadow-2xs transition font-normal flex items-center justify-center gap-2 border border-slate-700"
+        className="w-full bg-gradient-to-r from-[#b91c1c] via-[#dc2626] to-[#b91c1c] hover:from-[#a71919] hover:to-[#a71919] text-white py-3 px-4 rounded-none shadow-[0_4px_16px_rgba(220,38,38,0.35)] hover:shadow-lg hover:scale-[1.02] transition-all duration-300 font-bold flex items-center justify-center gap-2.5 border border-red-700 group relative overflow-hidden"
         style={{
           fontFamily: 'Bangla, sans-serif',
           fontSize: '19px',
-          fontWeight: 400,
+          fontWeight: 700,
           lineHeight: '22px',
           letterSpacing: '-0.2px',
         }}
       >
-        <svg className="w-5 h-5 fill-[#dc2626] shrink-0" viewBox="0 0 24 24">
+        <span className="relative flex h-3 w-3">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-200 opacity-75"></span>
+          <span className="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
+        </span>
+        <svg className="w-5 h-5 fill-white shrink-0 group-hover:scale-110 transition-transform duration-300" viewBox="0 0 24 24">
           <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
         </svg>
         <span>ইউটিউব চ্যানেলে সাবস্ক্রাইব করুন</span>
