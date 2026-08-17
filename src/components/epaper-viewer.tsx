@@ -267,127 +267,9 @@ export default function EpaperViewer({ initialIssues }: EpaperViewerProps) {
         </div>
       ) : (
         <div className="max-w-[1050px] mx-auto my-6 bg-white border border-[#e2e2e2] rounded shadow-2xs overflow-hidden">
-          {/* Working Zoom & Page Navigation Toolbar Header */}
-          <div className="bg-[#f5f5f5] border-b border-[#e2e2e2] p-2.5 px-3.5 flex flex-wrap items-center justify-between gap-2.5 text-xs font-bold text-gray-800">
-            {/* Page indicator & quick selector dropdown */}
-            <div className="flex items-center gap-2">
-              <span className="bg-[#A00B01] text-white px-2.5 py-1 rounded text-xs font-black shadow-2xs">
-                {getPageLabel(activePageIndex, pages.length)}
-              </span>
 
-              {/* Page Select Dropdown */}
-              <select
-                value={activePageIndex}
-                onChange={(e) => {
-                  setActivePageIndex(Number(e.target.value));
-                  setZoomScale(1.25);
-                }}
-                className="bg-white border border-gray-300 text-slate-800 text-xs font-extrabold py-1 px-2.5 rounded-lg focus:outline-none focus:border-[#A00B01] cursor-pointer shadow-2xs"
-              >
-                {pages.map((_, idx) => (
-                  <option key={idx} value={idx}>
-                    {getPageLabel(idx, pages.length)} (পৃষ্ঠা {idx + 1}/{pages.length})
-                  </option>
-                ))}
-              </select>
 
-              {/* Top Next / Prev Page Navigation Buttons */}
-              <div className="flex items-center gap-1">
-                <button
-                  type="button"
-                  onClick={goToPrevPage}
-                  disabled={activePageIndex === 0}
-                  className="bg-white hover:bg-slate-100 disabled:opacity-30 border border-gray-300 text-slate-800 px-2 py-1 rounded-lg text-xs font-extrabold flex items-center gap-0.5 transition cursor-pointer shadow-2xs"
-                  title="আগের পাতা"
-                >
-                  <ChevronLeft size={15} className="text-[#A00B01]" />
-                  <span className="hidden sm:inline">আগের পাতা</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={goToNextPage}
-                  disabled={activePageIndex === pages.length - 1}
-                  className="bg-white hover:bg-slate-100 disabled:opacity-40 border border-gray-300 text-slate-800 px-2 py-1 rounded-lg text-xs font-extrabold flex items-center gap-0.5 transition cursor-pointer shadow-2xs"
-                  title="পরের পাতা"
-                >
-                  <span className="hidden sm:inline">পরের পাতা</span>
-                  <ChevronRight size={15} className="text-[#A00B01]" />
-                </button>
-              </div>
-            </div>
 
-            {/* Sharp Zoom Presets & Controls */}
-            <div className="flex flex-wrap items-center gap-1.5">
-              <span className="text-[11px] text-gray-500 font-semibold mr-1 hidden lg:inline">দ্রুত জুম:</span>
-
-              {/* Preset Buttons */}
-              <button
-                type="button"
-                onClick={(e) => setPresetZoom(1, e)}
-                className={`px-2 py-0.5 rounded text-[11px] font-extrabold border transition ${zoomScale === 1 ? 'bg-[#A00B01] text-white border-[#A00B01]' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100'}`}
-              >
-                100%
-              </button>
-              <button
-                type="button"
-                onClick={(e) => setPresetZoom(1.5, e)}
-                className={`px-2 py-0.5 rounded text-[11px] font-extrabold border transition ${zoomScale === 1.5 ? 'bg-[#A00B01] text-white border-[#A00B01]' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100'}`}
-              >
-                150% (HD)
-              </button>
-              <button
-                type="button"
-                onClick={(e) => setPresetZoom(2, e)}
-                className={`px-2 py-0.5 rounded text-[11px] font-extrabold border transition ${zoomScale === 2 ? 'bg-[#A00B01] text-white border-[#A00B01]' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100'}`}
-              >
-                200% (আল্ট্রা)
-              </button>
-
-              <div className="h-4 w-[1px] bg-gray-300 mx-1"></div>
-
-              {/* Zoom Out Button (-) */}
-              <button
-                type="button"
-                onClick={handleZoomOut}
-                className="bg-white hover:bg-gray-200 border border-gray-300 text-gray-800 px-2 py-1 rounded text-xs font-extrabold flex items-center gap-1 transition cursor-pointer shadow-2xs"
-                title="জুম আউট (-)"
-              >
-                <Minus size={13} className="text-[#A00B01]" />
-                <span className="hidden sm:inline">জুম কমান</span>
-              </button>
-
-              {/* Zoom In Button (+) */}
-              <button
-                type="button"
-                onClick={handleZoomIn}
-                className="bg-white hover:bg-gray-200 border border-gray-300 text-gray-800 px-2 py-1 rounded text-xs font-extrabold flex items-center gap-1 transition cursor-pointer shadow-2xs"
-                title="জুম ইন (+)"
-              >
-                <Plus size={13} className="text-[#A00B01]" />
-                <span className="hidden sm:inline">জুম বাড়ান</span>
-              </button>
-
-              {/* Lightbox Fullscreen Button */}
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setLightboxOpen(true);
-                }}
-                className="bg-[#A00B01] hover:bg-red-800 text-white px-2.5 py-1 rounded text-xs font-bold transition flex items-center gap-1 cursor-pointer ml-1 shadow-2xs"
-                title="ফুলস্ক্রিন লাইটবক্স"
-              >
-                <Maximize2 size={13} />
-                <span className="hidden sm:inline">ফুলস্ক্রিন</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Reading Tip Bar */}
-          <div className="bg-amber-50/80 px-3.5 py-1.5 border-b border-amber-100 text-[11px] text-amber-900 font-semibold flex flex-wrap items-center justify-between gap-2">
-            <span>💡 পরিষ্কার লেখা পড়ার জন্য চিত্রে ডাবল-ক্লিক করুন অথবা ১৫০%/২০০% জুম অপশন চাপুন।</span>
-            <span className="text-gray-600 font-bold bg-amber-100/60 px-2 py-0.5 rounded">স্কেল: {Math.round(zoomScale * 100)}%</span>
-          </div>
 
           {/* Scrollable Container with Crisp HD Sharp Rendering */}
           <div 
@@ -426,18 +308,13 @@ export default function EpaperViewer({ initialIssues }: EpaperViewerProps) {
               <img
                 src={pages[activePageIndex]}
                 alt={getPageLabel(activePageIndex, pages.length)}
-                onDoubleClick={() => setZoomScale((z) => (z > 1.25 ? 1 : 1.75))}
-                onClick={() => {
-                  if (zoomScale <= 1) {
-                    setLightboxOpen(true);
-                  }
-                }}
-                className="w-full h-auto object-contain block cursor-pointer border border-gray-300 shadow-md bg-white epaper-sharp rounded-xs"
+                onClick={() => setLightboxOpen(true)}
+                title="বড় করে দেখতে ছবিতে ক্লিক করুন"
+                className="w-full h-auto object-contain block cursor-pointer border border-gray-300 shadow-md bg-white epaper-sharp rounded-xs transition-all duration-300 hover:scale-[1.01]"
                 style={{
                   imageRendering: 'crisp-edges',
                   WebkitFontSmoothing: 'antialiased',
                 }}
-                title="স্পষ্ট খবরের জন্য ডাবল ক্লিক করুন বা জুম বাড়ান"
               />
             </div>
           </div>
