@@ -98,15 +98,24 @@ export default async function AdminDashboard() {
   // Calculate publication ratio
   const publishRatio = totalNews > 0 ? Math.round((publishedNewsCount / totalNews) * 100) : 0;
 
-  // Date & Greeting in Bengali
-  const currentHour = new Date().getHours();
+  // Date & Greeting in Bengali (Asia/Dhaka Timezone Aware)
+  const currentHour = parseInt(
+    new Intl.DateTimeFormat('en-US', {
+      timeZone: 'Asia/Dhaka',
+      hour: 'numeric',
+      hour12: false,
+    }).format(new Date()),
+    10
+  );
+
   let greetingBn = 'স্বাগতম';
   if (currentHour >= 5 && currentHour < 12) greetingBn = 'শুভ সকাল';
-  else if (currentHour >= 12 && currentHour < 17) greetingBn = 'শুভ দুপুর';
-  else if (currentHour >= 17 && currentHour < 20) greetingBn = 'শুভ বিকাল';
+  else if (currentHour >= 12 && currentHour < 16) greetingBn = 'শুভ দুপুর';
+  else if (currentHour >= 16 && currentHour < 19) greetingBn = 'শুভ বিকেল';
   else greetingBn = 'শুভ রাত';
 
   const todayBn = new Date().toLocaleDateString('bn-BD', {
+    timeZone: 'Asia/Dhaka',
     weekday: 'long',
     year: 'numeric',
     month: 'long',
