@@ -52,6 +52,7 @@ export default function AdvertisementManagementPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
+  const [activeTab, setActiveTab] = useState<'ALL' | 'HOME' | 'SIDEBAR'>('ALL');
   // Modals state
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -307,23 +308,37 @@ export default function AdvertisementManagementPage() {
     setIsEditModalOpen(true);
   };
 
+const HOME_POSITIONS = [
+  { value: 'top_banner', label: 'শীর্ষ ব্যানার (Top Banner - হেডার নিচে)' },
+  { value: 'home_after_hero', label: 'হিরো সেকশনের পর (After Main Hero)' },
+  { value: 'home_before_bangladesh_khulna', label: 'বাংলাদেশ ও খুলনাঞ্চল সেকশনের পূর্বে' },
+  { value: 'home_before_sports', label: 'খেলা সেকশনের পূর্বে' },
+  { value: 'home_before_entertainment', label: 'বিনোদন সেকশনের পূর্বে' },
+  { value: 'middle_banner', label: 'রাজনীতি ও অর্থনীতি সেকশনের পূর্বে (Middle Banner)' },
+  { value: 'home_before_international', label: 'আন্তর্জাতিক সেকশনের পূর্বে' },
+  { value: 'home_before_education_islam', label: 'শিক্ষা ও ইসলাম ও জীবন সেকশনের পূর্বে' },
+  { value: 'home_before_technology', label: 'আইটি / টেকনোলজি সেকশনের পূর্বে' },
+  { value: 'home_before_lifestyle_health', label: 'লাইফ স্টাইল ও চিকিৎসা সেকশনের পূর্বে' },
+  { value: 'home_before_literature', label: 'সাহিত্য সেকশনের পূর্বে' },
+  { value: 'home_before_chitro_social', label: 'চিত্র বিচিত্র ও সোশ্যাল মিডিয়া সেকশনের পূর্বে' },
+  { value: 'home_before_mukto_bhabna', label: 'মুক্ত ভাবনা সেকশনের পূর্বে' },
+  { value: 'home_before_exclusive', label: 'গেজেট এক্সক্লুসিভ সেকশনের পূর্বে' },
+  { value: 'home_before_photo_gallery', label: 'ফটোগ্যালারি সেকশনের পূর্বে' },
+  { value: 'home_before_video_section', label: 'ভিডিও সেকশনের পূর্বে (হোমপেজ বটম)' },
+];
+
+const SIDEBAR_POSITIONS = [
+  { value: 'sidebar_widget_top', label: 'সাইডবার টপ উইজেট (Sidebar Top)' },
+  { value: 'sidebar_widget_middle', label: 'সাইডবার মিডল উইজেট (Sidebar Middle)' },
+  { value: 'sidebar_widget_bottom', label: 'সাইডবার বটম উইজেট (Sidebar Bottom)' },
+  { value: 'sidebar_banner', label: 'সাইডবার ব্যানার (Sidebar Banner)' },
+];
+
+const ALL_POSITIONS = [...HOME_POSITIONS, ...SIDEBAR_POSITIONS];
+
   const getPositionLabel = (pos: string) => {
-    switch (pos) {
-      case 'top_banner':
-        return 'শীর্ষ ব্যানার (Top Banner)';
-      case 'sidebar_widget_top':
-        return 'সাইডবার টপ উইজেট (Sidebar Top)';
-      case 'sidebar_widget_middle':
-        return 'সাইডবার মিডল উইজেট (Sidebar Middle)';
-      case 'sidebar_widget_bottom':
-        return 'সাইডবার বটম উইজেট (Sidebar Bottom)';
-      case 'sidebar_banner':
-        return 'সাইডবার ব্যানার (Sidebar Banner)';
-      case 'middle_banner':
-        return 'ইনসাইড নিউজ ব্যানার (Middle Banner)';
-      default:
-        return pos;
-    }
+    const found = ALL_POSITIONS.find(p => p.value === pos);
+    return found ? found.label : pos;
   };
 
   const getAdTypeLabel = (type: string) => {
@@ -385,6 +400,45 @@ export default function AdvertisementManagementPage() {
         </div>
       )}
 
+      {/* Sub-section Navigation Tabs */}
+      <div className="flex flex-wrap items-center gap-2 p-1.5 bg-slate-100/80 rounded-2xl border border-slate-200/80">
+        <button
+          type="button"
+          onClick={() => setActiveTab('ALL')}
+          className={`px-4 py-2 rounded-xl font-extrabold text-xs transition ${
+            activeTab === 'ALL'
+              ? 'bg-slate-900 text-white shadow-xs'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
+          }`}
+        >
+          সকল বিজ্ঞাপন ({ads.length})
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setActiveTab('HOME')}
+          className={`px-4 py-2 rounded-xl font-extrabold text-xs transition ${
+            activeTab === 'HOME'
+              ? 'bg-red-600 text-white shadow-xs'
+              : 'text-slate-600 hover:text-red-600 hover:bg-white/60'
+          }`}
+        >
+          📌 নতুন হোম সেকশন বিজ্ঞাপন ({ads.filter(a => !a.position.startsWith('sidebar')).length})
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setActiveTab('SIDEBAR')}
+          className={`px-4 py-2 rounded-xl font-extrabold text-xs transition ${
+            activeTab === 'SIDEBAR'
+              ? 'bg-blue-600 text-white shadow-xs'
+              : 'text-slate-600 hover:text-blue-600 hover:bg-white/60'
+          }`}
+        >
+          📌 সাইডবার বিজ্ঞাপন ({ads.filter(a => a.position.startsWith('sidebar')).length})
+        </button>
+      </div>
+
       {/* Advertisements Grid / List */}
       {loading ? (
         <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xs p-12 text-center text-slate-400 font-bold">
@@ -398,7 +452,13 @@ export default function AdvertisementManagementPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {ads.map((ad, index) => (
+          {ads
+            .filter((ad) => {
+              if (activeTab === 'HOME') return !ad.position.startsWith('sidebar');
+              if (activeTab === 'SIDEBAR') return ad.position.startsWith('sidebar');
+              return true;
+            })
+            .map((ad, index) => (
             <div key={ad.id} className="bg-white rounded-3xl border border-slate-200/90 shadow-xs overflow-hidden flex flex-col justify-between hover:shadow-md transition duration-200 group">
               <div>
                 {/* Header & Reorder Control Bar */}
@@ -642,12 +702,20 @@ export default function AdvertisementManagementPage() {
                     onChange={(e) => setFormData({ ...formData, position: e.target.value })}
                     className="w-full px-3.5 py-2.5 border border-slate-200 rounded-2xl focus:outline-none focus:border-red-500 bg-slate-50 font-bold transition cursor-pointer"
                   >
-                    <option value="sidebar_widget_top">সাইডবার টপ (Sidebar Top)</option>
-                    <option value="sidebar_widget_middle">সাইডবার মিডল (Sidebar Middle)</option>
-                    <option value="sidebar_widget_bottom">সাইডবার বটম (Sidebar Bottom)</option>
-                    <option value="sidebar_banner">সাইডবার ব্যানার (Sidebar Banner)</option>
-                    <option value="top_banner">শীর্ষ ব্যানার (Top Banner)</option>
-                    <option value="middle_banner">ইনসাইড নিউজ (Middle Banner)</option>
+                    <optgroup label="📌 হোম সেকশন বিজ্ঞাপন (Home Section Ads)">
+                      {HOME_POSITIONS.map((pos) => (
+                        <option key={pos.value} value={pos.value}>
+                          {pos.label}
+                        </option>
+                      ))}
+                    </optgroup>
+                    <optgroup label="📌 সাইডবার বিজ্ঞাপন (Sidebar Ads)">
+                      {SIDEBAR_POSITIONS.map((pos) => (
+                        <option key={pos.value} value={pos.value}>
+                          {pos.label}
+                        </option>
+                      ))}
+                    </optgroup>
                   </select>
                 </div>
 
@@ -807,12 +875,20 @@ export default function AdvertisementManagementPage() {
                     onChange={(e) => setFormData({ ...formData, position: e.target.value })}
                     className="w-full px-3.5 py-2.5 border border-slate-200 rounded-2xl focus:outline-none focus:border-blue-500 bg-slate-50 font-bold transition cursor-pointer"
                   >
-                    <option value="sidebar_widget_top">সাইডবার টপ (Sidebar Top)</option>
-                    <option value="sidebar_widget_middle">সাইডবার মিডল (Sidebar Middle)</option>
-                    <option value="sidebar_widget_bottom">সাইডবার বটম (Sidebar Bottom)</option>
-                    <option value="sidebar_banner">সাইডবার ব্যানার (Sidebar Banner)</option>
-                    <option value="top_banner">শীর্ষ ব্যানার (Top Banner)</option>
-                    <option value="middle_banner">ইনসাইড নিউজ (Middle Banner)</option>
+                    <optgroup label="📌 হোম সেকশন বিজ্ঞাপন (Home Section Ads)">
+                      {HOME_POSITIONS.map((pos) => (
+                        <option key={pos.value} value={pos.value}>
+                          {pos.label}
+                        </option>
+                      ))}
+                    </optgroup>
+                    <optgroup label="📌 সাইডবার বিজ্ঞাপন (Sidebar Ads)">
+                      {SIDEBAR_POSITIONS.map((pos) => (
+                        <option key={pos.value} value={pos.value}>
+                          {pos.label}
+                        </option>
+                      ))}
+                    </optgroup>
                   </select>
                 </div>
 

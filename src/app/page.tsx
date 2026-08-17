@@ -239,10 +239,13 @@ export default async function HomePage() {
       .filter(Boolean);
   }
 
-  // Active advertisements extraction
-  const topAd = advertisements.find((a) => a.position === 'top_banner');
-  const sidebarAd = advertisements.find((a) => a.position === 'sidebar_banner');
-  const middleAd = advertisements.find((a) => a.position === 'middle_banner');
+  // Active advertisements extraction helper
+  const getAd = (pos: string) => {
+    return advertisements.find((a) => a.position === pos) || null;
+  };
+
+  const topAd = getAd('top_banner');
+  const sidebarAd = getAd('sidebar_banner');
 
   const getYoutubeId = (url: string) => {
     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
@@ -258,7 +261,7 @@ export default async function HomePage() {
       {/* Main Container ultra-wide desktop friendly max-w-[1520px] */}
       <main className="flex-grow w-full max-w-[1520px] mx-auto px-4 sm:px-6 lg:px-8 pt-3.5 pb-8 space-y-4 sm:space-y-5">
         {/* Top Ad slot */}
-        <AdBanner ad={topAd} fallbackText="বিজ্ঞাপন ব্যানার" className="h-20 sm:h-24" />
+        <AdBanner ad={topAd} fallbackText="বিজ্ঞাপন ব্যানার" hideIfEmpty={false} className="h-20 sm:h-24" />
 
         {/* Main 2-Column Grid (Left Main Content 9 Cols + Right Sidebar 3 Cols) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-6 items-start">
@@ -267,14 +270,23 @@ export default async function HomePage() {
             {/* 2. Main Lead Hero Section */}
             <HomeHero news={heroNews as any} />
 
+            {/* Ad slot: After Hero */}
+            <AdBanner ad={getAd('home_after_hero')} className="h-20 sm:h-24" />
+
             {/* 3. Red YouTube Promo Strip */}
             <YoutubeBanner />
+
+            {/* Ad slot: Before Bangladesh & Khulna */}
+            <AdBanner ad={getAd('home_before_bangladesh_khulna')} className="h-20 sm:h-24" />
 
             {/* 4. Category Pair 1: বাংলাদেশ & খুলনাঞ্চল */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <CategoryBlock title="বাংলাদেশ" slug="bangladesh" news={bangladeshNews as any} />
               <CategoryBlock title="খুলনাঞ্চল" slug="khulna" news={khulnaNews as any} />
             </div>
+
+            {/* Ad slot: Before Sports */}
+            <AdBanner ad={getAd('home_before_sports')} className="h-20 sm:h-24" />
 
             {/* 5. Sports Section (Main image on left + 4 mini cards on right) */}
             <CategoryBlock
@@ -284,6 +296,9 @@ export default async function HomePage() {
               variant="sports"
             />
 
+            {/* Ad slot: Before Entertainment */}
+            <AdBanner ad={getAd('home_before_entertainment')} className="h-20 sm:h-24" />
+
             {/* 6. Entertainment Section */}
             <CategoryBlock
               title="বিনোদন"
@@ -292,8 +307,8 @@ export default async function HomePage() {
               variant="entertainment"
             />
 
-            {/* Middle Ad slot */}
-            <AdBanner ad={middleAd} fallbackText="বিজ্ঞাপন স্পেস" className="h-20 sm:h-24" />
+            {/* Middle Ad slot (Before Politics & Economy) */}
+            <AdBanner ad={getAd('middle_banner') || getAd('home_before_politics_economy')} fallbackText="বিজ্ঞাপন স্পেস" hideIfEmpty={false} className="h-20 sm:h-24" />
 
             {/* 7. Category Pair 2: রাজনীতি & অর্থনীতি */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -301,8 +316,14 @@ export default async function HomePage() {
               <CategoryBlock title="অর্থনীতি" slug="economy" news={economyNews as any} />
             </div>
 
+            {/* Ad slot: Before International */}
+            <AdBanner ad={getAd('home_before_international')} className="h-20 sm:h-24" />
+
             {/* 8. International Category */}
             <CategoryBlock title="আন্তর্জাতিক" slug="international" news={internationalNews as any} />
+
+            {/* Ad slot: Before Education & Islam */}
+            <AdBanner ad={getAd('home_before_education_islam')} className="h-20 sm:h-24" />
 
             {/* 9. Category Pair 3: শিক্ষা & ইসলাম ও জীবন */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -310,8 +331,14 @@ export default async function HomePage() {
               <CategoryBlock title="ইসলাম ও জীবন" slug="islam" news={islamNews as any} />
             </div>
 
+            {/* Ad slot: Before Technology */}
+            <AdBanner ad={getAd('home_before_technology')} className="h-20 sm:h-24" />
+
             {/* 10. IT / Technology Category */}
             <CategoryBlock title="আইটি" slug="technology" news={techNews as any} />
+
+            {/* Ad slot: Before Lifestyle & Health */}
+            <AdBanner ad={getAd('home_before_lifestyle_health')} className="h-20 sm:h-24" />
 
             {/* 11. Category Pair 4: লাইফ স্টাইল & চিকিৎসা */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -319,8 +346,14 @@ export default async function HomePage() {
               <CategoryBlock title="চিকিৎসা" slug="health" news={healthNews as any} />
             </div>
 
+            {/* Ad slot: Before Literature */}
+            <AdBanner ad={getAd('home_before_literature')} className="h-20 sm:h-24" />
+
             {/* 12. Literature Category */}
             <CategoryBlock title="সাহিত্য" slug="literature" news={literatureNews as any} />
+
+            {/* Ad slot: Before Chitro Bichitro & Social Media */}
+            <AdBanner ad={getAd('home_before_chitro_social')} className="h-20 sm:h-24" />
 
             {/* 13. Category Pair 5: চিত্র বিচিত্র & সোশ্যাল মিডিয়া */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -328,11 +361,20 @@ export default async function HomePage() {
               <CategoryBlock title="সোশ্যাল মিডিয়া" slug="social-media" news={socialMediaNews as any} />
             </div>
 
+            {/* Ad slot: Before Mukto Bhabna */}
+            <AdBanner ad={getAd('home_before_mukto_bhabna')} className="h-20 sm:h-24" />
+
             {/* 14. Mukto Bhabna Category */}
             <CategoryBlock title="মুক্ত ভাবনা" slug="mukto-bhabna" news={muktoBhabnaNews as any} />
 
-            {/* 14. Gazette Exclusive Section */}
+            {/* Ad slot: Before Exclusive */}
+            <AdBanner ad={getAd('home_before_exclusive')} className="h-20 sm:h-24" />
+
+            {/* 15. Gazette Exclusive Section */}
             <CategoryBlock title="গেজেট এক্সক্লুসিভ" slug="gazette-exclusive" news={exclusiveNews as any} />
+
+            {/* Ad slot: Before Photo Gallery */}
+            <AdBanner ad={getAd('home_before_photo_gallery')} className="h-20 sm:h-24" />
 
             {/* Prothom Alo Style Photo Section */}
             <PhotoSection photos={serializeList(photos)} newsWithPhotos={serializeList(heroNews)} />
@@ -350,6 +392,11 @@ export default async function HomePage() {
           </div>
         </div>
       </main>
+
+      {/* Ad slot: Before Video Section */}
+      <div className="max-w-[1520px] mx-auto px-4 sm:px-6 lg:px-8 w-full my-4">
+        <AdBanner ad={getAd('home_before_video_section')} className="h-20 sm:h-24" />
+      </div>
 
       {/* Dhaka Post Style Video Section right before Footer */}
       <VideoSection videos={serializeList(videos)} />

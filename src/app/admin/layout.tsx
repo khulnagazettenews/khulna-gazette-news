@@ -94,7 +94,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   // 5. Advertisements & Sidebar Widgets
   if (['SUPER_ADMIN', 'ADMIN', 'ADVERTISEMENT_MANAGER', 'EDITOR', 'SUB_EDITOR'].includes(role)) {
-    navigation.push({ name: 'বিজ্ঞাপন ও সাইডবার উইজেট', href: '/admin/advertisements', icon: Megaphone });
+    navigation.push({ name: 'বিজ্ঞাপন', href: '/admin/advertisements', icon: Megaphone });
   }
 
   // 6. Comments & Job Applications
