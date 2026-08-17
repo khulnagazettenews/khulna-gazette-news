@@ -165,7 +165,7 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
       prisma.news.findMany({
         where: { status: 'PUBLISHED' },
         orderBy: { publishedAt: 'desc' },
-        take: 10,
+        take: 20,
         include: { category: true },
       }),
       prisma.news.findMany({

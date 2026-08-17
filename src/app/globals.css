@@ -48,10 +48,21 @@ button {
   font-family: Bangla, sans-serif;
 }
 
-/* Global Responsive Image & Video Fluid Media Reset */
+/* Global Responsive Image & Video Fluid Media Reset - Sharp Square Edges */
 img, video, canvas, svg, iframe {
   max-width: 100%;
   height: auto;
+}
+
+/* Universal Image & Container Sharp 90-degree Corner Reset */
+img,
+div:has(> img),
+a:has(> img),
+div:has(> a > img),
+a:has(> div > img),
+.img-container,
+[class*="aspect-"] {
+  border-radius: 0 !important;
 }
 
 /* Bangla Real-Time Spellchecker Red Squiggly Underline */

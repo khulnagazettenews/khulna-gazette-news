@@ -95,17 +95,17 @@ export default function HomeHero({ news }: HomeHeroProps) {
               {mainLead.featuredImage ? (
                 <Link
                   href={`/${mainLead.category?.slug || 'news'}/${mainLead.id}`}
-                  className="block w-full h-full min-h-[250px] sm:min-h-[280px] lg:min-h-[310px] overflow-hidden rounded-xl bg-gray-100 shadow-xs relative"
+                  className="block w-full h-full min-h-[250px] sm:min-h-[280px] lg:min-h-[310px] overflow-hidden rounded-none bg-gray-100 shadow-xs relative"
                 >
                   <img
                     src={mainLead.featuredImage}
                     alt={mainLead.title}
-                    className="w-full h-full object-cover object-center group-hover:scale-[1.03] transition duration-500 ease-out rounded-xl"
+                    className="w-full h-full object-cover object-center group-hover:scale-[1.03] transition duration-500 ease-out rounded-none"
                   />
-                  <div className="absolute inset-0 ring-1 ring-black/5 rounded-xl pointer-events-none" />
+                  <div className="absolute inset-0 ring-1 ring-black/5 rounded-none pointer-events-none" />
                 </Link>
               ) : (
-                <div className="w-full h-full min-h-[250px] sm:min-h-[280px] lg:min-h-[310px] bg-gray-100 rounded-xl flex items-center justify-center text-gray-400 font-bold text-base">
+                <div className="w-full h-full min-h-[250px] sm:min-h-[280px] lg:min-h-[310px] bg-gray-100 rounded-none flex items-center justify-center text-gray-400 font-bold text-base">
                   খুলনা গেজেট
                 </div>
               )}

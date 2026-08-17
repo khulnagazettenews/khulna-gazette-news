@@ -20,7 +20,8 @@ interface TabsWidgetProps {
 export default function TabsWidget({ latest, popular }: TabsWidgetProps) {
   const [activeTab, setActiveTab] = useState<'latest' | 'popular'>('latest');
 
-  const list = activeTab === 'popular' ? popular : latest;
+  const rawList = activeTab === 'popular' ? popular : latest;
+  const list = activeTab === 'popular' ? rawList.slice(0, 10) : rawList.slice(0, 20);
 
   const getTimeAgo = (dateVal?: string | Date | null) => {
     if (!dateVal) return '';
@@ -78,12 +79,12 @@ export default function TabsWidget({ latest, popular }: TabsWidgetProps) {
       </div>
 
       {/* List Items Container matching exact screenshot layout */}
-      <div className="max-h-[410px] overflow-y-auto kg-tab-scrollbar bg-white p-3">
+      <div className="max-h-[550px] overflow-y-auto kg-tab-scrollbar bg-white p-3">
         {list.length === 0 ? (
           <div className="text-center py-8 text-sm text-gray-400 font-medium">কোনো খবর পাওয়া যায়নি।</div>
         ) : (
           <div className="space-y-3.5 divide-y divide-gray-100">
-            {list.slice(0, 15).map((item, index) => (
+            {list.map((item, index) => (
               <div key={item.id} className={`flex items-start gap-3 group ${index > 0 ? 'pt-3.5' : ''}`}>
                 {/* Left Thumbnail Image */}
                 <Link
@@ -107,13 +108,14 @@ export default function TabsWidget({ latest, popular }: TabsWidgetProps) {
                 <div className="flex-1 min-w-0 pt-0.5">
                   <Link
                     href={`/${item.category?.slug || 'news'}/${item.id}`}
-                    className="text-[23px] font-normal text-[#000000] group-hover:text-[rgb(0,86,179)] hover:text-[rgb(0,86,179)] transition leading-[34.5px] text-start line-clamp-3 block"
+                    className="text-[21px] font-normal text-[#000000] group-hover:text-[rgb(0,86,179)] hover:text-[rgb(0,86,179)] transition leading-[22px] text-left line-clamp-3 block tracking-[-0.2px]"
                     style={{
-                      fontFamily: 'solaimanLipi, SolaimanLipi, solaimanlipi, Vrinda, Bangla, "Noto Sans Bengali", "Hind Siliguri", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-                      fontSize: '23px',
+                      fontFamily: 'Bangla, sans-serif',
+                      fontSize: '21px',
                       fontWeight: 400,
-                      lineHeight: '34.5px',
-                      textAlign: 'start',
+                      lineHeight: '22px',
+                      letterSpacing: '-0.2px',
+                      textAlign: 'left',
                       WebkitFontSmoothing: 'antialiased',
                     }}
                   >

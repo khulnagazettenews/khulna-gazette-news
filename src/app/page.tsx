@@ -134,14 +134,14 @@ export default async function HomePage() {
     prisma.news.findMany({
       where: { status: 'PUBLISHED' },
       orderBy: { publishedAt: 'desc' },
-      take: 6,
+      take: 20,
       include: { category: true },
     }),
     // Popular news for sidebar tabs
     prisma.news.findMany({
       where: { status: 'PUBLISHED' },
       orderBy: { viewCount: 'desc' },
-      take: 6,
+      take: 10,
       include: { category: true },
     }),
     // Photos
