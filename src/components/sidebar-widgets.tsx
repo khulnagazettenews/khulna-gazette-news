@@ -221,12 +221,12 @@ export default function SidebarWidgets({
           href="https://play.google.com"
           target="_blank"
           rel="noopener noreferrer"
-          className="block relative aspect-[16/9] w-full overflow-hidden bg-slate-100 group"
+          className="block relative w-full overflow-hidden bg-slate-100 group p-0.5"
         >
           <img
-            src="/uploads/sidebar/app_promo.png"
+            src="/uploads/sidebar/app_banner.jpg"
             alt="খুলনা গেজেট অ্যাপ ডাউনলোড"
-            className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+            className="w-full h-auto object-contain block group-hover:scale-[1.02] transition duration-500"
           />
         </a>
       </div>
@@ -239,28 +239,47 @@ export default function SidebarWidgets({
       {/* 8. SIDEBAR ADVERTISEMENT */}
       <AdBanner ad={sidebarAd} fallbackText="বিজ্ঞাপন স্পেস" className="h-48" />
 
-      {/* 9. YOUTUBE SUBSCRIBE BANNER */}
+      {/* 9. YOUTUBE SUBSCRIBE BANNER WITH CIRCULAR LOTTIE GLOBE ANIMATION */}
       <a
         href="https://www.youtube.com/@khulnagazette"
         target="_blank"
         rel="noopener noreferrer"
-        className="w-full bg-gradient-to-r from-[#b91c1c] via-[#dc2626] to-[#b91c1c] hover:from-[#a71919] hover:to-[#a71919] text-white py-3 px-4 rounded-none shadow-[0_4px_16px_rgba(220,38,38,0.35)] hover:shadow-lg hover:scale-[1.02] transition-all duration-300 font-bold flex items-center justify-center gap-2.5 border border-red-700 group relative overflow-hidden"
+        className="w-full bg-gradient-to-r from-[#d90429] via-[#ef233c] to-[#b7094c] hover:from-[#c10324] hover:to-[#a00742] text-white py-3 px-4 rounded-none shadow-[0_4px_16px_rgba(217,4,41,0.35)] hover:shadow-lg hover:scale-[1.02] transition-all duration-300 font-bold flex items-center justify-center gap-2.5 border border-red-400/50 group relative overflow-hidden"
         style={{
           fontFamily: 'Bangla, sans-serif',
-          fontSize: '19px',
+          fontSize: '18px',
           fontWeight: 700,
           lineHeight: '22px',
           letterSpacing: '-0.2px',
         }}
       >
-        <span className="relative flex h-3 w-3">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-200 opacity-75"></span>
-          <span className="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
-        </span>
-        <svg className="w-5 h-5 fill-white shrink-0 group-hover:scale-110 transition-transform duration-300" viewBox="0 0 24 24">
-          <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-        </svg>
-        <span>ইউটিউব চ্যানেলে সাবস্ক্রাইব করুন</span>
+        {/* Network Grid Texture Overlay */}
+        <div 
+          className="absolute inset-0 opacity-[0.12] pointer-events-none"
+          style={{
+            backgroundImage: `
+              linear-gradient(to right, #ffffff 1px, transparent 1px),
+              linear-gradient(to bottom, #ffffff 1px, transparent 1px)
+            `,
+            backgroundSize: '14px 14px',
+          }}
+        />
+
+        {/* Circular Animated Lottie Radar Globe Node */}
+        <div className="relative w-7 h-7 shrink-0 flex items-center justify-center select-none z-10">
+          {/* Outer Spinning Orbit Ring */}
+          <div className="absolute inset-0 border border-dashed border-white/80 rounded-full animate-[spin_8s_linear_infinite]" />
+          {/* Pulsing Signal Wave */}
+          <div className="absolute inset-0.5 border border-yellow-300/90 rounded-full animate-ping opacity-75" style={{ animationDuration: '2s' }} />
+          {/* White Play Circle Node */}
+          <div className="w-5 h-5 bg-white text-[#d90429] rounded-full flex items-center justify-center shadow-md relative z-10">
+            <svg className="w-3 h-3 fill-current ml-0.5 animate-pulse" style={{ animationDuration: '1.5s' }} viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+          </div>
+        </div>
+
+        <span className="relative z-10">ইউটিউব চ্যানেলে সাবস্ক্রাইব করুন</span>
       </a>
 
       {/* 10. DAILY NEWSPAPER ANNOUNCEMENT BANNER IMAGE */}

@@ -4,14 +4,14 @@ export default function FacebookWidget() {
   const facebookUrl = "https://www.facebook.com/klngazette";
 
   return (
-    <div className="bg-white rounded-md border border-slate-200 p-3 space-y-3.5">
+    <div className="bg-white rounded border border-slate-200 shadow-2xs overflow-hidden">
       {/* 1. Header banner */}
-      <div className="bg-[#2d3748] text-white py-2.5 px-4 text-center font-bold text-[14px] leading-tight rounded-t-sm select-none">
+      <div className="bg-[#2d3748] text-white py-2.5 px-4 text-center font-bold text-[14px] leading-tight select-none">
         Like Us on Facebook
       </div>
 
       {/* 2. Mock Facebook Page Plugin Box */}
-      <div className="border border-[#dddfe2] rounded-sm bg-white overflow-hidden shadow-2xs font-sans">
+      <div className="border-t border-[#dddfe2] bg-white overflow-hidden font-sans">
         {/* Cover Photo Area */}
         <div className="h-[100px] relative border-b border-[#dddfe2] overflow-hidden bg-slate-100">
           <img
