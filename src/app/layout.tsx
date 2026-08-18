@@ -15,12 +15,11 @@ export const metadata: Metadata = {
   description: "খুলনা অঞ্চল ও জাতীয় এবং আন্তর্জাতিক সর্বশেষ সংবাদ নিয়ে খুলনা গেজেট।",
   icons: {
     icon: [
-      { url: '/favicon-96x96.png', sizes: '96x96', type: 'image/png' },
-      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.png', type: 'image/png' },
     ],
     shortcut: '/favicon.ico',
     apple: [
-      { url: '/apple-touch-icon.png', sizes: '180x180' }
+      { url: '/apple-touch-icon.png' }
     ]
   },
   manifest: '/site.webmanifest'
@@ -34,10 +33,9 @@ export default function RootLayout({
   return (
     <html lang="bn">
       <head>
-        <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="icon" type="image/png" href="/favicon.png" />
         <link rel="shortcut icon" href="/favicon.ico" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/site.webmanifest" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
       </head>
