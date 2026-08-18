@@ -92,10 +92,10 @@ export default function VideoSection({ videos = [] }: VideoSectionProps) {
         
         {/* Category Header matching khulnagazette.com exact style */}
         <div className="flex flex-wrap items-center justify-between border-b-2 border-[#FF0000] pb-1.5 mb-5 gap-2">
-          <h2 className="text-[20px] sm:text-[24px] font-bold text-[#000000] leading-none flex items-center gap-2">
+          <Link href="/video-gallery" className="text-[20px] sm:text-[24px] font-bold text-[#000000] leading-none flex items-center gap-2 hover:text-[#e60023] transition-colors">
             <Video size={22} className="text-[#e60023]" />
             <span>ভিডিও</span>
-          </h2>
+          </Link>
 
           <div className="flex items-center gap-2.5 sm:gap-4">
             <a
@@ -109,10 +109,6 @@ export default function VideoSection({ videos = [] }: VideoSectionProps) {
               </svg>
               <span>ইউটিউব চ্যানেল</span>
             </a>
-
-            <Link href="/video-gallery" className="text-xs sm:text-base text-[#e60023] font-bold hover:underline whitespace-nowrap">
-              সব ভিডিও
-            </Link>
           </div>
         </div>
 
@@ -170,13 +166,12 @@ export default function VideoSection({ videos = [] }: VideoSectionProps) {
                 )}
               </div>
 
-              {/* Title matching exact font size and style of homepage titles */}
-              <h3
-                className="text-[20px] sm:text-[24px] font-bold text-[#000000] hover:text-[#e60023] leading-snug mt-3.5 transition-colors cursor-pointer"
-                onClick={() => setIsPlaying(true)}
-              >
-                {activeVideo.title}
-              </h3>
+              {/* Title clicking navigates to /video-gallery */}
+              <Link href="/video-gallery" className="block">
+                <h3 className="text-[20px] sm:text-[24px] font-bold text-[#000000] hover:text-[#e60023] leading-snug mt-3.5 transition-colors">
+                  {activeVideo.title}
+                </h3>
+              </Link>
 
               {activeVideo.description && (
                 <p className="text-sm sm:text-base text-gray-700 mt-2 leading-relaxed line-clamp-2 font-medium">
@@ -189,8 +184,9 @@ export default function VideoSection({ videos = [] }: VideoSectionProps) {
           {/* Playlist Cards (Right 4-5 cols) */}
           <div className="lg:col-span-5 xl:col-span-4 flex flex-col space-y-3.5">
             <div className="text-base sm:text-lg font-bold text-[#000000] border-b border-gray-200 pb-2 flex items-center justify-between">
-              <span>অন্যান্য ভিডিও</span>
-              <span className="text-xs sm:text-sm text-[#e60023] font-bold">ক্লিক করে প্লে করুন</span>
+              <Link href="/video-gallery" className="hover:text-[#e60023] transition-colors">
+                অন্যান্য ভিডিও
+              </Link>
             </div>
 
             <div className="space-y-3.5">
@@ -201,10 +197,10 @@ export default function VideoSection({ videos = [] }: VideoSectionProps) {
                   : '';
 
                 return (
-                  <div
+                  <Link
                     key={vid.id}
-                    onClick={() => handleSelectVideo(vid)}
-                    className="flex gap-3 items-start cursor-pointer group p-1.5 rounded hover:bg-gray-50 transition duration-200"
+                    href="/video-gallery"
+                    className="flex gap-3 items-start cursor-pointer group p-1.5 rounded hover:bg-gray-50 transition duration-200 block"
                   >
                     {/* Thumbnail */}
                     <div className="relative aspect-video w-32 sm:w-36 shrink-0 rounded overflow-hidden bg-slate-900 border border-gray-200">
@@ -234,7 +230,7 @@ export default function VideoSection({ videos = [] }: VideoSectionProps) {
                         {vid.title}
                       </h4>
                     </div>
-                  </div>
+                  </Link>
                 );
               })}
             </div>

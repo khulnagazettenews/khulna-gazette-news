@@ -130,9 +130,9 @@ export default function CalendarArchiveWidget() {
           className="bg-[#353d4c] text-white py-1 px-2 text-center font-normal border-b border-gray-200"
           style={{
             fontFamily: 'Bangla, sans-serif',
-            fontSize: '20px',
+            fontSize: '22px',
             fontWeight: 400,
-            lineHeight: '22px',
+            lineHeight: '24px',
             letterSpacing: '-0.2px',
             textAlign: 'center',
           }}
@@ -141,15 +141,15 @@ export default function CalendarArchiveWidget() {
         </div>
 
         {/* Content Body */}
-        <div className="bg-white p-2 space-y-1.5">
+        <div className="bg-white p-1.5 space-y-1.5">
           {/* Month Year Banner with Nav Buttons */}
-          <div className="flex items-center justify-between text-[#000000] font-bold text-[14px] sm:text-[15px] px-1">
+          <div className="flex items-center justify-between text-[#000000] font-bold text-[16px] sm:text-[17px] px-1">
             <button
               onClick={handlePrevMonth}
               className="p-0.5 rounded hover:bg-gray-200 text-gray-800 transition cursor-pointer"
               aria-label="Previous Month"
             >
-              <ChevronLeft size={18} />
+              <ChevronLeft size={19} />
             </button>
             <span className="tracking-tight font-bold text-[#000000]">
               {banglaMonths[currentMonth]} {toBanglaNum(currentYear)}
@@ -159,7 +159,7 @@ export default function CalendarArchiveWidget() {
               className="p-0.5 rounded hover:bg-gray-200 text-gray-800 transition cursor-pointer"
               aria-label="Next Month"
             >
-              <ChevronRight size={18} />
+              <ChevronRight size={19} />
             </button>
           </div>
 
@@ -168,7 +168,7 @@ export default function CalendarArchiveWidget() {
             <select
               value={currentMonth}
               onChange={(e) => setCurrentMonth(Number(e.target.value))}
-              className="bg-white border border-gray-300 rounded px-1.5 py-1 text-[12px] sm:text-[13px] font-bold text-[#000000] outline-none focus:ring-1 focus:ring-red-500 cursor-pointer text-center"
+              className="bg-white border border-gray-300 rounded px-1 py-0.5 text-[14px] sm:text-[15px] font-bold text-[#000000] outline-none focus:ring-1 focus:ring-red-500 cursor-pointer text-center"
             >
               {banglaMonths.map((month, index) => (
                 <option key={month} value={index}>
@@ -180,7 +180,7 @@ export default function CalendarArchiveWidget() {
             <select
               value={currentYear}
               onChange={(e) => setCurrentYear(Number(e.target.value))}
-              className="bg-white border border-gray-300 rounded px-1.5 py-1 text-[12px] sm:text-[13px] font-bold text-[#000000] outline-none focus:ring-1 focus:ring-red-500 cursor-pointer text-center"
+              className="bg-white border border-gray-300 rounded px-1 py-0.5 text-[14px] sm:text-[15px] font-bold text-[#000000] outline-none focus:ring-1 focus:ring-red-500 cursor-pointer text-center"
             >
               {years.map((yr) => (
                 <option key={yr} value={yr}>
@@ -191,9 +191,9 @@ export default function CalendarArchiveWidget() {
           </div>
 
           {/* Calendar Grid Container */}
-          <div className="bg-white rounded border border-gray-200 p-1 sm:p-1.5">
+          <div className="bg-white rounded border border-gray-200 p-0.5 sm:p-1">
             {/* Weekday Labels */}
-            <div className="grid grid-cols-7 text-center font-bold text-[11px] sm:text-[12px] text-[#1e293b] mb-1 border-b border-gray-200 pb-0.5">
+            <div className="grid grid-cols-7 text-center font-bold text-[13px] sm:text-[14px] text-[#1e293b] mb-0.5 border-b border-gray-200 pb-0.5">
               {weekDaysBn.map((day) => (
                 <div key={day} className="py-0.5">
                   {day}
@@ -202,7 +202,7 @@ export default function CalendarArchiveWidget() {
             </div>
 
             {/* Days Grid */}
-            <div className="grid grid-cols-7 text-center gap-y-0.5 gap-x-0.5 text-[12px] sm:text-[13px] font-bold">
+            <div className="grid grid-cols-7 text-center gap-y-0.5 gap-x-0.5 text-[14px] sm:text-[15px] font-bold">
               {days.map((item, idx) => {
                 if (!item.isCurrentMonth) {
                   return (
@@ -237,9 +237,9 @@ export default function CalendarArchiveWidget() {
           {/* Search Archive Button */}
           <button
             onClick={handleSearch}
-            className="w-full bg-[#bd081c] hover:bg-red-700 text-white font-bold py-1.5 px-3 rounded text-[13px] sm:text-[14px] transition shadow-xs cursor-pointer flex items-center justify-center gap-1"
+            className="w-full bg-[#bd081c] hover:bg-red-700 text-white font-bold py-1.5 px-3 rounded text-[15px] sm:text-[16px] transition shadow-xs cursor-pointer flex items-center justify-center gap-1"
           >
-            আর্কাইভ খুঁজুন
+            খুঁজুন
           </button>
         </div>
       </div>

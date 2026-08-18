@@ -107,11 +107,11 @@ export default function PrayerWidgetClient({ timings: initialTimings }: PrayerWi
 
   const list = [
     { name: 'ফজর', time: parseTo12hBengali(timings.fajr, 'fajr') },
+    { name: 'সূর্যোদয়', time: parseTo12hBengali(timings.sunrise, 'sunrise') },
     { name: 'যোহর', time: parseTo12hBengali(timings.zohr, 'zohr') },
     { name: 'আছর', time: parseTo12hBengali(timings.asr, 'asr') },
     { name: 'মাগরিব', time: parseTo12hBengali(timings.magrib, 'magrib') },
     { name: 'এশা', time: parseTo12hBengali(timings.esha, 'esha') },
-    { name: 'সূর্যোদয়', time: parseTo12hBengali(timings.sunrise, 'sunrise') },
   ];
 
   return (
