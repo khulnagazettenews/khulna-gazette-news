@@ -2,9 +2,9 @@ import Link from 'next/link';
 
 export default function YoutubeBanner() {
   return (
-    <section className="w-full my-2.5 sm:my-3 font-sans select-none flex justify-center">
+    <section className="w-full my-0 font-sans select-none flex justify-center">
       <div 
-        className="w-full max-w-[1050px] py-2 px-3 sm:px-5 lg:px-6 bg-gradient-to-r from-[#d90429] via-[#ef233c] to-[#b7094c] text-white shadow-md border border-red-300/40 relative overflow-hidden group rounded-none flex items-center justify-between min-h-[65px] sm:min-h-[75px] lg:min-h-[80px]"
+        className="w-full py-2 px-3 sm:px-5 lg:px-6 bg-gradient-to-r from-[#d90429] via-[#ef233c] to-[#b7094c] text-white shadow-md border border-red-300/40 relative overflow-hidden group rounded-none flex items-center justify-between min-h-[65px] sm:min-h-[75px] lg:min-h-[80px]"
       >
         {/* Subtle Network Lines Grid Texture */}
         <div 
