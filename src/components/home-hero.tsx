@@ -51,7 +51,7 @@ export default function HomeHero({ news }: HomeHeroProps) {
           <div className="grid grid-cols-1 md:grid-cols-12 gap-5 sm:gap-6 lg:gap-8 items-stretch">
             {/* Left Side: Large Red Heading + Description + Bottom Link (order-1 on MD/LG, 5 cols - Equal Baseline) */}
             <div className="order-2 md:order-1 md:col-span-5 flex flex-col justify-between h-full space-y-3 py-0">
-              <div className="space-y-2.5">
+              <div className="space-y-2">
                 <Link href={`/${mainLead.category?.slug || 'news'}/${mainLead.id}`} className="group block">
                   <h1 className="text-[24px] sm:text-[28px] lg:text-[31px] xl:text-[33px] font-bold text-[#e60023] group-hover:text-[#000000] hover:text-[#000000] transition leading-[1.28]">
                     {mainLead.title}
@@ -69,7 +69,7 @@ export default function HomeHero({ news }: HomeHeroProps) {
                       letterSpacing: '-0.2px',
                       textAlign: 'left',
                       display: '-webkit-box',
-                      WebkitLineClamp: 11,
+                      WebkitLineClamp: 9,
                       WebkitBoxOrient: 'vertical',
                       overflow: 'hidden',
                     }}
@@ -79,8 +79,8 @@ export default function HomeHero({ news }: HomeHeroProps) {
                 )}
               </div>
 
-              {/* Bottom read more button */}
-              <div className="pt-3 flex items-center justify-end shrink-0">
+              {/* Read more button aligned to bottom end matching image height */}
+              <div className="pt-2 flex items-center justify-end shrink-0">
                 <Link
                   href={`/${mainLead.category?.slug || 'news'}/${mainLead.id}`}
                   className="bg-gray-100 hover:bg-[#e60023] text-gray-800 hover:text-white border border-gray-200/80 shadow-2xs rounded-lg px-4 py-1.5 font-bold text-sm sm:text-base inline-flex items-center gap-1.5 transition duration-200 group"
