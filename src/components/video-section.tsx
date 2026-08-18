@@ -102,12 +102,30 @@ export default function VideoSection({ videos = [] }: VideoSectionProps) {
               href="https://www.youtube.com/@khulnagazette"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 bg-[#e60023] hover:bg-red-700 text-white font-bold text-xs sm:text-base px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg transition shadow-xs"
+              className="group relative inline-flex items-center gap-2 bg-gradient-to-r from-[#e60023] via-[#ff002b] to-[#c7001e] hover:from-[#cc001f] hover:to-[#a30018] text-white font-bold text-xs sm:text-sm px-3.5 sm:px-4.5 py-1.5 sm:py-2 rounded-full transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105 border border-white/20 overflow-hidden"
             >
-              <svg className="w-3.5 h-3.5 sm:w-5 sm:h-5 fill-current" viewBox="0 0 24 24">
-                <path d="M23.498 6.163a3.003 3.003 0 00-2.11-2.11C19.517 3.545 12 3.545 12 3.545s-7.517 0-9.388.508a3.003 3.003 0 00-2.11 2.11C0 8.033 0 12 0 12s0 3.967.502 5.837a3.003 3.003 0 002.11 2.11c1.871.508 9.388.508 9.388.508s7.517 0 9.388-.508a3.003 3.003 0 002.11-2.11C24 15.967 24 12 24 12s0-3.967-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-              </svg>
-              <span>ইউটিউব চ্যানেল</span>
+              {/* Subtle shining light flare effect on hover */}
+              <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out pointer-events-none" />
+
+              {/* White Animated YouTube Play Icon with Eye-Catching Waves */}
+              <span className="relative flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 bg-white rounded-full text-[#e60023] shadow-md shrink-0 group-hover:scale-110 transition-transform duration-300">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75" style={{ animationDuration: '1.5s' }}></span>
+                <span className="animate-pulse absolute inline-flex h-full w-full rounded-full bg-amber-300/40"></span>
+                <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current ml-0.5 relative z-10 animate-bounce" style={{ animationDuration: '2s' }} viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </span>
+
+              {/* Button Text */}
+              <span className="relative tracking-tight font-bold text-white drop-shadow-xs">
+                ইউটিউব চ্যানেল
+              </span>
+
+              {/* Live Signal Pulse Dot */}
+              <span className="relative flex h-2 w-2 ml-0.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-300 opacity-80"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-400"></span>
+              </span>
             </a>
           </div>
         </div>
