@@ -138,8 +138,9 @@ export default async function PublicFooter() {
             বার্তা বিভাগ : আনসারী কমপ্লেক্স, ১৬০ শের-ই-বাংলা সড়ক, খুলনা ৯১০০।
           </p>
 
-          <p className="text-[15px] md:text-[17px] text-gray-200 font-normal">
-            Mobile : 01794744579 &nbsp;&nbsp;&nbsp; E-mail : khulnagazette@gmail.com
+          <p className="text-[13px] sm:text-[15px] md:text-[17px] text-gray-200 font-normal flex flex-wrap items-center gap-x-3 gap-y-1">
+            <span>Mobile : 01794744579</span>
+            <span className="whitespace-nowrap">E-mail : khulnagazette@gmail.com</span>
           </p>
         </div>
       </div>
