@@ -60,13 +60,16 @@ export default function HomeHero({ news }: HomeHeroProps) {
 
                 {mainLead.content && (
                   <p 
-                    className="text-[#333333] text-[17px] sm:text-[19px]"
+                    className="text-[#333333] text-left"
                     style={{
                       fontFamily: 'Bangla, sans-serif',
+                      fontSize: '21px',
                       fontWeight: 400,
-                      lineHeight: '1.6',
+                      lineHeight: '22px',
+                      letterSpacing: '-0.2px',
+                      textAlign: 'left',
                       display: '-webkit-box',
-                      WebkitLineClamp: 7,
+                      WebkitLineClamp: 11,
                       WebkitBoxOrient: 'vertical',
                       overflow: 'hidden',
                     }}
@@ -76,8 +79,8 @@ export default function HomeHero({ news }: HomeHeroProps) {
                 )}
               </div>
 
-              {/* Bottom read more button aligned on exact same baseline as image bottom */}
-              <div className="pt-2 flex items-center justify-end shrink-0">
+              {/* Bottom read more button */}
+              <div className="pt-3 flex items-center justify-end shrink-0">
                 <Link
                   href={`/${mainLead.category?.slug || 'news'}/${mainLead.id}`}
                   className="bg-gray-100 hover:bg-[#e60023] text-gray-800 hover:text-white border border-gray-200/80 shadow-2xs rounded-lg px-4 py-1.5 font-bold text-sm sm:text-base inline-flex items-center gap-1.5 transition duration-200 group"
