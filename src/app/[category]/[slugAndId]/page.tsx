@@ -203,10 +203,11 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
 
     let relatedNews = relatedNewsFetched;
     if (relatedNews.length < 12) {
+      const existingIds = [news.id, ...relatedNews.map((r) => r.id)];
       const additional = await prisma.news.findMany({
         where: {
           status: 'PUBLISHED',
-          NOT: { id: news.id },
+          NOT: { id: { in: existingIds } },
         },
         take: 12 - relatedNews.length,
         orderBy: { publishedAt: 'desc' },
@@ -326,7 +327,7 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
                     >
                       <span className="flex items-center gap-1.5" itemProp="author" itemScope itemType="https://schema.org/Person">
                         <User size={16} className="text-black fill-black shrink-0" />
-                        <span itemProp="name" className="text-black">{news.reporterName || news.author?.name || 'খুলনা গেজেট'}</span>
+                        <span itemProp="name" className="text-black">খুলনা গেজেট</span>
                       </span>
 
                       {dateStr && (
@@ -404,8 +405,8 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-5">
-                    {relatedNews.map((item) => (
-                      <div key={item.id} className="bg-white group flex flex-row sm:flex-col items-center sm:items-start gap-3 sm:gap-2 border-b border-gray-100 sm:border-b-0 pb-3 sm:pb-0 last:border-b-0">
+                    {relatedNews.map((item, idx) => (
+                      <div key={`related-${item.id}-${idx}`} className="bg-white group flex flex-row sm:flex-col items-center sm:items-start gap-3 sm:gap-2 border-b border-gray-100 sm:border-b-0 pb-3 sm:pb-0 last:border-b-0">
                         {item.featuredImage ? (
                           <Link href={`/${item.category?.slug || 'news'}/${item.id}`} className="block w-28 h-20 sm:w-full sm:h-auto sm:aspect-[16/10] shrink-0 overflow-hidden rounded bg-gray-100 mb-0 sm:mb-2">
                             <img src={item.featuredImage} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" />

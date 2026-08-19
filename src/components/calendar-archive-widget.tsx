@@ -234,13 +234,35 @@ export default function CalendarArchiveWidget() {
             </div>
           </div>
 
-          {/* Search Archive Button */}
+          {/* Archive Search Button with Network Grid Pattern & Radar Scan Animation */}
           <button
             onClick={handleSearch}
-            className="w-full bg-[#bd081c] hover:bg-red-700 text-white font-bold py-2 px-3 rounded text-[17px] sm:text-[18px] transition shadow-xs cursor-pointer flex items-center justify-center gap-2"
+            className="group relative w-full overflow-hidden bg-gradient-to-r from-[#d90429] via-[#ef233c] to-[#b7094c] hover:from-[#c7001e] hover:to-[#a30018] text-white py-2.5 px-4 rounded-md transition-all duration-300 shadow-md hover:shadow-lg cursor-pointer flex items-center justify-center gap-2.5 select-none border border-red-300/40"
           >
-            <Search size={18} className="stroke-[2.5]" />
-            <span>খুঁজুন</span>
+            {/* Network Lines Grid Texture */}
+            <div 
+              className="absolute inset-0 opacity-[0.25] pointer-events-none"
+              style={{
+                backgroundImage: `
+                  linear-gradient(to right, #ffffff 1px, transparent 1px),
+                  linear-gradient(to bottom, #ffffff 1px, transparent 1px)
+                `,
+                backgroundSize: '16px 16px',
+              }}
+            />
+
+            {/* Continuous Smooth Radar Network Beam Sweep */}
+            <div className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/40 to-transparent animate-radar-scan pointer-events-none" />
+
+            <Search size={22} className="stroke-[3] text-white shrink-0 relative z-10 transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110 drop-shadow-sm" />
+            
+            {/* Ultra-Clear Big Text */}
+            <span 
+              className="relative z-10 font-black text-[19px] sm:text-[20px] text-white tracking-wide drop-shadow-sm antialiased"
+              style={{ fontFamily: 'Bangla, sans-serif' }}
+            >
+              খুঁজুন
+            </span>
           </button>
         </div>
       </div>

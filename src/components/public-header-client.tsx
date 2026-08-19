@@ -427,10 +427,10 @@ export default function PublicHeaderClient({ categories, formattedDate }: Public
               />
               <button
                 type="submit"
-                className="bg-[#ED1C24] hover:bg-red-700 text-white px-5 rounded-lg text-base sm:text-lg font-bold transition cursor-pointer flex items-center gap-2 shrink-0"
+                className="bg-[#ED1C24] hover:bg-red-700 text-white px-6 rounded-lg text-[17px] sm:text-[18px] font-black transition cursor-pointer shrink-0 text-center antialiased"
+                style={{ fontFamily: 'Bangla, sans-serif' }}
               >
-                <Search size={18} className="stroke-[2.5]" />
-                <span>খুঁজুন</span>
+                খুঁজুন
               </button>
             </form>
           </div>

@@ -42,38 +42,9 @@ const toEnglishNumber = (numStr: string) => {
 export default function PrayerWidgetClient({ timings: initialTimings }: PrayerWidgetClientProps) {
   const [timings, setTimings] = useState<Timings>(initialTimings);
 
-  // Background auto-adjust timings based on visitor device IP location
+  // Prayer times use database default timings (Khulna & Bangladesh standard time)
   useEffect(() => {
-    const autoAdjustLocation = async () => {
-      try {
-        const res = await fetch('https://ipapi.co/json/');
-        if (res.ok) {
-          const data = await res.json();
-          const detectedCity = data.city;
-          if (detectedCity) {
-            const matchedCity = BD_CITIES.find(
-              (c) =>
-                c.toLowerCase() === detectedCity.toLowerCase() ||
-                detectedCity.toLowerCase().includes(c.toLowerCase()) ||
-                c.toLowerCase().includes(detectedCity.toLowerCase())
-            );
-            if (matchedCity && matchedCity !== 'Khulna') {
-              const liveRes = await fetch(`/api/prayer-times/live?city=${encodeURIComponent(matchedCity)}`);
-              if (liveRes.ok) {
-                const liveData = await liveRes.json();
-                if (liveData && liveData.timings) {
-                  setTimings(liveData.timings);
-                }
-              }
-            }
-          }
-        }
-      } catch (e) {
-        // Fallback silently to initial DB timings if IP geolocation unavailable
-      }
-    };
-
-    autoAdjustLocation();
+    // Timings are pre-loaded server-side cleanly from database/Live BD API
   }, []);
 
   const parseTo12hBengali = (val: string, name: string) => {

@@ -30,7 +30,7 @@ export default function AdBanner({ ad, fallbackText = 'বিজ্ঞাপন 
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'view' }),
-      }).catch((err) => console.error('Error tracking ad view:', err));
+      }).catch(() => {});
     }
   }, [ad]);
 
@@ -53,7 +53,7 @@ export default function AdBanner({ ad, fallbackText = 'বিজ্ঞাপন 
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'click' }),
-      }).catch((err) => console.error('Error tracking ad click:', err));
+      }).catch(() => {});
     }
   };
 

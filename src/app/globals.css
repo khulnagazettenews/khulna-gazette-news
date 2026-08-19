@@ -23,6 +23,19 @@ html {
   scroll-behavior: smooth;
 }
 
+@keyframes radarScan {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(300%);
+  }
+}
+
+.animate-radar-scan {
+  animation: radarScan 2.5s infinite linear;
+}
+
 body {
   color: #000000;
   background: #ffffff;

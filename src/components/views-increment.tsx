@@ -10,9 +10,9 @@ export default function ViewsIncrement({ newsId }: ViewsIncrementProps) {
   useEffect(() => {
     const incrementViews = async () => {
       try {
-        await fetch(`/api/news/${newsId}/views`, { method: 'POST' });
+        await fetch(`/api/news/${newsId}/views`, { method: 'POST' }).catch(() => {});
       } catch (err) {
-        console.error('Failed to increment view counter client-side:', err);
+        // Silent background view tracking error handle
       }
     };
     incrementViews();

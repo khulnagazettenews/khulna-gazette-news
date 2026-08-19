@@ -14,13 +14,8 @@ export const metadata: Metadata = {
   title: "খুলনা গেজেট | Khulna Gazette - খবরের অন্তরালে খবর",
   description: "খুলনা অঞ্চল ও জাতীয় এবং আন্তর্জাতিক সর্বশেষ সংবাদ নিয়ে খুলনা গেজেট।",
   icons: {
-    icon: [
-      { url: '/favicon.png', type: 'image/png' },
-    ],
-    shortcut: '/favicon.ico',
-    apple: [
-      { url: '/apple-touch-icon.png' }
-    ]
+    icon: '/favicon.png',
+    apple: '/apple-touch-icon.png',
   },
   manifest: '/site.webmanifest'
 };
@@ -34,13 +29,12 @@ export default function RootLayout({
     <html lang="bn">
       <head>
         <link rel="icon" type="image/png" href="/favicon.png" />
-        <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/site.webmanifest" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
       </head>
-      <body className="font-sans bg-gray-50 text-gray-900 antialiased">
+      <body className="font-sans bg-gray-50 text-gray-900 antialiased" suppressHydrationWarning>
         <Providers>{children}</Providers>
         <SpeedInsights />
       </body>
