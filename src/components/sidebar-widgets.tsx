@@ -279,7 +279,7 @@ export default function SidebarWidgets({
           </div>
         </div>
 
-        <span className="relative z-10">ইউটিউব চ্যানেলে সাবস্ক্রাইব করুন</span>
+        <span className="relative z-10 font-black text-base sm:text-lg tracking-normal antialiased">ইউটিউব চ্যানেলে সাবস্ক্রাইব করুন</span>
       </a>
 
       {/* 10. DAILY NEWSPAPER ANNOUNCEMENT BANNER IMAGE */}

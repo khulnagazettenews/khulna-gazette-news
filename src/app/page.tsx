@@ -77,6 +77,31 @@ export default async function HomePage() {
     'lifestyle': ['lifestyle', 'life-style'],
   };
 
+  // Standard lightweight select for homepage lists (excludes heavy HTML content field)
+  const listSelect = {
+    id: true,
+    title: true,
+    subtitle: true,
+    featuredImage: true,
+    publishedAt: true,
+    createdAt: true,
+    updatedAt: true,
+    viewCount: true,
+    category: {
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+      },
+    },
+    author: {
+      select: {
+        name: true,
+        avatar: true,
+      },
+    },
+  };
+
   // Map slugs to Prisma queries with alias support
   const categoryQueries = categorySlugs.map((slug) => {
     const aliases = slugAliases[slug] || [slug];
@@ -90,10 +115,7 @@ export default async function HomePage() {
       },
       orderBy: { publishedAt: 'desc' },
       take: 5,
-      include: {
-        category: true,
-        author: { select: { name: true, avatar: true } },
-      },
+      select: listSelect,
     });
   });
 
@@ -101,7 +123,7 @@ export default async function HomePage() {
   const specialTopicBannerNewsQuery = (activeSpecialTopic?.newsIds && activeSpecialTopic.newsIds.length > 0)
     ? prisma.news.findMany({
         where: { id: { in: activeSpecialTopic.newsIds } },
-        include: { category: true, subCategory: true },
+        select: listSelect,
       })
     : Promise.resolve([]);
 
@@ -123,26 +145,29 @@ export default async function HomePage() {
     topNewsConfig,
     ...initialCategoryResults
   ] = await Promise.all([
-    // Hero news fallback
+    // Hero news fallback (needs content for lead excerpt)
     prisma.news.findMany({
       where: { status: 'PUBLISHED' },
       orderBy: [{ isFeatured: 'desc' }, { publishedAt: 'desc' }],
       take: 15,
-      include: { category: true },
+      select: {
+        ...listSelect,
+        content: true,
+      },
     }),
     // Latest news for sidebar tabs
     prisma.news.findMany({
       where: { status: 'PUBLISHED' },
       orderBy: { publishedAt: 'desc' },
       take: 20,
-      include: { category: true },
+      select: listSelect,
     }),
     // Popular news for sidebar tabs
     prisma.news.findMany({
       where: { status: 'PUBLISHED' },
       orderBy: { viewCount: 'desc' },
       take: 10,
-      include: { category: true },
+      select: listSelect,
     }),
     // Photos
     prisma.galleryPhoto.findMany({
@@ -163,7 +188,7 @@ export default async function HomePage() {
     prisma.news.findMany({
       where: { isFeatured: true, status: 'PUBLISHED' },
       take: 5,
-      include: { category: true },
+      select: listSelect,
     }),
     specialTopicBannerNewsQuery,
     topNewsConfigQuery,

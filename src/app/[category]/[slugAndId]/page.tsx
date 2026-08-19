@@ -150,6 +150,23 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
   });
 
   if (news && news.status === 'PUBLISHED') {
+    // Standard lightweight select for list items (excludes heavy HTML content field)
+    const listSelect = {
+      id: true,
+      title: true,
+      featuredImage: true,
+      publishedAt: true,
+      createdAt: true,
+      updatedAt: true,
+      category: {
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+        },
+      },
+    };
+
     // Run all supporting queries in PARALLEL via Promise.all for instant speed
     const [relatedNewsFetched, latestNews, popularNews, exclusiveNews, sidebarAd] = await Promise.all([
       prisma.news.findMany({
@@ -160,24 +177,24 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
         },
         take: 12,
         orderBy: { publishedAt: 'desc' },
-        include: { category: true },
+        select: listSelect,
       }),
       prisma.news.findMany({
         where: { status: 'PUBLISHED' },
         orderBy: { publishedAt: 'desc' },
         take: 20,
-        include: { category: true },
+        select: listSelect,
       }),
       prisma.news.findMany({
         where: { status: 'PUBLISHED' },
         orderBy: { viewCount: 'desc' },
         take: 10,
-        include: { category: true },
+        select: listSelect,
       }),
       prisma.news.findMany({
         where: { isFeatured: true, status: 'PUBLISHED' },
         take: 6,
-        include: { category: true },
+        select: listSelect,
       }),
       prisma.advertisement.findFirst({
         where: { position: 'sidebar_banner', status: 'ACTIVE' },
@@ -193,7 +210,7 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
         },
         take: 12 - relatedNews.length,
         orderBy: { publishedAt: 'desc' },
-        include: { category: true },
+        select: listSelect,
       });
       relatedNews = [...relatedNews, ...additional];
     }
@@ -273,38 +290,63 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
               <div className="space-y-3">
                 
                 {/* Title */}
-                <h1 itemProp="headline" className="text-[22px] sm:text-[28px] lg:text-[32px] font-bold text-[#000000] leading-[1.3] tracking-normal mb-2 break-words">
+                <h1 itemProp="headline" className="text-[22px] sm:text-[28px] lg:text-[32px] font-bold text-[#000000] leading-[1.3] tracking-normal mb-3 break-words">
                   {news.title}
                 </h1>
 
-                {/* Reporter Tagline */}
-                <h2 className="text-[14px] sm:text-[15px] font-normal text-gray-600 mb-2">
-                  {news.reporterName || news.subtitle || 'গেজেট প্রতিবেদন'}
-                </h2>
+                {/* News Header Metadata Box matching uploaded image */}
+                <div className="w-full border-t border-b border-[#ddd] py-2.5 my-3 space-y-2">
+                  {/* Tagline / Category Desk */}
+                  <h2 
+                    className="text-black"
+                    style={{
+                      fontFamily: 'Bangla, sans-serif',
+                      fontSize: '22px',
+                      fontWeight: 500,
+                      lineHeight: '26.4px',
+                      letterSpacing: '-0.2px',
+                      textAlign: 'left',
+                    }}
+                  >
+                    {news.subCategory?.name || (news.category?.name ? `${news.category.name} ডেস্ক` : (news.reporterName || news.subtitle || 'গেজেট প্রতিবেদন'))}
+                  </h2>
 
-                {/* Author & Timestamp + Social Share Bar */}
-                <div className="flex flex-wrap items-center justify-between border-y border-gray-200 py-2 text-[13px] text-gray-600 gap-2.5 my-2">
-                  <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-gray-700 font-medium">
-                    <span className="flex items-center gap-1" itemProp="author" itemScope itemType="https://schema.org/Person">
-                      <User size={14} className="text-gray-500" />
-                      <span itemProp="name">{news.reporterName || news.author?.name || 'খুলনা গেজেট'}</span>
-                    </span>
-                    {dateStr && (
-                      <span className="flex items-center gap-1 text-gray-500">
-                        <Calendar size={14} className="text-gray-400" />
-                        <span>প্রকাশিত: {dateStr}</span>
+                  {/* Metadata Row (Left: Author, Date, Time | Right: Social Share Buttons + Print) */}
+                  <div className="flex flex-wrap items-center justify-between gap-3 text-black">
+                    <div 
+                      className="flex flex-wrap items-center gap-3 text-black"
+                      style={{
+                        fontFamily: 'Bangla, sans-serif',
+                        fontSize: '16px',
+                        fontWeight: 400,
+                        lineHeight: '17.6px',
+                        letterSpacing: '-0.2px',
+                        textAlign: 'left',
+                      }}
+                    >
+                      <span className="flex items-center gap-1.5" itemProp="author" itemScope itemType="https://schema.org/Person">
+                        <User size={16} className="text-black fill-black shrink-0" />
+                        <span itemProp="name" className="text-black">{news.reporterName || news.author?.name || 'খুলনা গেজেট'}</span>
                       </span>
-                    )}
-                    {timeStr && (
-                      <span className="flex items-center gap-1 text-gray-500">
-                        <Clock size={14} className="text-gray-400" />
-                        <span>{timeStr}</span>
-                      </span>
-                    )}
+
+                      {dateStr && (
+                        <span className="flex items-center gap-1.5 text-black">
+                          <Calendar size={16} className="text-black fill-black shrink-0" />
+                          <span className="text-black">{dateStr}</span>
+                        </span>
+                      )}
+
+                      {timeStr && (
+                        <span className="flex items-center gap-1.5 text-black">
+                          <Clock size={16} className="text-black fill-black shrink-0" />
+                          <span className="text-black">{timeStr}</span>
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Social Share Buttons */}
+                    <SocialShareBar title={news.title} url={articleUrl} />
                   </div>
-
-                  {/* Social Share Buttons */}
-                  <SocialShareBar title={news.title} url={articleUrl} />
                 </div>
 
                 {/* Featured Image */}

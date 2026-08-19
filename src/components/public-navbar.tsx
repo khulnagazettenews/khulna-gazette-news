@@ -199,9 +199,10 @@ export default function PublicNavbar({ categories }: NavbarProps) {
               />
               <button
                 type="submit"
-                className="bg-[#ED1C24] hover:bg-red-700 text-white px-5 rounded-lg text-sm font-semibold transition"
+                className="bg-[#ED1C24] hover:bg-red-700 text-white px-5 rounded-lg text-base sm:text-lg font-bold transition cursor-pointer flex items-center gap-2 shrink-0"
               >
-                খুঁজুন
+                <Search size={18} className="stroke-[2.5]" />
+                <span>খুঁজুন</span>
               </button>
             </form>
           </div>

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Search } from 'lucide-react';
 
 const banglaMonths = [
   'জানুয়ারি',
@@ -237,9 +237,10 @@ export default function CalendarArchiveWidget() {
           {/* Search Archive Button */}
           <button
             onClick={handleSearch}
-            className="w-full bg-[#bd081c] hover:bg-red-700 text-white font-bold py-1.5 px-3 rounded text-[15px] sm:text-[16px] transition shadow-xs cursor-pointer flex items-center justify-center gap-1"
+            className="w-full bg-[#bd081c] hover:bg-red-700 text-white font-bold py-2 px-3 rounded text-[17px] sm:text-[18px] transition shadow-xs cursor-pointer flex items-center justify-center gap-2"
           >
-            খুঁজুন
+            <Search size={18} className="stroke-[2.5]" />
+            <span>খুঁজুন</span>
           </button>
         </div>
       </div>

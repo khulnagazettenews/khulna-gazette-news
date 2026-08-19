@@ -73,12 +73,12 @@ export default async function PublicVideoGallery() {
             href="https://www.youtube.com/@khulnagazette"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 bg-[#e60023] hover:bg-red-700 text-white font-bold text-xs px-3.5 py-2 rounded transition shadow-xs"
+            className="inline-flex items-center gap-2 bg-[#e60023] hover:bg-red-700 text-white font-black text-sm sm:text-base px-4 py-2 rounded transition shadow-xs antialiased"
           >
-            <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+            <svg className="w-4.5 h-4.5 fill-current shrink-0" viewBox="0 0 24 24">
               <path d="M23.498 6.163a3.003 3.003 0 00-2.11-2.11C19.517 3.545 12 3.545 12 3.545s-7.517 0-9.388.508a3.003 3.003 0 00-2.11 2.11C0 8.033 0 12 0 12s0 3.967.502 5.837a3.003 3.003 0 002.11 2.11c1.871.508 9.388.508 9.388.508s7.517 0 9.388-.508a3.003 3.003 0 002.11-2.11C24 15.967 24 12 24 12s0-3.967-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
             </svg>
-            <span>ইউটিউব চ্যানেল সাবস্ক্রাইব করুন</span>
+            <span className="font-black text-sm sm:text-base tracking-normal">ইউটিউব চ্যানেল সাবস্ক্রাইব করুন</span>
           </a>
         </div>
 

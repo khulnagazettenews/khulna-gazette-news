@@ -42,8 +42,25 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
   // Get matching category ids (both parent and its subcategories if any)
   const matchingCatIds = [cat.id, ...cat.subCategories.map((s) => s.id)];
 
+  const listSelect = {
+    id: true,
+    title: true,
+    featuredImage: true,
+    publishedAt: true,
+    createdAt: true,
+    updatedAt: true,
+    category: {
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+      },
+    },
+  };
+
   // 2. Parallel fetch articles, count, latest news & popular news
   const [articles, total, latestNews, popularNews, sidebarAd] = await Promise.all([
+
     prisma.news.findMany({
       where: {
         categoryId: { in: matchingCatIds },
@@ -52,9 +69,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
       orderBy: { publishedAt: 'desc' },
       skip,
       take: limit,
-      include: {
-        category: true,
-      },
+      select: listSelect,
     }),
     prisma.news.count({
       where: {
@@ -66,13 +81,13 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
       where: { status: 'PUBLISHED' },
       orderBy: { publishedAt: 'desc' },
       take: 6,
-      include: { category: true },
+      select: listSelect,
     }),
     prisma.news.findMany({
       where: { status: 'PUBLISHED' },
       orderBy: { viewCount: 'desc' },
       take: 6,
-      include: { category: true },
+      select: listSelect,
     }),
     prisma.advertisement.findFirst({
       where: { position: 'sidebar_banner', status: 'ACTIVE' },

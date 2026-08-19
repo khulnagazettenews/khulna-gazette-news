@@ -19,27 +19,16 @@ export default function SocialShareBar({ title, url }: SocialShareBarProps) {
   };
 
   return (
-    <div className="flex items-center gap-1.5 select-none shrink-0 print:hidden">
+    <div className="flex items-center gap-1 select-none shrink-0 print:hidden">
       {/* Facebook */}
       <a
         href={`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="w-7 h-7 rounded-xs bg-[#3b5998] hover:opacity-90 text-white flex items-center justify-center transition text-xs shadow-2xs"
+        className="w-[25px] h-[25px] bg-[#1877f2] hover:opacity-90 text-white flex items-center justify-center text-[15px] no-underline rounded-none"
         title="Facebook"
       >
-        <i className="fa fa-facebook"></i>
-      </a>
-
-      {/* Messenger */}
-      <a
-        href={`https://www.facebook.com/dialog/send?link=${encodedUrl}&app_id=291494419107518&redirect_uri=${encodedUrl}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="w-7 h-7 rounded-xs bg-[#0084ff] hover:opacity-90 text-white flex items-center justify-center transition text-xs shadow-2xs"
-        title="Messenger"
-      >
-        <i className="fa fa-comment font-bold"></i>
+        <i className="fa-brands fa-facebook-f"></i>
       </a>
 
       {/* Twitter / X */}
@@ -47,10 +36,24 @@ export default function SocialShareBar({ title, url }: SocialShareBarProps) {
         href={`https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="w-7 h-7 rounded-xs bg-[#1da1f2] hover:opacity-90 text-white flex items-center justify-center transition text-xs shadow-2xs"
+        className="w-[25px] h-[25px] bg-[#45a3d9] hover:opacity-90 text-white flex items-center justify-center text-[15px] no-underline rounded-none"
         title="Twitter"
       >
-        <i className="fa fa-twitter"></i>
+        <i className="fa-brands fa-twitter"></i>
+      </a>
+
+      {/* Instagram */}
+      <a
+        href={`https://www.instagram.com/`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="w-[25px] h-[25px] text-white flex items-center justify-center text-[15px] no-underline rounded-none"
+        style={{
+          background: 'linear-gradient(45deg, #feda75, #fa7e1e, #d62976, #962fbf, #4f5bd5)',
+        }}
+        title="Instagram"
+      >
+        <i className="fa-brands fa-instagram"></i>
       </a>
 
       {/* WhatsApp */}
@@ -58,19 +61,32 @@ export default function SocialShareBar({ title, url }: SocialShareBarProps) {
         href={`https://api.whatsapp.com/send?text=${encodedTitle}%20${encodedUrl}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="w-7 h-7 rounded-xs bg-[#25d366] hover:opacity-90 text-white flex items-center justify-center transition text-xs shadow-2xs"
+        className="w-[25px] h-[25px] bg-[#25d366] hover:opacity-90 text-white flex items-center justify-center text-[15px] no-underline rounded-none"
         title="WhatsApp"
       >
-        <i className="fa fa-whatsapp"></i>
+        <i className="fa-brands fa-whatsapp"></i>
       </a>
 
-      {/* Print */}
+      {/* Messenger */}
+      <a
+        href={`https://www.facebook.com/dialog/send?link=${encodedUrl}&app_id=291494419107518&redirect_uri=${encodedUrl}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="w-[25px] h-[25px] bg-[#168aff] hover:opacity-90 text-white flex items-center justify-center text-[15px] no-underline rounded-none"
+        title="Messenger"
+      >
+        <i className="fa-brands fa-facebook-messenger"></i>
+      </a>
+
+      {/* Print Icon Button */}
       <button
         onClick={handlePrint}
-        className="w-7 h-7 rounded-xs bg-[#555555] hover:bg-gray-700 text-white flex items-center justify-center transition text-xs shadow-2xs cursor-pointer"
+        className="ml-[7px] cursor-pointer bg-transparent border-0 p-0 flex items-center justify-center hover:opacity-80 transition"
         title="প্রিন্ট করুন"
       >
-        <Printer size={14} />
+        <span className="text-[#555] text-[26px] leading-none">
+          <i className="fa-solid fa-print"></i>
+        </span>
       </button>
     </div>
   );

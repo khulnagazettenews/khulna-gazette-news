@@ -117,7 +117,7 @@ export default function VideoSection({ videos = [] }: VideoSectionProps) {
               </span>
 
               {/* Button Text */}
-              <span className="relative tracking-tight font-bold text-white drop-shadow-xs">
+              <span className="relative tracking-normal font-black text-white text-sm sm:text-base lg:text-lg drop-shadow-sm antialiased">
                 ইউটিউব চ্যানেল
               </span>
 

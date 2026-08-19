@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Search } from 'lucide-react';
 import { useRouter, usePathname } from 'next/navigation';
 
 interface Category {
@@ -427,9 +427,10 @@ export default function PublicHeaderClient({ categories, formattedDate }: Public
               />
               <button
                 type="submit"
-                className="bg-[#ED1C24] hover:bg-red-700 text-white px-5 rounded-lg text-sm font-semibold transition cursor-pointer"
+                className="bg-[#ED1C24] hover:bg-red-700 text-white px-5 rounded-lg text-base sm:text-lg font-bold transition cursor-pointer flex items-center gap-2 shrink-0"
               >
-                খুঁজুন
+                <Search size={18} className="stroke-[2.5]" />
+                <span>খুঁজুন</span>
               </button>
             </form>
           </div>
