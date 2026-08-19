@@ -65,7 +65,7 @@ export default function HomeHero({ news }: HomeHeroProps) {
                       fontFamily: 'Bangla, sans-serif',
                       fontSize: '21px',
                       fontWeight: 400,
-                      lineHeight: '22px',
+                      lineHeight: '23px',
                       letterSpacing: '-0.2px',
                       textAlign: 'left',
                       display: '-webkit-box',
