@@ -127,10 +127,10 @@ export default function PrayerWidgetClient({ timings: initialTimings }: PrayerWi
           className="bg-[#353d4c] text-white py-2 px-3 text-center border-b border-gray-200"
         >
           <div 
-            className="font-normal text-[20px] text-center tracking-tight text-white"
+            className="font-normal text-[24px] text-center tracking-tight text-white"
             style={{
               fontFamily: 'Bangla, sans-serif',
-              lineHeight: '22px',
+              lineHeight: '26px',
             }}
           >
             নামাজের সময়সূচি
@@ -143,7 +143,7 @@ export default function PrayerWidgetClient({ timings: initialTimings }: PrayerWi
             <div key={item.name} className="flex items-center justify-between gap-2">
               {/* Left Grey Name Pill */}
               <div 
-                className="bg-[#f1f3f5] text-[#333333] font-bold text-[14px] py-1 px-2 flex-1 rounded-[6px] text-center leading-tight shadow-2xs"
+                className="bg-[#f1f3f5] text-[#333333] font-bold text-[16px] py-1 px-2 flex-1 rounded-[6px] text-center leading-tight shadow-2xs"
                 style={{ fontFamily: 'Bangla, sans-serif' }}
               >
                 {item.name}
@@ -151,7 +151,7 @@ export default function PrayerWidgetClient({ timings: initialTimings }: PrayerWi
 
               {/* Right Blue Time Pill */}
               <div 
-                className="bg-[#e7f5ff] text-[#1c7ed6] font-bold text-[14px] py-1 px-2 flex-1 rounded-[6px] text-center leading-tight shadow-2xs"
+                className="bg-[#e7f5ff] text-[#1c7ed6] font-bold text-[16px] py-1 px-2 flex-1 rounded-[6px] text-center leading-tight shadow-2xs"
                 style={{ fontFamily: 'Bangla, sans-serif' }}
               >
                 {item.time}
