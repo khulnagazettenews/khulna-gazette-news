@@ -2,6 +2,7 @@
 
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
+import Image from '@tiptap/extension-image';
 import { Extension } from '@tiptap/core';
 import { Plugin, PluginKey } from '@tiptap/pm/state';
 import { Decoration, DecorationSet } from '@tiptap/pm/view';
@@ -17,7 +18,11 @@ import {
   Quote,
   CheckCheck,
   X,
-  AlertTriangle
+  AlertTriangle,
+  Image as ImageIcon,
+  Upload,
+  Link as LinkIcon,
+  Loader2
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { checkBanglaTextSpelling, checkBanglaWordSpelling, SpellCheckResult, BANGLA_COMMON_TYPOS } from '@/lib/bangla-spellchecker';
@@ -91,8 +96,25 @@ export default function TiptapEditor({ value, onChange }: TiptapProps) {
   const [spellStatusMessage, setSpellStatusMessage] = useState('');
   const [spellLoading, setSpellLoading] = useState(false);
 
+  // Image Upload Modal State
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [imageUploading, setImageUploading] = useState(false);
+  const [imageUrlInput, setImageUrlInput] = useState('');
+  const [imageCaptionInput, setImageCaptionInput] = useState('');
+  const [imageUploadError, setImageUploadError] = useState('');
+
   const editor = useEditor({
-    extensions: [StarterKit, BanglaSpellCheckLiveExtension],
+    extensions: [
+      StarterKit,
+      Image.configure({
+        inline: true,
+        allowBase64: true,
+        HTMLAttributes: {
+          class: 'rounded-lg max-w-full h-auto my-4 shadow-sm border border-gray-200 mx-auto block',
+        },
+      }),
+      BanglaSpellCheckLiveExtension,
+    ],
     content: value,
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML());
@@ -166,6 +188,58 @@ export default function TiptapEditor({ value, onChange }: TiptapProps) {
     setSpellCheckResults((prev) => prev.filter((r) => r.word !== originalWord));
   };
 
+  // Image Upload Handlers
+  const handleImageFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setImageUploading(true);
+    setImageUploadError('');
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+      if (res.ok && data.url) {
+        insertImageToEditor(data.url, imageCaptionInput);
+        setShowImageModal(false);
+        setImageUrlInput('');
+        setImageCaptionInput('');
+      } else {
+        setImageUploadError(data.error || 'ছবি আপলোড করতে সমস্যা হয়েছে।');
+      }
+    } catch (err) {
+      setImageUploadError('নেটওয়ার্ক ত্রুটি। আবার চেষ্টা করুন।');
+    } finally {
+      setImageUploading(false);
+    }
+  };
+
+  const handleInsertUrlImage = () => {
+    if (!imageUrlInput.trim()) {
+      setImageUploadError('একটি বৈধ ইমেজের URL লিখুন');
+      return;
+    }
+    insertImageToEditor(imageUrlInput.trim(), imageCaptionInput);
+    setShowImageModal(false);
+    setImageUrlInput('');
+    setImageCaptionInput('');
+  };
+
+  const insertImageToEditor = (src: string, alt?: string) => {
+    if (!editor) return;
+    editor
+      .chain()
+      .focus()
+      .setImage({ src, alt: alt || 'সংবাদ চিত্র' })
+      .run();
+  };
+
   const MenuBar = () => {
     return (
       <div className="border-b border-gray-300 bg-gray-50 p-2 flex flex-wrap gap-1 rounded-t-lg items-center justify-between">
@@ -228,6 +302,22 @@ export default function TiptapEditor({ value, onChange }: TiptapProps) {
             <Quote size={16} />
           </button>
           <div className="w-[1px] h-5 bg-gray-300 mx-1" />
+
+          {/* Add Image Button */}
+          <button
+            type="button"
+            onClick={() => {
+              setImageUploadError('');
+              setShowImageModal(true);
+            }}
+            className="flex items-center gap-1 p-1.5 px-2 rounded hover:bg-blue-50 text-blue-700 font-medium text-xs border border-blue-200 transition"
+            title="খবরের ভেতরে ছবি যোগ করুন"
+          >
+            <ImageIcon size={15} />
+            <span>ছবি যোগ করুন</span>
+          </button>
+
+          <div className="w-[1px] h-5 bg-gray-300 mx-1" />
           <button
             type="button"
             onClick={() => editor.chain().focus().undo().run()}
@@ -266,6 +356,114 @@ export default function TiptapEditor({ value, onChange }: TiptapProps) {
     <div className="border border-gray-300 rounded-lg focus-within:ring-1 focus-within:ring-red-600 focus-within:border-red-600 overflow-hidden bg-white relative">
       <MenuBar />
       <EditorContent editor={editor} />
+
+      {/* Image Insert / Upload Modal */}
+      {showImageModal && (
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl shadow-2xl border border-gray-200 w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-150">
+            <div className="bg-gray-900 text-white p-4 flex items-center justify-between">
+              <div className="flex items-center gap-2 font-bold text-sm sm:text-base">
+                <ImageIcon size={20} className="text-blue-400" />
+                <span>খবরের ভেতরে ছবি যোগ করুন</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowImageModal(false)}
+                className="text-white/80 hover:text-white p-1 rounded-full hover:bg-gray-800 transition"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="p-5 space-y-4">
+              {imageUploadError && (
+                <div className="bg-red-50 border border-red-200 text-red-600 text-xs p-2.5 rounded-lg flex items-center gap-2">
+                  <AlertTriangle size={16} className="shrink-0" />
+                  <span>{imageUploadError}</span>
+                </div>
+              )}
+
+              {/* Option A: Direct Device Upload */}
+              <div className="space-y-2">
+                <label className="block text-xs font-bold text-gray-700">১. ডিভাইস থেকে ছবি আপলোড করুন</label>
+                <label className="border-2 border-dashed border-blue-200 hover:border-blue-500 rounded-lg p-4 flex flex-col items-center justify-center cursor-pointer bg-blue-50/40 transition">
+                  {imageUploading ? (
+                    <div className="flex items-center gap-2 text-blue-700 text-xs font-bold py-2">
+                      <Loader2 size={18} className="animate-spin" />
+                      <span>ছবি আপলোড হচ্ছে...</span>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center gap-1 text-center py-1">
+                      <Upload size={22} className="text-blue-600 mb-1" />
+                      <span className="text-xs font-bold text-gray-800">ছবি নির্বাচন করতে ক্লিক করুন</span>
+                      <span className="text-[11px] text-gray-500">JPG, PNG, WEBP ইত্যাদি সাপোর্টেড</span>
+                    </div>
+                  )}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageFileUpload}
+                    disabled={imageUploading}
+                    className="hidden"
+                  />
+                </label>
+              </div>
+
+              <div className="flex items-center gap-2 my-2 text-gray-400 text-xs font-medium">
+                <div className="h-[1px] bg-gray-200 flex-1" />
+                <span>অথবা</span>
+                <div className="h-[1px] bg-gray-200 flex-1" />
+              </div>
+
+              {/* Option B: Image URL */}
+              <div className="space-y-2">
+                <label className="block text-xs font-bold text-gray-700">২. ছবি ওয়েবসাইট লিংক (URL)</label>
+                <div className="flex gap-2">
+                  <div className="relative flex-1">
+                    <LinkIcon size={14} className="absolute left-3 top-3 text-gray-400" />
+                    <input
+                      type="url"
+                      value={imageUrlInput}
+                      onChange={(e) => setImageUrlInput(e.target.value)}
+                      placeholder="https://example.com/image.jpg"
+                      className="w-full border border-gray-300 rounded-lg pl-8 pr-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-blue-600"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleInsertUrlImage}
+                    className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-3 py-2 rounded-lg transition shrink-0"
+                  >
+                    যোগ করুন
+                  </button>
+                </div>
+              </div>
+
+              {/* Optional Caption Field */}
+              <div className="pt-2 border-t border-gray-100">
+                <label className="block text-xs font-medium text-gray-600 mb-1">ছবি বিবরণ / ক্যাপশন (ঐচ্ছিক)</label>
+                <input
+                  type="text"
+                  value={imageCaptionInput}
+                  onChange={(e) => setImageCaptionInput(e.target.value)}
+                  placeholder="ইমেজের বর্ণনা লিখুন"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-gray-400"
+                />
+              </div>
+            </div>
+
+            <div className="bg-gray-50 px-5 py-3 border-t border-gray-200 flex justify-end">
+              <button
+                type="button"
+                onClick={() => setShowImageModal(false)}
+                className="bg-gray-200 hover:bg-gray-300 text-gray-800 text-xs font-bold px-4 py-2 rounded-lg transition"
+              >
+                বাতিল করুন
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Bangla Contextual Spell Check Modal */}
       {showSpellModal && (

@@ -6,9 +6,9 @@ export default async function PublicFooter() {
     <footer className="bg-[#1c1c1c] text-white font-sans mt-12 select-none w-full overflow-hidden">
       {/* Top Footer Section (Uniform Grid for Mobile and Desktop) */}
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8 border-b border-[#333]">
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-x-4 gap-y-6 sm:gap-6 lg:gap-8 items-start">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-x-6 gap-y-7 sm:gap-6 lg:gap-8 items-start">
           {/* Links Col 1 */}
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2.5">
             <Link href="/bangladesh" className="text-white hover:text-[#ff4444] transition duration-300 text-[15px] sm:text-[17px] leading-tight">
               বাংলাদেশ
             </Link>
@@ -24,7 +24,7 @@ export default async function PublicFooter() {
           </div>
 
           {/* Links Col 2 */}
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2.5">
             <Link href="/khulna" className="text-white hover:text-[#ff4444] transition duration-300 text-[15px] sm:text-[17px] leading-tight">
               খুলনাঞ্চল
             </Link>
@@ -40,7 +40,7 @@ export default async function PublicFooter() {
           </div>
 
           {/* Links Col 3 */}
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2.5">
             <Link href="/lifestyle" className="text-white hover:text-[#ff4444] transition duration-300 text-[15px] sm:text-[17px] leading-tight">
               লাইফ স্টাইল
             </Link>
@@ -56,7 +56,7 @@ export default async function PublicFooter() {
           </div>
 
           {/* Links Col 4 */}
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2.5">
             <Link href="/social-media" className="text-white hover:text-[#ff4444] transition duration-300 text-[15px] sm:text-[17px] leading-tight">
               সোশ্যাল মিডিয়া
             </Link>
@@ -72,24 +72,24 @@ export default async function PublicFooter() {
           </div>
 
           {/* Links Col 5 */}
-          <div className="flex flex-col gap-2">
-            <Link href="/about" className="text-white hover:text-[#ff4444] transition duration-300 text-[14px] sm:text-[16px] leading-tight">
+          <div className="flex flex-col gap-2.5">
+            <Link href="/about" className="text-white hover:text-[#ff4444] transition duration-300 text-[15px] sm:text-[17px] leading-tight">
               About Us
             </Link>
-            <Link href="/terms" className="text-white hover:text-[#ff4444] transition duration-300 text-[14px] sm:text-[16px] leading-tight">
+            <Link href="/terms" className="text-white hover:text-[#ff4444] transition duration-300 text-[15px] sm:text-[17px] leading-tight">
               Terms of Use
             </Link>
-            <Link href="/privacy" className="text-white hover:text-[#ff4444] transition duration-300 text-[14px] sm:text-[16px] leading-tight">
+            <Link href="/privacy" className="text-white hover:text-[#ff4444] transition duration-300 text-[15px] sm:text-[17px] leading-tight">
               Privacy Policy
             </Link>
-            <Link href="/contact" className="text-white hover:text-[#ff4444] transition duration-300 text-[14px] sm:text-[16px] leading-tight">
+            <Link href="/contact" className="text-white hover:text-[#ff4444] transition duration-300 text-[15px] sm:text-[17px] leading-tight">
               Contact Us
             </Link>
           </div>
 
           {/* Feature Links & Playstore Badge Column */}
-          <div className="col-span-1 flex flex-col gap-3.5 items-start">
-            <div className="flex flex-col gap-2 font-bold text-[15px] sm:text-[17px] leading-tight">
+          <div className="col-span-1 flex flex-col gap-3 items-start">
+            <div className="flex flex-col gap-2.5 font-bold text-[15px] sm:text-[17px] leading-tight">
               <Link href="/converter" className="text-[#ffffff] hover:text-[#ff4444] transition duration-300 flex items-center gap-1.5">
                 <span className="text-[#ed0022] font-extrabold">•</span> কনভার্টার
               </Link>
@@ -110,7 +110,7 @@ export default async function PublicFooter() {
               <img
                 src="/google-play.png"
                 alt="Google Play"
-                className="w-[130px] sm:w-[170px] h-auto object-contain rounded max-w-full"
+                className="w-[140px] sm:w-[170px] h-auto object-contain rounded max-w-full"
               />
             </a>
           </div>
@@ -162,4 +162,5 @@ export default async function PublicFooter() {
     </footer>
   );
 }
+
 
