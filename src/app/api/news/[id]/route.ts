@@ -266,3 +266,62 @@ export async function DELETE(
     );
   }
 }
+
+export async function PATCH(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      return NextResponse.json({ error: 'অননুমোদিত অ্যাক্সেস' }, { status: 401 });
+    }
+
+    const userRole = (session.user as any).role || 'REPORTER';
+    const canPublish = ['SUPER_ADMIN', 'ADMIN', 'EDITOR'].includes(userRole);
+    if (!canPublish) {
+      return NextResponse.json({ error: 'সংবাদের স্ট্যাটাস পরিবর্তনের অনুমতি নেই।' }, { status: 403 });
+    }
+
+    const { id } = params;
+    const body = await req.json();
+    const { status } = body;
+
+    if (!['PUBLISHED', 'DRAFT', 'SCHEDULED', 'TRASHED'].includes(status)) {
+      return NextResponse.json({ error: 'অকার্যকর স্ট্যাটাস।' }, { status: 400 });
+    }
+
+    const existingNews = await prisma.news.findUnique({ where: { id } });
+    if (!existingNews) {
+      return NextResponse.json({ error: 'সংবাদটি পাওয়া যায়নি।' }, { status: 404 });
+    }
+
+    let publishedAt = existingNews.publishedAt;
+    if (status === 'PUBLISHED' && existingNews.status !== 'PUBLISHED') {
+      publishedAt = new Date();
+    }
+
+    const updated = await prisma.news.update({
+      where: { id },
+      data: {
+        status,
+        publishedAt,
+      },
+    });
+
+    try {
+      revalidatePath('/');
+      if (existingNews.categoryId) {
+        const cat = await prisma.category.findUnique({ where: { id: existingNews.categoryId } });
+        if (cat) revalidatePath(`/${cat.slug}`);
+      }
+    } catch (err) {
+      console.error('Revalidate error:', err);
+    }
+
+    return NextResponse.json(updated);
+  } catch (error) {
+    return NextResponse.json({ error: 'স্ট্যাটাস আপডেট করতে সমস্যা হয়েছে।' }, { status: 500 });
+  }
+}
+

@@ -59,6 +59,53 @@ export default function NewsForm({ initialData, newsId }: NewsFormProps) {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
+  // Auto-Save Draft State (for new news creation)
+  const [hasDraft, setHasDraft] = useState(false);
+  const [draftData, setDraftData] = useState<any>(null);
+
+  // Check for existing local draft on mount
+  useEffect(() => {
+    if (!newsId && typeof window !== 'undefined') {
+      const saved = localStorage.getItem('kg_news_draft');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (parsed.title || parsed.content) {
+            setHasDraft(true);
+            setDraftData(parsed);
+          }
+        } catch (e) {}
+      }
+    }
+  }, [newsId]);
+
+  // Auto-save draft on title/content change
+  useEffect(() => {
+    if (!newsId && (title || content)) {
+      const timeout = setTimeout(() => {
+        localStorage.setItem('kg_news_draft', JSON.stringify({ title, subtitle, content, categoryId }));
+      }, 1000);
+      return () => clearTimeout(timeout);
+    }
+  }, [newsId, title, subtitle, content, categoryId]);
+
+  const handleRestoreDraft = () => {
+    if (draftData) {
+      if (draftData.title) setTitle(draftData.title);
+      if (draftData.subtitle) setSubtitle(draftData.subtitle);
+      if (draftData.content) setContent(draftData.content);
+      if (draftData.categoryId) setCategoryId(draftData.categoryId);
+      setHasDraft(false);
+    }
+  };
+
+  const handleDiscardDraft = () => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('kg_news_draft');
+    }
+    setHasDraft(false);
+  };
+
   // Fetch all parent categories on load
   useEffect(() => {
     const fetchCats = async () => {
@@ -170,6 +217,9 @@ export default function NewsForm({ initialData, newsId }: NewsFormProps) {
       const data = await res.json();
 
       if (res.ok) {
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('kg_news_draft');
+        }
         setSuccess(newsId ? 'সংবাদটি আপডেট করা হয়েছে।' : 'নতুন সংবাদ প্রকাশিত হয়েছে।');
         // Redirect to listing
         setTimeout(() => {
@@ -187,6 +237,31 @@ export default function NewsForm({ initialData, newsId }: NewsFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8 max-w-5xl">
+      {hasDraft && (
+        <div className="bg-amber-50 border border-amber-300 text-amber-900 px-4 py-3 rounded-xl text-xs sm:text-sm flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs">
+          <div className="flex items-center gap-2">
+            <AlertCircle size={18} className="text-amber-600 shrink-0" />
+            <span>আপনার পূর্বে অসম্পূর্ণ রাখা একটি খসড়া সংবাদ পাওয়া গেছে! আপনি কি এটি পুনরুদ্ধার করতে চান?</span>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={handleRestoreDraft}
+              className="bg-amber-600 hover:bg-amber-700 text-white font-bold px-3 py-1.5 rounded-lg text-xs transition"
+            >
+              পুনরুদ্ধার করুন
+            </button>
+            <button
+              type="button"
+              onClick={handleDiscardDraft}
+              className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold px-3 py-1.5 rounded-lg text-xs transition"
+            >
+              মুছে ফেলুন
+            </button>
+          </div>
+        </div>
+      )}
+
       {success && (
         <div className="bg-green-150 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm">
           {success}

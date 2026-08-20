@@ -35,12 +35,26 @@ interface NewsItem {
 
 export default function NewsManagementList() {
   const [news, setNews] = useState<NewsItem[]>([]);
+  const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [query, setQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('');
   const limit = 10;
+
+  // Fetch Categories for Filter Dropdown
+  useEffect(() => {
+    fetch('/api/categories')
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setCategories(data);
+        }
+      })
+      .catch((err) => console.error(err));
+  }, []);
 
   const fetchNewsList = async () => {
     setLoading(true);
@@ -50,6 +64,7 @@ export default function NewsManagementList() {
         limit: limit.toString(),
         query,
         status: statusFilter,
+        categoryId: categoryFilter,
       });
 
       const res = await fetch(`/api/news?${params}`);
@@ -67,12 +82,32 @@ export default function NewsManagementList() {
 
   useEffect(() => {
     fetchNewsList();
-  }, [page, statusFilter]);
+  }, [page, statusFilter, categoryFilter]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setPage(1);
     fetchNewsList();
+  };
+
+  const handleQuickStatusChange = async (id: string, newStatus: string) => {
+    try {
+      const res = await fetch(`/api/news/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus }),
+      });
+      if (res.ok) {
+        setNews((prev) =>
+          prev.map((item) => (item.id === id ? { ...item, status: newStatus } : item))
+        );
+      } else {
+        const data = await res.json();
+        alert(data.error || 'স্ট্যাটাস পরিবর্তন ব্যর্থ হয়েছে');
+      }
+    } catch (err) {
+      alert('নেটওয়ার্ক ত্রুটি');
+    }
   };
 
   const handleSetMainLead = async (newsItem: NewsItem) => {
@@ -169,17 +204,36 @@ export default function NewsManagementList() {
 
       {/* 2. Filter Bar & Search */}
       <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col md:flex-row gap-4 items-center justify-between">
-        {/* Search Bar */}
-        <form onSubmit={handleSearchSubmit} className="relative w-full md:max-w-md">
-          <Search size={16} className="absolute left-3.5 top-3 text-slate-400" />
-          <input
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="সংবাদের শিরোনাম বা বিষয়বস্তু খুঁজুন..."
-            className="w-full pl-10 pr-4 py-2.5 text-xs sm:text-sm font-semibold bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-red-500 focus:bg-white transition"
-          />
-        </form>
+        {/* Search Bar & Category Filter */}
+        <div className="flex flex-col sm:flex-row gap-3 w-full md:max-w-xl">
+          <form onSubmit={handleSearchSubmit} className="relative flex-1">
+            <Search size={16} className="absolute left-3.5 top-3 text-slate-400" />
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="সংবাদের শিরোনাম বা বিষয়বস্তু খুঁজুন..."
+              className="w-full pl-10 pr-4 py-2.5 text-xs sm:text-sm font-semibold bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-red-500 focus:bg-white transition"
+            />
+          </form>
+
+          {/* Category Dropdown Filter */}
+          <select
+            value={categoryFilter}
+            onChange={(e) => {
+              setCategoryFilter(e.target.value);
+              setPage(1);
+            }}
+            className="bg-slate-50 border border-slate-200 text-slate-800 text-xs sm:text-sm font-bold rounded-2xl px-3 py-2.5 focus:outline-none focus:border-red-500"
+          >
+            <option value="">সকল ক্যাটাগরি</option>
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.name}
+              </option>
+            ))}
+          </select>
+        </div>
 
         {/* Status Pills Filter */}
         <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
@@ -192,7 +246,7 @@ export default function NewsManagementList() {
                 : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
             }`}
           >
-            সকল সংবাদ
+            সকল অবস্থা
           </button>
           <button
             type="button"
@@ -230,7 +284,7 @@ export default function NewsManagementList() {
                 <th className="px-6 py-4">সংবাদের শিরোনাম</th>
                 <th className="px-4 py-4">ক্যাটাগরি</th>
                 <th className="px-4 py-4">লেখক</th>
-                <th className="px-4 py-4">অবস্থা</th>
+                <th className="px-4 py-4">অবস্থা (কুইক চেঞ্জ)</th>
                 <th className="px-4 py-4 text-center">ভিউ</th>
                 <th className="px-6 py-4 text-right">অ্যাকশন</th>
               </tr>
@@ -305,22 +359,24 @@ export default function NewsManagementList() {
                       </div>
                     </td>
 
-                    {/* Status Pill Badge */}
+                    {/* Status Pill Badge with Inline Quick Status Change */}
                     <td className="px-4 py-3.5">
-                      <span className={`text-[10px] font-black px-2.5 py-1 rounded-full inline-flex items-center gap-1 ${
-                        item.status === 'PUBLISHED'
-                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                          : item.status === 'DRAFT'
-                          ? 'bg-amber-50 text-amber-700 border border-amber-200'
-                          : 'bg-indigo-50 text-indigo-700 border border-indigo-200'
-                      }`}>
-                        <span className={`w-1.5 h-1.5 rounded-full ${
-                          item.status === 'PUBLISHED' ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'
-                        }`}></span>
-                        <span>
-                          {item.status === 'PUBLISHED' ? 'প্রকাশিত' : item.status === 'DRAFT' ? 'খসড়া' : 'শিডিউলড'}
-                        </span>
-                      </span>
+                      <select
+                        value={item.status}
+                        onChange={(e) => handleQuickStatusChange(item.id, e.target.value)}
+                        className={`text-[11px] font-black px-2.5 py-1 rounded-full outline-none cursor-pointer transition border ${
+                          item.status === 'PUBLISHED'
+                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
+                            : item.status === 'DRAFT'
+                            ? 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100'
+                            : 'bg-indigo-50 text-indigo-700 border-indigo-200 hover:bg-indigo-100'
+                        }`}
+                      >
+                        <option value="PUBLISHED">✓ প্রকাশিত</option>
+                        <option value="DRAFT">⏳ খসড়া</option>
+                        <option value="SCHEDULED">📅 শিডিউলড</option>
+                        <option value="TRASHED">🗑️ মুছে ফেলুন</option>
+                      </select>
                     </td>
 
                     {/* Views */}

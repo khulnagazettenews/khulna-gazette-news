@@ -38,6 +38,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  const [counts, setCounts] = useState<{ pendingComments: number; draftNews: number }>({
+    pendingComments: 0,
+    draftNews: 0,
+  });
+
   const role = (session?.user as any)?.role || 'REPORTER';
 
   // Redirect Subscribers out of admin panel
@@ -46,6 +51,20 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       router.replace('/');
     }
   }, [status, role, router]);
+
+  // Fetch count badges for sidebar
+  useEffect(() => {
+    if (status === 'authenticated') {
+      fetch('/api/admin/counts')
+        .then((res) => res.json())
+        .then((data) => {
+          if (data && typeof data.pendingComments === 'number') {
+            setCounts(data);
+          }
+        })
+        .catch((err) => console.error(err));
+    }
+  }, [status, pathname]);
 
   // Bypass layout wrapper on login page
   if (pathname === '/admin/login') {
@@ -61,7 +80,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   // Build navigation items based on role
-  const navigation = [];
+  const navigation: Array<{ name: string; href: string; icon: any; badge?: number | null; badgeColor?: string }> = [];
 
   // 1. Dashboard
   if (role !== 'SUBSCRIBER') {
@@ -79,7 +98,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   // 3. News Articles
   if (['SUPER_ADMIN', 'ADMIN', 'EDITOR', 'SUB_EDITOR', 'REPORTER', 'CONTRIBUTOR'].includes(role)) {
-    navigation.push({ name: 'খবরসমূহ', href: '/admin/news', icon: Newspaper });
+    navigation.push({
+      name: 'খবরসমূহ',
+      href: '/admin/news',
+      icon: Newspaper,
+      badge: counts.draftNews > 0 ? counts.draftNews : null,
+      badgeColor: 'bg-amber-500 text-white',
+    });
   }
 
   // 4. Media & Prayer Times
@@ -100,7 +125,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   // 6. Comments & Job Applications
   if (['SUPER_ADMIN', 'ADMIN', 'EDITOR'].includes(role)) {
     navigation.push(
-      { name: 'মন্তব্যসমূহ', href: '/admin/comments', icon: MessageSquare },
+      {
+        name: 'মন্তব্যসমূহ',
+        href: '/admin/comments',
+        icon: MessageSquare,
+        badge: counts.pendingComments > 0 ? counts.pendingComments : null,
+        badgeColor: 'bg-rose-500 text-white animate-pulse',
+      },
       { name: 'চাকরির আবেদনসমূহ', href: '/admin/job-applications', icon: Briefcase }
     );
   }
@@ -187,18 +218,26 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                       <Icon size={18} className={active ? 'text-white' : 'text-slate-400 group-hover:text-blue-400 transition-colors'} />
                       <span>{item.name}</span>
                     </div>
-                    {active && (
-                      <div className="flex items-center gap-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-white"></span>
-                        <ChevronRight size={15} className="text-white" />
-                      </div>
-                    )}
+                    <div className="flex items-center gap-1.5">
+                      {item.badge != null && (
+                        <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${item.badgeColor || 'bg-blue-500 text-white'}`}>
+                          {item.badge}
+                        </span>
+                      )}
+                      {active && (
+                        <>
+                          <span className="w-1.5 h-1.5 rounded-full bg-white"></span>
+                          <ChevronRight size={15} className="text-white" />
+                        </>
+                      )}
+                    </div>
                   </Link>
                 );
               })}
             </nav>
           </div>
         </div>
+
 
         {/* User Profile Card & Signout Footer */}
         <div className="p-4 border-t border-slate-800 bg-slate-900 space-y-3">
