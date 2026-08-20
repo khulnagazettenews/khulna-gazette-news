@@ -145,11 +145,11 @@ export default async function HomePage() {
     topNewsConfig,
     ...initialCategoryResults
   ] = await Promise.all([
-    // Hero news fallback (needs content for lead excerpt)
+    // Hero news fallback ordered strictly by latest published date for serial position 2,3,4...
     prisma.news.findMany({
       where: { status: 'PUBLISHED' },
-      orderBy: [{ isFeatured: 'desc' }, { publishedAt: 'desc' }],
-      take: 15,
+      orderBy: { publishedAt: 'desc' },
+      take: 20,
       select: {
         ...listSelect,
         content: true,
@@ -195,30 +195,31 @@ export default async function HomePage() {
     ...categoryQueries,
   ]);
 
-  // Order hero news according to topNewsConfig.newsIds
-  let heroNews: any[] = [];
+  // 1. Determine Lead News (Position 1)
+  let leadNewsItem: any = null;
   if (topNewsConfig?.newsIds && topNewsConfig.newsIds.length > 0) {
-    const fetchedTopArticles = await prisma.news.findMany({
-      where: {
-        id: { in: topNewsConfig.newsIds },
-        status: 'PUBLISHED',
-      },
-      include: { category: true },
+    const pinnedId = topNewsConfig.newsIds[0];
+    leadNewsItem = await prisma.news.findFirst({
+      where: { id: pinnedId, status: 'PUBLISHED' },
+      select: { ...listSelect, content: true },
     });
-
-    topNewsConfig.newsIds.forEach((id) => {
-      const item = fetchedTopArticles.find((n) => n.id === id);
-      if (item) heroNews.push(item);
-    });
-
-    heroNewsFallback.forEach((item) => {
-      if (heroNews.length < 15 && !heroNews.some((n) => n.id === item.id)) {
-        heroNews.push(item);
-      }
-    });
-  } else {
-    heroNews = heroNewsFallback;
   }
+
+  if (!leadNewsItem && heroNewsFallback.length > 0) {
+    leadNewsItem = heroNewsFallback[0];
+  }
+
+  // 2. Build 12 Grid News excluding leadNewsItem to prevent duplicate rendering
+  // and strictly ordering remaining published news serially (2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13)
+  const remainingPublishedNews = heroNewsFallback.filter(
+    (item) => item.id !== leadNewsItem?.id
+  );
+
+  const heroGridNews = remainingPublishedNews.slice(0, 12);
+
+  // Combined heroNews array: Position 1 = Lead News, Positions 2..13 = Serial Grid News
+  const heroNews = leadNewsItem ? [leadNewsItem, ...heroGridNews] : heroGridNews;
+
 
   // Helper to serialize Date objects for client components
   const serializeList = (list: any[]) => {
