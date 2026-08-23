@@ -19,6 +19,14 @@ interface NewsFormProps {
   newsId?: string;
 }
 
+const toDatetimeLocal = (dateStr?: string | Date | null) => {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return '';
+  const pad = (n: number) => (n < 10 ? `0${n}` : `${n}`);
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+};
+
 export default function NewsForm({ initialData, newsId }: NewsFormProps) {
   const router = useRouter();
   const { data: session } = useSession();
@@ -47,9 +55,10 @@ export default function NewsForm({ initialData, newsId }: NewsFormProps) {
     initialData?.tags ? initialData.tags.map((t: any) => t.name).join(', ') : ''
   );
   const [scheduledAt, setScheduledAt] = useState(
-    initialData?.scheduledAt 
-      ? new Date(initialData.scheduledAt).toISOString().slice(0, 16) 
-      : ''
+    toDatetimeLocal(initialData?.scheduledAt)
+  );
+  const [publishedAt, setPublishedAt] = useState(
+    toDatetimeLocal(initialData?.publishedAt)
   );
   const [metaTitle, setMetaTitle] = useState(initialData?.metaTitle || '');
   const [metaDescription, setMetaDescription] = useState(initialData?.metaDescription || '');
@@ -200,6 +209,7 @@ export default function NewsForm({ initialData, newsId }: NewsFormProps) {
       isFeatured,
       tags: tagsArray,
       scheduledAt: scheduledAt ? new Date(scheduledAt).toISOString() : null,
+      publishedAt: publishedAt ? new Date(publishedAt).toISOString() : null,
       metaTitle: metaTitle || null,
       metaDescription: metaDescription || null,
     };
@@ -500,6 +510,23 @@ export default function NewsForm({ initialData, newsId }: NewsFormProps) {
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-red-600"
                   required
                 />
+              </div>
+            )}
+
+            {!isReporterOrContributor && (
+              <div>
+                <label className="block text-xs font-medium text-gray-700 mb-1">
+                  প্রকাশের তারিখ ও সময় (ঐচ্ছিক / ব্যাকডেট সংবাদের জন্য)
+                </label>
+                <input
+                  type="datetime-local"
+                  value={publishedAt}
+                  onChange={(e) => setPublishedAt(e.target.value)}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-red-600"
+                />
+                <p className="text-[11px] text-gray-500 mt-1">
+                  ফাঁকা রাখলে বর্তমান সময় ধরা হবে। ১-২ দিন বা ১ মাস আগের সংবাদ আপলোডের ক্ষেত্রে ব্যাকডেট সময় সিলেক্ট করুন।
+                </p>
               </div>
             )}
 

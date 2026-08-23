@@ -99,6 +99,7 @@ export async function POST(req: Request) {
       isFeatured,
       tags = [],
       scheduledAt,
+      publishedAt,
       metaTitle,
       metaDescription,
     } = body;
@@ -161,7 +162,7 @@ export async function POST(req: Request) {
         status: finalStatus,
         isBreaking: finalIsBreaking,
         isFeatured: finalIsFeatured,
-        publishedAt: finalStatus === 'PUBLISHED' ? new Date() : null,
+        publishedAt: finalStatus === 'PUBLISHED' ? (publishedAt ? new Date(publishedAt) : new Date()) : null,
         scheduledAt: finalStatus === 'SCHEDULED' && scheduledAt ? new Date(scheduledAt) : null,
         metaTitle: metaTitle || null,
         metaDescription: metaDescription || null,
