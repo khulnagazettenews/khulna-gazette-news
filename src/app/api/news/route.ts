@@ -179,12 +179,14 @@ export async function POST(req: Request) {
       try {
         const cat = await prisma.category.findUnique({ where: { id: categoryId } });
         revalidatePath('/');
-        if (cat) {
-          revalidatePath(`/${cat.slug}`);
+        if (cat && cat.slug) {
+          const catPath = cat.slug.startsWith('/') ? cat.slug : `/${cat.slug}`;
+          revalidatePath(catPath);
           if (subCategoryId) {
             const sub = await prisma.category.findUnique({ where: { id: subCategoryId } });
-            if (sub) {
-              revalidatePath(`/${cat.slug}/${sub.slug}`);
+            if (sub && sub.slug) {
+              const subSlugClean = sub.slug.startsWith('/') ? sub.slug.slice(1) : sub.slug;
+              revalidatePath(`${catPath}/${subSlugClean}`);
             }
           }
         }

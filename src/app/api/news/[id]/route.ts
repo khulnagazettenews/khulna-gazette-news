@@ -138,9 +138,11 @@ export async function PUT(
       finalIsFeatured = false;
     }
 
-    // Check if status is transitioning to PUBLISHED
+    // Check if status is transitioning to PUBLISHED or if publishedAt was passed
     let publishedAt = existingNews.publishedAt;
-    if (finalStatus === 'PUBLISHED' && existingNews.status !== 'PUBLISHED') {
+    if (body.publishedAt) {
+      publishedAt = new Date(body.publishedAt);
+    } else if (finalStatus === 'PUBLISHED' && !existingNews.publishedAt) {
       publishedAt = new Date();
     }
 

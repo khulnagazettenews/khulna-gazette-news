@@ -182,13 +182,12 @@ export default async function ArchivePage({ searchParams }: ArchivePageProps) {
                           ) : (
                             <span className="text-red-600 font-bold">{group.category.name}</span>
                           )}
-                          <span>
-                            {item.publishedAt &&
-                              new Date(item.publishedAt).toLocaleTimeString('bn-BD', {
+                            {(item.publishedAt || item.createdAt) &&
+                              new Date(item.publishedAt || item.createdAt).toLocaleTimeString('bn-BD', {
+                                timeZone: 'Asia/Dhaka',
                                 hour: '2-digit',
                                 minute: '2-digit',
                               })}
-                          </span>
                         </div>
                       </div>
                     ))}

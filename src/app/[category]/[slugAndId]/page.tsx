@@ -27,6 +27,7 @@ interface RouteProps {
 function formatBengaliDateTime(dateInput?: Date | string | null) {
   if (!dateInput) return { dateStr: '', timeStr: '' };
   const d = new Date(dateInput);
+  if (isNaN(d.getTime())) return { dateStr: '', timeStr: '' };
   
   const toBengaliNumber = (num: number | string) => {
     const digits: Record<string, string> = { '0':'০','1':'১','2':'২','3':'৩','4':'৪','5':'৫','6':'৬','7':'৭','8':'৮','9':'৯' };
@@ -37,18 +38,37 @@ function formatBengaliDateTime(dateInput?: Date | string | null) {
     'জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন',
     'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'
   ];
-  
-  const monthName = months[d.getMonth()];
-  const dayNum = toBengaliNumber(d.getDate());
-  const yearNum = toBengaliNumber(d.getFullYear());
 
-  let hours = d.getHours();
-  const minutes = d.getMinutes();
+  // Convert to Bangladesh Time (Asia/Dhaka timezone)
+  const formatter = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Asia/Dhaka',
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: false
+  });
+
+  const parts = formatter.formatToParts(d);
+  const getPart = (type: string) => parts.find(p => p.type === type)?.value || '0';
+
+  const year = parseInt(getPart('year'), 10);
+  const monthIdx = parseInt(getPart('month'), 10) - 1;
+  const day = parseInt(getPart('day'), 10);
+  const hours = parseInt(getPart('hour'), 10);
+  const minutes = parseInt(getPart('minute'), 10);
+
+  const monthName = months[monthIdx] || '';
+  const dayNum = toBengaliNumber(day);
+  const yearNum = toBengaliNumber(year);
+
+  // Determine period (পূর্বাহ্ন / অপরাহ্ন)
   const period = hours >= 12 ? 'অপরাহ্ন' : 'পূর্বাহ্ন';
-  if (hours > 12) hours -= 12;
-  if (hours === 0) hours = 12;
+  let hours12 = hours % 12;
+  if (hours12 === 0) hours12 = 12;
 
-  const hoursStr = toBengaliNumber(hours);
+  const hoursStr = toBengaliNumber(hours12);
   const minutesStr = toBengaliNumber(minutes < 10 ? `0${minutes}` : minutes);
 
   return {
@@ -249,7 +269,7 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
 
     const articleUrl = `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/${news.category?.slug || 'news'}/${news.id}`;
 
-    const { dateStr, timeStr } = formatBengaliDateTime(news.publishedAt);
+    const { dateStr, timeStr } = formatBengaliDateTime(news.publishedAt || news.createdAt);
 
     return (
       <div className="flex flex-col min-h-screen bg-white font-sans text-gray-900">
