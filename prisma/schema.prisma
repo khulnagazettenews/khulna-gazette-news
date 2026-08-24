@@ -66,6 +66,7 @@ model News {
   author          User        @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   
   reporterName    String?     
+  authorTitle     String?
   tagIds          String[]
   tags            Tag[]       @relation("NewsTags", fields: [tagIds], references: [id])
   

@@ -48,7 +48,8 @@ export default function NewsForm({ initialData, newsId }: NewsFormProps) {
   const [categoryId, setCategoryId] = useState(initialData?.categoryId || '');
   const [subCategoryId, setSubCategoryId] = useState(initialData?.subCategoryId || '');
   const [reporterName, setReporterName] = useState(initialData?.reporterName || '');
-  const [status, setStatus] = useState(initialData?.status || 'DRAFT');
+  const [authorTitle, setAuthorTitle] = useState(initialData?.authorTitle || '');
+  const [status, setStatus] = useState(initialData?.status || (canPublish ? 'PUBLISHED' : 'DRAFT'));
   const [isBreaking, setIsBreaking] = useState(initialData?.isBreaking || false);
   const [isFeatured, setIsFeatured] = useState(initialData?.isFeatured || false);
   const [tagsInput, setTagsInput] = useState(
@@ -204,6 +205,7 @@ export default function NewsForm({ initialData, newsId }: NewsFormProps) {
       categoryId,
       subCategoryId: subCategoryId || null,
       reporterName: reporterName || null,
+      authorTitle: authorTitle || null,
       status,
       isBreaking,
       isFeatured,
@@ -456,7 +458,18 @@ export default function NewsForm({ initialData, newsId }: NewsFormProps) {
                 value={reporterName}
                 onChange={(e) => setReporterName(e.target.value)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-red-600"
-                placeholder="যেমন: বিশেষ প্রতিনিধি / স্টাফ রিপোর্টার"
+                placeholder="যেমন: নিজস্ব প্রতিবেদক / খুলনা প্রতিনিধি"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-1">News Author Title (লেখকের পদবী / খেতাব)</label>
+              <input
+                type="text"
+                value={authorTitle}
+                onChange={(e) => setAuthorTitle(e.target.value)}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-red-600"
+                placeholder="যেমন: বিশেষ প্রতিনিধি / খুলনা প্রতিনিধি / স্টাফ রিপোর্টার"
               />
             </div>
 

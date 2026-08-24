@@ -79,6 +79,7 @@ export async function PUT(
       categoryId,
       subCategoryId,
       reporterName,
+      authorTitle,
       status,
       isBreaking,
       isFeatured,
@@ -158,6 +159,7 @@ export async function PUT(
         categoryId,
         subCategoryId: subCategoryId || null,
         reporterName: reporterName || null,
+        authorTitle: authorTitle || null,
         status: finalStatus,
         isBreaking: finalIsBreaking,
         isFeatured: finalIsFeatured,
@@ -168,7 +170,7 @@ export async function PUT(
         tags: {
           connectOrCreate: tagConnectOrCreate,
         },
-      },
+      } as any,
       include: {
         tags: true,
       },

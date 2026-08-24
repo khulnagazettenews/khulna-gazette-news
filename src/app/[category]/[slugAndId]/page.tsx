@@ -347,7 +347,7 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
                     >
                       <span className="flex items-center gap-1.5" itemProp="author" itemScope itemType="https://schema.org/Person">
                         <User size={16} className="text-black fill-black shrink-0" />
-                        <span itemProp="name" className="text-black">খুলনা গেজেট</span>
+                        <span itemProp="name" className="text-black">{(news as any).authorTitle || news.reporterName || news.author?.name || 'খুলনা গেজেট'}</span>
                       </span>
 
                       {dateStr && (

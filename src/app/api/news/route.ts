@@ -94,6 +94,7 @@ export async function POST(req: Request) {
       categoryId,
       subCategoryId,
       reporterName,
+      authorTitle,
       status,
       isBreaking,
       isFeatured,
@@ -142,7 +143,7 @@ export async function POST(req: Request) {
     });
 
     const canPublish = ['SUPER_ADMIN', 'ADMIN', 'EDITOR'].includes(userRole);
-    const finalStatus = canPublish ? (status || 'DRAFT') : 'DRAFT';
+    const finalStatus = canPublish ? (status || 'PUBLISHED') : 'DRAFT';
     const finalIsBreaking = canPublish ? !!isBreaking : false;
     const finalIsFeatured = canPublish ? !!isFeatured : false;
 
@@ -159,6 +160,7 @@ export async function POST(req: Request) {
         subCategoryId: subCategoryId || null,
         authorId: (session.user as any).id,
         reporterName: reporterName || null,
+        authorTitle: authorTitle || null,
         status: finalStatus,
         isBreaking: finalIsBreaking,
         isFeatured: finalIsFeatured,
@@ -169,7 +171,7 @@ export async function POST(req: Request) {
         tags: {
           connectOrCreate: tagConnectOrCreate,
         },
-      },
+      } as any,
       include: {
         tags: true,
       },
