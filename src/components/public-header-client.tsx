@@ -298,74 +298,88 @@ export default function PublicHeaderClient({ categories, formattedDate }: Public
             </Link>
           </li>
 
-          {/* Category List */}
-          {mainNavCats.map((cat) => {
-            const isKhulnanchal = cat.slug === 'khulna' || cat.slug === 'khulnanchal';
-            const khulnaSubs = [
-              { name: 'খুলনা', slug: 'khulna' },
-              { name: 'কুষ্টিয়া', slug: 'kustia' },
-              { name: 'চুয়াডাঙ্গা', slug: 'chuadanga' },
-              { name: 'ঝিনাইদহ', slug: 'jhineidha' },
-              { name: 'নড়াইল', slug: 'narail' },
-              { name: 'বাগেরহাট', slug: 'bagerhat' },
-              { name: 'মাগুরা', slug: 'magura' },
-              { name: 'মেহেরপুর', slug: 'meherpur' },
-              { name: 'যশোর', slug: 'jashore' },
-              { name: 'সাতক্ষীরা', slug: 'satkhira' },
-            ];
+          {/* Main Fixed Navbar Categories */}
+          <li className={`text-[21px] lg:text-[23px] cursor-pointer transition hover:text-[#e60023] py-1 ${pathname === '/bangladesh' ? 'active text-[#e60023] font-bold' : 'text-[#000000]'}`}>
+            <Link href="/bangladesh" className={`${pathname === '/bangladesh' ? 'border-b-3 border-[#e60023] pb-3' : ''}`}>
+              বাংলাদেশ
+            </Link>
+          </li>
 
-            const subList = isKhulnanchal 
-              ? (cat.subCategories && cat.subCategories.length > 0 ? cat.subCategories : khulnaSubs)
-              : cat.subCategories;
-            const hasSub = subList && subList.length > 0;
-            const isActive = pathname ? (pathname === `/${cat.slug}` || pathname.startsWith(`/${cat.slug}/`)) : false;
-
-            return (
-              <li
-                key={cat.id}
-                className={`relative group text-[21px] lg:text-[23px] cursor-pointer transition hover:text-[#e60023] py-1 ${
-                  isActive ? 'active text-[#e60023] font-bold' : 'text-[#000000]'
-                }`}
-              >
-                {hasSub ? (
-                  <div className="flex items-center gap-1">
-                    <Link href={`/${cat.slug}`} className={`${isActive ? 'border-b-3 border-[#e60023] pb-3' : ''}`}>
-                      {cat.name}
-                    </Link>
-                    <i className="fa fa-caret-down text-xs text-gray-700 group-hover:text-[#e60023] inline-block ml-0.5"></i>
-                  </div>
-                ) : (
-                  <Link href={`/${cat.slug}`} className={`${isActive ? 'border-b-3 border-[#e60023] pb-3' : ''}`}>
-                    {cat.name}
-                  </Link>
-                )}
-
-                {/* Submenu Dropdown */}
-                {hasSub && (
-                  <div className="absolute left-0 top-full mt-1 w-52 bg-white text-[#222222] shadow-2xl py-2 hidden group-hover:block transition duration-150 z-50 rounded border border-gray-200 text-base">
-                    {subList?.map((sub: any) => (
-                      <Link
-                        key={sub.slug}
-                        href={`/${cat.slug}/${sub.slug}`}
-                        className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition"
-                      >
-                        {sub.name}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </li>
-            );
-          })}
-
-          {/* Exclusive Section */}
-          {exclusiveCat && (
-            <li className={`text-[21px] lg:text-[23px] cursor-pointer transition hover:text-[#e60023] py-1 ${pathname === `/${exclusiveCat.slug}` ? 'active text-[#e60023] font-bold' : 'text-[#000000]'}`}>
-              <Link href={`/${exclusiveCat.slug}`} className={`${pathname === `/${exclusiveCat.slug}` ? 'border-b-3 border-[#e60023] pb-3' : ''}`}>
-                {exclusiveCat.name}
+          {/* খুলনাঞ্চল Dropdown */}
+          <li className="relative group text-[21px] lg:text-[23px] cursor-pointer transition hover:text-[#e60023] text-[#000000] py-1">
+            <div className="flex items-center gap-1">
+              <Link href="/khulnanchal" className={`${pathname?.startsWith('/khulnanchal') ? 'border-b-3 border-[#e60023] pb-3 text-[#e60023] font-bold' : ''}`}>
+                খুলনাঞ্চল
               </Link>
-            </li>
-          )}
+              <i className="fa fa-caret-down text-xs text-gray-700 group-hover:text-[#e60023] inline-block ml-0.5"></i>
+            </div>
+            <div className="absolute left-0 top-full mt-1 w-52 bg-white text-[#222222] shadow-2xl py-2 hidden group-hover:block transition duration-150 z-50 rounded border border-gray-200 text-base">
+              <Link href="/khulnanchal/khulna" className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition">খুলনা</Link>
+              <Link href="/khulnanchal/kushtia" className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition">কুষ্টিয়া</Link>
+              <Link href="/khulnanchal/chuadanga" className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition">চুয়াডাঙ্গা</Link>
+              <Link href="/khulnanchal/jhenaidah" className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition">ঝিনাইদহ</Link>
+              <Link href="/khulnanchal/narail" className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition">নড়াইল</Link>
+              <Link href="/khulnanchal/bagerhat" className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition">বাগেরহাট</Link>
+              <Link href="/khulnanchal/magura" className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition">মাগুরা</Link>
+              <Link href="/khulnanchal/meherpur" className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition">মেহেরপুর</Link>
+              <Link href="/khulnanchal/jessore" className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition">যশোর</Link>
+              <Link href="/khulnanchal/satkhira" className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition">সাতক্ষীরা</Link>
+            </div>
+          </li>
+
+          <li className={`text-[21px] lg:text-[23px] cursor-pointer transition hover:text-[#e60023] py-1 ${pathname === '/sports' ? 'active text-[#e60023] font-bold' : 'text-[#000000]'}`}>
+            <Link href="/sports" className={`${pathname === '/sports' ? 'border-b-3 border-[#e60023] pb-3' : ''}`}>
+              খেলা
+            </Link>
+          </li>
+
+          <li className={`text-[21px] lg:text-[23px] cursor-pointer transition hover:text-[#e60023] py-1 ${pathname === '/entertainment' ? 'active text-[#e60023] font-bold' : 'text-[#000000]'}`}>
+            <Link href="/entertainment" className={`${pathname === '/entertainment' ? 'border-b-3 border-[#e60023] pb-3' : ''}`}>
+              বিনোদন
+            </Link>
+          </li>
+
+          <li className={`text-[21px] lg:text-[23px] cursor-pointer transition hover:text-[#e60023] py-1 ${pathname === '/politics' ? 'active text-[#e60023] font-bold' : 'text-[#000000]'}`}>
+            <Link href="/politics" className={`${pathname === '/politics' ? 'border-b-3 border-[#e60023] pb-3' : ''}`}>
+              রাজনীতি
+            </Link>
+          </li>
+
+          <li className={`text-[21px] lg:text-[23px] cursor-pointer transition hover:text-[#e60023] py-1 ${pathname === '/international' ? 'active text-[#e60023] font-bold' : 'text-[#000000]'}`}>
+            <Link href="/international" className={`${pathname === '/international' ? 'border-b-3 border-[#e60023] pb-3' : ''}`}>
+              আন্তর্জাতিক
+            </Link>
+          </li>
+
+          <li className={`text-[21px] lg:text-[23px] cursor-pointer transition hover:text-[#e60023] py-1 ${pathname === '/economy' ? 'active text-[#e60023] font-bold' : 'text-[#000000]'}`}>
+            <Link href="/economy" className={`${pathname === '/economy' ? 'border-b-3 border-[#e60023] pb-3' : ''}`}>
+              অর্থনীতি
+            </Link>
+          </li>
+
+          <li className={`text-[21px] lg:text-[23px] cursor-pointer transition hover:text-[#e60023] py-1 ${pathname === '/education' ? 'active text-[#e60023] font-bold' : 'text-[#000000]'}`}>
+            <Link href="/education" className={`${pathname === '/education' ? 'border-b-3 border-[#e60023] pb-3' : ''}`}>
+              শিক্ষা
+            </Link>
+          </li>
+
+          <li className={`text-[21px] lg:text-[23px] cursor-pointer transition hover:text-[#e60023] py-1 ${pathname === '/motamot' ? 'active text-[#e60023] font-bold' : 'text-[#000000]'}`}>
+            <Link href="/motamot" className={`${pathname === '/motamot' ? 'border-b-3 border-[#e60023] pb-3' : ''}`}>
+              মুক্ত ভাবনা
+            </Link>
+          </li>
+
+          <li className={`text-[21px] lg:text-[23px] cursor-pointer transition hover:text-[#e60023] py-1 ${pathname === '/islam-and-life' ? 'active text-[#e60023] font-bold' : 'text-[#000000]'}`}>
+            <Link href="/islam-and-life" className={`${pathname === '/islam-and-life' ? 'border-b-3 border-[#e60023] pb-3' : ''}`}>
+              ইসলাম ও জীবন
+            </Link>
+          </li>
+
+          <li className={`text-[21px] lg:text-[23px] cursor-pointer transition hover:text-[#e60023] py-1 ${pathname === '/gazette-exclusive' ? 'active text-[#e60023] font-bold' : 'text-[#000000]'}`}>
+            <Link href="/gazette-exclusive" className={`${pathname === '/gazette-exclusive' ? 'border-b-3 border-[#e60023] pb-3' : ''}`}>
+              গেজেট এক্সক্লুসিভ
+            </Link>
+          </li>
 
           {/* More Dropdown */}
           <li className="relative group text-[21px] lg:text-[23px] cursor-pointer transition hover:text-[#e60023] text-[#000000] py-1">
@@ -373,15 +387,9 @@ export default function PublicHeaderClient({ categories, formattedDate }: Public
               <span>আরও</span>
               <i className="fa fa-caret-down text-xs text-gray-700 group-hover:text-[#e60023] inline-block ml-0.5"></i>
             </div>
-            <div className="absolute right-0 top-full mt-1 w-64 bg-white text-[#222222] shadow-2xl py-2 hidden group-hover:block transition z-50 rounded border border-gray-200 text-base">
-              <Link href="/lifestyle" className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition">
-                লাইফস্টাইল
-              </Link>
-              <Link href="/technology" className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition">
-                তথ্যপ্রযুক্তি
-              </Link>
-              <Link href="/health" className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition">
-                স্বাস্থ্য ও চিকিৎসা
+            <div className="absolute right-0 top-full mt-1 w-72 bg-white text-[#222222] shadow-2xl py-2 hidden group-hover:block transition z-50 rounded border border-gray-200 text-base max-h-[480px] overflow-y-auto">
+              <Link href="/sports/football-world-cup-2026" className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition">
+                ফুটবল বিশ্বকাপ-২০২৬
               </Link>
               <Link href="/photo-gallery" className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition">
                 ফটো গ্যালারি
@@ -389,23 +397,41 @@ export default function PublicHeaderClient({ categories, formattedDate }: Public
               <Link href="/video-gallery" className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition">
                 ভিডিও গ্যালারি
               </Link>
-              <Link href="/literature" className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition">
+              <Link href="/islam-and-life" className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition">
+                ইসলাম ও জীবন
+              </Link>
+              <Link href="/it" className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition">
+                আইটি
+              </Link>
+              <Link href="/lifestyle" className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition">
+                লাইফ স্টাইল
+              </Link>
+              <Link href="/chikitsha" className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition">
+                চিকিৎসা
+              </Link>
+              <Link href="/sahitya" className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition">
                 সাহিত্য
               </Link>
-              <Link href="/chitro-bichitro" className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition">
+              <Link href="/chitra-bichitra" className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition">
                 চিত্র বিচিত্র
               </Link>
               <Link href="/social-media" className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition">
-                সোশ্যাল মিডিয়া
+                সোশ্যাল মিডিয়া
               </Link>
-              <Link href="/converter" className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition">
-                কনভার্টার
+              <Link href="/biswa-joyer-romanchokar-asor" className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition">
+                বিশ্ব জয়ের রোমাঞ্চকর আসর
               </Link>
-              <Link href="/greeting-cards" className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition">
-                শুভেচ্ছা কার্ড
+              <Link href="/fifa-world-cup-2022" className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition">
+                ফিফা বিশ্বকাপ-২০২২
               </Link>
-              <Link href="/jobs" className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition">
-                চাকরি
+              <Link href="/election" className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition">
+                নির্বাচন
+              </Link>
+              <Link href="/election/12th-national-parliament-election-2023" className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition">
+                দ্বাদশ জাতীয় সংসদ নির্বাচন- ২০২৩
+              </Link>
+              <Link href="/election/khulna-city-corporation-election-2023" className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition">
+                খুলনা সিটি কর্পোরেশন নির্বাচন-২০২৩
               </Link>
             </div>
           </li>
@@ -476,16 +502,16 @@ export default function PublicHeaderClient({ categories, formattedDate }: Public
                 </button>
                 {activeDropdown === 'khulna' && (
                   <div className="pl-4 pb-2 space-y-2 text-[17px] font-medium text-gray-700">
-                    <Link href="/khulna/khulna" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">খুলনা</Link>
-                    <Link href="/khulna/kustia" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">কুষ্টিয়া</Link>
-                    <Link href="/khulna/chuadanga" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">চুয়াডাঙ্গা</Link>
-                    <Link href="/khulna/jhineidha" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">ঝিনাইদহ</Link>
-                    <Link href="/khulna/narail" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">নড়াইল</Link>
-                    <Link href="/khulna/bagerhat" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">বাগেরহাট</Link>
-                    <Link href="/khulna/magura" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">মাগুরা</Link>
-                    <Link href="/khulna/meherpur" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">মেহেরপুর</Link>
-                    <Link href="/khulna/jashore" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">যশোর</Link>
-                    <Link href="/khulna/satkhira" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">সাতক্ষীরা</Link>
+                    <Link href="/khulnanchal/khulna" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">খুলনা</Link>
+                    <Link href="/khulnanchal/kushtia" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">কুষ্টিয়া</Link>
+                    <Link href="/khulnanchal/chuadanga" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">চুয়াডাঙ্গা</Link>
+                    <Link href="/khulnanchal/jhenaidah" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">ঝিনাইদহ</Link>
+                    <Link href="/khulnanchal/narail" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">নড়াইল</Link>
+                    <Link href="/khulnanchal/bagerhat" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">বাগেরহাট</Link>
+                    <Link href="/khulnanchal/magura" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">মাগুরা</Link>
+                    <Link href="/khulnanchal/meherpur" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">মেহেরপুর</Link>
+                    <Link href="/khulnanchal/jessore" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">যশোর</Link>
+                    <Link href="/khulnanchal/satkhira" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">সাতক্ষীরা</Link>
                   </div>
                 )}
               </div>
@@ -508,13 +534,13 @@ export default function PublicHeaderClient({ categories, formattedDate }: Public
               <Link href="/education" onClick={() => setMobileOpen(false)} className="block py-3 text-[19px] font-bold text-[#222222] hover:text-[#e60023]">
                 শিক্ষা
               </Link>
-              <Link href="/free-thinking" onClick={() => setMobileOpen(false)} className="block py-3 text-[19px] font-bold text-[#222222] hover:text-[#e60023]">
+              <Link href="/motamot" onClick={() => setMobileOpen(false)} className="block py-3 text-[19px] font-bold text-[#222222] hover:text-[#e60023]">
                 মুক্ত ভাবনা
               </Link>
-              <Link href="/islam-life" onClick={() => setMobileOpen(false)} className="block py-3 text-[19px] font-bold text-[#222222] hover:text-[#e60023]">
+              <Link href="/islam-and-life" onClick={() => setMobileOpen(false)} className="block py-3 text-[19px] font-bold text-[#222222] hover:text-[#e60023]">
                 ইসলাম ও জীবন
               </Link>
-              <Link href="/exclusive" onClick={() => setMobileOpen(false)} className="block py-3 text-[19px] font-bold text-[#222222] hover:text-[#e60023]">
+              <Link href="/gazette-exclusive" onClick={() => setMobileOpen(false)} className="block py-3 text-[19px] font-bold text-[#222222] hover:text-[#e60023]">
                 গেজেট এক্সক্লুসিভ
               </Link>
 
@@ -528,18 +554,22 @@ export default function PublicHeaderClient({ categories, formattedDate }: Public
                   <i className={`fa fa-caret-down text-sm transition transform ${activeDropdown === 'more' ? 'rotate-180' : ''}`}></i>
                 </button>
                 {activeDropdown === 'more' && (
-                  <div className="pl-4 pb-2 space-y-2 text-[17px] font-medium text-gray-700">
-                    <Link href="/lifestyle" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">লাইফস্টাইল</Link>
-                    <Link href="/technology" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">তথ্যপ্রযুক্তি</Link>
-                    <Link href="/health" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">স্বাস্থ্য ও চিকিৎসা</Link>
+                  <div className="pl-4 pb-2 space-y-2 text-[17px] font-medium text-gray-700 max-h-[300px] overflow-y-auto">
+                    <Link href="/sports/football-world-cup-2026" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">ফুটবল বিশ্বকাপ-২০২৬</Link>
                     <Link href="/photo-gallery" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">ফটো গ্যালারি</Link>
                     <Link href="/video-gallery" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">ভিডিও গ্যালারি</Link>
-                    <Link href="/literature" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">সাহিত্য</Link>
-                    <Link href="/chitro-bichitro" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">চিত্র বিচিত্র</Link>
-                    <Link href="/social-media" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">সোশ্যাল মিডিয়া</Link>
-                    <Link href="/converter" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">কনভার্টার</Link>
-                    <Link href="/greeting-cards" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">শুভেচ্ছা কার্ড</Link>
-                    <Link href="/jobs" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">চাকরি</Link>
+                    <Link href="/islam-and-life" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">ইসলাম ও জীবন</Link>
+                    <Link href="/it" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">আইটি</Link>
+                    <Link href="/lifestyle" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">লাইফ স্টাইল</Link>
+                    <Link href="/chikitsha" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">চিকিৎসা</Link>
+                    <Link href="/sahitya" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">সাহিত্য</Link>
+                    <Link href="/chitra-bichitra" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">চিত্র বিচিত্র</Link>
+                    <Link href="/social-media" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">সোশ্যাল মিডিয়া</Link>
+                    <Link href="/biswa-joyer-romanchokar-asor" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">বিশ্ব জয়ের রোমাঞ্চকর আসর</Link>
+                    <Link href="/fifa-world-cup-2022" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">ফিফা বিশ্বকাপ-২০২২</Link>
+                    <Link href="/election" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">নির্বাচন</Link>
+                    <Link href="/election/12th-national-parliament-election-2023" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">দ্বাদশ জাতীয় সংসদ নির্বাচন- ২০২৩</Link>
+                    <Link href="/election/khulna-city-corporation-election-2023" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">খুলনা সিটি কর্পোরেশন নির্বাচন-২০২৩</Link>
                   </div>
                 )}
               </div>

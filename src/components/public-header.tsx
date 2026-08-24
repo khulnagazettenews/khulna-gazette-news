@@ -77,23 +77,55 @@ function getBengaliFullDate() {
 }
 
 export default async function PublicHeader() {
-  // Fetch categories with nested subcategories
+  // Fetch navbar menu items independently from NavbarMenu collection
   let categories: any[] = [];
   try {
-    categories = await prisma.category.findMany({
-      where: {
-        OR: [
-          { parentId: null },
-          { parentId: { isSet: false } }
-        ]
-      },
-      orderBy: { order: 'asc' },
-      include: {
-        subCategories: {
+    const navbarMenus = (prisma as any).navbarMenu 
+      ? await (prisma as any).navbarMenu.findMany({
+          where: {
+            parentId: null,
+          },
           orderBy: { order: 'asc' },
+          include: {
+            subItems: {
+              orderBy: { order: 'asc' },
+            },
+          },
+        })
+      : null;
+
+    if (navbarMenus && navbarMenus.length > 0) {
+      categories = navbarMenus.map((m: any) => ({
+        id: m.id,
+        name: m.name,
+        slug: m.url.startsWith('/') ? m.url.replace(/^\//, '') : m.url,
+        url: m.url,
+        order: m.order,
+        subCategories: m.subItems?.map((s: any) => ({
+          id: s.id,
+          name: s.name,
+          slug: s.url.startsWith('/') ? s.url.replace(/^\//, '') : s.url,
+          url: s.url,
+          order: s.order,
+        })) || []
+      }));
+    } else {
+      // Fallback to Category model if NavbarMenu collection is empty
+      categories = await prisma.category.findMany({
+        where: {
+          OR: [
+            { parentId: null },
+            { parentId: { isSet: false } }
+          ]
         },
-      },
-    });
+        orderBy: { order: 'asc' },
+        include: {
+          subCategories: {
+            orderBy: { order: 'asc' },
+          },
+        },
+      });
+    }
   } catch (err) {
     console.error('Error fetching header categories:', err);
   }

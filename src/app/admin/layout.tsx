@@ -80,18 +80,39 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   // Build navigation items based on role
-  const navigation: Array<{ name: string; href: string; icon: any; badge?: number | null; badgeColor?: string }> = [];
+  interface NavSubItem {
+    name: string;
+    href: string;
+    icon: any;
+  }
+  interface NavItem {
+    name: string;
+    href?: string;
+    icon: any;
+    badge?: number | null;
+    badgeColor?: string;
+    subItems?: NavSubItem[];
+  }
+
+  const navigation: NavItem[] = [];
 
   // 1. Dashboard
   if (role !== 'SUBSCRIBER') {
     navigation.push({ name: 'ড্যাশবোর্ড', href: '/admin', icon: LayoutDashboard });
   }
 
-  // 2. Categories, Reorder & Special Topics
+  // 2. Categories Group, Reorder & Special Topics
   if (['SUPER_ADMIN', 'ADMIN', 'EDITOR', 'SUB_EDITOR'].includes(role)) {
     navigation.push(
       { name: 'নিউজ রিঅর্ডার', href: '/admin/reorder', icon: ArrowUpDown },
-      { name: 'ক্যাটাগরি ম্যানেজমেন্ট', href: '/admin/categories', icon: FolderKanban },
+      {
+        name: 'ক্যাটাগরি',
+        icon: FolderKanban,
+        subItems: [
+          { name: 'পোস্ট ক্যাটাগরি', href: '/admin/categories', icon: FolderKanban },
+          { name: 'নেভবার মেনু ম্যানেজমেন্ট', href: '/admin/navbar-menu', icon: Globe },
+        ],
+      },
       { name: 'বিশেষ প্রতিবেদন সেকশন', href: '/admin/special-topics', icon: Sparkles }
     );
   }
@@ -146,10 +167,20 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   };
 
   // Get active breadcrumb title
-  const currentNavItem = navigation.find(item => 
-    pathname === item.href || (item.href !== '/admin' && pathname?.startsWith(item.href))
-  );
-  const activeTitle = currentNavItem ? currentNavItem.name : 'অ্যাডমিন পোর্টাল';
+  let activeTitle = 'অ্যাডমিন পোর্টাল';
+  for (const item of navigation) {
+    if (item.href && (pathname === item.href || (item.href !== '/admin' && pathname?.startsWith(item.href)))) {
+      activeTitle = item.name;
+      break;
+    }
+    if (item.subItems) {
+      const sub = item.subItems.find(s => pathname === s.href || pathname?.startsWith(s.href));
+      if (sub) {
+        activeTitle = `${item.name} › ${sub.name}`;
+        break;
+      }
+    }
+  }
 
   return (
     <div className="admin-portal min-h-screen bg-slate-100/60 flex font-sans antialiased text-slate-800">
@@ -201,12 +232,55 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </div>
             <nav className="space-y-1.5">
               {navigation.map((item) => {
-                const active = pathname ? (pathname === item.href || (item.href !== '/admin' && pathname.startsWith(item.href))) : false;
                 const Icon = item.icon;
+
+                if (item.subItems) {
+                  const isAnySubActive = item.subItems.some(s => pathname === s.href || pathname?.startsWith(s.href));
+                  return (
+                    <div key={item.name} className="space-y-1">
+                      <div className={`flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-extrabold select-none ${
+                        isAnySubActive ? 'bg-slate-800 text-blue-400' : 'text-slate-300'
+                      }`}>
+                        <div className="flex items-center gap-3">
+                          <Icon size={18} className={isAnySubActive ? 'text-blue-400' : 'text-slate-400'} />
+                          <span>{item.name}</span>
+                        </div>
+                        <ChevronRight size={14} className={`transform transition ${isAnySubActive ? 'rotate-90 text-blue-400' : 'text-slate-500'}`} />
+                      </div>
+
+                      <div className="pl-4 space-y-1 border-l border-slate-800 ml-5">
+                        {item.subItems.map((sub) => {
+                          const subActive = pathname === sub.href || (pathname ? pathname.startsWith(sub.href) : false);
+                          const SubIcon = sub.icon;
+                          return (
+                            <Link
+                              key={sub.name}
+                              href={sub.href}
+                              className={`flex items-center justify-between px-3 py-2 rounded-lg text-xs font-bold transition-all ${
+                                subActive
+                                  ? 'bg-blue-600 text-white font-black shadow-xs'
+                                  : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                              }`}
+                              onClick={() => setSidebarOpen(false)}
+                            >
+                              <div className="flex items-center gap-2">
+                                <SubIcon size={14} className={subActive ? 'text-white' : 'text-slate-400'} />
+                                <span>{sub.name}</span>
+                              </div>
+                              {subActive && <ChevronRight size={13} className="text-white" />}
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                }
+
+                const active = item.href ? (pathname === item.href || (item.href !== '/admin' && pathname?.startsWith(item.href))) : false;
                 return (
                   <Link
                     key={item.name}
-                    href={item.href}
+                    href={item.href || '#'}
                     className={`flex items-center justify-between px-4 py-3 rounded-xl text-sm font-bold transition-all duration-200 group relative ${
                       active 
                         ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30 font-extrabold' 
