@@ -97,7 +97,7 @@ export default async function TopicPage({ params, searchParams }: TopicPageProps
                 <div key={item.id} className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm flex flex-col justify-between group">
                   <div>
                     {item.featuredImage && (
-                      <Link href={`/${item.category?.slug || 'news'}/${item.id}`} className="block aspect-video overflow-hidden bg-gray-50">
+                      <Link href={`/${item.category?.slug || 'news'}/${item.id}`} className="block aspect-[354/199] overflow-hidden bg-gray-50">
                         <img src={item.featuredImage} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
                       </Link>
                     )}

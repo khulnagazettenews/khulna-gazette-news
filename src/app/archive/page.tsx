@@ -147,7 +147,7 @@ export default async function ArchivePage({ searchParams }: ArchivePageProps) {
                         <div>
                           <Link
                             href={`/${group.category.slug || 'news'}/${item.id}`}
-                            className="block aspect-video overflow-hidden bg-gray-100 relative"
+                            className="block aspect-[354/199] overflow-hidden bg-gray-100 relative"
                           >
                             {item.featuredImage ? (
                               <img

@@ -82,25 +82,40 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
               </h1>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-x-6 sm:gap-y-7">
-              {articles.map((item) => (
-                <div key={item.id} className="group flex flex-row sm:flex-col items-center sm:items-start gap-3 sm:gap-2 border-b border-gray-150 sm:border-b-0 pb-3 sm:pb-0 last:border-b-0">
-                  {item.featuredImage ? (
-                    <Link href={`/${item.category?.slug || 'news'}/${item.id}`} className="block w-28 h-20 sm:w-full sm:h-auto sm:aspect-[16/10] shrink-0 overflow-hidden bg-gray-100 rounded">
-                      <img src={item.featuredImage} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-x-4 sm:gap-y-5">
+              {articles.map((item, index) => {
+                const isFirstRow = index < 3;
+                return (
+                  <div 
+                    key={item.id} 
+                    className={`group flex flex-row sm:flex-col items-center sm:items-start gap-3 sm:gap-2 border-b border-gray-100 sm:border-b-0 pb-3 sm:pb-0 last:border-b-0 ${!isFirstRow ? 'sm:border-t sm:border-gray-200/80 sm:pt-3.5' : ''}`}
+                  >
+                    {item.featuredImage ? (
+                      <Link href={`/${item.category?.slug || 'news'}/${item.id}`} className="block w-28 aspect-[354/199] sm:w-full sm:h-auto sm:aspect-[354/199] shrink-0 overflow-hidden bg-gray-100 rounded">
+                        <img src={item.featuredImage} alt={item.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition duration-300" />
+                      </Link>
+                    ) : (
+                      <div className="w-28 aspect-[354/199] sm:w-full sm:h-auto sm:aspect-[354/199] shrink-0 rounded bg-gray-100 flex items-center justify-center text-gray-400 text-xs font-bold">
+                        খুলনা গেজেট
+                      </div>
+                    )}
+                    <Link href={`/${item.category?.slug || 'news'}/${item.id}`} className="block pt-0.5 flex-1 min-w-0">
+                      <h3 
+                        className="text-[22px] font-bold text-[#000000] hover:text-[rgb(0,0,116)] transition leading-[26.4px] tracking-[-0.2px] line-clamp-2 break-words"
+                        style={{
+                          fontFamily: 'Bangla, sans-serif',
+                          fontSize: '22px',
+                          fontWeight: 700,
+                          lineHeight: '26.4px',
+                          letterSpacing: '-0.2px',
+                        }}
+                      >
+                        {item.title}
+                      </h3>
                     </Link>
-                  ) : (
-                    <div className="w-28 h-20 sm:w-full sm:h-auto sm:aspect-[16/10] shrink-0 rounded bg-gray-100 flex items-center justify-center text-gray-400 text-xs font-bold">
-                      খুলনা গেজেট
-                    </div>
-                  )}
-                  <Link href={`/${item.category?.slug || 'news'}/${item.id}`} className="block flex-1 min-w-0">
-                    <h2 className="text-[18px] sm:text-[19px] font-bold text-[#000000] group-hover:text-[#e60023] transition leading-[1.28] line-clamp-2 sm:line-clamp-3 break-words">
-                      {item.title}
-                    </h2>
-                  </Link>
-                </div>
-              ))}
+                  </div>
+                );
+              })}
             </div>
 
             {articles.length === 0 && (
