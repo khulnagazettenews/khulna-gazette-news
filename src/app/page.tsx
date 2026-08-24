@@ -14,6 +14,7 @@ import PhotoSection from '@/components/photo-section';
 import Link from 'next/link';
 import { Camera, Video, Play } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
 export const revalidate = 60; // ISR cache for 60 seconds (Super Fast Instant Loads)
 
 export default async function HomePage() {
