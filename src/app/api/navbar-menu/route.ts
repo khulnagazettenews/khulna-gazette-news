@@ -3,6 +3,8 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+
 const DEFAULT_NAVBAR_ITEMS = [
   { id: 'nav-1', name: 'বাংলাদেশ', url: '/bangladesh', order: 1, subItems: [] },
   {
