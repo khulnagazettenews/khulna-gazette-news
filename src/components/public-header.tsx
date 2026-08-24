@@ -78,20 +78,25 @@ function getBengaliFullDate() {
 
 export default async function PublicHeader() {
   // Fetch categories with nested subcategories
-  const categories = await prisma.category.findMany({
-    where: {
-      OR: [
-        { parentId: null },
-        { parentId: { isSet: false } }
-      ]
-    },
-    orderBy: { order: 'asc' },
-    include: {
-      subCategories: {
-        orderBy: { order: 'asc' },
+  let categories: any[] = [];
+  try {
+    categories = await prisma.category.findMany({
+      where: {
+        OR: [
+          { parentId: null },
+          { parentId: { isSet: false } }
+        ]
       },
-    },
-  });
+      orderBy: { order: 'asc' },
+      include: {
+        subCategories: {
+          orderBy: { order: 'asc' },
+        },
+      },
+    });
+  } catch (err) {
+    console.error('Error fetching header categories:', err);
+  }
 
   const formattedDate = getBengaliFullDate();
 

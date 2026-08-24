@@ -22,40 +22,49 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // 2. Categories
-  const categories = await prisma.category.findMany({
-    include: {
-      parent: true
-    }
-  });
-  
-  const categoryRoutes = categories.map((cat) => {
-    // If it's a subcategory, URL is parent/sub
-    const urlPath = cat.parentId && cat.parent 
-      ? `/${cat.parent.slug}/${cat.slug}`
-      : `/${cat.slug}`;
-      
-    return {
-      url: `${baseUrl}${urlPath}`,
-      lastModified: new Date(),
-      changeFrequency: 'hourly' as const,
-      priority: 0.8,
-    };
-  });
+  let categoryRoutes: MetadataRoute.Sitemap = [];
+  try {
+    const categories = await prisma.category.findMany({
+      include: {
+        parent: true
+      }
+    });
+    
+    categoryRoutes = categories.map((cat) => {
+      const urlPath = cat.parentId && cat.parent 
+        ? `/${cat.parent.slug}/${cat.slug}`
+        : `/${cat.slug}`;
+        
+      return {
+        url: `${baseUrl}${urlPath}`,
+        lastModified: new Date(),
+        changeFrequency: 'hourly' as const,
+        priority: 0.8,
+      };
+    });
+  } catch (err) {
+    console.error('Sitemap category fetch error:', err);
+  }
 
   // 3. Articles (Latest 100 published)
-  const articles = await prisma.news.findMany({
-    where: { status: 'PUBLISHED' },
-    orderBy: { publishedAt: 'desc' },
-    take: 100,
-    include: { category: true },
-  });
+  let articleRoutes: MetadataRoute.Sitemap = [];
+  try {
+    const articles = await prisma.news.findMany({
+      where: { status: 'PUBLISHED' },
+      orderBy: { publishedAt: 'desc' },
+      take: 100,
+      include: { category: true },
+    });
 
-  const articleRoutes = articles.map((art) => ({
-    url: `${baseUrl}/${art.category?.slug || 'news'}/${art.slug}-${art.id}`,
-    lastModified: new Date(art.updatedAt),
-    changeFrequency: 'weekly' as const,
-    priority: 0.6,
-  }));
+    articleRoutes = articles.map((art) => ({
+      url: `${baseUrl}/${art.category?.slug || 'news'}/${art.slug}-${art.id}`,
+      lastModified: new Date(art.updatedAt),
+      changeFrequency: 'weekly' as const,
+      priority: 0.6,
+    }));
+  } catch (err) {
+    console.error('Sitemap article fetch error:', err);
+  }
 
   return [...staticRoutes, ...categoryRoutes, ...articleRoutes];
 }
