@@ -18,24 +18,29 @@ export const revalidate = 60; // ISR cache for 60 seconds (Super Fast Instant Lo
 
 export default async function HomePage() {
   // 1. Fetch Active Special Topic Configuration (very fast query, needed first to get newsIds)
-  let activeSpecialTopic = await prisma.specialTopic.findFirst({
-    where: { isActive: true },
-    orderBy: [{ updatedAt: 'desc' }, { order: 'asc' }],
-  });
+  let activeSpecialTopic: any = null;
+  try {
+    activeSpecialTopic = await prisma.specialTopic.findFirst({
+      where: { isActive: true },
+      orderBy: [{ updatedAt: 'desc' }, { order: 'asc' }],
+    });
 
-  if (!activeSpecialTopic) {
-    const totalSpecialTopics = await prisma.specialTopic.count();
-    if (totalSpecialTopics === 0) {
-      activeSpecialTopic = await prisma.specialTopic.create({
-        data: {
-          title: 'বিশেষ প্রতিবেদন ও আন্তর্জাতিক সংবাদ',
-          bannerSubtitle: 'বিস্তারিত দেখতে কভার খবরের যেকোনো একটিতে ক্লিক করুন',
-          isActive: true,
-          newsIds: [],
-          order: 0,
-        },
-      });
+    if (!activeSpecialTopic) {
+      const totalSpecialTopics = await prisma.specialTopic.count();
+      if (totalSpecialTopics === 0) {
+        activeSpecialTopic = await prisma.specialTopic.create({
+          data: {
+            title: 'বিশেষ প্রতিবেদন ও আন্তর্জাতিক সংবাদ',
+            bannerSubtitle: 'বিস্তারিত দেখতে কভার খবরের যেকোনো একটিতে ক্লিক করুন',
+            isActive: true,
+            newsIds: [],
+            order: 0,
+          },
+        });
+      }
     }
+  } catch (err) {
+    console.error('Error fetching special topic:', err);
   }
 
   // Define categories to fetch for category blocks matching khulnagazette.com live homepage order

@@ -40,20 +40,28 @@ const FALLBACK_PHOTOS = [
 ];
 
 export default async function PublicPhotoGallery() {
-  const [dbPhotos, newsWithPhotos] = await Promise.all([
-    prisma.galleryPhoto.findMany({
-      orderBy: { order: 'asc' },
-    }),
-    prisma.news.findMany({
-      where: {
-        status: 'PUBLISHED',
-        featuredImage: { not: null },
-      },
-      orderBy: { publishedAt: 'desc' },
-      take: 20,
-      include: { category: true },
-    }),
-  ]);
+  let dbPhotos: any[] = [];
+  let newsWithPhotos: any[] = [];
+  try {
+    const res = await Promise.all([
+      prisma.galleryPhoto.findMany({
+        orderBy: { order: 'asc' },
+      }),
+      prisma.news.findMany({
+        where: {
+          status: 'PUBLISHED',
+          featuredImage: { not: null },
+        },
+        orderBy: { publishedAt: 'desc' },
+        take: 20,
+        include: { category: true },
+      }),
+    ]);
+    dbPhotos = res[0];
+    newsWithPhotos = res[1];
+  } catch (err) {
+    console.error('Error fetching gallery photos:', err);
+  }
 
   const combinedPhotos: any[] = [];
 

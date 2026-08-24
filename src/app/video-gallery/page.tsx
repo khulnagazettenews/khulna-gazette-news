@@ -39,9 +39,14 @@ const FALLBACK_VIDEOS = [
 ];
 
 export default async function PublicVideoGallery() {
-  const dbVideos = await prisma.galleryVideo.findMany({
-    orderBy: { order: 'asc' },
-  });
+  let dbVideos: any[] = [];
+  try {
+    dbVideos = await prisma.galleryVideo.findMany({
+      orderBy: { order: 'asc' },
+    });
+  } catch (err) {
+    console.error('Error fetching gallery videos:', err);
+  }
 
   const videos = dbVideos && dbVideos.length > 0 ? dbVideos : FALLBACK_VIDEOS;
 
