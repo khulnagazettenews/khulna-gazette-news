@@ -138,76 +138,95 @@ export default async function HomePage() {
   });
 
   // 2. Fetch all other news, ads, media, and category listings in PARALLEL
-  const [
-    heroNewsFallback,
-    latestNews,
-    popularNews,
-    photos,
-    videos,
-    advertisements,
-    exclusiveNews,
-    specialTopicBannerNewsFetched,
-    topNewsConfig,
-    ...initialCategoryResults
-  ] = await Promise.all([
-    // Hero news fallback ordered strictly by latest published date for serial position 2,3,4...
-    prisma.news.findMany({
-      where: { status: 'PUBLISHED' },
-      orderBy: { publishedAt: 'desc' },
-      take: 20,
-      select: {
-        ...listSelect,
-        content: true,
-      },
-    }),
-    // Latest news for sidebar tabs
-    prisma.news.findMany({
-      where: { status: 'PUBLISHED' },
-      orderBy: { publishedAt: 'desc' },
-      take: 20,
-      select: listSelect,
-    }),
-    // Popular news for sidebar tabs
-    prisma.news.findMany({
-      where: { status: 'PUBLISHED' },
-      orderBy: { viewCount: 'desc' },
-      take: 10,
-      select: listSelect,
-    }),
-    // Photos
-    prisma.galleryPhoto.findMany({
-      orderBy: { order: 'asc' },
-      take: 5,
-    }),
-    // Videos
-    prisma.galleryVideo.findMany({
-      orderBy: { order: 'asc' },
-      take: 10,
-    }),
-    // Advertisements
-    prisma.advertisement.findMany({
-      where: { status: 'ACTIVE' },
-      orderBy: { createdAt: 'desc' },
-    }),
-    // Exclusive news
-    prisma.news.findMany({
-      where: { isFeatured: true, status: 'PUBLISHED' },
-      take: 5,
-      select: listSelect,
-    }),
-    specialTopicBannerNewsQuery,
-    topNewsConfigQuery,
-    ...categoryQueries,
-  ]);
+  let heroNewsFallback: any[] = [];
+  let latestNews: any[] = [];
+  let popularNews: any[] = [];
+  let photos: any[] = [];
+  let videos: any[] = [];
+  let advertisements: any[] = [];
+  let exclusiveNews: any[] = [];
+  let specialTopicBannerNewsFetched: any[] = [];
+  let topNewsConfig: any = null;
+  let initialCategoryResults: any[][] = [];
+
+  try {
+    const results = await Promise.all([
+      // Hero news fallback ordered strictly by latest published date for serial position 2,3,4...
+      prisma.news.findMany({
+        where: { status: 'PUBLISHED' },
+        orderBy: { publishedAt: 'desc' },
+        take: 20,
+        select: {
+          ...listSelect,
+          content: true,
+        },
+      }),
+      // Latest news for sidebar tabs
+      prisma.news.findMany({
+        where: { status: 'PUBLISHED' },
+        orderBy: { publishedAt: 'desc' },
+        take: 20,
+        select: listSelect,
+      }),
+      // Popular news for sidebar tabs
+      prisma.news.findMany({
+        where: { status: 'PUBLISHED' },
+        orderBy: { viewCount: 'desc' },
+        take: 10,
+        select: listSelect,
+      }),
+      // Photos
+      prisma.galleryPhoto.findMany({
+        orderBy: { order: 'asc' },
+        take: 5,
+      }),
+      // Videos
+      prisma.galleryVideo.findMany({
+        orderBy: { order: 'asc' },
+        take: 10,
+      }),
+      // Advertisements
+      prisma.advertisement.findMany({
+        where: { status: 'ACTIVE' },
+        orderBy: { createdAt: 'desc' },
+      }),
+      // Exclusive news
+      prisma.news.findMany({
+        where: { isFeatured: true, status: 'PUBLISHED' },
+        take: 5,
+        select: listSelect,
+      }),
+      specialTopicBannerNewsQuery,
+      topNewsConfigQuery,
+      ...categoryQueries,
+    ]);
+
+    heroNewsFallback = results[0];
+    latestNews = results[1];
+    popularNews = results[2];
+    photos = results[3];
+    videos = results[4];
+    advertisements = results[5];
+    exclusiveNews = results[6];
+    specialTopicBannerNewsFetched = results[7] || [];
+    topNewsConfig = results[8];
+    initialCategoryResults = results.slice(9) as any[];
+  } catch (err) {
+    console.error('Error fetching homepage data:', err);
+  }
 
   // 1. Determine Lead News (Position 1)
   let leadNewsItem: any = null;
   if (topNewsConfig?.newsIds && topNewsConfig.newsIds.length > 0) {
-    const pinnedId = topNewsConfig.newsIds[0];
-    leadNewsItem = await prisma.news.findFirst({
-      where: { id: pinnedId, status: 'PUBLISHED' },
-      select: { ...listSelect, content: true },
-    });
+    try {
+      const pinnedId = topNewsConfig.newsIds[0];
+      leadNewsItem = await prisma.news.findFirst({
+        where: { id: pinnedId, status: 'PUBLISHED' },
+        select: { ...listSelect, content: true },
+      });
+    } catch (err) {
+      console.error('Error fetching lead news item:', err);
+    }
   }
 
   if (!leadNewsItem && heroNewsFallback.length > 0) {
