@@ -265,8 +265,8 @@ export default async function HomePage() {
   // Map special topic banner news maintaining admin ordering
   let specialTopicBannerNews: any[] = [];
   if (activeSpecialTopic?.newsIds && activeSpecialTopic.newsIds.length > 0) {
-    specialTopicBannerNews = activeSpecialTopic.newsIds
-      .map((id) => specialTopicBannerNewsFetched.find((n) => n.id === id))
+    specialTopicBannerNews = (activeSpecialTopic.newsIds as string[])
+      .map((id: string) => specialTopicBannerNewsFetched.find((n: any) => n.id === id))
       .filter(Boolean);
   }
 
