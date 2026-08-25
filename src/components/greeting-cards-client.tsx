@@ -13,7 +13,10 @@ import {
   Copy,
   Camera,
   RefreshCw,
-  Award
+  Briefcase,
+  Trash2,
+  ShieldCheck,
+  CheckCircle2
 } from 'lucide-react';
 
 export default function GreetingCardsClient() {
@@ -40,6 +43,13 @@ export default function GreetingCardsClient() {
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  // Reset form
+  const handleReset = () => {
+    setSenderImage('');
+    setUserName('');
+    setUserDesignation('');
   };
 
   // Download Card as PNG Image
@@ -89,81 +99,127 @@ export default function GreetingCardsClient() {
   };
 
   return (
-    <div className="relative py-6 sm:py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8 min-h-screen">
-      
-      {/* Breadcrumb Navigation */}
-      <nav className="flex items-center gap-2 text-xs sm:text-sm text-slate-600 font-medium">
-        <Link href="/" className="hover:text-red-600 transition-colors">হোম</Link>
-        <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-        <span className="text-slate-900 font-bold">ডিজিটাল শুভেচ্ছা কার্ড জেনারেটর</span>
-      </nav>
-
-      {/* Top Banner Notice */}
-      <div className="bg-[#e51a24] text-white p-5 sm:p-6 rounded-2xl shadow-lg text-center space-y-1.5 border border-red-700">
-        <h2 className="text-sm sm:text-base font-extrabold tracking-wide text-rose-100 flex items-center justify-center gap-2">
-          <Sparkles className="w-4 h-4 text-amber-300 animate-spin" />
-          খুলনা গেজেট অফিশিয়াল বিশেষ শুভেচ্ছা কার্ড
-        </h2>
-        <p className="text-xs sm:text-sm font-medium leading-relaxed max-w-4xl mx-auto opacity-95">
-          আপনার ছবি, নাম ও পদবী দিয়ে ১-ক্লিকে তৈরি করুন 'খুলনা গেজেট'-এর আকর্ষণীয় অফিশিয়াল শুভেচ্ছা কার্ড
-        </p>
-      </div>
-
-      {/* Main Generator Layout */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-gray-200 shadow-xl space-y-8">
+    <div className="min-h-screen bg-slate-50/60 pb-16 pt-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         
-        <div className="text-center border-b border-gray-200 pb-4">
-          <h1 className="text-xl sm:text-3xl font-black text-gray-900 tracking-tight">
-            শুভেচ্ছা কার্ড ফ্রেম মেকার
-          </h1>
-          <p className="text-xs sm:text-sm text-gray-600 font-semibold mt-1">
-            নিচের ফর্মে আপনার ছবি, নাম ও পদবী ফিল্ড টাইপ করুন এবং ১-ক্লিকে HD কার্ড ফ্রেম ডাউনলোড করুন
-          </p>
+        {/* Breadcrumb Navigation */}
+        <nav className="flex items-center gap-2 text-xs sm:text-sm text-slate-500 font-semibold">
+          <Link href="/" className="hover:text-red-600 transition-colors">হোম</Link>
+          <ChevronRight className="w-3.5 h-3.5 text-slate-300" />
+          <span className="text-slate-900 font-extrabold">শুভেচ্ছা কার্ড জেনারেটর</span>
+        </nav>
+
+        {/* Page Header */}
+        <div className="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200/80 shadow-sm relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-red-500/5 rounded-full blur-3xl pointer-events-none" />
+          <div className="relative z-10 max-w-3xl space-y-3">
+            <h1 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight leading-tight">
+              নিজের নামে তৈরি করুন ডিজিটাল শুভেচ্ছা কার্ড
+            </h1>
+            <p className="text-sm sm:text-base text-slate-600 font-medium leading-relaxed">
+              আপনার পছন্দের ছবি আপলোড করুন, নাম ও পদবী লিখুন এবং ১-ক্লিকে হাই-কোয়ালিটি অফিশিয়াল এইচডি কার্ড ফ্রেম ডাউনলোড করুন।
+            </p>
+          </div>
         </div>
 
-        {/* Form Inputs & Live Preview Grid */}
+        {/* Workspace Grid Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
-          {/* Left Column: Input Form (5 Cols) */}
-          <div className="lg:col-span-5 space-y-6">
+          {/* Left Controls Panel (5 Cols) */}
+          <div className="lg:col-span-5 bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/80 shadow-sm space-y-6">
             
+            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+              <div>
+                <h2 
+                  className="text-slate-900"
+                  style={{ 
+                    fontFamily: 'Bangla, sans-serif', 
+                    fontSize: '21px', 
+                    fontWeight: 700, 
+                    lineHeight: '26px', 
+                    letterSpacing: '-0.2px' 
+                  }}
+                >
+                  কার্ড কাস্টমাইজেশন
+                </h2>
+                <p 
+                  className="text-slate-500 font-medium mt-1"
+                  style={{ fontFamily: 'Bangla, sans-serif', fontSize: '15px' }}
+                >
+                  নিচের ফিল্ডগুলো পূরণ করুন
+                </p>
+              </div>
+
+              {(senderImage || userName || userDesignation) && (
+                <button
+                  onClick={handleReset}
+                  className="text-slate-600 hover:text-red-600 font-bold flex items-center gap-1.5 px-3 py-1.5 rounded-xl hover:bg-red-50 transition border border-slate-200 hover:border-red-200"
+                  style={{ fontFamily: 'Bangla, sans-serif', fontSize: '15px' }}
+                >
+                  <Trash2 className="w-4 h-4 text-red-600" />
+                  রিসেট
+                </button>
+              )}
+            </div>
+
             {/* Step 1: Upload Photo */}
-            <div className="space-y-2">
-              <label className="block text-sm font-black text-gray-900">
-                ১. আপনার ছবি আপলোড করুন <span className="text-red-600">*</span>
+            <div className="space-y-2.5">
+              <label 
+                className="text-slate-800 flex items-center gap-2.5"
+                style={{ 
+                  fontFamily: 'Bangla, sans-serif', 
+                  fontSize: '21px', 
+                  fontWeight: 600, 
+                  lineHeight: '24px', 
+                  letterSpacing: '-0.2px' 
+                }}
+              >
+                <span className="w-6 h-6 rounded-full bg-red-600 text-white flex items-center justify-center text-xs font-bold shrink-0">১</span>
+                আপনার ছবি আপলোড করুন
               </label>
               
               <div className="relative group">
-                <label className="cursor-pointer block w-full aspect-[16/9] rounded-2xl bg-gradient-to-br from-[#e51a24] via-[#c6121b] to-[#990a11] text-white flex flex-col items-center justify-center p-6 text-center shadow-md hover:shadow-lg transition duration-300 border-2 border-red-400/40 relative overflow-hidden">
+                <label className="cursor-pointer block w-full rounded-2xl border-2 border-dashed border-slate-300 hover:border-red-500 bg-slate-50/50 hover:bg-red-50/20 p-6 text-center transition-all duration-200">
                   
                   {senderImage ? (
-                    <div className="absolute inset-0 w-full h-full flex flex-col items-center justify-center bg-slate-950/70 backdrop-blur-xs p-3">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-4 border-white shadow-xl aspect-square shrink-0 mb-1" style={{ borderRadius: '9999px' }}>
+                    <div className="flex flex-col items-center justify-center space-y-3">
+                      <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-4 border-white shadow-md aspect-square" style={{ borderRadius: '50%' }}>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img 
                           src={senderImage} 
                           alt="Uploaded preview" 
                           className="w-full h-full object-cover" 
-                          style={{ borderRadius: '9999px', objectFit: 'cover' }}
+                          style={{ borderRadius: '50%', objectFit: 'cover' }}
                         />
                       </div>
-                      <div className="bg-white/25 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-white flex items-center gap-1.5 shadow-xs">
-                        <RefreshCw className="w-3.5 h-3.5 text-amber-300 animate-spin-slow" />
-                        ছবি পরিবর্তন করতে ক্লিক করুন
+                      <div 
+                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white text-slate-800 font-bold shadow-xs border border-slate-200"
+                        style={{ fontFamily: 'Bangla, sans-serif', fontSize: '15px' }}
+                      >
+                        <RefreshCw className="w-4 h-4 text-red-600" />
+                        ছবি পরিবর্তন করুন
                       </div>
                     </div>
                   ) : (
-                    <>
-                      <div className="w-16 h-16 rounded-full bg-white/10 border-2 border-white/30 flex items-center justify-center mb-2 shadow-inner group-hover:scale-110 transition" style={{ borderRadius: '9999px' }}>
-                        <Camera className="w-8 h-8 text-white" />
+                    <div className="flex flex-col items-center justify-center py-3 space-y-2.5">
+                      <div className="w-14 h-14 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <Camera className="w-7 h-7" />
                       </div>
-                      <span className="text-base font-extrabold tracking-wide drop-shadow">
-                        আপনার ছবি নির্বাচন করুন
-                      </span>
-                      <span className="text-xs text-rose-100 mt-1">
-                        (মোবাইল বা কম্পিউটার থেকে সিলেক্ট করুন)
-                      </span>
-                    </>
+                      <div className="space-y-1">
+                        <span 
+                          className="text-slate-900 block"
+                          style={{ fontFamily: 'Bangla, sans-serif', fontSize: '18px', fontWeight: 600 }}
+                        >
+                          ছবি সিলেক্ট করতে ক্লিক করুন
+                        </span>
+                        <span 
+                          className="text-slate-500 block"
+                          style={{ fontFamily: 'Bangla, sans-serif', fontSize: '14px' }}
+                        >
+                          PNG, JPG বা JPEG ফাইল সাপোর্ট করবে
+                        </span>
+                      </div>
+                    </div>
                   )}
 
                   <input 
@@ -177,55 +233,91 @@ export default function GreetingCardsClient() {
             </div>
 
             {/* Step 2: Input Name */}
-            <div className="space-y-2">
-              <label className="block text-sm font-black text-gray-900">
-                ২. আপনার নাম লিখুন <span className="text-red-600">*</span>
+            <div className="space-y-2.5">
+              <label 
+                className="text-slate-800 flex items-center gap-2.5"
+                style={{ 
+                  fontFamily: 'Bangla, sans-serif', 
+                  fontSize: '21px', 
+                  fontWeight: 600, 
+                  lineHeight: '24px', 
+                  letterSpacing: '-0.2px' 
+                }}
+              >
+                <span className="w-6 h-6 rounded-full bg-red-600 text-white flex items-center justify-center text-xs font-bold shrink-0">২</span>
+                আপনার নাম লিখুন
               </label>
-              <input
-                type="text"
-                value={userName}
-                onChange={(e) => setUserName(e.target.value)}
-                placeholder="যেমন: মোহাম্মদ আব্দুল্লাহ"
-                className="w-full px-4 py-3 rounded-xl border-2 border-gray-300 text-gray-900 font-bold text-base focus:border-[#e51a24] focus:ring-4 focus:ring-red-100 outline-none transition bg-white shadow-sm placeholder:text-gray-400"
-              />
+              <div className="relative">
+                <User className="w-5 h-5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  value={userName}
+                  onChange={(e) => setUserName(e.target.value)}
+                  placeholder="যেমন: মোহাম্মদ আব্দুল্লাহ"
+                  className="w-full pl-11 pr-4 py-3.5 rounded-xl border border-slate-300 text-slate-900 font-semibold focus:border-red-500 focus:ring-4 focus:ring-red-500/10 outline-none transition bg-slate-50/40 focus:bg-white placeholder:text-slate-400"
+                  style={{ fontFamily: 'Bangla, sans-serif', fontSize: '17px' }}
+                />
+              </div>
             </div>
 
             {/* Step 3: Input Designation */}
-            <div className="space-y-2">
-              <label className="block text-sm font-black text-gray-900">
-                ৩. আপনার পদবী লিখুন <span className="text-red-600">*</span>
+            <div className="space-y-2.5">
+              <label 
+                className="text-slate-800 flex items-center gap-2.5"
+                style={{ 
+                  fontFamily: 'Bangla, sans-serif', 
+                  fontSize: '21px', 
+                  fontWeight: 600, 
+                  lineHeight: '24px', 
+                  letterSpacing: '-0.2px' 
+                }}
+              >
+                <span className="w-6 h-6 rounded-full bg-red-600 text-white flex items-center justify-center text-xs font-bold shrink-0">৩</span>
+                আপনার পদবী লিখুন
               </label>
-              <input
-                type="text"
-                value={userDesignation}
-                onChange={(e) => setUserDesignation(e.target.value)}
-                placeholder="যেমন: ব্যবস্থাপনা পরিচালক / সমাজসেবক"
-                className="w-full px-4 py-3 rounded-xl border-2 border-gray-300 text-gray-900 font-bold text-base focus:border-[#e51a24] focus:ring-4 focus:ring-red-100 outline-none transition bg-white shadow-sm placeholder:text-gray-400"
-              />
+              <div className="relative">
+                <Briefcase className="w-5 h-5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  value={userDesignation}
+                  onChange={(e) => setUserDesignation(e.target.value)}
+                  placeholder="যেমন: ব্যবস্থাপনা পরিচালক / সমাজসেবক"
+                  className="w-full pl-11 pr-4 py-3.5 rounded-xl border border-slate-300 text-slate-900 font-semibold focus:border-red-500 focus:ring-4 focus:ring-red-500/10 outline-none transition bg-slate-50/40 focus:bg-white placeholder:text-slate-400"
+                  style={{ fontFamily: 'Bangla, sans-serif', fontSize: '17px' }}
+                />
+              </div>
+            </div>
+
+            <div 
+              className="pt-3 border-t border-slate-100 flex items-center gap-2 text-slate-600 font-medium"
+              style={{ fontFamily: 'Bangla, sans-serif', fontSize: '15px' }}
+            >
+              <ShieldCheck className="w-5 h-5 text-emerald-600 shrink-0" />
+              আপনার সকল আপলোডকৃত ফাইল ও তথ্য গোপনীয় থাকবে।
             </div>
 
           </div>
 
-          {/* Right Column: Live Card Preview & Actions (7 Cols) */}
+          {/* Right Live Preview Panel (7 Cols) */}
           <div className="lg:col-span-7 space-y-6 lg:sticky lg:top-24">
             
-            <div className="bg-slate-900 rounded-3xl p-4 sm:p-6 shadow-2xl border-4 border-slate-950 space-y-5">
+            <div className="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/80 shadow-lg space-y-6">
               
-              <div className="flex items-center justify-between text-slate-300 text-xs font-bold px-1">
-                <span className="flex items-center gap-1.5 text-amber-400">
-                  <Sparkles className="w-4 h-4" />
-                  লাইভ খুলনা গেজেট অফিশিয়াল কার্ড প্রিভিউ
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-black text-slate-900 flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                  লাইভ কার্ড প্রিভিউ
                 </span>
-                <span className="px-2.5 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-300 font-mono text-[11px]">
-                  1:1 HD Template
+                <span className="px-3 py-1 rounded-full bg-slate-100 text-slate-700 font-mono text-xs font-bold">
+                  1:1 HD Standard
                 </span>
               </div>
 
-              {/* CARD CANVAS TARGET (Overlaying photo, name & designation on official template image) */}
-              <div className="w-full flex justify-center overflow-hidden">
+              {/* CARD CANVAS TARGET */}
+              <div className="w-full flex justify-center bg-slate-100/60 p-4 sm:p-6 rounded-2xl border border-slate-200/60">
                 <div 
                   ref={cardRef}
-                  className="w-full max-w-[500px] aspect-square relative overflow-hidden bg-white shadow-2xl rounded-lg select-none font-sans"
+                  className="w-full max-w-[460px] aspect-square relative overflow-hidden bg-white shadow-2xl rounded-xl select-none font-sans"
                   style={{ boxSizing: 'border-box' }}
                 >
                   
@@ -237,7 +329,7 @@ export default function GreetingCardsClient() {
                     className="w-full h-full object-cover absolute inset-0 z-0"
                   />
 
-                  {/* Circular User Photo Container Overlaid on Circle Frame (Clean, No Black/White Border) */}
+                  {/* Circular User Photo Container (Clean, No Black/White Border) */}
                   <div 
                     className="absolute top-[35.5%] left-1/2 -translate-x-1/2 w-[40.5%] aspect-square rounded-full overflow-hidden z-10 flex items-center justify-center" 
                     style={{ 
@@ -264,13 +356,13 @@ export default function GreetingCardsClient() {
                       />
                     ) : (
                       <div className="w-full h-full bg-white/40 backdrop-blur-xs flex flex-col items-center justify-center text-slate-600 p-2 text-center" style={{ borderRadius: '50%' }}>
-                        <User size={48} className="text-slate-500 mb-1 opacity-70" />
-                        <span className="text-[11px] sm:text-xs font-bold text-slate-700">ছবি আপলোড করুন</span>
+                        <User size={44} className="text-slate-500 mb-1 opacity-70" />
+                        <span className="text-[11px] font-bold text-slate-700">ছবি আপলোড করুন</span>
                       </div>
                     )}
                   </div>
 
-                  {/* User Name Overlay (Displays 'নাম' by default or user typed name) */}
+                  {/* User Name Overlay */}
                   <div className="absolute top-[76.8%] left-1/2 -translate-x-1/2 z-20 text-center w-[88%] flex items-center justify-center pointer-events-none">
                     <div 
                       className="text-black font-black text-lg sm:text-2xl tracking-tight max-w-full truncate"
@@ -280,7 +372,7 @@ export default function GreetingCardsClient() {
                     </div>
                   </div>
 
-                  {/* User Designation Overlay (Displays 'পদবী' by default or user typed designation) */}
+                  {/* User Designation Overlay */}
                   <div className="absolute top-[83.2%] left-1/2 -translate-x-1/2 z-20 text-center w-[88%] flex items-center justify-center pointer-events-none">
                     <div 
                       className="text-black font-bold text-xs sm:text-base tracking-tight max-w-full truncate opacity-90"
@@ -293,46 +385,46 @@ export default function GreetingCardsClient() {
                 </div>
               </div>
 
-              {/* Download & Share Actions */}
-              <div className="space-y-3 pt-2">
+              {/* Action Buttons */}
+              <div className="space-y-3">
                 <button
                   onClick={downloadCard}
                   disabled={isDownloading}
-                  className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white font-black text-base shadow-xl flex items-center justify-center gap-3 transition active:scale-[0.99] disabled:opacity-50 border border-amber-300/30"
+                  className="w-full py-4 px-6 rounded-2xl bg-[#e51a24] hover:bg-red-700 text-white font-extrabold text-base shadow-lg shadow-red-600/20 flex items-center justify-center gap-2.5 transition-all duration-200 active:scale-[0.99] disabled:opacity-50"
                 >
                   {isDownloading ? (
                     <>
                       <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      HD ইমেজ প্রসেসিং হচ্ছে...
+                      ইমেজ তৈরি হচ্ছে...
                     </>
                   ) : (
                     <>
-                      <Download className="w-5 h-5 text-amber-300" />
-                      HD ফ্রেম ডাউনলোড করুন (Download HD Image)
+                      <Download className="w-5 h-5 text-white" />
+                      ডাউনলোড করুন
                     </>
                   )}
                 </button>
 
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-3 gap-2.5">
                   <button
                     onClick={handleShareWhatsApp}
-                    className="py-3 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition shadow"
+                    className="py-3 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition shadow-xs"
                   >
                     <MessageSquare className="w-4 h-4" /> হোয়াটসঅ্যাপ
                   </button>
 
                   <button
                     onClick={handleShareFacebook}
-                    className="py-3 px-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition shadow"
+                    className="py-3 px-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition shadow-xs"
                   >
                     <Share2 className="w-4 h-4" /> ফেসবুক
                   </button>
 
                   <button
                     onClick={handleCopyLink}
-                    className="py-3 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs flex items-center justify-center gap-1.5 border border-slate-700 transition shadow"
+                    className="py-3 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs flex items-center justify-center gap-1.5 border border-slate-200 transition"
                   >
-                    {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                    {copied ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4 text-slate-600" />}
                     {copied ? 'কপি হয়েছে' : 'লিংক কপি'}
                   </button>
                 </div>
@@ -340,24 +432,11 @@ export default function GreetingCardsClient() {
 
             </div>
 
-            {/* Instruction Box */}
-            <div className="bg-emerald-50 rounded-2xl p-4 border border-emerald-200 text-emerald-950 text-xs space-y-1.5 shadow-sm">
-              <h5 className="font-black flex items-center gap-1.5 text-emerald-900 text-sm">
-                <Award className="w-4 h-4 text-emerald-700" /> ব্যবহারের নিয়মাবলী:
-              </h5>
-              <p className="leading-relaxed text-emerald-900 font-medium">
-                ১. "আপনার ছবি আপলোড করুন" সেকশনে ক্লিক করে ছবি যুক্ত করুন।<br />
-                ২. "আপনার নাম" ও "আপনার পদবী" ফর্মে টাইপ করুন।<br />
-                ৩. "HD ফ্রেম ডাউনলোড করুন" বাটনে ক্লিক করে হাই কোয়ালিটি ইমেজ ডাউনলোড করে আপনার ওয়ালে শেয়ার করুন।
-              </p>
-            </div>
-
           </div>
 
         </div>
 
       </div>
-
     </div>
   );
 }
