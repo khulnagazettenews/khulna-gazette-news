@@ -17,7 +17,11 @@ import {
   ShieldCheck,
   ZoomIn,
   ZoomOut,
-  RotateCcw
+  RotateCcw,
+  ArrowUp,
+  ArrowDown,
+  ArrowLeft,
+  ArrowRight
 } from 'lucide-react';
 
 export default function GreetingCardsClient() {
@@ -30,6 +34,9 @@ export default function GreetingCardsClient() {
   // User Photo State & Image Adjustment Controls
   const [senderImage, setSenderImage] = useState<string>('');
   const [photoZoom, setPhotoZoom] = useState<number>(1);
+  const [photoY, setPhotoY] = useState<number>(0);
+  const [photoX, setPhotoX] = useState<number>(0);
+
   const [isDownloading, setIsDownloading] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -41,7 +48,9 @@ export default function GreetingCardsClient() {
       reader.onload = (event) => {
         if (event.target?.result) {
           setSenderImage(event.target.result as string);
-          setPhotoZoom(1); // Reset zoom on new image
+          setPhotoZoom(1); // Reset zoom
+          setPhotoY(0);    // Reset Y position
+          setPhotoX(0);    // Reset X position
         }
       };
       reader.readAsDataURL(file);
@@ -52,14 +61,26 @@ export default function GreetingCardsClient() {
   const handleReset = () => {
     setSenderImage('');
     setPhotoZoom(1);
+    setPhotoY(0);
+    setPhotoX(0);
     setUserName('');
     setUserDesignation('');
   };
 
-  // Zoom In / Out Handlers
-  const handleZoomIn = () => setPhotoZoom((prev) => Math.min(prev + 0.15, 3));
-  const handleZoomOut = () => setPhotoZoom((prev) => Math.max(prev - 0.15, 1));
-  const handleZoomReset = () => setPhotoZoom(1);
+  // Adjustment Handlers
+  const handleZoomIn = () => setPhotoZoom((prev) => Math.min(prev + 0.1, 3.0));
+  const handleZoomOut = () => setPhotoZoom((prev) => Math.max(prev - 0.1, 0.5));
+  
+  const handleMoveUp = () => setPhotoY((prev) => Math.max(prev - 5, -80));
+  const handleMoveDown = () => setPhotoY((prev) => Math.min(prev + 5, 80));
+  const handleMoveLeft = () => setPhotoX((prev) => Math.max(prev - 5, -80));
+  const handleMoveRight = () => setPhotoX((prev) => Math.min(prev + 5, 80));
+
+  const handleAdjustReset = () => {
+    setPhotoZoom(1);
+    setPhotoY(0);
+    setPhotoX(0);
+  };
 
   // Download Card as PNG Image
   const downloadCard = async () => {
@@ -123,7 +144,7 @@ export default function GreetingCardsClient() {
           <div className="absolute top-0 right-0 w-64 sm:w-96 h-64 sm:h-96 bg-red-500/5 rounded-full blur-3xl pointer-events-none" />
           <div className="relative z-10 max-w-3xl space-y-1.5 sm:space-y-3">
             <h1 className="text-xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight leading-snug">
-              নিজের নামে তৈরি করুন ডিজিটাল শুভেচ্ছা কার্ড
+              খুলনা গেজেটের শুভেচ্ছা কার্ড
             </h1>
             <p className="text-xs sm:text-base text-slate-600 font-medium leading-relaxed">
               আপনার পছন্দের ছবি আপলোড করুন, নাম ও পদবী লিখুন এবং ১-ক্লিকে হাই-কোয়ালিটি অফিশিয়াল এইচডি কার্ড ফ্রেম ডাউনলোড করুন।
@@ -199,8 +220,9 @@ export default function GreetingCardsClient() {
                           style={{ 
                             borderRadius: '50%', 
                             objectFit: 'cover',
-                            transform: `scale(${photoZoom})`,
-                            transformOrigin: 'center'
+                            objectPosition: 'top center',
+                            transform: `scale(${photoZoom}) translate(${photoX}px, ${photoY}px)`,
+                            transformOrigin: 'top center'
                           }}
                         />
                       </div>
@@ -243,14 +265,15 @@ export default function GreetingCardsClient() {
                 </label>
               </div>
 
-              {/* Photo Zoom / Scale Adjustment Controls */}
+              {/* Photo Position & Zoom Adjustment Controls */}
               {senderImage && (
-                <div className="bg-slate-50 p-3 rounded-xl border border-slate-200/80 space-y-2">
-                  <div className="flex items-center justify-between text-xs text-slate-700 font-bold" style={{ fontFamily: 'Bangla, sans-serif' }}>
-                    <span>ছবি জুম ও সাইজ এডজাস্টমেন্ট:</span>
+                <div className="bg-slate-50 p-3 sm:p-4 rounded-xl border border-slate-200 space-y-3">
+                  <div className="flex items-center justify-between text-xs sm:text-sm text-slate-800 font-bold" style={{ fontFamily: 'Bangla, sans-serif' }}>
+                    <span>ছবি জুম ও মাথা/পজিশন এডজাস্ট করুন:</span>
                     <span className="text-red-600 font-mono font-bold">{Math.round(photoZoom * 100)}%</span>
                   </div>
                   
+                  {/* Zoom Slider Bar */}
                   <div className="flex items-center gap-2">
                     <button
                       type="button"
@@ -263,8 +286,8 @@ export default function GreetingCardsClient() {
                     
                     <input
                       type="range"
-                      min="1"
-                      max="3"
+                      min="0.5"
+                      max="3.0"
                       step="0.05"
                       value={photoZoom}
                       onChange={(e) => setPhotoZoom(parseFloat(e.target.value))}
@@ -279,16 +302,58 @@ export default function GreetingCardsClient() {
                     >
                       <ZoomIn className="w-4 h-4" />
                     </button>
-
-                    <button
-                      type="button"
-                      onClick={handleZoomReset}
-                      title="Reset Zoom"
-                      className="p-2 rounded-lg bg-white hover:bg-slate-200 border border-slate-200 text-slate-700 transition"
-                    >
-                      <RotateCcw className="w-4 h-4" />
-                    </button>
                   </div>
+
+                  {/* Direction Position Shift Controls */}
+                  <div className="flex items-center justify-between pt-1 border-t border-slate-200/80">
+                    <span className="text-xs text-slate-600 font-bold" style={{ fontFamily: 'Bangla, sans-serif' }}>
+                      ছবি ডানে/বামে/উপরে সরান:
+                    </span>
+
+                    <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={handleMoveLeft}
+                        title="Move Left"
+                        className="p-1.5 rounded-lg bg-white hover:bg-slate-200 border border-slate-200 text-slate-700 transition"
+                      >
+                        <ArrowLeft className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleMoveUp}
+                        title="Move Up"
+                        className="p-1.5 rounded-lg bg-white hover:bg-slate-200 border border-slate-200 text-slate-700 transition"
+                      >
+                        <ArrowUp className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleMoveDown}
+                        title="Move Down"
+                        className="p-1.5 rounded-lg bg-white hover:bg-slate-200 border border-slate-200 text-slate-700 transition"
+                      >
+                        <ArrowDown className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleMoveRight}
+                        title="Move Right"
+                        className="p-1.5 rounded-lg bg-white hover:bg-slate-200 border border-slate-200 text-slate-700 transition"
+                      >
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleAdjustReset}
+                        title="Reset Position"
+                        className="p-1.5 rounded-lg bg-white hover:bg-slate-200 border border-slate-200 text-red-600 transition ml-1"
+                      >
+                        <RotateCcw className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+
                 </div>
               )}
             </div>
@@ -414,10 +479,11 @@ export default function GreetingCardsClient() {
                             clipPath: 'circle(50% at 50% 50%)',
                             WebkitClipPath: 'circle(50% at 50% 50%)',
                             objectFit: 'cover', 
+                            objectPosition: 'top center',
                             width: '100%', 
                             height: '100%',
-                            transform: `scale(${photoZoom})`,
-                            transformOrigin: 'center'
+                            transform: `scale(${photoZoom}) translate(${photoX}px, ${photoY}px)`,
+                            transformOrigin: 'top center'
                           }}
                         />
                       ) : (
