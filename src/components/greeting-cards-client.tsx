@@ -14,7 +14,10 @@ import {
   RefreshCw,
   Briefcase,
   Trash2,
-  ShieldCheck
+  ShieldCheck,
+  ZoomIn,
+  ZoomOut,
+  RotateCcw
 } from 'lucide-react';
 
 export default function GreetingCardsClient() {
@@ -24,8 +27,9 @@ export default function GreetingCardsClient() {
   const [userName, setUserName] = useState('');
   const [userDesignation, setUserDesignation] = useState('');
   
-  // User Photo State
+  // User Photo State & Image Adjustment Controls
   const [senderImage, setSenderImage] = useState<string>('');
+  const [photoZoom, setPhotoZoom] = useState<number>(1);
   const [isDownloading, setIsDownloading] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -37,6 +41,7 @@ export default function GreetingCardsClient() {
       reader.onload = (event) => {
         if (event.target?.result) {
           setSenderImage(event.target.result as string);
+          setPhotoZoom(1); // Reset zoom on new image
         }
       };
       reader.readAsDataURL(file);
@@ -46,9 +51,15 @@ export default function GreetingCardsClient() {
   // Reset form
   const handleReset = () => {
     setSenderImage('');
+    setPhotoZoom(1);
     setUserName('');
     setUserDesignation('');
   };
+
+  // Zoom In / Out Handlers
+  const handleZoomIn = () => setPhotoZoom((prev) => Math.min(prev + 0.15, 3));
+  const handleZoomOut = () => setPhotoZoom((prev) => Math.max(prev - 0.15, 1));
+  const handleZoomReset = () => setPhotoZoom(1);
 
   // Download Card as PNG Image
   const downloadCard = async () => {
@@ -160,7 +171,7 @@ export default function GreetingCardsClient() {
             </div>
 
             {/* Step 1: Upload Photo */}
-            <div className="space-y-2">
+            <div className="space-y-2.5">
               <label 
                 className="text-slate-800 flex items-center gap-2 font-bold"
                 style={{ 
@@ -171,7 +182,7 @@ export default function GreetingCardsClient() {
                 }}
               >
                 <span className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-red-600 text-white flex items-center justify-center text-[11px] sm:text-xs font-bold shrink-0">১</span>
-                আপনার ছবি আপলোড করুন
+                আপনার ছবি আপলোড করুন <span className="text-red-600">*</span>
               </label>
               
               <div className="relative group">
@@ -184,8 +195,13 @@ export default function GreetingCardsClient() {
                         <img 
                           src={senderImage} 
                           alt="Uploaded preview" 
-                          className="w-full h-full object-cover" 
-                          style={{ borderRadius: '50%', objectFit: 'cover' }}
+                          className="w-full h-full object-cover transition-transform duration-100" 
+                          style={{ 
+                            borderRadius: '50%', 
+                            objectFit: 'cover',
+                            transform: `scale(${photoZoom})`,
+                            transformOrigin: 'center'
+                          }}
                         />
                       </div>
                       <div 
@@ -226,6 +242,55 @@ export default function GreetingCardsClient() {
                   />
                 </label>
               </div>
+
+              {/* Photo Zoom / Scale Adjustment Controls */}
+              {senderImage && (
+                <div className="bg-slate-50 p-3 rounded-xl border border-slate-200/80 space-y-2">
+                  <div className="flex items-center justify-between text-xs text-slate-700 font-bold" style={{ fontFamily: 'Bangla, sans-serif' }}>
+                    <span>ছবি জুম ও সাইজ এডজাস্টমেন্ট:</span>
+                    <span className="text-red-600 font-mono font-bold">{Math.round(photoZoom * 100)}%</span>
+                  </div>
+                  
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={handleZoomOut}
+                      title="Zoom Out"
+                      className="p-2 rounded-lg bg-white hover:bg-slate-200 border border-slate-200 text-slate-700 transition"
+                    >
+                      <ZoomOut className="w-4 h-4" />
+                    </button>
+                    
+                    <input
+                      type="range"
+                      min="1"
+                      max="3"
+                      step="0.05"
+                      value={photoZoom}
+                      onChange={(e) => setPhotoZoom(parseFloat(e.target.value))}
+                      className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-red-600"
+                    />
+
+                    <button
+                      type="button"
+                      onClick={handleZoomIn}
+                      title="Zoom In"
+                      className="p-2 rounded-lg bg-white hover:bg-slate-200 border border-slate-200 text-slate-700 transition"
+                    >
+                      <ZoomIn className="w-4 h-4" />
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={handleZoomReset}
+                      title="Reset Zoom"
+                      className="p-2 rounded-lg bg-white hover:bg-slate-200 border border-slate-200 text-slate-700 transition"
+                    >
+                      <RotateCcw className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Step 2: Input Name */}
@@ -240,7 +305,7 @@ export default function GreetingCardsClient() {
                 }}
               >
                 <span className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-red-600 text-white flex items-center justify-center text-[11px] sm:text-xs font-bold shrink-0">২</span>
-                আপনার নাম লিখুন
+                আপনার নাম লিখুন <span className="text-red-600">*</span>
               </label>
               <div className="relative">
                 <User className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400 absolute left-3 sm:left-3.5 top-1/2 -translate-y-1/2" />
@@ -255,7 +320,7 @@ export default function GreetingCardsClient() {
               </div>
             </div>
 
-            {/* Step 3: Input Designation */}
+            {/* Step 3: Input Designation (Optional) */}
             <div className="space-y-2">
               <label 
                 className="text-slate-800 flex items-center gap-2 font-bold"
@@ -267,7 +332,7 @@ export default function GreetingCardsClient() {
                 }}
               >
                 <span className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-red-600 text-white flex items-center justify-center text-[11px] sm:text-xs font-bold shrink-0">৩</span>
-                আপনার পদবী লিখুন
+                আপনার পদবী লিখুন <span className="text-slate-400 text-xs font-normal">(ঐচ্ছিক)</span>
               </label>
               <div className="relative">
                 <Briefcase className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400 absolute left-3 sm:left-3.5 top-1/2 -translate-y-1/2" />
@@ -323,7 +388,7 @@ export default function GreetingCardsClient() {
                     className="w-full h-full object-cover absolute inset-0 z-0"
                   />
 
-                  {/* Circular User Photo Container (Clean, No Black/White Border) */}
+                  {/* Circular User Photo Container */}
                   <div 
                     className="absolute top-[35.5%] left-1/2 -translate-x-1/2 w-[40.5%] aspect-square rounded-full overflow-hidden z-10 flex items-center justify-center" 
                     style={{ 
@@ -338,14 +403,16 @@ export default function GreetingCardsClient() {
                       <img 
                         src={senderImage} 
                         alt="User Photo" 
-                        className="w-full h-full object-cover rounded-full"
+                        className="w-full h-full object-cover rounded-full transition-transform duration-100"
                         style={{ 
                           borderRadius: '50%', 
                           clipPath: 'circle(50% at 50% 50%)',
                           WebkitClipPath: 'circle(50% at 50% 50%)',
                           objectFit: 'cover', 
                           width: '100%', 
-                          height: '100%' 
+                          height: '100%',
+                          transform: `scale(${photoZoom})`,
+                          transformOrigin: 'center'
                         }}
                       />
                     ) : (
@@ -356,25 +423,29 @@ export default function GreetingCardsClient() {
                     )}
                   </div>
 
-                  {/* User Name Overlay */}
-                  <div className="absolute top-[76.8%] left-1/2 -translate-x-1/2 z-20 text-center w-[88%] flex items-center justify-center pointer-events-none">
-                    <div 
-                      className="text-black font-black text-sm sm:text-2xl tracking-tight max-w-full truncate"
-                      style={{ fontFamily: 'Bangla, sans-serif' }}
-                    >
-                      {userName || 'নাম'}
+                  {/* User Name Overlay (Only rendered when user types name) */}
+                  {userName ? (
+                    <div className="absolute top-[76.8%] left-1/2 -translate-x-1/2 z-20 text-center w-[88%] flex items-center justify-center pointer-events-none">
+                      <div 
+                        className="text-black font-black text-sm sm:text-2xl tracking-tight max-w-full truncate"
+                        style={{ fontFamily: 'Bangla, sans-serif' }}
+                      >
+                        {userName}
+                      </div>
                     </div>
-                  </div>
+                  ) : null}
 
-                  {/* User Designation Overlay */}
-                  <div className="absolute top-[83.2%] left-1/2 -translate-x-1/2 z-20 text-center w-[88%] flex items-center justify-center pointer-events-none">
-                    <div 
-                      className="text-black font-bold text-[10px] sm:text-base tracking-tight max-w-full truncate opacity-90"
-                      style={{ fontFamily: 'Bangla, sans-serif' }}
-                    >
-                      {userDesignation || 'পদবী'}
+                  {/* User Designation Overlay (Only rendered when user types designation) */}
+                  {userDesignation ? (
+                    <div className="absolute top-[83.2%] left-1/2 -translate-x-1/2 z-20 text-center w-[88%] flex items-center justify-center pointer-events-none">
+                      <div 
+                        className="text-black font-bold text-[10px] sm:text-base tracking-tight max-w-full truncate opacity-90"
+                        style={{ fontFamily: 'Bangla, sans-serif' }}
+                      >
+                        {userDesignation}
+                      </div>
                     </div>
-                  </div>
+                  ) : null}
 
                 </div>
               </div>
