@@ -388,39 +388,51 @@ export default function GreetingCardsClient() {
                     className="w-full h-full object-cover absolute inset-0 z-0"
                   />
 
-                  {/* Circular User Photo Container */}
+                  {/* Circular User Photo Container with Crisp Red Border Overlay Ring */}
                   <div 
-                    className="absolute top-[35.5%] left-1/2 -translate-x-1/2 w-[40.5%] aspect-square rounded-full overflow-hidden z-10 flex items-center justify-center" 
-                    style={{ 
-                      borderRadius: '50%', 
-                      clipPath: 'circle(50% at 50% 50%)',
-                      WebkitClipPath: 'circle(50% at 50% 50%)',
-                      aspectRatio: '1 / 1' 
-                    }}
+                    className="absolute top-[35.5%] left-1/2 -translate-x-1/2 w-[40.5%] aspect-square rounded-full z-10 flex items-center justify-center pointer-events-none" 
+                    style={{ aspectRatio: '1 / 1' }}
                   >
-                    {senderImage ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img 
-                        src={senderImage} 
-                        alt="User Photo" 
-                        className="w-full h-full object-cover rounded-full transition-transform duration-100"
-                        style={{ 
-                          borderRadius: '50%', 
-                          clipPath: 'circle(50% at 50% 50%)',
-                          WebkitClipPath: 'circle(50% at 50% 50%)',
-                          objectFit: 'cover', 
-                          width: '100%', 
-                          height: '100%',
-                          transform: `scale(${photoZoom})`,
-                          transformOrigin: 'center'
-                        }}
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-white/40 backdrop-blur-xs flex flex-col items-center justify-center text-slate-600 p-1.5 sm:p-2 text-center" style={{ borderRadius: '50%' }}>
-                        <User size={36} className="text-slate-500 mb-0.5 sm:mb-1 opacity-70" />
-                        <span className="text-[9px] sm:text-[11px] font-bold text-slate-700 leading-tight">ছবি আপলোড করুন</span>
-                      </div>
-                    )}
+                    {/* Inner Photo Circle Mask */}
+                    <div 
+                      className="w-full h-full rounded-full overflow-hidden flex items-center justify-center"
+                      style={{ 
+                        borderRadius: '50%', 
+                        clipPath: 'circle(50% at 50% 50%)',
+                        WebkitClipPath: 'circle(50% at 50% 50%)',
+                        aspectRatio: '1 / 1' 
+                      }}
+                    >
+                      {senderImage ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img 
+                          src={senderImage} 
+                          alt="User Photo" 
+                          className="w-full h-full object-cover rounded-full transition-transform duration-100"
+                          style={{ 
+                            borderRadius: '50%', 
+                            clipPath: 'circle(50% at 50% 50%)',
+                            WebkitClipPath: 'circle(50% at 50% 50%)',
+                            objectFit: 'cover', 
+                            width: '100%', 
+                            height: '100%',
+                            transform: `scale(${photoZoom})`,
+                            transformOrigin: 'center'
+                          }}
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-white/40 backdrop-blur-xs flex flex-col items-center justify-center text-slate-600 p-1.5 sm:p-2 text-center" style={{ borderRadius: '50%' }}>
+                          <User size={36} className="text-slate-500 mb-0.5 sm:mb-1 opacity-70" />
+                          <span className="text-[9px] sm:text-[11px] font-bold text-slate-700 leading-tight">ছবি আপলোড করুন</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Crisp 360-degree Red Border Ring Overlay */}
+                    <div 
+                      className="absolute inset-0 rounded-full border-2 border-[#e51a24] pointer-events-none z-20"
+                      style={{ borderRadius: '50%' }}
+                    />
                   </div>
 
                   {/* User Name Overlay (Only rendered when user types name) */}
