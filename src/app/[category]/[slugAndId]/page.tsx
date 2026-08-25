@@ -317,7 +317,7 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
 
                 {/* News Header Metadata Box matching uploaded image */}
                 <div className="w-full border-t border-b border-[#ddd] py-2.5 my-3 space-y-2">
-                  {/* Tagline / Category Desk */}
+                  {/* Tagline / Category Desk / News Author Title */}
                   <h2 
                     className="text-black"
                     style={{
@@ -329,7 +329,7 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
                       textAlign: 'left',
                     }}
                   >
-                    {news.subCategory?.name || (news.category?.name ? `${news.category.name} ডেস্ক` : (news.reporterName || news.subtitle || 'গেজেট প্রতিবেদন'))}
+                    {(news as any).authorTitle || news.reporterName || news.subCategory?.name || (news.category?.name ? `${news.category.name} ডেস্ক` : 'গেজেট প্রতিবেদন')}
                   </h2>
 
                   {/* Metadata Row (Left: Author, Date, Time | Right: Social Share Buttons + Print) */}
@@ -347,7 +347,7 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
                     >
                       <span className="flex items-center gap-1.5" itemProp="author" itemScope itemType="https://schema.org/Person">
                         <User size={16} className="text-black fill-black shrink-0" />
-                        <span itemProp="name" className="text-black">{(news as any).authorTitle || news.reporterName || news.author?.name || 'খুলনা গেজেট'}</span>
+                        <span itemProp="name" className="text-black">খুলনা গেজেট</span>
                       </span>
 
                       {dateStr && (
