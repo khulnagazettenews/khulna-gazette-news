@@ -503,7 +503,7 @@ export default function GreetingCardsClient() {
 
                   {/* User Name Overlay (Only rendered when user types name) */}
                   {userName ? (
-                    <div className="absolute top-[76.8%] left-1/2 -translate-x-1/2 z-20 text-center w-[88%] flex items-center justify-center pointer-events-none">
+                    <div className="absolute top-[77%] left-1/2 -translate-x-1/2 z-20 text-center w-[88%] flex items-center justify-center pointer-events-none">
                       <div 
                         className="text-black font-black text-sm sm:text-2xl tracking-tight max-w-full truncate"
                         style={{ fontFamily: 'Bangla, sans-serif' }}
