@@ -8,9 +8,23 @@ export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    const topics = await prisma.specialTopic.findMany({
+    let topics = await prisma.specialTopic.findMany({
       orderBy: [{ order: 'asc' }, { createdAt: 'desc' }],
     });
+
+    if (topics.length === 0) {
+      const defaultTopic = await prisma.specialTopic.create({
+        data: {
+          title: 'বিশেষ প্রতিবেদন ও আন্তর্জাতিক সংবাদ',
+          bannerSubtitle: 'বিস্তারিত দেখতে কভার খবরের যেকোনো একটিতে ক্লিক করুন',
+          isActive: true,
+          newsIds: [],
+          order: 0,
+        },
+      });
+      topics = [defaultTopic];
+    }
+
     return NextResponse.json(topics);
   } catch (error) {
     console.error(error);

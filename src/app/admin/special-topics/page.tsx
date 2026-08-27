@@ -46,10 +46,25 @@ export default function SpecialTopicManagement() {
     try {
       const res = await fetch('/api/special-topics');
       const data = await res.json();
-      if (res.ok) {
+      if (res.ok && Array.isArray(data)) {
         setTopics(data);
+        if (data.length > 0) {
+          const target = editingId
+            ? data.find((t: SpecialTopic) => t.id === editingId)
+            : (data.find((t: SpecialTopic) => t.isActive) || data[0]);
+
+          if (target) {
+            setEditingId(target.id);
+            setTitle(target.title);
+            setBannerSubtitle(target.bannerSubtitle || '');
+            setIsActive(target.isActive);
+            setSelectedNewsIds(target.newsIds || []);
+            setOrder(target.order.toString());
+          }
+        }
       } else {
-        setError(data.error || 'সেকশন তথ্য লোড করা সম্ভব হয়নি।');
+        setTopics([]);
+        if (!res.ok) setError(data.error || 'সেকশন তথ্য লোড করা সম্ভব হয়নি।');
       }
     } catch (err) {
       setError('নেটওয়ার্ক ত্রুটি। আবার চেষ্টা করুন।');
@@ -122,6 +137,9 @@ export default function SpecialTopicManagement() {
         setTopics((prev) =>
           prev.map((t) => (t.id === topic.id ? { ...t, isActive: newStatus } : { ...t, isActive: newStatus ? false : t.isActive }))
         );
+        if (editingId === topic.id) {
+          setIsActive(newStatus);
+        }
         setSuccess(newStatus ? 'সেকশনটি দৃশ্যমান (Show) করা হয়েছে।' : 'সেকশনটি হাইড (Hide) করা হয়েছে।');
       } else {
         const data = await res.json();
@@ -165,7 +183,6 @@ export default function SpecialTopicManagement() {
 
       if (res.ok) {
         setSuccess(editingId ? 'সেকশন আপডেট করা হয়েছে।' : 'নতুন স্পেশাল টপিক সেকশন তৈরি করা হয়েছে।');
-        handleResetForm();
         fetchTopics();
       } else {
         setError(data.error || 'একটি ত্রুটি ঘটেছে।');
@@ -296,18 +313,28 @@ export default function SpecialTopicManagement() {
               />
             </div>
 
-            <div className="flex items-center justify-between bg-teal-50/60 p-3.5 rounded-xl border border-teal-100">
+            <div
+              onClick={() => setIsActive(!isActive)}
+              className={`flex items-center justify-between p-3.5 rounded-xl border cursor-pointer transition select-none ${
+                isActive
+                  ? 'bg-teal-50/80 border-teal-200 shadow-2xs'
+                  : 'bg-slate-100/80 border-slate-200'
+              }`}
+            >
               <div>
-                <span className="text-xs font-black text-teal-950 block">হোমপেজে দৃশ্যমান থাকবে?</span>
-                <span className="text-[11px] font-bold text-teal-700">
-                  {isActive ? 'অন রয়েছে (Show)' : 'অফ রয়েছে (Hide)'}
+                <span className="text-xs font-black text-slate-900 block">হোমপেজে দৃশ্যমান থাকবে?</span>
+                <span className={`text-[11px] font-extrabold ${isActive ? 'text-teal-700' : 'text-slate-500'}`}>
+                  {isActive ? '✓ অন রয়েছে (Show)' : '✕ অফ রয়েছে (Hide)'}
                 </span>
               </div>
               <button
                 type="button"
-                onClick={() => setIsActive(!isActive)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsActive(!isActive);
+                }}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  isActive ? 'bg-teal-600' : 'bg-slate-300'
+                  isActive ? 'bg-teal-600' : 'bg-slate-400'
                 }`}
               >
                 <span
@@ -352,14 +379,23 @@ export default function SpecialTopicManagement() {
                   <div className="space-y-1">
                     {selectedNewsIds.map((id, index) => {
                       const item = safeNewsList.find((n) => n.id === id);
+                      const positionLabels = [
+                        '১: মূল সেন্টার কভার',
+                        '২: বাম পাশের ওপর',
+                        '৩: বাম পাশের নিচ',
+                        '৪: ডান পাশের ওপর',
+                        '৫: ডান পাশের নিচ',
+                        '৬: অতিরিক্ত'
+                      ];
+                      const posLabel = positionLabels[index] || `${index + 1}: অতিরিক্ত`;
                       return (
                         <div
                           key={id}
                           className="flex items-center justify-between gap-2 bg-white px-2.5 py-1.5 rounded-lg border border-teal-100 shadow-2xs text-xs"
                         >
                           <div className="flex items-center gap-1.5 truncate">
-                            <span className="w-4 h-4 rounded-full bg-teal-700 text-white text-[10px] font-bold flex items-center justify-center shrink-0">
-                              {index + 1}
+                            <span className="bg-teal-700 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-md shrink-0">
+                              {posLabel}
                             </span>
                             <span className="font-bold text-slate-800 truncate">
                               {item ? item.title : `খবর (ID: ${id.slice(0, 8)}...)`}

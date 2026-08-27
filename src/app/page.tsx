@@ -18,11 +18,10 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 60; // ISR cache for 60 seconds (Super Fast Instant Loads)
 
 export default async function HomePage() {
-  // 1. Fetch Active Special Topic Configuration (very fast query, needed first to get newsIds)
+  // 1. Fetch Active Special Topic Configuration
   let activeSpecialTopic: any = null;
   try {
     activeSpecialTopic = await prisma.specialTopic.findFirst({
-      where: { isActive: true },
       orderBy: [{ updatedAt: 'desc' }, { order: 'asc' }],
     });
 
@@ -100,6 +99,13 @@ export default async function HomePage() {
         slug: true,
       },
     },
+    subCategory: {
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+      },
+    },
     author: {
       select: {
         name: true,
@@ -128,8 +134,11 @@ export default async function HomePage() {
   // Setup special topic banner news query (if there are IDs)
   const specialTopicBannerNewsQuery = (activeSpecialTopic?.newsIds && activeSpecialTopic.newsIds.length > 0)
     ? prisma.news.findMany({
-        where: { id: { in: activeSpecialTopic.newsIds } },
-        select: listSelect,
+        where: { id: { in: activeSpecialTopic.newsIds }, status: 'PUBLISHED' },
+        select: {
+          ...listSelect,
+          content: true,
+        },
       })
     : Promise.resolve([]);
 
@@ -290,6 +299,17 @@ export default async function HomePage() {
       .filter(Boolean);
   }
 
+  // Fallback: If special topic section is active but admin hasn't selected 5 news items, fill remaining slots from published news
+  let finalSpecialTopicNews: any[] = [...specialTopicBannerNews];
+  if (activeSpecialTopic?.isActive && finalSpecialTopicNews.length < 5) {
+    const existingIds = new Set(finalSpecialTopicNews.map((n) => n.id));
+    const fillNews = heroNewsFallback.filter((n) => !existingIds.has(n.id));
+    finalSpecialTopicNews = [
+      ...finalSpecialTopicNews,
+      ...fillNews.slice(0, 5 - finalSpecialTopicNews.length),
+    ];
+  }
+
   // Active advertisements extraction helper
   const getAd = (pos: string) => {
     return advertisements.find((a) => a.position === pos) || null;
@@ -323,6 +343,15 @@ export default async function HomePage() {
 
             {/* Ad slot: After Hero */}
             <AdBanner ad={getAd('home_after_hero')} className="h-20 sm:h-24" />
+
+            {/* 2.5 Special Topic / Report Section */}
+            {activeSpecialTopic?.isActive && finalSpecialTopicNews.length > 0 && (
+              <SpecialTopicSection
+                title={activeSpecialTopic.title}
+                bannerSubtitle={activeSpecialTopic.bannerSubtitle || undefined}
+                news={serializeList(finalSpecialTopicNews)}
+              />
+            )}
 
             {/* 3. Red YouTube Promo Strip */}
             <YoutubeBanner />

@@ -19,8 +19,8 @@ interface SpecialTopicSectionProps {
 }
 
 export default function SpecialTopicSection({
-  title = 'বিশেষ প্রতিবেদন ও আন্তর্জাতিক সংবাদ',
-  bannerSubtitle = 'বিস্তারিত দেখতে কভার খবরের যেকোনো একটিতে ক্লিক করুন',
+  title = 'বিশ্বের প্রতিদিন ও আন্তর্জাতিক সংবাদ',
+  bannerSubtitle = 'বিশ্বজুড়ে ঘটে যাওয়া গুরুত্বপূর্ণ ও নিরপেক্ষ সংবাদ, আপনার জন্য প্রতিদিন',
   news,
 }: SpecialTopicSectionProps) {
   if (!news || news.length === 0) return null;
@@ -44,67 +44,78 @@ export default function SpecialTopicSection({
 
   const getExcerpt = (html?: string) => {
     if (!html) return '';
-    const text = html.replace(/<[^>]*>/g, '');
-    return text.length > 130 ? text.slice(0, 130) + '...' : text;
+    const text = html.replace(/<[^>]*>/g, '').trim();
+    return text.length > 500 ? text.slice(0, 500) + '...' : text;
   };
 
   const getTimeAgo = (dateVal?: string | Date | null) => {
-    if (!dateVal) return 'সদ্য প্রকাশিত';
+    if (!dateVal) return '২৪ আগস্ট, ২০২৬';
     const date = new Date(dateVal);
-    const diffMin = Math.floor((Date.now() - date.getTime()) / (1000 * 60));
-    if (diffMin < 60) return `${diffMin} মিনিট আগে`;
-    const diffHours = Math.floor(diffMin / 60);
-    if (diffHours < 24) return `${diffHours} ঘণ্টা আগে`;
-    return date.toLocaleDateString('bn-BD', { year: 'numeric', month: 'short', day: 'numeric' });
+    return date.toLocaleDateString('bn-BD', { year: 'numeric', month: 'long', day: 'numeric' });
   };
 
   return (
-    <div className="mt-1 mb-6 shadow-md rounded-3xl overflow-hidden border border-teal-200/70 bg-[#eef5f5]">
+    <div
+      style={{ fontFamily: 'Bangla, sans-serif' }}
+      className="mt-1 mb-5 rounded-2xl overflow-hidden bg-[#f3f7f6] p-2 sm:p-3 border border-gray-200/80 shadow-xs"
+    >
       {/* ================= CAMPAIGN BANNER HEADER ================= */}
-      <div className="relative w-full bg-[#006070] text-white px-5 py-4 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs">
-        <div className="hidden sm:block w-32 shrink-0" />
-
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 text-center">
-          <div className="w-9 h-9 rounded-full bg-white text-[#006070] flex items-center justify-center font-black text-base shadow-xs shrink-0 select-none">
+      <div className="relative w-full bg-[#02474d] text-white px-4 sm:px-5 py-2.5 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-2 shadow-xs">
+        <div className="flex flex-col sm:flex-row items-center gap-3 text-center sm:text-left">
+          <div className="w-8 h-8 rounded-full bg-white text-[#02474d] flex items-center justify-center font-black text-sm shadow-xs shrink-0 select-none">
             ★
           </div>
           <div>
-            <h4 className="text-lg sm:text-2xl font-black tracking-tight text-white drop-shadow-xs">
+            <h4 className="text-base sm:text-lg font-black tracking-tight text-white drop-shadow-2xs">
               {title}
             </h4>
-            <p className="text-xs text-teal-100 font-medium mt-0.5">
-              {bannerSubtitle}
-            </p>
+            {bannerSubtitle && (
+              <p className="text-[11px] text-teal-100/90 font-medium mt-0.5">
+                {bannerSubtitle}
+              </p>
+            )}
           </div>
         </div>
 
-        <Link
-          href={`/${itemCenter?.category?.slug || 'news'}`}
-          className="inline-flex items-center gap-1.5 bg-white text-[#006070] hover:bg-slate-100 font-extrabold text-xs px-4 py-2 rounded-full shadow-xs transition shrink-0"
-        >
-          <span>বিস্তারিত দেখুন</span>
-          <ArrowRight size={14} />
-        </Link>
+        {itemCenter && (
+          <Link
+            href={`/${itemCenter.category?.slug || 'news'}/${itemCenter.id}`}
+            className="inline-flex items-center gap-1.5 bg-white text-[#02474d] hover:bg-slate-100 font-extrabold text-xs px-3.5 py-1 rounded-full shadow-2xs transition duration-200 shrink-0 group"
+          >
+            <span>বিস্তারিত দেখুন</span>
+            <ArrowRight size={13} className="group-hover:translate-x-1 transition duration-200" />
+          </Link>
+        )}
       </div>
 
       {/* ================= DYNAMIC CARDS GRID ================= */}
-      <section className="p-4 sm:p-6">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+      <section className="pt-1.5 sm:pt-2">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-2 items-stretch">
           
-          {/* 1. LEFT COLUMN (3 Cols on LG): Render only if itemLeft1 or itemLeft2 exists */}
+          {/* 1. LEFT COLUMN (3 Cols on LG) */}
           {hasLeft && (
-            <div className="lg:col-span-3 space-y-5 flex flex-col justify-between">
+            <div className="lg:col-span-3 space-y-1.5 flex flex-col justify-between">
               {/* Top Left Card */}
               {itemLeft1 && (
-                <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs space-y-3 flex flex-col justify-between h-full group hover:shadow-md transition">
-                  <div className="space-y-2.5">
-                    <div className="flex items-center gap-1.5 text-xs font-bold text-teal-800">
-                      <span className="w-2 h-2 rounded-full bg-teal-600 inline-block" />
-                      <span>{itemLeft1.category?.name || 'বিশেষ সংবাদ'}</span>
+                <div className="bg-white rounded-xl p-2 sm:p-2.5 border border-gray-200/60 shadow-2xs flex flex-col justify-between h-full group hover:shadow-md transition duration-200">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-teal-800">
+                      <span className="w-2 h-2 rounded-full bg-teal-600 inline-block shrink-0" />
+                      <span>{itemLeft1.category?.name || 'স্থানীয় সংবাদ'}</span>
                     </div>
 
                     <Link href={`/${itemLeft1.category?.slug || 'news'}/${itemLeft1.id}`}>
-                      <h4 className="text-xs sm:text-sm font-black text-gray-900 group-hover:text-[#006070] transition leading-snug line-clamp-2">
+                      <h4
+                        style={{
+                          fontFamily: 'Bangla, sans-serif',
+                          fontSize: '22px',
+                          fontWeight: 700,
+                          lineHeight: '26.4px',
+                          letterSpacing: '-0.2px',
+                          textAlign: 'start',
+                        }}
+                        className="text-gray-900 group-hover:text-[#02474d] transition duration-200"
+                      >
                         {itemLeft1.title}
                       </h4>
                     </Link>
@@ -112,19 +123,19 @@ export default function SpecialTopicSection({
                     {itemLeft1.featuredImage && (
                       <Link
                         href={`/${itemLeft1.category?.slug || 'news'}/${itemLeft1.id}`}
-                        className="block aspect-[354/199] overflow-hidden rounded-xl bg-slate-100"
+                        className="block aspect-[24/9] max-h-20 w-full overflow-hidden rounded-lg bg-slate-100 border border-slate-100"
                       >
                         <img
                           src={itemLeft1.featuredImage}
                           alt={itemLeft1.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                          className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
                         />
                       </Link>
                     )}
                   </div>
 
-                  <div className="flex items-center gap-1 text-[11px] text-gray-500 font-medium pt-2 border-t border-gray-100">
-                    <Calendar size={12} className="text-gray-400" />
+                  <div className="flex items-center gap-1.5 text-xs sm:text-sm text-gray-600 font-semibold pt-1 mt-0.5 border-t border-gray-100/80">
+                    <Calendar size={14} className="text-gray-400 shrink-0" />
                     <span>{getTimeAgo(itemLeft1.publishedAt)}</span>
                   </div>
                 </div>
@@ -132,15 +143,25 @@ export default function SpecialTopicSection({
 
               {/* Bottom Left Card */}
               {itemLeft2 && (
-                <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs space-y-3 flex flex-col justify-between h-full group hover:shadow-md transition">
-                  <div className="space-y-2.5">
-                    <div className="flex items-center gap-1.5 text-xs font-bold text-teal-800">
-                      <span className="w-2 h-2 rounded-full bg-teal-600 inline-block" />
-                      <span>{itemLeft2.category?.name || 'বিশেষ সংবাদ'}</span>
+                <div className="bg-white rounded-xl p-2 sm:p-2.5 border border-gray-200/60 shadow-2xs flex flex-col justify-between h-full group hover:shadow-md transition duration-200">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-teal-800">
+                      <span className="w-2 h-2 rounded-full bg-teal-600 inline-block shrink-0" />
+                      <span>{itemLeft2.category?.name || 'স্থানীয় সংবাদ'}</span>
                     </div>
 
                     <Link href={`/${itemLeft2.category?.slug || 'news'}/${itemLeft2.id}`}>
-                      <h4 className="text-xs sm:text-sm font-black text-gray-900 group-hover:text-[#006070] transition leading-snug line-clamp-2">
+                      <h4
+                        style={{
+                          fontFamily: 'Bangla, sans-serif',
+                          fontSize: '22px',
+                          fontWeight: 700,
+                          lineHeight: '26.4px',
+                          letterSpacing: '-0.2px',
+                          textAlign: 'start',
+                        }}
+                        className="text-gray-900 group-hover:text-[#02474d] transition duration-200"
+                      >
                         {itemLeft2.title}
                       </h4>
                     </Link>
@@ -148,19 +169,19 @@ export default function SpecialTopicSection({
                     {itemLeft2.featuredImage && (
                       <Link
                         href={`/${itemLeft2.category?.slug || 'news'}/${itemLeft2.id}`}
-                        className="block aspect-[354/199] overflow-hidden rounded-xl bg-slate-100"
+                        className="block aspect-[24/9] max-h-20 w-full overflow-hidden rounded-lg bg-slate-100 border border-slate-100"
                       >
                         <img
                           src={itemLeft2.featuredImage}
                           alt={itemLeft2.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                          className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
                         />
                       </Link>
                     )}
                   </div>
 
-                  <div className="flex items-center gap-1 text-[11px] text-gray-500 font-medium pt-2 border-t border-gray-100">
-                    <Calendar size={12} className="text-gray-400" />
+                  <div className="flex items-center gap-1.5 text-xs sm:text-sm text-gray-600 font-semibold pt-1 mt-0.5 border-t border-gray-100/80">
+                    <Calendar size={14} className="text-gray-400 shrink-0" />
                     <span>{getTimeAgo(itemLeft2.publishedAt)}</span>
                   </div>
                 </div>
@@ -168,31 +189,41 @@ export default function SpecialTopicSection({
             </div>
           )}
 
-          {/* 2. CENTER COLUMN: Main Lead Featured White Card */}
+          {/* 2. CENTER COLUMN: Main Featured Card */}
           {itemCenter && (
-            <div className={`${centerSpan} bg-white rounded-2xl p-5 border border-slate-100 shadow-xs flex flex-col justify-between group hover:shadow-md transition space-y-4`}>
-              <div>
-                <div className="text-center mb-3">
-                  <span className="bg-[#006070] text-white text-[11px] font-extrabold px-4 py-1.5 rounded-full inline-block">
-                    {itemCenter.category?.name || 'বিশেষ প্রতিবেদন'}
+            <div className={`${centerSpan} bg-white rounded-xl p-3 sm:p-3.5 border border-gray-200/60 shadow-2xs flex flex-col justify-start items-center text-center group hover:shadow-md transition duration-200`}>
+              <div className="space-y-1.5 w-full flex flex-col items-center">
+                <div>
+                  <span className="bg-[#02474d] text-white text-[11px] font-extrabold px-3 py-0.5 rounded-full inline-block">
+                    {itemCenter.category?.name || 'প্রধান খবর'}
                   </span>
                 </div>
 
-                <Link href={`/${itemCenter.category?.slug || 'news'}/${itemCenter.id}`} className="block text-center mb-3.5">
-                  <h3 className="text-lg sm:text-xl lg:text-2xl font-black text-gray-900 group-hover:text-[#006070] transition leading-snug">
+                <Link href={`/${itemCenter.category?.slug || 'news'}/${itemCenter.id}`} className="block w-full text-center">
+                  <h3
+                    style={{
+                      fontFamily: 'Bangla, sans-serif',
+                      fontSize: '22px',
+                      fontWeight: 700,
+                      lineHeight: '26.4px',
+                      letterSpacing: '-0.2px',
+                      textAlign: 'center',
+                    }}
+                    className="text-gray-900 group-hover:text-[#02474d] transition duration-200"
+                  >
                     {itemCenter.title}
                   </h3>
                 </Link>
 
                 <Link
                   href={`/${itemCenter.category?.slug || 'news'}/${itemCenter.id}`}
-                  className="block aspect-[354/199] overflow-hidden rounded-2xl bg-slate-100 mb-4"
+                  className="block aspect-[16/9] max-h-44 sm:max-h-48 w-full overflow-hidden rounded-lg bg-slate-100 border border-slate-100"
                 >
                   {itemCenter.featuredImage ? (
                     <img
                       src={itemCenter.featuredImage}
                       alt={itemCenter.title}
-                      className="w-full h-full object-cover group-hover:scale-[1.01] transition duration-500"
+                      className="w-full h-full object-cover group-hover:scale-[1.02] transition duration-500"
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-gray-400 font-bold text-xs">
@@ -201,36 +232,57 @@ export default function SpecialTopicSection({
                   )}
                 </Link>
 
+                {/* Excerpt Paragraph Text under Image */}
                 {itemCenter.content && (
-                  <Link href={`/${itemCenter.category?.slug || 'news'}/${itemCenter.id}`} className="block">
-                    <p className="text-xs sm:text-sm text-gray-600 leading-relaxed line-clamp-3">
+                  <Link href={`/${itemCenter.category?.slug || 'news'}/${itemCenter.id}`} className="block pt-0.5 w-full">
+                    <p
+                      style={{
+                        fontFamily: 'Bangla, sans-serif',
+                        fontSize: '21px',
+                        fontWeight: 400,
+                        lineHeight: '24px',
+                        letterSpacing: '-0.2px',
+                        textAlign: 'center',
+                      }}
+                      className="text-gray-600 line-clamp-5"
+                    >
                       {getExcerpt(itemCenter.content)}
                     </p>
                   </Link>
                 )}
-              </div>
 
-              <div className="flex items-center gap-1 text-xs text-gray-500 font-medium pt-3 border-t border-gray-100">
-                <Calendar size={13} className="text-gray-400" />
-                <span>{getTimeAgo(itemCenter.publishedAt)}</span>
+                <div className="flex items-center justify-center gap-1.5 text-xs sm:text-sm text-gray-600 font-semibold pt-1 mt-1 border-t border-gray-100/80 w-full shrink-0">
+                  <Calendar size={14} className="text-gray-400 shrink-0" />
+                  <span>{getTimeAgo(itemCenter.publishedAt)}</span>
+                </div>
               </div>
             </div>
           )}
 
-          {/* 3. RIGHT COLUMN: Render only if itemRight1 or itemRight2 exists */}
+          {/* 3. RIGHT COLUMN (3 Cols on LG) */}
           {hasRight && (
-            <div className="lg:col-span-3 space-y-5 flex flex-col justify-between">
+            <div className="lg:col-span-3 space-y-1.5 flex flex-col justify-between">
               {/* Top Right Card */}
               {itemRight1 && (
-                <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs space-y-3 flex flex-col justify-between h-full group hover:shadow-md transition">
-                  <div className="space-y-2.5">
-                    <div className="flex items-center gap-1.5 text-xs font-bold text-teal-800">
-                      <span className="w-2 h-2 rounded-full bg-teal-600 inline-block" />
-                      <span>{itemRight1.category?.name || 'সর্বশেষ'}</span>
+                <div className="bg-white rounded-xl p-2 sm:p-2.5 border border-gray-200/60 shadow-2xs flex flex-col justify-between h-full group hover:shadow-md transition duration-200">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-teal-800">
+                      <span className="w-2 h-2 rounded-full bg-teal-600 inline-block shrink-0" />
+                      <span>{itemRight1.category?.name || 'স্থানীয় সংবাদ'}</span>
                     </div>
 
                     <Link href={`/${itemRight1.category?.slug || 'news'}/${itemRight1.id}`}>
-                      <h4 className="text-xs sm:text-sm font-black text-gray-900 group-hover:text-[#006070] transition leading-snug line-clamp-2">
+                      <h4
+                        style={{
+                          fontFamily: 'Bangla, sans-serif',
+                          fontSize: '22px',
+                          fontWeight: 700,
+                          lineHeight: '26.4px',
+                          letterSpacing: '-0.2px',
+                          textAlign: 'start',
+                        }}
+                        className="text-gray-900 group-hover:text-[#02474d] transition duration-200"
+                      >
                         {itemRight1.title}
                       </h4>
                     </Link>
@@ -238,19 +290,19 @@ export default function SpecialTopicSection({
                     {itemRight1.featuredImage && (
                       <Link
                         href={`/${itemRight1.category?.slug || 'news'}/${itemRight1.id}`}
-                        className="block aspect-[354/199] overflow-hidden rounded-xl bg-slate-100"
+                        className="block aspect-[24/9] max-h-20 w-full overflow-hidden rounded-lg bg-slate-100 border border-slate-100"
                       >
                         <img
                           src={itemRight1.featuredImage}
                           alt={itemRight1.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                          className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
                         />
                       </Link>
                     )}
                   </div>
 
-                  <div className="flex items-center gap-1 text-[11px] text-gray-500 font-medium pt-2 border-t border-gray-100">
-                    <Calendar size={12} className="text-gray-400" />
+                  <div className="flex items-center gap-1.5 text-xs sm:text-sm text-gray-600 font-semibold pt-1 mt-0.5 border-t border-gray-100/80">
+                    <Calendar size={14} className="text-gray-400 shrink-0" />
                     <span>{getTimeAgo(itemRight1.publishedAt)}</span>
                   </div>
                 </div>
@@ -258,18 +310,28 @@ export default function SpecialTopicSection({
 
               {/* Bottom Right Card */}
               {itemRight2 && (
-                <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs space-y-3 flex flex-col justify-between h-full group hover:shadow-md transition">
-                  <div className="space-y-2.5">
-                    <div className="flex items-center gap-1.5 text-xs font-bold text-teal-800">
-                      <span className="w-2 h-2 rounded-full bg-teal-600 inline-block" />
+                <div className="bg-white rounded-xl p-2 sm:p-2.5 border border-gray-200/60 shadow-2xs flex flex-col justify-between h-full group hover:shadow-md transition duration-200">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-teal-800">
+                      <span className="w-2 h-2 rounded-full bg-teal-600 inline-block shrink-0" />
                       <span>
-                        {itemRight2.category?.name}
+                        {itemRight2.category?.name || 'বাংলাদেশ'}
                         {itemRight2.subCategory && ` - ${itemRight2.subCategory.name}`}
                       </span>
                     </div>
 
                     <Link href={`/${itemRight2.category?.slug || 'news'}/${itemRight2.id}`}>
-                      <h4 className="text-xs sm:text-sm font-black text-gray-900 group-hover:text-[#006070] transition leading-snug line-clamp-2">
+                      <h4
+                        style={{
+                          fontFamily: 'Bangla, sans-serif',
+                          fontSize: '22px',
+                          fontWeight: 700,
+                          lineHeight: '26.4px',
+                          letterSpacing: '-0.2px',
+                          textAlign: 'start',
+                        }}
+                        className="text-gray-900 group-hover:text-[#02474d] transition duration-200"
+                      >
                         {itemRight2.title}
                       </h4>
                     </Link>
@@ -277,19 +339,19 @@ export default function SpecialTopicSection({
                     {itemRight2.featuredImage && (
                       <Link
                         href={`/${itemRight2.category?.slug || 'news'}/${itemRight2.id}`}
-                        className="block aspect-[354/199] overflow-hidden rounded-xl bg-slate-100"
+                        className="block aspect-[24/9] max-h-20 w-full overflow-hidden rounded-lg bg-slate-100 border border-slate-100"
                       >
                         <img
                           src={itemRight2.featuredImage}
                           alt={itemRight2.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                          className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
                         />
                       </Link>
                     )}
                   </div>
 
-                  <div className="flex items-center gap-1 text-[11px] text-gray-500 font-medium pt-2 border-t border-gray-100">
-                    <Calendar size={12} className="text-gray-400" />
+                  <div className="flex items-center gap-1.5 text-xs sm:text-sm text-gray-600 font-semibold pt-1 mt-0.5 border-t border-gray-100/80">
+                    <Calendar size={14} className="text-gray-400 shrink-0" />
                     <span>{getTimeAgo(itemRight2.publishedAt)}</span>
                   </div>
                 </div>
