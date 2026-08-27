@@ -37,9 +37,19 @@ export default function CategoryBlock({
   return (
     <div className="space-y-3">
       {/* Category Section Header: Red bottom border matching khulnagazette.com */}
-      <div className="flex items-center justify-between border-b-2 border-[#FF0000] pb-1">
-        <Link href={`/${slug}`} className="group inline-block">
-          <h2 className="text-[22px] sm:text-[24px] font-bold text-[#000000] group-hover:text-[#e60023] leading-none transition duration-200 cursor-pointer">
+      <div className="flex items-center justify-center border-b-2 border-[#FF0000] pb-1 text-center w-full">
+        <Link href={`/${slug}`} className="group inline-block w-full">
+          <h2
+            style={{
+              fontFamily: 'Bangla, sans-serif',
+              fontSize: '22px',
+              fontWeight: 400,
+              lineHeight: '24px',
+              letterSpacing: '-0.2px',
+              textAlign: 'center',
+            }}
+            className="text-[#000000] group-hover:text-[#e60023] transition duration-200 cursor-pointer"
+          >
             {title}
           </h2>
         </Link>

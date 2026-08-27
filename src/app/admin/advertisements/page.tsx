@@ -583,9 +583,20 @@ const ALL_POSITIONS = [...HOME_POSITIONS, ...SIDEBAR_POSITIONS];
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
           <div className="bg-white rounded-3xl max-w-lg w-full shadow-2xl overflow-hidden border border-slate-200 animate-in fade-in zoom-in-95 duration-200 max-h-[90vh] flex flex-col">
             <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between shrink-0">
-              <h3 className="font-extrabold text-slate-900 text-base flex items-center gap-2">
-                <PlusCircle size={18} className="text-red-600" />
-                <span>নতুন বিজ্ঞাপন / উইজেট তৈরি</span>
+              <h3 className="font-extrabold text-slate-900 flex items-center gap-2">
+                <PlusCircle size={18} className="text-red-600 shrink-0" />
+                <span
+                  style={{
+                    fontFamily: 'Bangla, sans-serif',
+                    fontSize: '22px',
+                    fontWeight: 400,
+                    lineHeight: '24px',
+                    letterSpacing: '-0.2px',
+                  }}
+                  className="text-slate-900"
+                >
+                  নতুন বিজ্ঞাপন / উইজেট তৈরি
+                </span>
               </h3>
               <button 
                 onClick={() => setIsAddModalOpen(false)}
@@ -621,7 +632,18 @@ const ALL_POSITIONS = [...HOME_POSITIONS, ...SIDEBAR_POSITIONS];
               </div>
 
               <div>
-                <label className="block mb-1.5 font-bold text-slate-900">বিজ্ঞাপনের শিরোনাম / নাম (ঐচ্ছিক)</label>
+                <label
+                  style={{
+                    fontFamily: 'Bangla, sans-serif',
+                    fontSize: '22px',
+                    fontWeight: 400,
+                    lineHeight: '24px',
+                    letterSpacing: '-0.2px',
+                  }}
+                  className="block mb-1.5 text-slate-900"
+                >
+                  বিজ্ঞাপনের শিরোনাম / নাম (ঐচ্ছিক)
+                </label>
                 <input
                   type="text"
                   placeholder="যেমন: দারাজ অফার ব্যানার (ফাঁকা রাখলে টাইটেল ছাড়া সুধু ইমেজ দেখাবে)"
@@ -798,7 +820,18 @@ const ALL_POSITIONS = [...HOME_POSITIONS, ...SIDEBAR_POSITIONS];
               </div>
 
               <div>
-                <label className="block mb-1.5 font-bold text-slate-900">বিজ্ঞাপনের শিরোনাম / নাম (ঐচ্ছিক)</label>
+                <label
+                  style={{
+                    fontFamily: 'Bangla, sans-serif',
+                    fontSize: '22px',
+                    fontWeight: 400,
+                    lineHeight: '24px',
+                    letterSpacing: '-0.2px',
+                  }}
+                  className="block mb-1.5 text-slate-900"
+                >
+                  বিজ্ঞাপনের শিরোনাম / নাম (ঐচ্ছিক)
+                </label>
                 <input
                   type="text"
                   placeholder="যেমন: দারাজ অফার ব্যানার"
