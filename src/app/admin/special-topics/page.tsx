@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { PlusCircle, Pencil, Trash2, Eye, EyeOff, Sparkles, Check, Search, Layers, X, Layers3 } from 'lucide-react';
+import { PlusCircle, Pencil, Trash2, Eye, EyeOff, Sparkles, Check, Search, Layers, X, ChevronUp, ChevronDown } from 'lucide-react';
 
 interface NewsItem {
   id: string;
@@ -220,6 +220,24 @@ export default function SpecialTopicManagement() {
     }
   };
 
+  const moveNewsUp = (index: number) => {
+    if (index === 0) return;
+    const newIds = [...selectedNewsIds];
+    const temp = newIds[index - 1];
+    newIds[index - 1] = newIds[index];
+    newIds[index] = temp;
+    setSelectedNewsIds(newIds);
+  };
+
+  const moveNewsDown = (index: number) => {
+    if (index === selectedNewsIds.length - 1) return;
+    const newIds = [...selectedNewsIds];
+    const temp = newIds[index + 1];
+    newIds[index + 1] = newIds[index];
+    newIds[index] = temp;
+    setSelectedNewsIds(newIds);
+  };
+
   const toggleSelectNews = (id: string) => {
     if (selectedNewsIds.includes(id)) {
       setSelectedNewsIds(selectedNewsIds.filter((item) => item !== id));
@@ -401,14 +419,34 @@ export default function SpecialTopicManagement() {
                               {item ? item.title : `খবর (ID: ${id.slice(0, 8)}...)`}
                             </span>
                           </div>
-                          <button
-                            type="button"
-                            onClick={() => toggleSelectNews(id)}
-                            className="p-1 hover:bg-rose-50 text-slate-400 hover:text-rose-600 rounded-md transition shrink-0"
-                            title="মুছে ফেলুন"
-                          >
-                            <X size={13} />
-                          </button>
+                          <div className="flex items-center gap-1 shrink-0">
+                            <button
+                              type="button"
+                              onClick={() => moveNewsUp(index)}
+                              disabled={index === 0}
+                              className="p-1 hover:bg-slate-100 text-slate-500 hover:text-teal-700 disabled:opacity-30 rounded-md transition"
+                              title="উপরে সরান"
+                            >
+                              <ChevronUp size={13} />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => moveNewsDown(index)}
+                              disabled={index === selectedNewsIds.length - 1}
+                              className="p-1 hover:bg-slate-100 text-slate-500 hover:text-teal-700 disabled:opacity-30 rounded-md transition"
+                              title="নিচে সরান"
+                            >
+                              <ChevronDown size={13} />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => toggleSelectNews(id)}
+                              className="p-1 hover:bg-rose-50 text-slate-400 hover:text-rose-600 rounded-md transition"
+                              title="মুছে ফেলুন"
+                            >
+                              <X size={13} />
+                            </button>
+                          </div>
                         </div>
                       );
                     })}
