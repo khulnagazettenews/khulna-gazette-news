@@ -60,17 +60,17 @@ export default function SpecialTopicSection({
       className="mt-1 mb-5 rounded-2xl overflow-hidden bg-[#f3f7f6] p-2 sm:p-3 border border-gray-200/80 shadow-xs"
     >
       {/* ================= CAMPAIGN BANNER HEADER ================= */}
-      <div className="relative w-full bg-[#02474d] text-white px-4 sm:px-5 py-2.5 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-2 shadow-xs">
+      <div className="relative w-full bg-[#02474d] text-white px-4 sm:px-5 py-3 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3 shadow-sm border border-teal-600/40 overflow-hidden">
         <div className="flex flex-col sm:flex-row items-center gap-3 text-center sm:text-left">
-          <div className="w-8 h-8 rounded-full bg-white text-[#02474d] flex items-center justify-center font-black text-sm shadow-xs shrink-0 select-none">
+          <div className="w-9 h-9 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 text-amber-300 flex items-center justify-center font-extrabold text-base shadow-inner shrink-0 select-none">
             ★
           </div>
           <div>
-            <h4 className="text-base sm:text-lg font-black tracking-tight text-white drop-shadow-2xs">
+            <h4 className="text-base sm:text-lg font-black tracking-tight text-white">
               {title}
             </h4>
             {bannerSubtitle && (
-              <p className="text-[11px] text-teal-100/90 font-medium mt-0.5">
+              <p className="text-xs text-teal-100/90 font-medium mt-0.5">
                 {bannerSubtitle}
               </p>
             )}
@@ -80,10 +80,10 @@ export default function SpecialTopicSection({
         {itemCenter && (
           <Link
             href={`/${itemCenter.category?.slug || 'news'}/${itemCenter.id}`}
-            className="inline-flex items-center gap-1.5 bg-white text-[#02474d] hover:bg-slate-100 font-extrabold text-xs px-3.5 py-1 rounded-full shadow-2xs transition duration-200 shrink-0 group"
+            className="inline-flex items-center gap-1.5 bg-white text-[#02474d] hover:bg-slate-100 font-extrabold text-xs sm:text-sm px-4 py-1.5 rounded-full shadow-2xs hover:shadow-sm transition-all duration-200 shrink-0 group border border-white"
           >
             <span>বিস্তারিত দেখুন</span>
-            <ArrowRight size={13} className="group-hover:translate-x-1 transition duration-200" />
+            <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform duration-200 text-[#02474d]" />
           </Link>
         )}
       </div>
