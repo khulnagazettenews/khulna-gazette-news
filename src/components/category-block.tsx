@@ -30,7 +30,15 @@ export default function CategoryBlock({
 
   const getExcerpt = (html: string) => {
     if (!html) return '';
-    const text = html.replace(/<[^>]*>/g, '');
+    const text = html
+      .replace(/<[^>]*>/g, '')
+      .replace(/&nbsp;/g, ' ')
+      .replace(/&amp;/g, '&')
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .trim();
     return text.length > 120 ? text.slice(0, 120) + '...' : text;
   };
 

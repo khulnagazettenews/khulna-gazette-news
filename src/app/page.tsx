@@ -265,13 +265,10 @@ export default async function HomePage() {
     }));
   };
 
-  // 3. Category results map with fallback to guarantee side-by-side paired rendering
+  // 3. Category results map strictly returning news belonging to that specific category
   const getCategoryNews = (index: number) => {
     const res = initialCategoryResults[index];
-    if (res && res.length > 0) return res;
-    // Fallback to heroNews slice so category blocks always render side-by-side
-    const startIdx = (index * 2) % Math.max(1, heroNews.length - 5);
-    return heroNews.slice(startIdx, startIdx + 5);
+    return res && res.length > 0 ? res : [];
   };
 
   const bangladeshNews = getCategoryNews(0);
