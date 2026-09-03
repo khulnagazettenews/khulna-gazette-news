@@ -384,7 +384,7 @@ export default async function HomePage() {
               title="বিনোদন"
               slug="entertainment"
               news={entertainmentNews as any}
-              variant="entertainment"
+              variant="sports"
             />
 
             {/* Middle Ad slot (Before Politics & Economy) */}
@@ -400,7 +400,12 @@ export default async function HomePage() {
             <AdBanner ad={getAd('home_before_international')} className="h-20 sm:h-24" />
 
             {/* 8. International Category */}
-            <CategoryBlock title="আন্তর্জাতিক" slug="international" news={internationalNews as any} />
+            <CategoryBlock
+              title="আন্তর্জাতিক"
+              slug="international"
+              news={internationalNews as any}
+              variant="sports"
+            />
 
             {/* Ad slot: Before Education & Islam */}
             <AdBanner ad={getAd('home_before_education_islam')} className="h-20 sm:h-24" />
@@ -415,7 +420,7 @@ export default async function HomePage() {
             <AdBanner ad={getAd('home_before_technology')} className="h-20 sm:h-24" />
 
             {/* 10. IT / Technology Category */}
-            <CategoryBlock title="আইটি" slug="technology" news={techNews as any} />
+            <CategoryBlock title="আইটি" slug="technology" news={techNews as any} variant="sports" />
 
             {/* Ad slot: Before Lifestyle & Health */}
             <AdBanner ad={getAd('home_before_lifestyle_health')} className="h-20 sm:h-24" />
@@ -430,7 +435,7 @@ export default async function HomePage() {
             <AdBanner ad={getAd('home_before_literature')} className="h-20 sm:h-24" />
 
             {/* 12. Literature Category */}
-            <CategoryBlock title="সাহিত্য" slug="literature" news={literatureNews as any} />
+            <CategoryBlock title="সাহিত্য" slug="literature" news={literatureNews as any} variant="sports" />
 
             {/* Ad slot: Before Chitro Bichitro & Social Media */}
             <AdBanner ad={getAd('home_before_chitro_social')} className="h-20 sm:h-24" />
@@ -445,7 +450,7 @@ export default async function HomePage() {
             <AdBanner ad={getAd('home_before_mukto_bhabna')} className="h-20 sm:h-24" />
 
             {/* 14. Mukto Bhabna Category */}
-            <CategoryBlock title="মুক্ত ভাবনা" slug="mukto-bhabna" news={muktoBhabnaNews as any} />
+            <CategoryBlock title="মুক্ত ভাবনা" slug="mukto-bhabna" news={muktoBhabnaNews as any} variant="sports" />
 
             {/* Ad slot: Before Exclusive */}
             <AdBanner ad={getAd('home_before_exclusive')} className="h-20 sm:h-24" />
