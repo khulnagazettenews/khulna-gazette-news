@@ -89,6 +89,35 @@ export default function SidebarWidgets({
       {/* 1. TABS WIDGET (সর্বশেষ | সর্বাধিক পঠিত - 1st) */}
       <TabsWidget latest={latestNews} popular={popularNews} />
 
+      {/* 2. APP DOWNLOAD BANNER (খুলনা গেজেটের app পেতে ক্লিক করুন - Right under TabsWidget) */}
+      <div className="bg-white rounded border border-[#1e293b]/30 shadow-xs overflow-hidden">
+        <div 
+          className="bg-[#243048] text-white py-2 px-3 text-center font-normal flex items-center justify-center gap-2 whitespace-nowrap"
+          style={{
+            fontFamily: 'Bangla, sans-serif',
+            fontSize: '18px',
+            fontWeight: 400,
+            lineHeight: '22px',
+            letterSpacing: '-0.2px',
+          }}
+        >
+          <Smartphone size={20} className="text-[#00d2b5] shrink-0" />
+          <span>খুলনা গেজেটের app পেতে ক্লিক করুন</span>
+        </div>
+        <a
+          href="https://play.google.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block relative w-full overflow-hidden bg-slate-100 group p-1 border-t border-gray-200"
+        >
+          <img
+            src="/uploads/sidebar/app_banner.jpg"
+            alt="খুলনা গেজেট অ্যাপ ডাউনলোড"
+            className="w-full h-auto object-cover block group-hover:scale-[1.01] transition duration-300"
+          />
+        </a>
+      </div>
+
       {/* 2. EPAPER PROMO BANNER (ই-পেপার সংস্করণ - অনলাইনে পৃষ্ঠা উল্টে পড়ুন - 2nd) */}
       <div className="bg-white rounded border border-gray-200 shadow-2xs overflow-hidden font-sans">
         <div 
@@ -201,35 +230,6 @@ export default function SidebarWidgets({
 
       {/* 6. LIKE US ON FACEBOOK WIDGET (6th) */}
       <FacebookWidget />
-
-      {/* 7. APP DOWNLOAD BANNER (খুলনা গেজেটের app পেতে ক্লিক করুন - 7th) */}
-      <div className="bg-white rounded border border-gray-200 shadow-xs overflow-hidden">
-        <div 
-          className="bg-[#2b354f] text-white py-2 px-2 text-center font-normal flex items-center justify-center gap-1.5 whitespace-nowrap"
-          style={{
-            fontFamily: 'Bangla, sans-serif',
-            fontSize: '19px',
-            fontWeight: 400,
-            lineHeight: '22px',
-            letterSpacing: '-0.2px',
-          }}
-        >
-          <Smartphone size={18} className="text-teal-400 shrink-0" />
-          <span>খুলনা গেজেটের app পেতে ক্লিক করুন</span>
-        </div>
-        <a
-          href="https://play.google.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="block relative w-full overflow-hidden bg-slate-100 group p-0.5"
-        >
-          <img
-            src="/uploads/sidebar/app_banner.jpg"
-            alt="খুলনা গেজেট অ্যাপ ডাউনলোড"
-            className="w-full h-auto object-contain block group-hover:scale-[1.02] transition duration-500"
-          />
-        </a>
-      </div>
 
       {/* DYNAMIC BOTTOM SIDEBAR ADS */}
       {bottomAds.map(ad => (

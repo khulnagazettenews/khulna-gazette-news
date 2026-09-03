@@ -240,8 +240,31 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
             />
 
             {/* App Download Promo Box */}
-            <div className="bg-[#1f2937] text-white p-3 rounded-lg text-center font-bold text-sm tracking-wide">
-              খুলনা গেজেট app পেতে ক্লিক করুন
+            <div className="bg-white rounded border border-[#1e293b]/30 shadow-xs overflow-hidden">
+              <div 
+                className="bg-[#243048] text-white py-2 px-3 text-center font-normal flex items-center justify-center gap-2 whitespace-nowrap"
+                style={{
+                  fontFamily: 'Bangla, sans-serif',
+                  fontSize: '18px',
+                  fontWeight: 400,
+                  lineHeight: '22px',
+                  letterSpacing: '-0.2px',
+                }}
+              >
+                <span>খুলনা গেজেটের app পেতে ক্লিক করুন</span>
+              </div>
+              <a
+                href="https://play.google.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block relative w-full overflow-hidden bg-slate-100 group p-1 border-t border-gray-200"
+              >
+                <img
+                  src="/uploads/sidebar/app_banner.jpg"
+                  alt="খুলনা গেজেট অ্যাপ ডাউনলোড"
+                  className="w-full h-auto object-cover block group-hover:scale-[1.01] transition duration-300"
+                />
+              </a>
             </div>
 
             <PrayerWidget />
