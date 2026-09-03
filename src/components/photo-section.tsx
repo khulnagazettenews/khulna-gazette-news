@@ -141,10 +141,18 @@ export default function PhotoSection({ photos = [], newsWithPhotos = [] }: Photo
       <div className="max-w-[1400px] mx-auto px-3 sm:px-4 lg:px-6">
         
         {/* Prothom Alo Style Header: "ছবি >" */}
-        <div className="flex items-center justify-between pb-2 mb-4 border-b border-gray-200">
+        <div className="border-t-2 border-[#e60023] pt-1.5 pb-1 mb-4 w-full">
           <Link
             href="/photo-gallery"
-            className="text-[24px] sm:text-[28px] font-bold text-[#000000] hover:text-[#e60023] transition-colors flex items-center gap-1.5"
+            style={{
+              fontFamily: "'Bangla', 'Noto Sans Bengali', 'Hind Siliguri', sans-serif",
+              fontSize: '32px',
+              fontWeight: 500,
+              lineHeight: '38.4px',
+              letterSpacing: '-0.2px',
+              textAlign: 'left',
+            }}
+            className="text-[#000000] hover:text-[#e60023] transition-colors inline-flex items-center gap-1.5"
           >
             <span>ছবি</span>
             <span className="text-[#e60023] font-black text-2xl sm:text-3xl leading-none">&rsaquo;</span>

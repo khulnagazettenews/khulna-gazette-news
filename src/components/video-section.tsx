@@ -91,9 +91,20 @@ export default function VideoSection({ videos = [] }: VideoSectionProps) {
       <div className="max-w-[1400px] mx-auto px-3 sm:px-4 lg:px-6">
         
         {/* Category Header matching khulnagazette.com exact style */}
-        <div className="flex flex-wrap items-center justify-between border-b-2 border-[#FF0000] pb-1.5 mb-5 gap-2">
-          <Link href="/video-gallery" className="text-[20px] sm:text-[24px] font-bold text-[#000000] leading-none flex items-center gap-2 hover:text-[#e60023] transition-colors">
-            <Video size={22} className="text-[#e60023]" />
+        <div className="flex flex-wrap items-center justify-between border-t-2 border-[#e60023] pt-1.5 pb-1 mb-5 gap-2 w-full">
+          <Link
+            href="/video-gallery"
+            style={{
+              fontFamily: "'Bangla', 'Noto Sans Bengali', 'Hind Siliguri', sans-serif",
+              fontSize: '32px',
+              fontWeight: 500,
+              lineHeight: '38.4px',
+              letterSpacing: '-0.2px',
+              textAlign: 'left',
+            }}
+            className="text-[#000000] flex items-center gap-2 hover:text-[#e60023] transition-colors"
+          >
+            <Video size={26} className="text-[#e60023]" />
             <span>ভিডিও</span>
           </Link>
 

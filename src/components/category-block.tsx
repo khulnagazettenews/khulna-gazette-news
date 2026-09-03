@@ -41,10 +41,10 @@ export default function CategoryBlock({
         <Link href={`/${slug}`} className="group inline-block">
           <h2
             style={{
-              fontFamily: 'Bangla, sans-serif',
-              fontSize: '20px',
-              fontWeight: 700,
-              lineHeight: '24px',
+              fontFamily: "'Bangla', 'Noto Sans Bengali', 'Hind Siliguri', sans-serif",
+              fontSize: '32px',
+              fontWeight: 500,
+              lineHeight: '38.4px',
               letterSpacing: '-0.2px',
               textAlign: 'left',
             }}
