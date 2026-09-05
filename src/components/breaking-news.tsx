@@ -31,7 +31,7 @@ export default async function BreakingNewsTicker() {
   if (breakingList.length === 0) return null;
 
   // Duplicate for continuous seamless marquee loop with zero gaps or jumps
-  const tickerItems = [...breakingList, ...breakingList];
+  const tickerItems = [...breakingList, ...breakingList, ...breakingList, ...breakingList];
 
   return (
     <div className="w-full bg-white py-1 font-sans">

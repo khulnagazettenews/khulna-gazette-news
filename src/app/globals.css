@@ -197,12 +197,12 @@ h5 {
 
 /* Custom Marquee Animation - Crystal Clear Gliding Ticker */
 @keyframes marquee {
-  0% { transform: translateX(100%); }
-  100% { transform: translateX(-100%); }
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
 .animate-marquee {
-  animation: marquee 25s linear infinite;
+  animation: marquee 65s linear infinite;
   display: inline-flex;
   -webkit-font-smoothing: subpixel-antialiased;
   -moz-osx-font-smoothing: auto;
