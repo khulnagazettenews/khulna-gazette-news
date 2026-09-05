@@ -51,7 +51,7 @@ export default function CategoryBlock({
         <Link href={`/${slug}`} className="group inline-block">
           <h2
             style={{
-              fontFamily: "'Bangla', 'Noto Sans Bengali', 'Hind Siliguri', sans-serif",
+              fontFamily: 'Bangla, sans-serif',
               fontSize: '32px',
               fontWeight: 500,
               lineHeight: '38.4px',
@@ -87,7 +87,7 @@ export default function CategoryBlock({
               <Link href={`/${slug}/${lead.id}`} className="block pt-0.5">
                 <h3
                   style={{
-                    fontFamily: "'Bangla', 'SolaimanLipi', 'Noto Sans Bengali', 'Hind Siliguri', sans-serif",
+                    fontFamily: "'solaimanLipi', 'SolaimanLipi', 'Noto Sans Bengali', 'Hind Siliguri', sans-serif",
                     fontSize: '21px',
                     fontWeight: 700,
                     lineHeight: '26px',
@@ -101,7 +101,7 @@ export default function CategoryBlock({
               </Link>
               <p
                 style={{
-                  fontFamily: "'Bangla', sans-serif",
+                  fontFamily: 'Bangla, sans-serif',
                   fontSize: '21px',
                   fontWeight: 400,
                   lineHeight: '23.1px',
@@ -133,7 +133,7 @@ export default function CategoryBlock({
                   <Link href={`/${slug}/${item.id}`} className="block pt-0.5 min-w-0">
                     <h4
                       style={{
-                        fontFamily: "'Bangla', 'Hind Siliguri', 'Noto Sans Bengali', sans-serif",
+                      fontFamily: 'Bangla, sans-serif',
                         fontSize: '21px',
                         fontWeight: 400,
                         lineHeight: '23.1px',
@@ -169,7 +169,7 @@ export default function CategoryBlock({
               <Link href={`/${slug}/${lead.id}`} className="block pt-0.5">
                 <h3
                   style={{
-                    fontFamily: "'Bangla', 'Noto Sans Bengali', 'Hind Siliguri', sans-serif",
+                    fontFamily: 'Bangla, sans-serif',
                     fontSize: '21px',
                     fontWeight: 400,
                     lineHeight: '23.1px',
@@ -202,7 +202,7 @@ export default function CategoryBlock({
                   )}
                   <h4
                     style={{
-                      fontFamily: "'Bangla', 'Hind Siliguri', 'Noto Sans Bengali', sans-serif",
+                      fontFamily: 'Bangla, sans-serif',
                       fontSize: '21px',
                       fontWeight: 400,
                       lineHeight: '23.1px',
