@@ -82,11 +82,12 @@ export default async function HomePage() {
     'lifestyle': ['lifestyle', 'life-style'],
   };
 
-  // Standard lightweight select for homepage lists (excludes heavy HTML content field)
+  // Standard lightweight select for homepage lists
   const listSelect = {
     id: true,
     title: true,
     subtitle: true,
+    content: true,
     featuredImage: true,
     publishedAt: true,
     createdAt: true,
@@ -371,6 +372,7 @@ export default async function HomePage() {
               slug="sports"
               news={sportsNews as any}
               variant="sports"
+              excerptLines={2}
             />
 
             {/* Ad slot: Before Entertainment */}
@@ -382,6 +384,7 @@ export default async function HomePage() {
               slug="entertainment"
               news={entertainmentNews as any}
               variant="sports"
+              excerptLines={2}
             />
 
             {/* Middle Ad slot (Before Politics & Economy) */}
@@ -402,6 +405,7 @@ export default async function HomePage() {
               slug="international"
               news={internationalNews as any}
               variant="sports"
+              excerptLines={2}
             />
 
             {/* Ad slot: Before Education & Islam */}
@@ -417,7 +421,7 @@ export default async function HomePage() {
             <AdBanner ad={getAd('home_before_technology')} className="h-20 sm:h-24" />
 
             {/* 10. IT / Technology Category */}
-            <CategoryBlock title="আইটি" slug="technology" news={techNews as any} variant="sports" />
+            <CategoryBlock title="আইটি" slug="technology" news={techNews as any} variant="sports" excerptLines={2} />
 
             {/* Ad slot: Before Lifestyle & Health */}
             <AdBanner ad={getAd('home_before_lifestyle_health')} className="h-20 sm:h-24" />
@@ -432,7 +436,7 @@ export default async function HomePage() {
             <AdBanner ad={getAd('home_before_literature')} className="h-20 sm:h-24" />
 
             {/* 12. Literature Category */}
-            <CategoryBlock title="সাহিত্য" slug="literature" news={literatureNews as any} variant="sports" />
+            <CategoryBlock title="সাহিত্য" slug="literature" news={literatureNews as any} variant="sports" excerptLines={2} />
 
             {/* Ad slot: Before Chitro Bichitro & Social Media */}
             <AdBanner ad={getAd('home_before_chitro_social')} className="h-20 sm:h-24" />
@@ -447,7 +451,7 @@ export default async function HomePage() {
             <AdBanner ad={getAd('home_before_mukto_bhabna')} className="h-20 sm:h-24" />
 
             {/* 14. Mukto Bhabna Category */}
-            <CategoryBlock title="মুক্ত ভাবনা" slug="mukto-bhabna" news={muktoBhabnaNews as any} variant="sports" />
+            <CategoryBlock title="মুক্ত ভাবনা" slug="mukto-bhabna" news={muktoBhabnaNews as any} variant="sports" excerptLines={2} />
 
             {/* Ad slot: Before Exclusive */}
             <AdBanner ad={getAd('home_before_exclusive')} className="h-20 sm:h-24" />

@@ -15,6 +15,7 @@ interface CategoryBlockProps {
   slug: string;
   news: BlockNewsItem[];
   variant?: 'standard' | 'sports' | 'entertainment' | 'compact';
+  excerptLines?: number;
 }
 
 export default function CategoryBlock({
@@ -22,13 +23,14 @@ export default function CategoryBlock({
   slug,
   news,
   variant = 'standard',
+  excerptLines = 2,
 }: CategoryBlockProps) {
   if (!news || news.length === 0) return null;
 
   const lead = news[0];
   const secondary = news.slice(1, 5);
 
-  const getExcerpt = (html: string) => {
+  const getExcerpt = (html: string, maxLen = 300) => {
     if (!html) return '';
     const text = html
       .replace(/<[^>]*>/g, '')
@@ -39,7 +41,7 @@ export default function CategoryBlock({
       .replace(/&lt;/g, '<')
       .replace(/&gt;/g, '>')
       .trim();
-    return text.length > 120 ? text.slice(0, 120) + '...' : text;
+    return text.length > maxLen ? text.slice(0, maxLen) + ' [...]' : text;
   };
 
   return (
@@ -85,10 +87,10 @@ export default function CategoryBlock({
               <Link href={`/${slug}/${lead.id}`} className="block pt-0.5">
                 <h3
                   style={{
-                    fontFamily: "'Bangla', 'Noto Sans Bengali', 'Hind Siliguri', sans-serif",
+                    fontFamily: "'Bangla', 'SolaimanLipi', 'Noto Sans Bengali', 'Hind Siliguri', sans-serif",
                     fontSize: '21px',
-                    fontWeight: 400,
-                    lineHeight: '23.1px',
+                    fontWeight: 700,
+                    lineHeight: '26px',
                     letterSpacing: '-0.2px',
                     textAlign: 'left',
                   }}
@@ -99,16 +101,16 @@ export default function CategoryBlock({
               </Link>
               <p
                 style={{
-                  fontFamily: "'Bangla', 'Noto Sans Bengali', 'Hind Siliguri', sans-serif",
+                  fontFamily: "'Bangla', sans-serif",
                   fontSize: '21px',
                   fontWeight: 400,
                   lineHeight: '23.1px',
                   letterSpacing: '-0.2px',
                   textAlign: 'left',
                 }}
-                className="text-gray-600 line-clamp-3"
+                className={`text-[#333333] ${excerptLines === 2 ? 'line-clamp-2' : 'line-clamp-3'} mt-1`}
               >
-                {getExcerpt(lead.content)}
+                {getExcerpt(lead.content, excerptLines === 2 ? 160 : 260)}
               </p>
             </div>
 
