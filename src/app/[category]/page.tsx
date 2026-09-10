@@ -20,9 +20,47 @@ interface CategoryPageProps {
 export default async function CategoryPage({ params, searchParams }: CategoryPageProps) {
   const { category } = params;
 
-  // 1. Fetch current category details
-  const cat = await prisma.category.findUnique({
-    where: { slug: category },
+  const slugAliases: Record<string, string[]> = {
+    'bangladesh': ['bangladesh'],
+    'politics': ['politics'],
+    'sports': ['sports', 'khela'],
+    'khela': ['sports', 'khela'],
+    'entertainment': ['entertainment', 'binodon'],
+    'binodon': ['entertainment', 'binodon'],
+    'khulna': ['khulna', 'khulnanchal'],
+    'khulnanchal': ['khulna', 'khulnanchal'],
+    'economy': ['economy'],
+    'international': ['international', 'antorjatik'],
+    'antorjatik': ['international', 'antorjatik'],
+    'education': ['education', 'shikkha'],
+    'shikkha': ['education', 'shikkha'],
+    'islam': ['islam', 'islam-and-life', 'islam-life'],
+    'islam-and-life': ['islam', 'islam-and-life', 'islam-life'],
+    'technology': ['technology', 'it'],
+    'it': ['technology', 'it'],
+    'health': ['health', 'chikitsa'],
+    'chikitsa': ['health', 'chikitsa'],
+    'literature': ['literature', 'sahitto'],
+    'sahitto': ['literature', 'sahitto'],
+    'mukto-bhabna': ['mukto-bhabna', 'muktobhabna', 'free-thinking'],
+    'muktobhabna': ['mukto-bhabna', 'muktobhabna', 'free-thinking'],
+    'chitro-bichitro': ['chitro-bichitro', 'weird-news'],
+    'weird-news': ['chitro-bichitro', 'weird-news'],
+    'social-media': ['social-media'],
+    'lifestyle': ['lifestyle', 'life-style'],
+    'gazette-exclusive': ['gazette-exclusive'],
+  };
+
+  const targetAliases = slugAliases[category] || [category];
+
+  // 1. Fetch current category details matching slug or alias
+  const cat = await prisma.category.findFirst({
+    where: {
+      OR: [
+        { slug: { in: targetAliases } },
+        { slug: category }
+      ]
+    },
     include: {
       subCategories: {
         orderBy: { order: 'asc' },
@@ -34,13 +72,24 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
     notFound();
   }
 
-  // 2. Paginated Fetch of all news items in category (including direct subcategory articles)
+  // 2. Paginated Fetch of all news items in category (including subcategories and aliases)
   const page = parseInt(searchParams.page || '1');
   const limit = 18;
   const skip = (page - 1) * limit;
 
-  // Get matching category ids (both parent and its subcategories if any)
-  const matchingCatIds = [cat.id, ...cat.subCategories.map((s) => s.id)];
+  // Get matching category ids (both parent, subcategories, and alias categories)
+  const allMatchingCats = await prisma.category.findMany({
+    where: {
+      OR: [
+        { id: cat.id },
+        { parentId: cat.id },
+        { slug: { in: targetAliases } }
+      ]
+    },
+    select: { id: true }
+  });
+
+  const matchingCatIds = allMatchingCats.map((c) => c.id);
 
   const listSelect = {
     id: true,
