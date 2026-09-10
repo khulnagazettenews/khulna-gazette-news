@@ -13,6 +13,7 @@ import { Calendar, User, Home, Clock } from 'lucide-react';
 import SidebarWidgets from '@/components/sidebar-widgets';
 import AdBanner from '@/components/ad-banner';
 import { Metadata } from 'next';
+import CategoryPage from '../page';
 
 interface RouteProps {
   params: {
@@ -81,6 +82,18 @@ export const revalidate = 60; // Cache for 60 seconds (ISR)
 
 export async function generateMetadata({ params }: RouteProps): Promise<Metadata> {
   const { category, slugAndId } = params;
+
+  // 0. Check if slugAndId is a subcategory
+  const targetSubCatMeta = await prisma.category.findFirst({
+    where: { slug: slugAndId },
+  });
+  if (targetSubCatMeta) {
+    return {
+      title: `${targetSubCatMeta.name} | খুলনা গেজেট`,
+      description: `${targetSubCatMeta.name} বিভাগের সর্বশেষ সংবাদ`,
+    };
+  }
+
   let candidateId = slugAndId;
   if (slugAndId.length >= 36) {
     candidateId = slugAndId.slice(-36);
@@ -145,6 +158,14 @@ export async function generateMetadata({ params }: RouteProps): Promise<Metadata
 
 export default async function DynamicRouteResolver({ params, searchParams }: RouteProps) {
   const { category, slugAndId } = params;
+
+  // 0. Check if slugAndId is a subcategory (e.g. /khulnanchal/khulna, /khulnanchal/jessore)
+  const targetSubCatRoute = await prisma.category.findFirst({
+    where: { slug: slugAndId },
+  });
+  if (targetSubCatRoute) {
+    return <CategoryPage params={{ category: targetSubCatRoute.slug }} searchParams={searchParams} />;
+  }
 
   // Extract candidate ID from slugAndId (A UUID is 36 characters long)
   let candidateId = slugAndId;
