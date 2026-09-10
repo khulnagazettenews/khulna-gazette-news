@@ -91,6 +91,14 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
 
   const matchingCatIds = allMatchingCats.map((c) => c.id);
 
+  const newsWhereCondition = {
+    OR: [
+      { categoryId: { in: matchingCatIds } },
+      { subCategoryId: { in: matchingCatIds } },
+    ],
+    status: 'PUBLISHED',
+  };
+
   const listSelect = {
     id: true,
     title: true,
@@ -111,20 +119,14 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
   const [articles, total, latestNews, popularNews, sidebarAd] = await Promise.all([
 
     prisma.news.findMany({
-      where: {
-        categoryId: { in: matchingCatIds },
-        status: 'PUBLISHED',
-      },
+      where: newsWhereCondition,
       orderBy: { publishedAt: 'desc' },
       skip,
       take: limit,
       select: listSelect,
     }),
     prisma.news.count({
-      where: {
-        categoryId: { in: matchingCatIds },
-        status: 'PUBLISHED',
-      },
+      where: newsWhereCondition,
     }),
     prisma.news.findMany({
       where: { status: 'PUBLISHED' },
