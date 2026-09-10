@@ -29,13 +29,7 @@ async function main() {
     console.log('Admin user already exists.');
   }
 
-  // 2. Clear news first (due to foreign key constraints), then other collections
-  await prisma.comment.deleteMany({});
-  await prisma.news.deleteMany({});
-  await prisma.category.deleteMany({ where: { parentId: { not: null } } });
-  await prisma.category.deleteMany({});
-  await prisma.tag.deleteMany({});
-  await prisma.prayerTime.deleteMany({});
+  // 2. Safe seed checks without deleting existing data
 
   // 3. Create Main Categories
   const mainCategoriesData = [
