@@ -96,12 +96,11 @@ export default async function HomePage() {
     'lifestyle': ['lifestyle', 'life-style'],
   };
 
-  // Standard lightweight select for homepage lists
+  // Standard lightweight select for homepage lists (excludes heavy content body)
   const listSelect = {
     id: true,
     title: true,
     subtitle: true,
-    content: true,
     featuredImage: true,
     publishedAt: true,
     createdAt: true,
