@@ -47,11 +47,22 @@ const toBanglaNum = (num: number | string): string => {
 
 export default function CalendarArchiveWidget() {
   const router = useRouter();
-  const [currentYear, setCurrentYear] = useState<number>(2026);
-  const [currentMonth, setCurrentMonth] = useState<number>(7); // Default August
-  const [selectedDay, setSelectedDay] = useState<number>(12);
+  const [currentYear, setCurrentYear] = useState<number>(2024);
+  const [currentMonth, setCurrentMonth] = useState<number>(11); // Default Dec 2024
+  const [selectedDay, setSelectedDay] = useState<number>(17);
 
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const dateParam = urlParams.get('date');
+      if (dateParam && dateParam.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        const [y, m, d] = dateParam.split('-').map(Number);
+        setCurrentYear(y);
+        setCurrentMonth(m - 1);
+        setSelectedDay(d);
+        return;
+      }
+    }
     const today = new Date();
     setCurrentYear(today.getFullYear());
     setCurrentMonth(today.getMonth());
@@ -220,7 +231,13 @@ export default function CalendarArchiveWidget() {
                 return (
                   <button
                     key={idx}
-                    onClick={() => setSelectedDay(item.day)}
+                    onClick={() => {
+                      setSelectedDay(item.day);
+                      const monthFormatted = String(currentMonth + 1).padStart(2, '0');
+                      const dayFormatted = String(item.day).padStart(2, '0');
+                      const dateStr = `${currentYear}-${monthFormatted}-${dayFormatted}`;
+                      router.push(`/archive?date=${dateStr}`);
+                    }}
                     className={`py-0.5 rounded transition-colors text-center cursor-pointer ${
                       isSelected
                         ? 'bg-[#1d4ed8] text-white font-bold shadow-2xs'

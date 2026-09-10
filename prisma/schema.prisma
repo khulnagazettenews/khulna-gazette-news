@@ -1,6 +1,6 @@
 datasource db {
-  provider = "mongodb"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
 generator client {
@@ -8,13 +8,12 @@ generator client {
   binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
-// Roles: "SUPER_ADMIN", "EDITOR", "REPORTER"
 model User {
-  id        String   @id @default(uuid()) @map("_id")
+  id        String   @id @default(uuid())
   name      String
   email     String   @unique
   password  String
-  role      String   @default("REPORTER") // Mapped from Enum Role
+  role      String   @default("REPORTER")
   avatar    String?
   bio       String?
   createdAt DateTime @default(now())
@@ -23,7 +22,7 @@ model User {
 }
 
 model Category {
-  id            String     @id @default(uuid()) @map("_id")
+  id            String     @id @default(uuid())
   name          String
   slug          String     @unique
   parentId      String?
@@ -33,25 +32,32 @@ model Category {
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
   
-  // Relations for News
   news          News[]     @relation("CategoryNews")
   subNews       News[]     @relation("SubCategoryNews")
 }
 
 model Tag {
-  id        String   @id @default(uuid()) @map("_id")
+  id        String   @id @default(uuid())
   name      String   @unique
   slug      String   @unique
-  newsIds   String[]
-  news      News[]   @relation("NewsTags", fields: [newsIds], references: [id])
+  news      NewsTag[]
+}
+
+model NewsTag {
+  newsId String
+  tagId  String
+  news   News @relation(fields: [newsId], references: [id], onDelete: Cascade)
+  tag    Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([newsId, tagId])
 }
 
 model News {
-  id              String      @id @default(uuid()) @map("_id")
+  id              String      @id @default(uuid())
   title           String
   subtitle        String?
   slug            String      @unique
-  content         String      
+  content         String
   featuredImage   String?
   imageCaption    String?
   photoCredit     String?
@@ -67,10 +73,9 @@ model News {
   
   reporterName    String?     
   authorTitle     String?
-  tagIds          String[]
-  tags            Tag[]       @relation("NewsTags", fields: [tagIds], references: [id])
+  tags            NewsTag[]
   
-  status          String      @default("DRAFT") // Mapped from Enum: DRAFT, PUBLISHED, SCHEDULED, TRASHED
+  status          String      @default("DRAFT")
   isBreaking      Boolean     @default(false)
   isFeatured      Boolean     @default(false)
   
@@ -89,17 +94,17 @@ model News {
 }
 
 model EpaperIssue {
-  id        String   @id @default(uuid()) @map("_id")
+  id        String   @id @default(uuid())
   date      DateTime @unique
   pdfUrl    String?
   imageUrl  String?
-  imageUrls String[]
+  imageUrls String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model GalleryPhoto {
-  id        String   @id @default(uuid()) @map("_id")
+  id        String   @id @default(uuid())
   imageUrl  String
   caption   String?
   credit    String?
@@ -109,7 +114,7 @@ model GalleryPhoto {
 }
 
 model GalleryVideo {
-  id          String   @id @default(uuid()) @map("_id")
+  id          String   @id @default(uuid())
   youtubeUrl  String
   title       String
   categoryTag String?
@@ -120,7 +125,7 @@ model GalleryVideo {
 }
 
 model PrayerTime {
-  id        String   @id @default(uuid()) @map("_id")
+  id        String   @id @default(uuid())
   date      DateTime @unique
   fajr      String
   zohr      String
@@ -133,7 +138,7 @@ model PrayerTime {
 }
 
 model Comment {
-  id        String   @id @default(uuid()) @map("_id")
+  id        String   @id @default(uuid())
   newsId    String
   news      News     @relation(fields: [newsId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   name      String
@@ -144,16 +149,16 @@ model Comment {
 }
 
 model Advertisement {
-  id          String    @id @default(uuid()) @map("_id")
+  id          String    @id @default(uuid())
   title       String
   imageUrl    String
   targetUrl   String?
-  position    String    // e.g. "top_banner", "sidebar_banner", "sidebar_widget_top", "sidebar_widget_middle", "sidebar_widget_bottom"
-  adType      String    @default("IMAGE") // IMAGE, HTML_SCRIPT, TEXT_IMAGE
-  codeSnippet String?   // Custom HTML / JS AdSense code
-  description String?   // Text description for TEXT_IMAGE ads
+  position    String    
+  adType      String    @default("IMAGE")
+  codeSnippet String?
+  description String?
   order       Int       @default(0)
-  status      String    @default("ACTIVE") // ACTIVE, INACTIVE
+  status      String    @default("ACTIVE")
   startDate   DateTime?
   endDate     DateTime?
   clicks      Int       @default(0)
@@ -163,24 +168,24 @@ model Advertisement {
 }
 
 model SpecialTopic {
-  id             String   @id @default(uuid()) @map("_id")
+  id             String   @id @default(uuid())
   title          String
   bannerSubtitle String?
   isActive       Boolean  @default(true)
-  newsIds        String[]
+  newsIds        String?
   order          Int      @default(0)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 }
 
 model TopNews {
-  id        String   @id @default("top_news") @map("_id")
-  newsIds   String[]
+  id        String   @id @default("top_news")
+  newsIds   String?
   updatedAt DateTime @updatedAt
 }
 
 model JobApplication {
-  id               String   @id @default(uuid()) @map("_id")
+  id               String   @id @default(uuid())
   position         String
   fullName         String
   dob              String?
@@ -202,7 +207,7 @@ model JobApplication {
 }
 
 model NavbarMenu {
-  id        String       @id @default(uuid()) @map("_id")
+  id        String       @id @default(uuid())
   name      String
   url       String
   parentId  String?
@@ -212,5 +217,3 @@ model NavbarMenu {
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
 }
-
-

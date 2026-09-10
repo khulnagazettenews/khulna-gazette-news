@@ -37,7 +37,7 @@ export default async function TopicPage({ params, searchParams }: TopicPageProps
   const [articles, total] = await Promise.all([
     prisma.news.findMany({
       where: {
-        tags: { some: { slug } },
+        tags: { some: { tag: { slug } } },
         status: 'PUBLISHED',
       },
       orderBy: { publishedAt: 'desc' },
@@ -47,7 +47,7 @@ export default async function TopicPage({ params, searchParams }: TopicPageProps
     }),
     prisma.news.count({
       where: {
-        tags: { some: { slug } },
+        tags: { some: { tag: { slug } } },
         status: 'PUBLISHED',
       },
     }),

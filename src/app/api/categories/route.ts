@@ -9,10 +9,7 @@ export async function GET() {
   try {
     const categories = await prisma.category.findMany({
       where: {
-        OR: [
-          { parentId: null },
-          { parentId: { isSet: false } }
-        ],
+        parentId: null,
       },
       orderBy: { order: 'asc' },
       include: {

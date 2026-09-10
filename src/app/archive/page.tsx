@@ -8,28 +8,25 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 interface ArchivePageProps {
-  searchParams: {
-    date?: string;
-    page?: string;
-  };
+  searchParams?: Promise<{ date?: string; page?: string }> | { date?: string; page?: string };
 }
 
 export default async function ArchivePage({ searchParams }: ArchivePageProps) {
-  const dateStr = searchParams.date || new Date().toISOString().split('T')[0];
+  const resolvedSearchParams = (await searchParams) || {};
+  const rawDate = resolvedSearchParams.date;
+  const dateStr = rawDate && typeof rawDate === 'string' && rawDate.match(/^\d{4}-\d{2}-\d{2}$/) 
+    ? rawDate 
+    : new Date().toISOString().split('T')[0];
 
-  // Selected date start & end
-  const startDate = new Date(dateStr);
-  startDate.setHours(0, 0, 0, 0);
-
-  const endDate = new Date(dateStr);
-  endDate.setHours(23, 59, 59, 999);
+  // SQLite DateTime Query using UTC bounds
+  const startDate = new Date(`${dateStr}T00:00:00.000Z`);
+  const endDate = new Date(`${dateStr}T23:59:59.999Z`);
 
   // Queries for archive articles & sidebar widgets
   const [articles, latestNews, popularNews, exclusiveNews, advertisements] =
     await Promise.all([
       prisma.news.findMany({
         where: {
-          status: 'PUBLISHED',
           publishedAt: {
             gte: startDate,
             lte: endDate,
@@ -77,11 +74,17 @@ export default async function ArchivePage({ searchParams }: ArchivePageProps) {
   const categoryGroups = Object.values(categoryGroupsMap);
 
   const formatBanglaDate = (dStr: string) => {
-    const d = new Date(dStr);
-    return d.toLocaleDateString('bn-BD', {
+    if (!dStr || !dStr.includes('-')) return dStr;
+    const p = dStr.split('-');
+    const y = parseInt(p[0], 10);
+    const m = parseInt(p[1], 10) - 1;
+    const d = parseInt(p[2], 10);
+    const dateObj = new Date(Date.UTC(y, m, d));
+    return dateObj.toLocaleDateString('bn-BD', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
+      timeZone: 'UTC'
     });
   };
 
@@ -89,8 +92,8 @@ export default async function ArchivePage({ searchParams }: ArchivePageProps) {
     return list.map((item) => ({
       ...item,
       publishedAt: item.publishedAt ? item.publishedAt.toISOString() : null,
-      createdAt: item.createdAt.toISOString(),
-      updatedAt: item.updatedAt.toISOString(),
+      createdAt: item.createdAt ? item.createdAt.toISOString() : null,
+      updatedAt: item.updatedAt ? item.updatedAt.toISOString() : null,
     }));
   };
 
@@ -137,57 +140,36 @@ export default async function ArchivePage({ searchParams }: ArchivePageProps) {
                     </span>
                   </div>
 
-                  {/* Articles Grid for this Category */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+                  {/* Articles Grid for this category */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {group.articles.map((item) => (
                       <div
                         key={item.id}
-                        className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-2xs flex flex-col justify-between group hover:shadow-md transition duration-200"
+                        className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-2xs hover:shadow-md transition flex flex-col group"
                       >
-                        <div>
-                          <Link
-                            href={`/${group.category.slug || 'news'}/${item.id}`}
-                            className="block aspect-[354/199] overflow-hidden bg-gray-100 relative"
-                          >
-                            {item.featuredImage ? (
-                              <img
-                                src={item.featuredImage}
-                                alt={item.title}
-                                className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
-                              />
-                            ) : (
-                              <div className="w-full h-full flex items-center justify-center text-gray-400 font-bold text-xs bg-gray-100">
-                                খুলনা গেজেট
-                              </div>
-                            )}
+                        {item.featuredImage ? (
+                          <Link href={`/${item.category?.slug || 'news'}/${item.id}`} className="block h-44 overflow-hidden relative">
+                            <img
+                              src={item.featuredImage}
+                              alt={item.title}
+                              className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                            />
                           </Link>
-
-                          <div className="p-3.5 space-y-1.5">
-                            <Link href={`/${group.category.slug || 'news'}/${item.id}`}>
-                              <h2 className="text-sm sm:text-base font-bold text-gray-900 group-hover:text-red-600 transition leading-snug line-clamp-2">
-                                {item.title}
-                              </h2>
-                            </Link>
-                            <p className="text-xs text-gray-600 leading-relaxed line-clamp-2">
-                              {item.content.replace(/<[^>]*>/g, '')}
-                            </p>
+                        ) : (
+                          <Link href={`/${item.category?.slug || 'news'}/${item.id}`} className="block h-44 bg-gray-100 flex items-center justify-center text-gray-400 font-bold text-sm">
+                            খুলনা গেজেট
+                          </Link>
+                        )}
+                        <div className="p-4 flex flex-col justify-between flex-grow space-y-2">
+                          <Link href={`/${item.category?.slug || 'news'}/${item.id}`}>
+                            <h2 className="font-bold text-base text-gray-900 group-hover:text-red-600 transition line-clamp-2 leading-snug">
+                              {item.title}
+                            </h2>
+                          </Link>
+                          <div className="text-xs text-gray-500 pt-2 border-t border-gray-100 flex items-center justify-between">
+                            <span>{item.reporterName || 'স্টাফ রিপোর্টার'}</span>
+                            <span>{new Date(item.publishedAt).toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit' })}</span>
                           </div>
-                        </div>
-
-                        <div className="p-3 border-t border-gray-100 flex items-center justify-between text-[11px] text-gray-500 font-medium bg-gray-50/50">
-                          {item.subCategory?.name ? (
-                            <span className="text-slate-700 font-semibold bg-slate-200/70 px-2 py-0.5 rounded text-[10px]">
-                              {item.subCategory.name}
-                            </span>
-                          ) : (
-                            <span className="text-red-600 font-bold">{group.category.name}</span>
-                          )}
-                            {(item.publishedAt || item.createdAt) &&
-                              new Date(item.publishedAt || item.createdAt).toLocaleTimeString('bn-BD', {
-                                timeZone: 'Asia/Dhaka',
-                                hour: '2-digit',
-                                minute: '2-digit',
-                              })}
                         </div>
                       </div>
                     ))}
@@ -195,17 +177,14 @@ export default async function ArchivePage({ searchParams }: ArchivePageProps) {
                 </div>
               ))
             ) : (
-              <div className="text-center py-16 text-gray-500 bg-white rounded-xl border border-gray-200 shadow-2xs space-y-2">
-                <p className="text-lg font-bold">এই তারিখে কোনো খবর পাওয়া যায়নি।</p>
-                <p className="text-xs text-gray-400">
-                  ক্যালেন্ডার থেকে অন্য যেকোনো একটি তারিখ নির্বাচন করে চেষ্টা করুন।
-                </p>
+              <div className="text-center py-16 text-gray-500 bg-white rounded-xl border border-gray-200">
+                এই তারিখে কোনো সংবাদ পাওয়া যায়নি।
               </div>
             )}
           </div>
 
-          {/* Right Sidebar Column */}
-          <div className="lg:col-span-3">
+          {/* Right Sidebar Widgets */}
+          <div className="lg:col-span-3 space-y-6">
             <SidebarWidgets
               latestNews={serializeList(latestNews)}
               popularNews={serializeList(popularNews)}
@@ -220,4 +199,3 @@ export default async function ArchivePage({ searchParams }: ArchivePageProps) {
     </div>
   );
 }
-

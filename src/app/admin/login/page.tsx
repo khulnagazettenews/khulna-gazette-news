@@ -38,7 +38,7 @@ export default function AdminLogin() {
       if (res?.error) {
         setError(res.error);
       } else {
-        router.push('/admin');
+        window.location.href = '/admin';
       }
     } catch (err) {
       setError('লগইন করার সময় একটি সমস্যা হয়েছে। আবার চেষ্টা করুন।');

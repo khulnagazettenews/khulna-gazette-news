@@ -94,7 +94,7 @@ export async function generateMetadata({ params }: RouteProps): Promise<Metadata
         { slug: slugAndId },
       ],
     },
-    include: { category: true, author: true, tags: true },
+    include: { category: true, author: true, tags: { include: { tag: true } } },
   });
 
   if (!news) {
@@ -112,7 +112,7 @@ export async function generateMetadata({ params }: RouteProps): Promise<Metadata
   return {
     title: articleTitle,
     description: description,
-    keywords: news.tags?.map(t => t.name) || [news.category?.name || 'সংবাদ', 'খুলনা গেজেট'],
+    keywords: news.tags?.map(t => t.tag.name) || [news.category?.name || 'সংবাদ', 'খুলনা গেজেট'],
     alternates: {
       canonical: canonicalUrl,
     },
@@ -165,7 +165,7 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
       category: true,
       subCategory: true,
       author: true,
-      tags: true,
+      tags: { include: { tag: true } },
     },
   });
 
@@ -407,8 +407,8 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
                 {news.tags.length > 0 && (
                   <div className="flex flex-wrap gap-1.5 sm:gap-2 pt-3 sm:pt-4 border-t border-gray-150 mt-5 sm:mt-6">
                     {news.tags.map((t) => (
-                      <span key={t.id} className="text-[11px] sm:text-xs bg-gray-100 text-gray-800 px-2.5 py-0.5 sm:py-1 rounded border border-gray-200 font-bold">
-                        # {t.name}
+                      <span key={t.tag.id} className="text-[11px] sm:text-xs bg-gray-100 text-gray-800 px-2.5 py-0.5 sm:py-1 rounded border border-gray-200 font-bold">
+                        # {t.tag.name}
                       </span>
                     ))}
                   </div>

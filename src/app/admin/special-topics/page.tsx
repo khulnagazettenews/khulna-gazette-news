@@ -21,6 +21,20 @@ interface SpecialTopic {
   createdAt: string;
 }
 
+const parseNewsIds = (raw: any): string[] => {
+  if (!raw) return [];
+  if (Array.isArray(raw)) return raw;
+  if (typeof raw === 'string') {
+    try {
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return raw.split(',').filter(Boolean);
+    }
+  }
+  return [];
+};
+
 export default function SpecialTopicManagement() {
   const [topics, setTopics] = useState<SpecialTopic[]>([]);
   const [newsList, setNewsList] = useState<NewsItem[]>([]);
@@ -58,7 +72,7 @@ export default function SpecialTopicManagement() {
             setTitle(target.title);
             setBannerSubtitle(target.bannerSubtitle || '');
             setIsActive(target.isActive);
-            setSelectedNewsIds(target.newsIds || []);
+            setSelectedNewsIds(parseNewsIds(target.newsIds));
             setOrder(target.order.toString());
           }
         }
@@ -108,7 +122,7 @@ export default function SpecialTopicManagement() {
     setTitle(topic.title);
     setBannerSubtitle(topic.bannerSubtitle || '');
     setIsActive(topic.isActive);
-    setSelectedNewsIds(topic.newsIds || []);
+    setSelectedNewsIds(parseNewsIds(topic.newsIds));
     setOrder(topic.order.toString());
     setError('');
     setSuccess('');
@@ -391,11 +405,11 @@ export default function SpecialTopicManagement() {
               </div>
 
               {/* Selected news list items chips */}
-              {selectedNewsIds.length > 0 && (
+              {Array.isArray(selectedNewsIds) && selectedNewsIds.length > 0 && (
                 <div className="space-y-1.5 p-2.5 bg-teal-50/70 border border-teal-200/80 rounded-xl">
                   <span className="text-[10px] font-bold text-teal-900 block">নির্বাচিত খবরসমূহ (সরিয়ে ফেলতে ✕ এ চাপুন):</span>
                   <div className="space-y-1">
-                    {selectedNewsIds.map((id, index) => {
+                    {(Array.isArray(selectedNewsIds) ? selectedNewsIds : []).map((id, index) => {
                       const item = safeNewsList.find((n) => n.id === id);
                       const positionLabels = [
                         '১: মূল সেন্টার কভার',
@@ -566,11 +580,11 @@ export default function SpecialTopicManagement() {
                       </div>
 
                       {/* Display Selected News Titles */}
-                      {item.newsIds && item.newsIds.length > 0 && (
+                      {Array.isArray(parseNewsIds(item.newsIds)) && parseNewsIds(item.newsIds).length > 0 && (
                         <div className="mt-2.5 pt-2.5 border-t border-teal-100/80 space-y-1.5">
                           <span className="text-[11px] font-black text-teal-900 block">সংযুক্ত খবরসমূহ:</span>
                           <div className="space-y-1">
-                            {item.newsIds.map((newsId, idx) => {
+                            {parseNewsIds(item.newsIds).map((newsId, idx) => {
                               const matchedNews = safeNewsList.find((n) => n.id === newsId);
                               return (
                                 <div key={newsId} className="text-xs text-slate-800 flex items-center gap-2 font-bold truncate bg-white px-2.5 py-1.5 rounded-lg border border-slate-200/80 shadow-2xs">

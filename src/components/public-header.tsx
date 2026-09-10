@@ -113,10 +113,7 @@ export default async function PublicHeader() {
       // Fallback to Category model if NavbarMenu collection is empty
       categories = await prisma.category.findMany({
         where: {
-          OR: [
-            { parentId: null },
-            { parentId: { isSet: false } }
-          ]
+          parentId: null,
         },
         orderBy: { order: 'asc' },
         include: {

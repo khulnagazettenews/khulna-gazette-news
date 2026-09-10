@@ -4,6 +4,16 @@ import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
 
+const parseNewsIds = (raw: string | null | undefined): string[] => {
+  if (!raw) return [];
+  try {
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return raw.split(',').filter(Boolean);
+  }
+};
+
 // GET: Fetch ordered news list for "top_news" or specific category
 export async function GET(req: Request) {
   try {
@@ -27,7 +37,7 @@ export async function GET(req: Request) {
         where: { id: 'top_news_hero_order' },
       });
 
-      const savedIds: string[] = topNewsConfig?.newsIds || [];
+      const savedIds: string[] = parseNewsIds(topNewsConfig?.newsIds);
 
       // Fetch published news articles
       const allPublishedNews = await prisma.news.findMany({
@@ -79,7 +89,7 @@ export async function GET(req: Request) {
       where: { id: `cat_order_${targetCategory.id}` },
     });
 
-    const savedIds: string[] = catConfig?.newsIds || [];
+    const savedIds: string[] = parseNewsIds(catConfig?.newsIds);
 
     const categoryNews = await prisma.news.findMany({
       where: {
@@ -154,13 +164,13 @@ export async function POST(req: Request) {
         where: { id: 'top_news_hero_order' },
         update: {
           title: 'টপ নিউজ',
-          newsIds: top15Ids,
+          newsIds: JSON.stringify(top15Ids),
           isActive: true,
         },
         create: {
           id: 'top_news_hero_order',
           title: 'টপ নিউজ',
-          newsIds: top15Ids,
+          newsIds: JSON.stringify(top15Ids),
           isActive: true,
         },
       });
@@ -182,13 +192,13 @@ export async function POST(req: Request) {
         where: { id: `cat_order_${cat.id}` },
         update: {
           title: `ক্যাটাগরি: ${cat.name}`,
-          newsIds: newsIds,
+          newsIds: JSON.stringify(newsIds),
           isActive: true,
         },
         create: {
           id: `cat_order_${cat.id}`,
           title: `ক্যাটাগরি: ${cat.name}`,
-          newsIds: newsIds,
+          newsIds: JSON.stringify(newsIds),
           isActive: true,
         },
       });

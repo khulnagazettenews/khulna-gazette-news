@@ -4,6 +4,23 @@ import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
 
+const formatTopic = (t: any) => {
+  let newsIds: string[] = [];
+  if (t.newsIds) {
+    if (Array.isArray(t.newsIds)) {
+      newsIds = t.newsIds;
+    } else if (typeof t.newsIds === 'string') {
+      try {
+        const parsed = JSON.parse(t.newsIds);
+        newsIds = Array.isArray(parsed) ? parsed : [];
+      } catch {
+        newsIds = t.newsIds.split(',').filter(Boolean);
+      }
+    }
+  }
+  return { ...t, newsIds };
+};
+
 export async function GET(
   req: Request,
   { params }: { params: { id: string } }
@@ -18,7 +35,7 @@ export async function GET(
       return NextResponse.json({ error: 'স্পেশাল টপিক সেকশন পাওয়া যায়নি' }, { status: 404 });
     }
 
-    return NextResponse.json(topic);
+    return NextResponse.json(formatTopic(topic));
   } catch (error) {
     console.error('GET Special Topic Error:', error);
     return NextResponse.json(
@@ -45,7 +62,7 @@ export async function PUT(
     if (data.title !== undefined) updateData.title = data.title;
     if (data.bannerSubtitle !== undefined) updateData.bannerSubtitle = data.bannerSubtitle;
     if (data.isActive !== undefined) updateData.isActive = data.isActive;
-    if (data.newsIds !== undefined) updateData.newsIds = data.newsIds;
+    if (data.newsIds !== undefined) updateData.newsIds = Array.isArray(data.newsIds) ? JSON.stringify(data.newsIds) : (typeof data.newsIds === 'string' ? data.newsIds : null);
     if (data.order !== undefined) updateData.order = typeof data.order === 'number' ? data.order : parseInt(data.order) || 0;
 
     if (data.isActive === true) {
@@ -63,7 +80,7 @@ export async function PUT(
     revalidatePath('/');
     revalidatePath('/admin/special-topics');
 
-    return NextResponse.json(topic);
+    return NextResponse.json(formatTopic(topic));
   } catch (error) {
     console.error('PUT Special Topic Error:', error);
     return NextResponse.json(

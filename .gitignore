@@ -36,3 +36,10 @@ yarn-error.log*
 next-env.d.ts
 
 /src/generated/prisma
+
+# SQLite database & local media
+prisma/*.db
+prisma/*.db-journal
+public/uploads/
+scratch/
+.env

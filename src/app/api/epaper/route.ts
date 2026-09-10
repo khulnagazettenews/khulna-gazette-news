@@ -41,13 +41,13 @@ export async function POST(req: Request) {
       update: { 
         pdfUrl, 
         imageUrl: coverImage, 
-        imageUrls: finalImageUrls 
+        imageUrls: JSON.stringify(finalImageUrls) 
       },
       create: { 
         date: cleanDate, 
         pdfUrl, 
         imageUrl: coverImage, 
-        imageUrls: finalImageUrls 
+        imageUrls: JSON.stringify(finalImageUrls) 
       },
     });
 

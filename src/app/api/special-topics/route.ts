@@ -6,6 +6,23 @@ import { revalidatePath } from 'next/cache';
 
 export const dynamic = 'force-dynamic';
 
+const formatTopic = (t: any) => {
+  let newsIds: string[] = [];
+  if (t.newsIds) {
+    if (Array.isArray(t.newsIds)) {
+      newsIds = t.newsIds;
+    } else if (typeof t.newsIds === 'string') {
+      try {
+        const parsed = JSON.parse(t.newsIds);
+        newsIds = Array.isArray(parsed) ? parsed : [];
+      } catch {
+        newsIds = t.newsIds.split(',').filter(Boolean);
+      }
+    }
+  }
+  return { ...t, newsIds };
+};
+
 export async function GET() {
   try {
     let topics = await prisma.specialTopic.findMany({
@@ -18,14 +35,14 @@ export async function GET() {
           title: 'বিশেষ প্রতিবেদন ও আন্তর্জাতিক সংবাদ',
           bannerSubtitle: 'বিস্তারিত দেখতে কভার খবরের যেকোনো একটিতে ক্লিক করুন',
           isActive: true,
-          newsIds: [],
+          newsIds: JSON.stringify([]),
           order: 0,
         },
       });
       topics = [defaultTopic];
     }
 
-    return NextResponse.json(topics);
+    return NextResponse.json(topics.map(formatTopic));
   } catch (error) {
     console.error(error);
     return NextResponse.json(
@@ -64,7 +81,7 @@ export async function POST(req: Request) {
         title,
         bannerSubtitle: bannerSubtitle || null,
         isActive: activeBool,
-        newsIds: Array.isArray(newsIds) ? newsIds : [],
+        newsIds: Array.isArray(newsIds) ? JSON.stringify(newsIds) : (typeof newsIds === 'string' ? newsIds : null),
         order: typeof order === 'number' ? order : parseInt(order) || 0,
       },
     });
@@ -72,7 +89,7 @@ export async function POST(req: Request) {
     revalidatePath('/');
     revalidatePath('/admin/special-topics');
 
-    return NextResponse.json(topic);
+    return NextResponse.json(formatTopic(topic));
   } catch (error) {
     console.error(error);
     return NextResponse.json(

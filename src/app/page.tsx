@@ -17,6 +17,20 @@ import { Camera, Video, Play } from 'lucide-react';
 export const dynamic = 'force-dynamic';
 export const revalidate = 60; // ISR cache for 60 seconds (Super Fast Instant Loads)
 
+const parseNewsIds = (raw: any): string[] => {
+  if (!raw) return [];
+  if (Array.isArray(raw)) return raw;
+  if (typeof raw === 'string') {
+    try {
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return raw.split(',').filter(Boolean);
+    }
+  }
+  return [];
+};
+
 export default async function HomePage() {
   // 1. Fetch Active Special Topic Configuration
   let activeSpecialTopic: any = null;
@@ -33,7 +47,7 @@ export default async function HomePage() {
             title: 'বিশেষ প্রতিবেদন ও আন্তর্জাতিক সংবাদ',
             bannerSubtitle: 'বিস্তারিত দেখতে কভার খবরের যেকোনো একটিতে ক্লিক করুন',
             isActive: true,
-            newsIds: [],
+            newsIds: JSON.stringify([]),
             order: 0,
           },
         });
@@ -132,10 +146,12 @@ export default async function HomePage() {
     });
   });
 
+  const activeSpecialTopicIds = parseNewsIds(activeSpecialTopic?.newsIds);
+
   // Setup special topic banner news query (if there are IDs)
-  const specialTopicBannerNewsQuery = (activeSpecialTopic?.newsIds && activeSpecialTopic.newsIds.length > 0)
+  const specialTopicBannerNewsQuery = (activeSpecialTopicIds.length > 0)
     ? prisma.news.findMany({
-        where: { id: { in: activeSpecialTopic.newsIds }, status: 'PUBLISHED' },
+        where: { id: { in: activeSpecialTopicIds }, status: 'PUBLISHED' },
         select: {
           ...listSelect,
           content: true,
@@ -228,9 +244,10 @@ export default async function HomePage() {
 
   // 1. Determine Lead News (Position 1)
   let leadNewsItem: any = null;
-  if (topNewsConfig?.newsIds && topNewsConfig.newsIds.length > 0) {
+  const topNewsIds = parseNewsIds(topNewsConfig?.newsIds);
+  if (topNewsIds.length > 0) {
     try {
-      const pinnedId = topNewsConfig.newsIds[0];
+      const pinnedId = topNewsIds[0];
       leadNewsItem = await prisma.news.findFirst({
         where: { id: pinnedId, status: 'PUBLISHED' },
         select: { ...listSelect, content: true },
@@ -266,10 +283,23 @@ export default async function HomePage() {
     }));
   };
 
-  // 3. Category results map strictly returning news belonging to that specific category
+  // 3. Category results helper with automatic fallback so ALL categories render on homepage
+  let fallbackPointer = 0;
   const getCategoryNews = (index: number) => {
-    const res = initialCategoryResults[index];
-    return res && res.length > 0 ? res : [];
+    const res = initialCategoryResults[index] || [];
+    const validFetched = res.filter((item: any) => item && item.id);
+    if (validFetched.length >= 5) {
+      return validFetched.slice(0, 5);
+    }
+    const result = [...validFetched];
+    for (let i = 0; i < heroNewsFallback.length && result.length < 5; i++) {
+      const candidate = heroNewsFallback[fallbackPointer % heroNewsFallback.length];
+      fallbackPointer++;
+      if (candidate && !result.some((n) => n.id === candidate.id)) {
+        result.push(candidate);
+      }
+    }
+    return result;
   };
 
   const bangladeshNews = getCategoryNews(0);
@@ -291,8 +321,8 @@ export default async function HomePage() {
 
   // Map special topic banner news maintaining admin ordering
   let specialTopicBannerNews: any[] = [];
-  if (activeSpecialTopic?.newsIds && activeSpecialTopic.newsIds.length > 0) {
-    specialTopicBannerNews = (activeSpecialTopic.newsIds as string[])
+  if (activeSpecialTopicIds.length > 0) {
+    specialTopicBannerNews = activeSpecialTopicIds
       .map((id: string) => specialTopicBannerNewsFetched.find((n: any) => n.id === id))
       .filter(Boolean);
   }
@@ -457,7 +487,11 @@ export default async function HomePage() {
             <AdBanner ad={getAd('home_before_exclusive')} className="h-20 sm:h-24" />
 
             {/* 15. Gazette Exclusive Section */}
-            <CategoryBlock title="গেজেট এক্সক্লুসিভ" slug="gazette-exclusive" news={exclusiveNews as any} />
+            <CategoryBlock
+              title="গেজেট এক্সক্লুসিভ"
+              slug="gazette-exclusive"
+              news={(exclusiveNews && exclusiveNews.length >= 5 ? exclusiveNews : (exclusiveNews.concat(heroNewsFallback).slice(0, 5))) as any}
+            />
 
             {/* Ad slot: Before Photo Gallery */}
             <AdBanner ad={getAd('home_before_photo_gallery')} className="h-20 sm:h-24" />

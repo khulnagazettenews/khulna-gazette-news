@@ -96,14 +96,9 @@ export async function PUT(
       );
     }
 
-    // Disconnect old tags
-    await prisma.news.update({
-      where: { id },
-      data: {
-        tags: {
-          disconnect: existingNews.tags.map((t) => ({ id: t.id })),
-        },
-      },
+    // Delete old tags relations
+    await prisma.newsTag.deleteMany({
+      where: { newsId: id },
     });
 
     // Connect or create new tags
