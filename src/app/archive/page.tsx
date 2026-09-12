@@ -22,6 +22,14 @@ function formatBengaliTime(dateInput: Date | string) {
   return `${toBn(h12)}:${toBn(minutes < 10 ? '0' + minutes : minutes)} ${period}`;
 }
 
+function getAuthorDisplay(item: any) {
+  if (item.authorTitle) return item.authorTitle;
+  if (item.reporterName && item.reporterName !== 'স্টাফ রিপোর্টার') return item.reporterName;
+  if (item.author?.name && item.author.name !== 'Admin' && item.author.name !== 'সম্পাদক ও প্রকাশক') return item.author.name;
+  if (item.category?.name) return `${item.category.name} ডেস্ক`;
+  return item.reporterName || 'খুলনা গেজেট';
+}
+
 interface ArchivePageProps {
   searchParams?: Promise<{ date?: string; page?: string }> | { date?: string; page?: string };
 }
@@ -48,7 +56,7 @@ export default async function ArchivePage({ searchParams }: ArchivePageProps) {
           },
         },
         orderBy: { publishedAt: 'desc' },
-        include: { category: true, subCategory: true },
+        include: { category: true, subCategory: true, author: true },
       }),
       prisma.news.findMany({
         where: { status: 'PUBLISHED' },
@@ -182,7 +190,7 @@ export default async function ArchivePage({ searchParams }: ArchivePageProps) {
                             </h2>
                           </Link>
                           <div className="text-xs text-gray-500 pt-2 border-t border-gray-100 flex items-center justify-between">
-                            <span>{item.reporterName || (item as any).author?.name || 'স্টাফ রিপোর্টার'}</span>
+                            <span>{getAuthorDisplay(item)}</span>
                             <span>{item.publishedAt ? formatBengaliTime(item.publishedAt) : ''}</span>
                           </div>
                         </div>
