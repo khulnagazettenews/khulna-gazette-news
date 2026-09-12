@@ -7,6 +7,21 @@ import Link from 'next/link';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
+function formatBengaliTime(dateInput: Date | string) {
+  const d = new Date(dateInput);
+  if (isNaN(d.getTime())) return '';
+  const toBn = (num: number | string) => {
+    const digits: Record<string, string> = { '0':'০','1':'১','2':'২','3':'৩','4':'৪','5':'৫','6':'৬','7':'৭','8':'৮','9':'৯' };
+    return num.toString().split('').map(c => digits[c] || c).join('');
+  };
+  const hours = d.getHours();
+  const minutes = d.getMinutes();
+  const period = hours >= 12 ? 'অপরাহ্ণ' : 'পূর্বাহ্ণ';
+  let h12 = hours % 12;
+  if (h12 === 0) h12 = 12;
+  return `${toBn(h12)}:${toBn(minutes < 10 ? '0' + minutes : minutes)} ${period}`;
+}
+
 interface ArchivePageProps {
   searchParams?: Promise<{ date?: string; page?: string }> | { date?: string; page?: string };
 }
@@ -167,8 +182,8 @@ export default async function ArchivePage({ searchParams }: ArchivePageProps) {
                             </h2>
                           </Link>
                           <div className="text-xs text-gray-500 pt-2 border-t border-gray-100 flex items-center justify-between">
-                            <span>{item.reporterName || 'স্টাফ রিপোর্টার'}</span>
-                            <span>{new Date(item.publishedAt).toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit' })}</span>
+                            <span>{item.reporterName || (item as any).author?.name || 'স্টাফ রিপোর্টার'}</span>
+                            <span>{item.publishedAt ? formatBengaliTime(item.publishedAt) : ''}</span>
                           </div>
                         </div>
                       </div>

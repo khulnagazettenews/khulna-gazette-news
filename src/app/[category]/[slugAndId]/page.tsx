@@ -64,8 +64,8 @@ function formatBengaliDateTime(dateInput?: Date | string | null) {
   const dayNum = toBengaliNumber(day);
   const yearNum = toBengaliNumber(year);
 
-  // Determine period (পূর্বাহ্ন / অপরাহ্ন)
-  const period = hours >= 12 ? 'অপরাহ্ন' : 'পূর্বাহ্ন';
+  // Determine period (পূর্বাহ্ণ / অপরাহ্ণ)
+  const period = hours >= 12 ? 'অপরাহ্ণ' : 'পূর্বাহ্ণ';
   let hours12 = hours % 12;
   if (hours12 === 0) hours12 = 12;
 
@@ -350,7 +350,7 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
                       textAlign: 'left',
                     }}
                   >
-                    {(news as any).authorTitle || news.reporterName || news.subCategory?.name || (news.category?.name ? `${news.category.name} ডেস্ক` : 'গেজেট প্রতিবেদন')}
+                    {news.authorTitle || news.subCategory?.name || (news.category?.name ? `${news.category.name} ডেস্ক` : 'গেজেট প্রতিবেদন')}
                   </h2>
 
                   {/* Metadata Row (Left: Author, Date, Time | Right: Social Share Buttons + Print) */}
@@ -368,7 +368,7 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
                     >
                       <span className="flex items-center gap-1.5" itemProp="author" itemScope itemType="https://schema.org/Person">
                         <User size={16} className="text-black fill-black shrink-0" />
-                        <span itemProp="name" className="text-black">খুলনা গেজেট</span>
+                        <span itemProp="name" className="text-black">{news.reporterName || news.author?.name || 'খুলনা গেজেট'}</span>
                       </span>
 
                       {dateStr && (
