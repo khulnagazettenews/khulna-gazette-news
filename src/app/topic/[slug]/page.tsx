@@ -4,6 +4,7 @@ import PublicHeader from '@/components/public-header';
 import PublicFooter from '@/components/public-footer';
 import TabsWidget from '@/components/tabs-widget';
 import PrayerWidget from '@/components/prayer-widget';
+import { getReporterTitle } from '@/lib/reporter-helper';
 import Link from 'next/link';
 
 export const revalidate = 60; // 60 seconds (ISR)
@@ -114,7 +115,7 @@ export default async function TopicPage({ params, searchParams }: TopicPageProps
                   </div>
 
                   <div className="p-4 border-t border-gray-100 flex items-center justify-between text-[10px] text-gray-400 font-medium">
-                    <span>{item.reporterName || item.author?.name || item.authorTitle || (item.category?.name ? `${item.category.name} ডেস্ক` : 'খুলনা গেজেট')}</span>
+                    <span>{getReporterTitle(item)}</span>
                     <span>
                       {item.publishedAt && new Date(item.publishedAt).toLocaleDateString('bn-BD', {
                         month: 'short',

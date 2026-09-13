@@ -90,7 +90,7 @@ export default async function HomePage() {
     'technology': ['technology', 'it'],
     'health': ['health', 'chikitsa'],
     'literature': ['literature', 'sahitto'],
-    'mukto-bhabna': ['mukto-bhabna', 'muktobhabna', 'free-thinking'],
+    'mukto-bhabna': ['mukto-bhabna', 'muktobhabna', 'free-thinking', 'motamot'],
     'chitro-bichitro': ['chitro-bichitro', 'weird-news'],
     'social-media': ['social-media'],
     'lifestyle': ['lifestyle', 'life-style'],
@@ -282,23 +282,10 @@ export default async function HomePage() {
     }));
   };
 
-  // 3. Category results helper with automatic fallback so ALL categories render on homepage
-  let fallbackPointer = 0;
+  // Category results helper returning actual news for each category
   const getCategoryNews = (index: number) => {
     const res = initialCategoryResults[index] || [];
-    const validFetched = res.filter((item: any) => item && item.id);
-    if (validFetched.length >= 5) {
-      return validFetched.slice(0, 5);
-    }
-    const result = [...validFetched];
-    for (let i = 0; i < heroNewsFallback.length && result.length < 5; i++) {
-      const candidate = heroNewsFallback[fallbackPointer % heroNewsFallback.length];
-      fallbackPointer++;
-      if (candidate && !result.some((n) => n.id === candidate.id)) {
-        result.push(candidate);
-      }
-    }
-    return result;
+    return res.filter((item: any) => item && item.id).slice(0, 5);
   };
 
   const bangladeshNews = getCategoryNews(0);

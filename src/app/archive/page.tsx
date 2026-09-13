@@ -4,6 +4,8 @@ import PublicFooter from '@/components/public-footer';
 import SidebarWidgets from '@/components/sidebar-widgets';
 import Link from 'next/link';
 
+import { getReporterTitle } from '@/lib/reporter-helper';
+
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
@@ -23,11 +25,7 @@ function formatBengaliTime(dateInput: Date | string) {
 }
 
 function getAuthorDisplay(item: any) {
-  if (item.authorTitle) return item.authorTitle;
-  if (item.reporterName && item.reporterName !== 'স্টাফ রিপোর্টার') return item.reporterName;
-  if (item.author?.name && item.author.name !== 'Admin' && item.author.name !== 'সম্পাদক ও প্রকাশক') return item.author.name;
-  if (item.category?.name) return `${item.category.name} ডেস্ক`;
-  return item.reporterName || 'খুলনা গেজেট';
+  return getReporterTitle(item);
 }
 
 interface ArchivePageProps {

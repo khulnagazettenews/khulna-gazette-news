@@ -13,6 +13,7 @@ import { Calendar, User, Home, Clock } from 'lucide-react';
 import SidebarWidgets from '@/components/sidebar-widgets';
 import AdBanner from '@/components/ad-banner';
 import { Metadata } from 'next';
+import { getReporterTitle } from '@/lib/reporter-helper';
 import CategoryPage from '../page';
 
 interface RouteProps {
@@ -243,19 +244,6 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
     ]);
 
     let relatedNews = relatedNewsFetched;
-    if (relatedNews.length < 12) {
-      const existingIds = [news.id, ...relatedNews.map((r) => r.id)];
-      const additional = await prisma.news.findMany({
-        where: {
-          status: 'PUBLISHED',
-          NOT: { id: { in: existingIds } },
-        },
-        take: 12 - relatedNews.length,
-        orderBy: { publishedAt: 'desc' },
-        select: listSelect,
-      });
-      relatedNews = [...relatedNews, ...additional];
-    }
 
     const serializeList = (list: any[]) => {
       return list.map((item) => ({
@@ -350,7 +338,7 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
                       textAlign: 'left',
                     }}
                   >
-                    {news.authorTitle || news.subCategory?.name || (news.category?.name ? `${news.category.name} ডেস্ক` : 'গেজেট প্রতিবেদন')}
+                    {getReporterTitle(news)}
                   </h2>
 
                   {/* Metadata Row (Left: Author, Date, Time | Right: Social Share Buttons + Print) */}
@@ -368,7 +356,7 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
                     >
                       <span className="flex items-center gap-1.5" itemProp="author" itemScope itemType="https://schema.org/Person">
                         <User size={16} className="text-black fill-black shrink-0" />
-                        <span itemProp="name" className="text-black">{news.reporterName || news.author?.name || 'খুলনা গেজেট'}</span>
+                        <span itemProp="name" className="text-black">{getReporterTitle(news)}</span>
                       </span>
 
                       {dateStr && (
