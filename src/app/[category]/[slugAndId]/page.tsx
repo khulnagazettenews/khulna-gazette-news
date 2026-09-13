@@ -243,7 +243,7 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
       }),
     ]);
 
-    let relatedNews = relatedNewsFetched;
+    const relatedNews = relatedNewsFetched;
 
     const serializeList = (list: any[]) => {
       return list.map((item) => ({
