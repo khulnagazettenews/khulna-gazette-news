@@ -425,7 +425,7 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
                 {/* Tags */}
                 {news.tags.length > 0 && (
                   <div className="flex flex-wrap gap-1.5 sm:gap-2 pt-3 sm:pt-4 border-t border-gray-150 mt-5 sm:mt-6">
-                    {news.tags.map((t) => (
+                    {news.tags.map((t: any) => (
                       <span key={t.tag.id} className="text-[11px] sm:text-xs bg-gray-100 text-gray-800 px-2.5 py-0.5 sm:py-1 rounded border border-gray-200 font-bold">
                         # {t.tag.name}
                       </span>
