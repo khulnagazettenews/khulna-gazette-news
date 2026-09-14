@@ -2,23 +2,12 @@ import { prisma } from '@/lib/prisma';
 import Link from 'next/link';
 
 export default async function BreakingNewsTicker() {
-  let breakingList = await prisma.news.findMany({
-    where: {
-      status: 'PUBLISHED',
-      isBreaking: true,
-    },
-    orderBy: { publishedAt: 'desc' },
-    take: 8,
-    include: {
-      category: true,
-    },
-  });
-
-  // Fallback to latest news if no specific breaking news flag is set
-  if (breakingList.length === 0) {
+  let breakingList: any[] = [];
+  try {
     breakingList = await prisma.news.findMany({
       where: {
         status: 'PUBLISHED',
+        isBreaking: true,
       },
       orderBy: { publishedAt: 'desc' },
       take: 8,
@@ -26,6 +15,23 @@ export default async function BreakingNewsTicker() {
         category: true,
       },
     });
+
+    // Fallback to latest news if no specific breaking news flag is set
+    if (breakingList.length === 0) {
+      breakingList = await prisma.news.findMany({
+        where: {
+          status: 'PUBLISHED',
+        },
+        orderBy: { publishedAt: 'desc' },
+        take: 8,
+        include: {
+          category: true,
+        },
+      });
+    }
+  } catch (error) {
+    console.error('[BreakingNewsTicker] Failed to reach database:', error);
+    return null;
   }
 
   if (breakingList.length === 0) return null;

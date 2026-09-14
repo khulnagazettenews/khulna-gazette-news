@@ -477,6 +477,8 @@ export default async function HomePage() {
               title="গেজেট এক্সক্লুসিভ"
               slug="gazette-exclusive"
               news={(exclusiveNews && exclusiveNews.length >= 5 ? exclusiveNews : (exclusiveNews.concat(heroNewsFallback).slice(0, 5))) as any}
+              variant="sports"
+              excerptLines={2}
             />
 
             {/* Ad slot: Before Photo Gallery */}

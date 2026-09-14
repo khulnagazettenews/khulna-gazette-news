@@ -245,47 +245,79 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
               <div className="text-center py-16 text-gray-400 text-base font-medium">এই বিভাগে কোনো সংবাদ পাওয়া যায়নি।</div>
             )}
 
-            {/* Numeric WP-Style Pagination Bar matching exact screenshot */}
-            {totalPages > 1 && (
-              <div className="flex items-center gap-1.5 pt-8 text-[13px] text-[#444444] font-medium flex-wrap select-none">
-                <span className="mr-1 text-gray-600 font-semibold">পৃষ্ঠা সমূহ :</span>
-                
-                {Array.from({ length: Math.min(7, totalPages) }, (_, i) => i + 1).map((p) => (
-                  <Link
-                    key={p}
-                    href={`/${category}?page=${p}`}
-                    className={`px-2.5 py-1 text-sm font-semibold rounded transition ${
-                      p === page
-                        ? 'bg-[#888888] text-white'
-                        : 'bg-[#eeeeee] text-[#333333] hover:bg-[#e60023] hover:text-white'
-                    }`}
-                  >
-                    {p}
-                  </Link>
-                ))}
+            {/* Dynamic WP-Style Pagination Bar for all pages */}
+            {totalPages > 1 && (() => {
+              const getPaginationRange = (current: number, total: number) => {
+                const range: (number | string)[] = [];
+                const start = Math.max(1, current - 2);
+                const end = Math.min(total, current + 2);
 
-                {totalPages > 7 && (
-                  <>
-                    <span className="px-1 text-gray-500 font-bold">.</span>
+                if (start > 1) {
+                  range.push(1);
+                  if (start > 2) range.push('...');
+                }
+
+                for (let i = start; i <= end; i++) {
+                  range.push(i);
+                }
+
+                if (end < total) {
+                  if (end < total - 1) range.push('...');
+                  range.push(total);
+                }
+
+                return range;
+              };
+
+              const paginationItems = getPaginationRange(page, totalPages);
+
+              return (
+                <div className="flex items-center gap-1.5 pt-8 text-[13px] text-[#444444] font-medium flex-wrap select-none">
+                  <span className="mr-1 text-gray-600 font-semibold">পৃষ্ঠা সমূহ :</span>
+                  
+                  {page > 1 && (
                     <Link
-                      href={`/${category}?page=${totalPages}`}
-                      className="bg-[#eeeeee] text-[#333333] hover:bg-[#e60023] hover:text-white px-2.5 py-1 text-sm font-semibold rounded transition"
+                      href={`/${category}?page=${page - 1}`}
+                      className="bg-[#eeeeee] text-[#333333] hover:bg-[#e60023] hover:text-white px-2.5 py-1 text-sm font-semibold rounded transition mr-1"
                     >
-                      {totalPages}
+                      «
                     </Link>
-                  </>
-                )}
+                  )}
 
-                {page < totalPages && (
-                  <Link
-                    href={`/${category}?page=${page + 1}`}
-                    className="bg-[#eeeeee] text-[#333333] hover:bg-[#e60023] hover:text-white px-2.5 py-1 text-sm font-semibold rounded transition ml-1"
-                  >
-                    »
-                  </Link>
-                )}
-              </div>
-            )}
+                  {paginationItems.map((item, idx) => {
+                    if (typeof item === 'string') {
+                      return (
+                        <span key={`dots-${idx}`} className="px-1 text-gray-500 font-bold">
+                          ...
+                        </span>
+                      );
+                    }
+                    return (
+                      <Link
+                        key={item}
+                        href={`/${category}?page=${item}`}
+                        className={`px-2.5 py-1 text-sm font-semibold rounded transition ${
+                          item === page
+                            ? 'bg-[#888888] text-white'
+                            : 'bg-[#eeeeee] text-[#333333] hover:bg-[#e60023] hover:text-white'
+                        }`}
+                      >
+                        {item}
+                      </Link>
+                    );
+                  })}
+
+                  {page < totalPages && (
+                    <Link
+                      href={`/${category}?page=${page + 1}`}
+                      className="bg-[#eeeeee] text-[#333333] hover:bg-[#e60023] hover:text-white px-2.5 py-1 text-sm font-semibold rounded transition ml-1"
+                    >
+                      »
+                    </Link>
+                  )}
+                </div>
+              );
+            })()}
           </div>
 
           {/* Right Column: Sidebar Widgets matching screenshot */}

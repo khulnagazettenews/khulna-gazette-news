@@ -124,33 +124,79 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
               </div>
             )}
 
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="flex items-center gap-1.5 pt-8 text-[13px] text-[#444444] font-medium flex-wrap select-none">
-                <span className="mr-1 text-gray-600 font-semibold">পৃষ্ঠা সমূহ :</span>
-                {Array.from({ length: Math.min(7, totalPages) }, (_, i) => i + 1).map((p) => (
-                  <Link
-                    key={p}
-                    href={`/search?q=${encodeURIComponent(query)}&page=${p}`}
-                    className={`px-2.5 py-1 text-sm font-semibold rounded transition ${
-                      p === page
-                        ? 'bg-[#888888] text-white'
-                        : 'bg-[#eeeeee] text-[#333333] hover:bg-[#e60023] hover:text-white'
-                    }`}
-                  >
-                    {p}
-                  </Link>
-                ))}
-                {page < totalPages && (
-                  <Link
-                    href={`/search?q=${encodeURIComponent(query)}&page=${page + 1}`}
-                    className="bg-[#eeeeee] text-[#333333] hover:bg-[#e60023] hover:text-white px-2.5 py-1 text-sm font-semibold rounded transition ml-1"
-                  >
-                    »
-                  </Link>
-                )}
-              </div>
-            )}
+            {/* Dynamic Pagination Bar */}
+            {totalPages > 1 && (() => {
+              const getPaginationRange = (current: number, total: number) => {
+                const range: (number | string)[] = [];
+                const start = Math.max(1, current - 2);
+                const end = Math.min(total, current + 2);
+
+                if (start > 1) {
+                  range.push(1);
+                  if (start > 2) range.push('...');
+                }
+
+                for (let i = start; i <= end; i++) {
+                  range.push(i);
+                }
+
+                if (end < total) {
+                  if (end < total - 1) range.push('...');
+                  range.push(total);
+                }
+
+                return range;
+              };
+
+              const paginationItems = getPaginationRange(page, totalPages);
+
+              return (
+                <div className="flex items-center gap-1.5 pt-8 text-[13px] text-[#444444] font-medium flex-wrap select-none">
+                  <span className="mr-1 text-gray-600 font-semibold">পৃষ্ঠা সমূহ :</span>
+                  
+                  {page > 1 && (
+                    <Link
+                      href={`/search?q=${encodeURIComponent(query)}&page=${page - 1}`}
+                      className="bg-[#eeeeee] text-[#333333] hover:bg-[#e60023] hover:text-white px-2.5 py-1 text-sm font-semibold rounded transition mr-1"
+                    >
+                      «
+                    </Link>
+                  )}
+
+                  {paginationItems.map((item, idx) => {
+                    if (typeof item === 'string') {
+                      return (
+                        <span key={`dots-${idx}`} className="px-1 text-gray-500 font-bold">
+                          ...
+                        </span>
+                      );
+                    }
+                    return (
+                      <Link
+                        key={item}
+                        href={`/search?q=${encodeURIComponent(query)}&page=${item}`}
+                        className={`px-2.5 py-1 text-sm font-semibold rounded transition ${
+                          item === page
+                            ? 'bg-[#888888] text-white'
+                            : 'bg-[#eeeeee] text-[#333333] hover:bg-[#e60023] hover:text-white'
+                        }`}
+                      >
+                        {item}
+                      </Link>
+                    );
+                  })}
+
+                  {page < totalPages && (
+                    <Link
+                      href={`/search?q=${encodeURIComponent(query)}&page=${page + 1}`}
+                      className="bg-[#eeeeee] text-[#333333] hover:bg-[#e60023] hover:text-white px-2.5 py-1 text-sm font-semibold rounded transition ml-1"
+                    >
+                      »
+                    </Link>
+                  )}
+                </div>
+              );
+            })()}
           </div>
 
           {/* Sidebar (3 Cols) */}
