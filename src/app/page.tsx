@@ -106,6 +106,8 @@ export default async function HomePage() {
     createdAt: true,
     updatedAt: true,
     viewCount: true,
+    reporterName: true,
+    authorTitle: true,
     category: {
       select: {
         id: true,

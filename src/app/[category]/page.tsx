@@ -111,6 +111,8 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
     publishedAt: true,
     createdAt: true,
     updatedAt: true,
+    reporterName: true,
+    authorTitle: true,
     category: {
       select: {
         id: true,

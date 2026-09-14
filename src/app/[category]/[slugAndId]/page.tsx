@@ -200,6 +200,8 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
       publishedAt: true,
       createdAt: true,
       updatedAt: true,
+      reporterName: true,
+      authorTitle: true,
       category: {
         select: {
           id: true,
