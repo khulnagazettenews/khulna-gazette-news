@@ -33,6 +33,14 @@ export function getReporterTitle(news: {
     return news.author.name.trim();
   }
 
-  // 4. Clean category desk fallback (e.g., "বাংলাদেশ ডেস্ক", "খুলনাঞ্চল ডেস্ক", "বিনোদন ডেস্ক")
-  return news.category?.name ? `${news.category.name} ডেস্ক` : 'খুলনা গেজেট';
+  // 4. Custom fallback rules:
+  // For sports/khela category -> "ক্রীড়া প্রতিবেদক"
+  const catSlug = news.category?.slug?.toLowerCase() || '';
+  const catName = news.category?.name || '';
+  if (catSlug === 'sports' || catSlug === 'khela' || catName === 'খেলা') {
+    return 'ক্রীড়া প্রতিবেদক';
+  }
+
+  // Clean category desk fallback (e.g., "বাংলাদেশ ডেস্ক", "খুলনাঞ্চল ডেস্ক", "বিনোদন ডেস্ক")
+  return catName ? `${catName} ডেস্ক` : 'খুলনা গেজেট';
 }
