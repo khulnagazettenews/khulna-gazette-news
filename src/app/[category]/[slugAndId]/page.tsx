@@ -138,7 +138,7 @@ export async function generateMetadata({ params }: RouteProps): Promise<Metadata
       type: 'article',
       publishedTime: news.publishedAt?.toISOString(),
       modifiedTime: news.updatedAt.toISOString(),
-      authors: [news.reporterName || news.author?.name || 'খুলনা গেজেট'],
+      authors: [getReporterTitle(news)],
       images: [
         {
           url: imageUrl,
@@ -266,7 +266,7 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
       'dateModified': news.updatedAt.toISOString(),
       'author': [{
         '@type': 'Person',
-        'name': news.reporterName || news.author?.name || 'খুলনা গেজেট',
+        'name': getReporterTitle(news),
       }],
       'publisher': {
         '@type': 'Organization',
