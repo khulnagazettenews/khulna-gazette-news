@@ -8,28 +8,18 @@ export function getReporterTitle(news: {
   category?: { name?: string; slug?: string } | null;
   subCategory?: { name?: string; slug?: string } | null;
 }): string {
-  // 1. Strictly return authorTitle from DB if present (and not generic placeholder)
-  if (news.authorTitle && news.authorTitle.trim() && news.authorTitle.trim() !== 'সম্পাদক ও প্রকাশক') {
+  // 1. Strictly return authorTitle from DB if present
+  if (news.authorTitle && news.authorTitle.trim()) {
     return news.authorTitle.trim();
   }
 
-  // 2. Return reporterName if custom (not 'সম্পাদক ও প্রকাশক' or 'স্টাফ রিপোর্টার')
-  if (
-    news.reporterName &&
-    news.reporterName.trim() &&
-    news.reporterName.trim() !== 'সম্পাদক ও প্রকাশক' &&
-    news.reporterName.trim() !== 'স্টাফ রিপোর্টার'
-  ) {
+  // 2. Return reporterName if saved in DB
+  if (news.reporterName && news.reporterName.trim()) {
     return news.reporterName.trim();
   }
 
-  // 3. Return author name if custom
-  if (
-    news.author?.name &&
-    news.author.name.trim() &&
-    news.author.name.trim() !== 'সম্পাদক ও প্রকাশক' &&
-    news.author.name.trim() !== 'স্টাফ রিপোর্টার'
-  ) {
+  // 3. Return author name if available
+  if (news.author?.name && news.author.name.trim()) {
     return news.author.name.trim();
   }
 
