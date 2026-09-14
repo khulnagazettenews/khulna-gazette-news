@@ -160,14 +160,6 @@ export async function generateMetadata({ params }: RouteProps): Promise<Metadata
 export default async function DynamicRouteResolver({ params, searchParams }: RouteProps) {
   const { category, slugAndId } = params;
 
-  // 0. Check if slugAndId is a subcategory (e.g. /khulnanchal/khulna, /khulnanchal/jessore)
-  const targetSubCatRoute = await prisma.category.findFirst({
-    where: { slug: slugAndId },
-  });
-  if (targetSubCatRoute) {
-    return <CategoryPage params={{ category: targetSubCatRoute.slug }} searchParams={searchParams} />;
-  }
-
   // Extract candidate ID from slugAndId (A UUID is 36 characters long)
   let candidateId = slugAndId;
   if (slugAndId.length >= 36) {
@@ -175,21 +167,37 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
   }
 
   // 1. Attempt to fetch published news by ID or Slug
-  const news = await prisma.news.findFirst({
-    where: {
-      OR: [
-        { id: candidateId },
-        { id: slugAndId },
-        { slug: slugAndId },
-      ],
-    },
-    include: {
-      category: true,
-      subCategory: true,
-      author: true,
-      tags: { include: { tag: true } },
-    },
-  });
+  let news: any = null;
+  try {
+    news = await prisma.news.findFirst({
+      where: {
+        OR: [
+          { id: candidateId },
+          { id: slugAndId },
+          { slug: slugAndId },
+        ],
+      },
+      include: {
+        category: true,
+        subCategory: true,
+        author: true,
+        tags: { include: { tag: true } },
+      },
+    });
+  } catch (err) {
+    console.error('Error finding news item:', err);
+  }
+
+  // 2. If news not found, check if slugAndId is actually a subcategory slug (e.g. /khulnanchal/khulna)
+  if (!news) {
+    const targetSubCatRoute = await prisma.category.findFirst({
+      where: { slug: slugAndId },
+    });
+    if (targetSubCatRoute) {
+      return CategoryPage({ params: { category: targetSubCatRoute.slug }, searchParams });
+    }
+    return notFound();
+  }
 
   if (news && news.status === 'PUBLISHED') {
     // Standard lightweight select for list items (excludes heavy HTML content field)
