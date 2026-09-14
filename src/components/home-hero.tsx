@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { getReporterTitle } from '@/lib/reporter-helper';
 
 interface HeroNewsItem {
   id: string;
@@ -153,20 +154,25 @@ export default function HomeHero({ news }: HomeHeroProps) {
                       খুলনা গেজেট
                     </div>
                   )}
-                  <Link href={`/${categorySlug}/${story.id}`} className="block pt-0.5 flex-1 min-w-0">
-                    <h3 
-                      className="text-[22px] font-bold text-[#000000] hover:text-[rgb(0,0,116)] transition leading-[26.4px] tracking-[-0.2px] line-clamp-2 break-words"
-                      style={{
-                        fontFamily: 'Bangla, sans-serif',
-                        fontSize: '22px',
-                        fontWeight: 700,
-                        lineHeight: '26.4px',
-                        letterSpacing: '-0.2px',
-                      }}
-                    >
-                      {story.title}
-                    </h3>
-                  </Link>
+                  <div className="block pt-0.5 flex-1 min-w-0 space-y-1">
+                    <Link href={`/${categorySlug}/${story.id}`}>
+                      <h3 
+                        className="text-[22px] font-bold text-[#000000] hover:text-[rgb(0,0,116)] transition leading-[26.4px] tracking-[-0.2px] line-clamp-2 break-words"
+                        style={{
+                          fontFamily: 'Bangla, sans-serif',
+                          fontSize: '22px',
+                          fontWeight: 700,
+                          lineHeight: '26.4px',
+                          letterSpacing: '-0.2px',
+                        }}
+                      >
+                        {story.title}
+                      </h3>
+                    </Link>
+                    <div className="text-[13px] text-gray-500 font-medium pt-0.5">
+                      {getReporterTitle(story)}
+                    </div>
+                  </div>
                 </div>
               );
             })}

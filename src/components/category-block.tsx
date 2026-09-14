@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { getReporterTitle } from '@/lib/reporter-helper';
 
 interface BlockNewsItem {
   id: string;
@@ -84,7 +85,7 @@ export default function CategoryBlock({
                   />
                 </Link>
               )}
-              <Link href={`/${slug}/${lead.id}`} className="block pt-0.5">
+              <Link href={`/${slug}/${lead.id}`} className="block pt-0.5 space-y-1">
                 <h3
                   style={{
                     fontFamily: "'solaimanLipi', 'SolaimanLipi', 'Noto Sans Bengali', 'Hind Siliguri', sans-serif",
@@ -98,6 +99,9 @@ export default function CategoryBlock({
                 >
                   {lead.title}
                 </h3>
+                <div className="text-[12px] text-gray-500 font-medium pt-0.5">
+                  {getReporterTitle(lead)}
+                </div>
               </Link>
               <p
                 style={{

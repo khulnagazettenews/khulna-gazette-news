@@ -5,6 +5,7 @@ import PublicFooter from '@/components/public-footer';
 import TabsWidget from '@/components/tabs-widget';
 import PrayerWidget from '@/components/prayer-widget';
 import Link from 'next/link';
+import { getReporterTitle } from '@/lib/reporter-helper';
 
 export const revalidate = 60; // Cache for 60 seconds (ISR)
 
@@ -224,20 +225,25 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
                       </div>
                     )}
                     
-                    <Link href={`/${item.category?.slug || category}/${item.id}`} className="block pt-0.5 flex-1 min-w-0">
-                      <h3 
-                        className="text-[22px] font-bold text-[#000000] hover:text-[rgb(0,0,116)] transition leading-[26.4px] tracking-[-0.2px] line-clamp-2 break-words"
-                        style={{
-                          fontFamily: 'Bangla, sans-serif',
-                          fontSize: '22px',
-                          fontWeight: 700,
-                          lineHeight: '26.4px',
-                          letterSpacing: '-0.2px',
-                        }}
-                      >
-                        {item.title}
-                      </h3>
-                    </Link>
+                    <div className="block pt-0.5 flex-1 min-w-0 space-y-1">
+                      <Link href={`/${item.category?.slug || category}/${item.id}`}>
+                        <h3 
+                          className="text-[22px] font-bold text-[#000000] hover:text-[rgb(0,0,116)] transition leading-[26.4px] tracking-[-0.2px] line-clamp-2 break-words"
+                          style={{
+                            fontFamily: 'Bangla, sans-serif',
+                            fontSize: '22px',
+                            fontWeight: 700,
+                            lineHeight: '26.4px',
+                            letterSpacing: '-0.2px',
+                          }}
+                        >
+                          {item.title}
+                        </h3>
+                      </Link>
+                      <div className="text-[13px] text-gray-500 font-medium pt-0.5">
+                        {getReporterTitle(item)}
+                      </div>
+                    </div>
                   </div>
                 );
               })}
