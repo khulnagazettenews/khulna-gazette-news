@@ -444,11 +444,7 @@ export default function EpaperViewer({ initialIssues, initialSelectedDate }: Epa
                 onClick={() => setLightboxOpen(true)}
                 onDoubleClick={() => setZoomScale((z) => (z > 1.1 ? 1.0 : 2.0))}
                 title="ইমেজটিতে ক্লিক করুন ফুল স্ক্রিন উইন্ডো জুড়ে পত্রিকা পড়তে"
-                className="w-full h-auto object-contain block cursor-pointer border border-gray-300 shadow-md bg-white epaper-sharp rounded-xs transition-all duration-200 hover:shadow-2xl hover:opacity-95"
-                style={{
-                  imageRendering: 'crisp-edges',
-                  WebkitFontSmoothing: 'antialiased',
-                }}
+                className="w-full h-auto object-contain block cursor-pointer border border-gray-300 shadow-md bg-white rounded-xs transition-all duration-200 hover:shadow-2xl hover:opacity-95"
               />
             </div>
           </div>
@@ -645,11 +641,7 @@ export default function EpaperViewer({ initialIssues, initialSelectedDate }: Epa
                 alt={getPageLabel(activePageIndex, pages.length)}
                 onDoubleClick={() => setLightboxZoom((z) => (z > 1.2 ? 1.0 : 2.25))}
                 title="ডাবল ক্লিক করুন জুম ইন/আউট করতে, মাউস দিয়ে টেনে প্যান করুন"
-                className="w-full h-auto object-contain rounded bg-white shadow-2xl epaper-sharp"
-                style={{
-                  imageRendering: 'crisp-edges',
-                  WebkitFontSmoothing: 'antialiased',
-                }}
+                className="w-full h-auto object-contain rounded bg-white shadow-2xl"
               />
             </div>
           </div>
