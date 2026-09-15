@@ -214,7 +214,7 @@ export default function EpaperViewer({ initialIssues, initialSelectedDate }: Epa
   const [scrollStart, setScrollStart] = useState({ left: 0, top: 0 });
 
   const handleMouseDown = (e: React.MouseEvent) => {
-    if (zoomScale > 1.05 && containerRef.current) {
+    if (containerRef.current) {
       setIsDragging(true);
       setDragStart({ x: e.clientX, y: e.clientY });
       setScrollStart({
@@ -243,7 +243,7 @@ export default function EpaperViewer({ initialIssues, initialSelectedDate }: Epa
   const [lbScrollStart, setLbScrollStart] = useState({ left: 0, top: 0 });
 
   const handleLbMouseDown = (e: React.MouseEvent) => {
-    if (lightboxZoom > 1.05 && lightboxContainerRef.current) {
+    if (lightboxContainerRef.current) {
       setLbDragging(true);
       setLbDragStart({ x: e.clientX, y: e.clientY });
       setLbScrollStart({
@@ -407,7 +407,7 @@ export default function EpaperViewer({ initialIssues, initialSelectedDate }: Epa
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp}
             className={`relative overflow-auto flex justify-center bg-[#f0f0f0] p-3 sm:p-4 min-h-[550px] max-h-[900px] scrollbar-thin scrollbar-thumb-gray-400 select-none group/container ${
-              zoomScale > 1.05 ? (isDragging ? 'cursor-grabbing' : 'cursor-grab') : 'cursor-default'
+              isDragging ? 'cursor-grabbing' : 'cursor-grab'
             }`}
           >
             {/* Floating Left Overlay Button (Previous Page) */}
@@ -629,7 +629,7 @@ export default function EpaperViewer({ initialIssues, initialSelectedDate }: Epa
             onMouseUp={handleLbMouseUp}
             onMouseLeave={handleLbMouseUp}
             className={`flex-1 w-full flex items-start justify-center overflow-auto p-2 my-2 scrollbar-thin scrollbar-thumb-white/40 ${
-              lightboxZoom > 1.05 ? (lbDragging ? 'cursor-grabbing' : 'cursor-grab') : 'cursor-default'
+              lbDragging ? 'cursor-grabbing' : 'cursor-grab'
             }`}
           >
             <div 
