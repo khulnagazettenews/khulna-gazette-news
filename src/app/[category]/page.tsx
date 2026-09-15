@@ -97,11 +97,17 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
 
   const matchingCatIds = allMatchingCats.map((c) => c.id);
 
+  const newsOrConditions: any[] = [
+    { categoryId: { in: matchingCatIds } },
+    { subCategoryId: { in: matchingCatIds } },
+  ];
+
+  if (cat.name && ['খুলনা', 'কুষ্টিয়া', 'চুয়াডাঙ্গা', 'ঝিনাইদহ', 'নড়াইল', 'বাগেরহাট', 'মাগুরা', 'মেহেরপুর', 'যশোর', 'সাতক্ষীরা'].includes(cat.name)) {
+    newsOrConditions.push({ title: { contains: cat.name } });
+  }
+
   const newsWhereCondition = {
-    OR: [
-      { categoryId: { in: matchingCatIds } },
-      { subCategoryId: { in: matchingCatIds } },
-    ],
+    OR: newsOrConditions,
     status: 'PUBLISHED',
   };
 
