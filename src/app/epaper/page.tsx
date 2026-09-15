@@ -56,6 +56,7 @@ export default async function PublicEpaperList({
   try {
     const [rawIssues, fetchedLatest, fetchedPopular, fetchedExclusive, fetchedAds] = await Promise.all([
       prisma.epaperIssue.findMany({
+        where: { imageUrl: { startsWith: 'http' } },
         orderBy: { date: 'desc' },
       }),
       prisma.news.findMany({
