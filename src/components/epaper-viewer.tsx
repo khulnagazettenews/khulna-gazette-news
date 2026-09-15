@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useMemo, useRef } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { 
   ChevronLeft, 
   ChevronRight, 
@@ -12,7 +13,8 @@ import {
   Minus,
   FileText,
   ImageIcon,
-  Sparkles
+  Sparkles,
+  AlertCircle
 } from 'lucide-react';
 
 interface EpaperIssue {
@@ -27,7 +29,32 @@ interface EpaperIssue {
 
 interface EpaperViewerProps {
   initialIssues: EpaperIssue[];
+  initialSelectedDate?: string;
 }
+
+const formatDateToYYYYMMDD = (dateInput: Date | string): string => {
+  if (!dateInput) return '';
+  if (typeof dateInput === 'string') {
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateInput)) return dateInput;
+    if (dateInput.includes('T')) return dateInput.split('T')[0];
+  }
+  try {
+    const d = new Date(dateInput);
+    if (isNaN(d.getTime())) return '';
+    return d.toISOString().split('T')[0];
+  } catch {
+    return '';
+  }
+};
+
+const toBanglaNum = (num: number | string): string => {
+  const bnDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+  return num
+    .toString()
+    .split('')
+    .map((char) => (/\d/.test(char) ? bnDigits[parseInt(char)] : char))
+    .join('');
+};
 
 // Dynamic Bengali Page Label Generator
 const getPageLabel = (idx: number, totalPages: number) => {
@@ -46,22 +73,74 @@ const FALLBACK_PAGES = [
   '/uploads/epaper/khulna_gazette_p1.jpg',
 ];
 
-export default function EpaperViewer({ initialIssues }: EpaperViewerProps) {
-  const [issues] = useState<EpaperIssue[]>(initialIssues);
-  const [activeIssue, setActiveIssue] = useState<EpaperIssue | null>(
-    initialIssues.length > 0 ? initialIssues[0] : null
-  );
+export default function EpaperViewer({ initialIssues, initialSelectedDate }: EpaperViewerProps) {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const queryDate = searchParams?.get('date');
 
+  const [issues] = useState<EpaperIssue[]>(initialIssues);
+  const [noticeMessage, setNoticeMessage] = useState<string | null>(null);
+
+  const matchedInitialIssue = useMemo(() => {
+    const targetDate = queryDate || initialSelectedDate;
+    if (targetDate && initialIssues.length > 0) {
+      const normalizedTarget = formatDateToYYYYMMDD(targetDate);
+      const found = initialIssues.find((item) => formatDateToYYYYMMDD(item.date) === normalizedTarget);
+      if (found) return found;
+    }
+    return initialIssues.length > 0 ? initialIssues[0] : null;
+  }, [initialIssues, initialSelectedDate, queryDate]);
+
+  const [activeIssue, setActiveIssue] = useState<EpaperIssue | null>(matchedInitialIssue);
   const [activePageIndex, setActivePageIndex] = useState<number>(0);
   const [zoomScale, setZoomScale] = useState<number>(1); // Default to 100% Full Page Fit View
   const [viewMode, setViewMode] = useState<'image' | 'pdf'>('image'); // Mode switcher
   const [lightboxOpen, setLightboxOpen] = useState<boolean>(false);
   const [lightboxZoom, setLightboxZoom] = useState<number>(1.75);
   const [selectedDateStr, setSelectedDateStr] = useState<string>(
-    activeIssue ? new Date(activeIssue.date).toISOString().split('T')[0] : '2026-07-25'
+    queryDate || initialSelectedDate || (activeIssue ? formatDateToYYYYMMDD(activeIssue.date) : '2026-09-15')
   );
 
   const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const targetDate = queryDate || initialSelectedDate;
+    if (!targetDate || issues.length === 0) return;
+
+    const normalizedTarget = formatDateToYYYYMMDD(targetDate);
+
+    // 1. Try exact match
+    const exactMatch = issues.find((item) => formatDateToYYYYMMDD(item.date) === normalizedTarget);
+
+    if (exactMatch) {
+      setActiveIssue(exactMatch);
+      setActivePageIndex(0);
+      setSelectedDateStr(normalizedTarget);
+      setNoticeMessage(null);
+    } else {
+      // 2. Find closest issue if exact match not found
+      let closest: EpaperIssue | null = null;
+      let minDiff = Infinity;
+      const targetMs = new Date(normalizedTarget).getTime();
+
+      for (const item of issues) {
+        const itemDateStr = formatDateToYYYYMMDD(item.date);
+        const diff = Math.abs(new Date(itemDateStr).getTime() - targetMs);
+        if (diff < minDiff) {
+          minDiff = diff;
+          closest = item;
+        }
+      }
+
+      if (closest) {
+        setActiveIssue(closest);
+        setActivePageIndex(0);
+        const closestDateStr = formatDateToYYYYMMDD(closest.date);
+        setSelectedDateStr(closestDateStr);
+        setNoticeMessage(`অনুরোধকৃত তারিখ (${toBanglaNum(normalizedTarget)}) এর ই-পেপার পাওয়া যায়নি। নিকটবর্তী (${toBanglaNum(closestDateStr)}) তারিখের সংকলন দেখানো হচ্ছে।`);
+      }
+    }
+  }, [queryDate, initialSelectedDate, issues]);
 
   // Extract all available pages for active issue (auto-supports 4, 6, 8 or any number of pages)
   const pages = useMemo(() => {
@@ -79,22 +158,12 @@ export default function EpaperViewer({ initialIssues }: EpaperViewerProps) {
     return list;
   }, [activeIssue]);
 
-  // Handle date change
+  // Handle date change from input
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const dateVal = e.target.value;
     setSelectedDateStr(dateVal);
     if (!dateVal) return;
-
-    const found = issues.find((item) => {
-      const dStr = new Date(item.date).toISOString().split('T')[0];
-      return dStr === dateVal;
-    });
-
-    if (found) {
-      setActiveIssue(found);
-      setActivePageIndex(0);
-      setZoomScale(1.25);
-    }
+    router.push(`/epaper?date=${dateVal}`);
   };
 
   // Page navigation handlers
@@ -144,7 +213,14 @@ export default function EpaperViewer({ initialIssues }: EpaperViewerProps) {
   };
 
   return (
-    <div className="max-w-[1140px] mx-auto py-6 px-3 sm:px-4 font-sans text-[#222222]">
+    <div className="w-full mx-auto py-2 px-1 sm:px-2 font-sans text-[#222222]">
+      {/* Notice Banner when fallback date is loaded */}
+      {noticeMessage && (
+        <div className="mb-4 bg-amber-50 border border-amber-300 text-amber-950 px-4 py-3 rounded-lg flex items-center gap-2.5 text-xs sm:text-sm font-bold shadow-2xs">
+          <AlertCircle size={20} className="text-amber-600 shrink-0" />
+          <span>{noticeMessage}</span>
+        </div>
+      )}
       
       {/* 1. HEADER SECTION ("আজকের পত্রিকা") - Exact Purbanchal Header Style + Sharp Mode Indicator */}
       <div className="mb-6">

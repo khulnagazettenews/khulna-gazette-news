@@ -12,6 +12,8 @@ interface SidebarWidgetsProps {
   exclusiveNews?: any[];
   sidebarAd?: any;
   sidebarAds?: any[];
+  isEpaperPage?: boolean;
+  availableDates?: string[];
 }
 
 function RenderAdItem({ ad }: { ad: any }) {
@@ -80,6 +82,8 @@ export default function SidebarWidgets({
   exclusiveNews = [],
   sidebarAd,
   sidebarAds = [],
+  isEpaperPage = false,
+  availableDates = [],
 }: SidebarWidgetsProps) {
   const topAds = sidebarAds.filter(a => a.position === 'sidebar_widget_top');
   const middleAds = sidebarAds.filter(a => a.position === 'sidebar_widget_middle');
@@ -225,8 +229,12 @@ export default function SidebarWidgets({
         <RenderAdItem key={ad.id} ad={ad} />
       ))}
 
-      {/* 5. CALENDAR ARCHIVE WIDGET (আর্কাইভ - 5th) */}
-      <CalendarArchiveWidget />
+      {/* 5. CALENDAR ARCHIVE WIDGET (আর্কাইভ / ই-পেপার আর্কাইভ - 5th) */}
+      <CalendarArchiveWidget
+        title={isEpaperPage ? 'ই-পেপার আর্কাইভ' : 'আর্কাইভ'}
+        targetPath={isEpaperPage ? '/epaper' : '/archive'}
+        availableDates={availableDates}
+      />
 
       {/* 6. LIKE US ON FACEBOOK WIDGET (6th) */}
       <FacebookWidget />

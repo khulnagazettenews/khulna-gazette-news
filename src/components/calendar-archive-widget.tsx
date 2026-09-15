@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { ChevronLeft, ChevronRight, Search } from 'lucide-react';
 
 const banglaMonths = [
@@ -45,38 +45,68 @@ const toBanglaNum = (num: number | string): string => {
     .join('');
 };
 
-export default function CalendarArchiveWidget() {
+interface CalendarArchiveWidgetProps {
+  title?: string;
+  targetPath?: string;
+  availableDates?: string[];
+  onSelectDate?: (dateStr: string) => void;
+}
+
+export default function CalendarArchiveWidget({
+  title = 'আর্কাইভ',
+  targetPath = '/archive',
+  availableDates,
+  onSelectDate,
+}: CalendarArchiveWidgetProps) {
   const router = useRouter();
-  const [currentYear, setCurrentYear] = useState<number>(2024);
-  const [currentMonth, setCurrentMonth] = useState<number>(11); // Default Dec 2024
-  const [selectedDay, setSelectedDay] = useState<number>(17);
+  const searchParams = useSearchParams();
+  const dateParam = searchParams?.get('date');
+
+  const [currentYear, setCurrentYear] = useState<number>(2026);
+  const [currentMonth, setCurrentMonth] = useState<number>(8); // Sept
+  const [selectedDay, setSelectedDay] = useState<number>(15);
+
+  const minYear = targetPath === '/epaper' ? 2025 : 2020;
 
   useEffect(() => {
+    if (dateParam && dateParam.match(/^\d{4}-\d{2}-\d{2}$/)) {
+      const [y, m, d] = dateParam.split('-').map(Number);
+      setCurrentYear(Math.max(y, minYear));
+      setCurrentMonth(m - 1);
+      setSelectedDay(d);
+      return;
+    }
+
     if (typeof window !== 'undefined') {
       const urlParams = new URLSearchParams(window.location.search);
-      const dateParam = urlParams.get('date');
-      if (dateParam && dateParam.match(/^\d{4}-\d{2}-\d{2}$/)) {
-        const [y, m, d] = dateParam.split('-').map(Number);
-        setCurrentYear(y);
+      const windowDate = urlParams.get('date');
+      if (windowDate && windowDate.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        const [y, m, d] = windowDate.split('-').map(Number);
+        setCurrentYear(Math.max(y, minYear));
         setCurrentMonth(m - 1);
         setSelectedDay(d);
         return;
       }
     }
+
     const today = new Date();
-    setCurrentYear(today.getFullYear());
+    setCurrentYear(Math.max(today.getFullYear(), minYear));
     setCurrentMonth(today.getMonth());
     setSelectedDay(today.getDate());
-  }, []);
+  }, [dateParam, minYear]);
 
-  // Generate Year Options (e.g., from 2020 to current year + 1)
-  const years = Array.from({ length: 10 }, (_, i) => 2020 + i);
+  // Generate Year Options starting from 2025 for epaper
+  const currentMaxYear = new Date().getFullYear();
+  const yearCount = Math.max(1, currentMaxYear - minYear + 1);
+  const years = Array.from({ length: yearCount }, (_, i) => minYear + i);
 
   // Month navigation handlers
   const handlePrevMonth = () => {
     if (currentMonth === 0) {
-      setCurrentMonth(11);
-      setCurrentYear((prev) => prev - 1);
+      if (currentYear > minYear) {
+        setCurrentMonth(11);
+        setCurrentYear((prev) => prev - 1);
+      }
     } else {
       setCurrentMonth((prev) => prev - 1);
     }
@@ -130,7 +160,8 @@ export default function CalendarArchiveWidget() {
     const monthFormatted = String(currentMonth + 1).padStart(2, '0');
     const dayFormatted = String(selectedDay).padStart(2, '0');
     const dateStr = `${currentYear}-${monthFormatted}-${dayFormatted}`;
-    router.push(`/archive?date=${dateStr}`);
+    if (onSelectDate) onSelectDate(dateStr);
+    router.push(`${targetPath}?date=${dateStr}`);
   };
 
   return (
@@ -148,7 +179,7 @@ export default function CalendarArchiveWidget() {
             textAlign: 'center',
           }}
         >
-          আর্কাইভ
+          {title}
         </div>
 
         {/* Content Body */}
@@ -236,7 +267,8 @@ export default function CalendarArchiveWidget() {
                       const monthFormatted = String(currentMonth + 1).padStart(2, '0');
                       const dayFormatted = String(item.day).padStart(2, '0');
                       const dateStr = `${currentYear}-${monthFormatted}-${dayFormatted}`;
-                      router.push(`/archive?date=${dateStr}`);
+                      if (onSelectDate) onSelectDate(dateStr);
+                      router.push(`${targetPath}?date=${dateStr}`);
                     }}
                     className={`py-0.5 rounded transition-colors text-center cursor-pointer ${
                       isSelected
