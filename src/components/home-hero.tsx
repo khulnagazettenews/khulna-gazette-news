@@ -169,9 +169,6 @@ export default function HomeHero({ news }: HomeHeroProps) {
                         {story.title}
                       </h3>
                     </Link>
-                    <div className="text-[13px] text-gray-500 font-medium pt-0.5">
-                      {getReporterTitle(story)}
-                    </div>
                   </div>
                 </div>
               );

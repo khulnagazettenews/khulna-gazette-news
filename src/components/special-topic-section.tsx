@@ -19,8 +19,8 @@ interface SpecialTopicSectionProps {
 }
 
 export default function SpecialTopicSection({
-  title = 'বিশ্বের প্রতিদিন ও আন্তর্জাতিক সংবাদ',
-  bannerSubtitle = 'বিশ্বজুড়ে ঘটে যাওয়া গুরুত্বপূর্ণ ও নিরপেক্ষ সংবাদ, আপনার জন্য প্রতিদিন',
+  title = 'গেজেট প্রতিবেদন',
+  bannerSubtitle = 'বিশেষ ও এক্সক্লুসিভ সংবাদ, আপনার জন্য প্রতিদিন',
   news,
 }: SpecialTopicSectionProps) {
   if (!news || news.length === 0) return null;

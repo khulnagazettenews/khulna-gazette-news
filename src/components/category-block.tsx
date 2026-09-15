@@ -99,9 +99,6 @@ export default function CategoryBlock({
                 >
                   {lead.title}
                 </h3>
-                <div className="text-[12px] text-gray-500 font-medium pt-0.5">
-                  {getReporterTitle(lead)}
-                </div>
               </Link>
               <p
                 style={{

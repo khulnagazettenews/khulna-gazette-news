@@ -44,7 +44,7 @@ export default async function HomePage() {
       if (totalSpecialTopics === 0) {
         activeSpecialTopic = await prisma.specialTopic.create({
           data: {
-            title: 'বিশেষ প্রতিবেদন ও আন্তর্জাতিক সংবাদ',
+            title: 'গেজেট প্রতিবেদন',
             bannerSubtitle: 'বিস্তারিত দেখতে কভার খবরের যেকোনো একটিতে ক্লিক করুন',
             isActive: true,
             newsIds: JSON.stringify([]),
