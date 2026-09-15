@@ -102,6 +102,7 @@ export default function EpaperViewer({ initialIssues, initialSelectedDate }: Epa
   );
 
   const containerRef = useRef<HTMLDivElement>(null);
+  const lightboxContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const targetDate = queryDate || initialSelectedDate;
@@ -182,34 +183,87 @@ export default function EpaperViewer({ initialIssues, initialSelectedDate }: Epa
   };
 
   // Zoom handlers
-  const handleZoomOut = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    e.preventDefault();
-    setZoomScale((z) => Math.max(z - 0.25, 0.75));
+  const handleZoomOut = () => {
+    setZoomScale((z) => Math.max(Number((z - 0.20).toFixed(2)), 0.5));
   };
 
-  const handleZoomIn = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    e.preventDefault();
-    setZoomScale((z) => Math.min(z + 0.25, 4));
+  const handleZoomIn = () => {
+    setZoomScale((z) => Math.min(Number((z + 0.20).toFixed(2)), 4.0));
   };
 
-  const setPresetZoom = (scale: number, e: React.MouseEvent) => {
-    e.stopPropagation();
-    e.preventDefault();
-    setZoomScale(scale);
-  };
-
-  // Optional Ctrl + Mouse Wheel Zooming
+  // Direct Mouse Wheel Zooming on Image Container
   const handleWheel = (e: React.WheelEvent) => {
-    if (e.ctrlKey || e.metaKey) {
+    if (e.ctrlKey || e.metaKey || e.shiftKey) {
       e.preventDefault();
-      if (e.deltaY < 0) {
-        setZoomScale((z) => Math.min(z + 0.25, 4));
-      } else {
-        setZoomScale((z) => Math.max(z - 0.25, 0.75));
-      }
+      const delta = e.deltaY < 0 ? 0.15 : -0.15;
+      setZoomScale((z) => Math.min(Math.max(Number((z + delta).toFixed(2)), 0.5), 4.0));
     }
+  };
+
+  const handleLbWheel = (e: React.WheelEvent) => {
+    if (e.ctrlKey || e.metaKey || e.shiftKey) {
+      e.preventDefault();
+      const delta = e.deltaY < 0 ? 0.20 : -0.20;
+      setLightboxZoom((z) => Math.min(Math.max(Number((z + delta).toFixed(2)), 0.5), 4.5));
+    }
+  };
+
+  // Drag to pan image when zoomed
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [scrollStart, setScrollStart] = useState({ left: 0, top: 0 });
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (zoomScale > 1.05 && containerRef.current) {
+      setIsDragging(true);
+      setDragStart({ x: e.clientX, y: e.clientY });
+      setScrollStart({
+        left: containerRef.current.scrollLeft,
+        top: containerRef.current.scrollTop,
+      });
+    }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (isDragging && containerRef.current) {
+      const dx = e.clientX - dragStart.x;
+      const dy = e.clientY - dragStart.y;
+      containerRef.current.scrollLeft = scrollStart.left - dx;
+      containerRef.current.scrollTop = scrollStart.top - dy;
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  // Lightbox Drag to pan
+  const [lbDragging, setLbDragging] = useState(false);
+  const [lbDragStart, setLbDragStart] = useState({ x: 0, y: 0 });
+  const [lbScrollStart, setLbScrollStart] = useState({ left: 0, top: 0 });
+
+  const handleLbMouseDown = (e: React.MouseEvent) => {
+    if (lightboxZoom > 1.05 && lightboxContainerRef.current) {
+      setLbDragging(true);
+      setLbDragStart({ x: e.clientX, y: e.clientY });
+      setLbScrollStart({
+        left: lightboxContainerRef.current.scrollLeft,
+        top: lightboxContainerRef.current.scrollTop,
+      });
+    }
+  };
+
+  const handleLbMouseMove = (e: React.MouseEvent) => {
+    if (lbDragging && lightboxContainerRef.current) {
+      const dx = e.clientX - lbDragStart.x;
+      const dy = e.clientY - lbDragStart.y;
+      lightboxContainerRef.current.scrollLeft = lbScrollStart.left - dx;
+      lightboxContainerRef.current.scrollTop = lbScrollStart.top - dy;
+    }
+  };
+
+  const handleLbMouseUp = () => {
+    setLbDragging(false);
   };
 
   return (
@@ -344,36 +398,47 @@ export default function EpaperViewer({ initialIssues, initialSelectedDate }: Epa
       ) : (
         <div className="max-w-[1050px] mx-auto my-6 bg-white border border-[#e2e2e2] rounded shadow-2xs overflow-hidden">
           
-          {/* Dedicated Zoom Control Bar above Newspaper Image */}
-          <div className="bg-[#f8f9fa] border-b border-[#e2e2e2] px-3 py-2 flex flex-wrap items-center justify-between gap-2 text-xs font-bold select-none">
-            <div className="flex items-center gap-1.5 sm:gap-2">
+          {/* Dedicated Custom Zoom Toolbar with Range Slider */}
+          <div className="bg-[#f8f9fa] border-b border-[#e2e2e2] px-3 py-2 flex flex-wrap items-center justify-between gap-2.5 text-xs font-bold select-none">
+            <div className="flex flex-wrap items-center gap-2">
               <span className="text-slate-700 font-extrabold flex items-center gap-1">
                 <span>জুম:</span>
-                <span className="text-[#A00B01] font-black">{Math.round(zoomScale * 100)}%</span>
+                <span className="text-[#A00B01] font-black text-sm">{Math.round(zoomScale * 100)}%</span>
               </span>
 
-              <div className="h-4 w-[1px] bg-slate-300 mx-1 hidden sm:block"></div>
+              {/* Slider for Custom Zoom */}
+              <div className="flex items-center gap-1.5 bg-white px-2.5 py-1 rounded border border-slate-300 shadow-2xs">
+                <button
+                  type="button"
+                  onClick={handleZoomOut}
+                  className="p-0.5 hover:text-[#A00B01] transition cursor-pointer"
+                  title="জুম আউট (-)"
+                >
+                  <Minus size={14} />
+                </button>
 
-              <button
-                type="button"
-                onClick={() => setZoomScale((z) => Math.max(z - 0.25, 0.5))}
-                className="bg-white hover:bg-slate-200 border border-slate-300 text-slate-800 px-2.5 py-1 rounded text-xs font-black flex items-center gap-1 transition cursor-pointer shadow-2xs"
-                title="জুম আউট (-)"
-              >
-                <Minus size={14} />
-                <span>আউট</span>
-              </button>
+                <input
+                  type="range"
+                  min="50"
+                  max="400"
+                  step="5"
+                  value={Math.round(zoomScale * 100)}
+                  onChange={(e) => setZoomScale(Number(e.target.value) / 100)}
+                  className="w-20 sm:w-32 h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#A00B01]"
+                  title="ইচ্ছামত জুম ইন-আউট করতে স্লাইডার টানুন"
+                />
 
-              <button
-                type="button"
-                onClick={() => setZoomScale((z) => Math.min(z + 0.25, 3.5))}
-                className="bg-white hover:bg-slate-200 border border-slate-300 text-slate-800 px-2.5 py-1 rounded text-xs font-black flex items-center gap-1 transition cursor-pointer shadow-2xs"
-                title="জুম ইন (+)"
-              >
-                <Plus size={14} />
-                <span>ইন</span>
-              </button>
+                <button
+                  type="button"
+                  onClick={handleZoomIn}
+                  className="p-0.5 hover:text-[#A00B01] transition cursor-pointer"
+                  title="জুম ইন (+)"
+                >
+                  <Plus size={14} />
+                </button>
+              </div>
 
+              {/* Preset Buttons */}
               <button
                 type="button"
                 onClick={() => setZoomScale(1)}
@@ -391,17 +456,17 @@ export default function EpaperViewer({ initialIssues, initialSelectedDate }: Epa
                   zoomScale === 1.5 ? 'bg-[#A00B01] text-white border-[#A00B01]' : 'bg-white hover:bg-slate-100 text-slate-800 border-slate-300'
                 }`}
               >
-                ১৫০% এইচডি
+                ১৫০% HD
               </button>
 
               <button
                 type="button"
-                onClick={() => setZoomScale(2.0)}
+                onClick={() => setZoomScale(2.5)}
                 className={`px-2.5 py-1 rounded text-xs font-extrabold transition cursor-pointer border hidden sm:inline-block ${
-                  zoomScale === 2.0 ? 'bg-[#A00B01] text-white border-[#A00B01]' : 'bg-white hover:bg-slate-100 text-slate-800 border-slate-300'
+                  zoomScale === 2.5 ? 'bg-[#A00B01] text-white border-[#A00B01]' : 'bg-white hover:bg-slate-100 text-slate-800 border-slate-300'
                 }`}
               >
-                ২০০% আল্ট্রা
+                ২৫০% আল্ট্রা
               </button>
             </div>
 
@@ -411,7 +476,7 @@ export default function EpaperViewer({ initialIssues, initialSelectedDate }: Epa
               className="bg-[#222222] hover:bg-[#A00B01] text-white px-3 py-1 rounded text-xs font-extrabold flex items-center gap-1.5 transition cursor-pointer shadow-2xs ml-auto"
             >
               <Maximize2 size={13} />
-              <span>ফুলস্ক্রিন (এইচডি)</span>
+              <span>ফুলস্ক্রিন এইচডি</span>
             </button>
           </div>
 
@@ -419,7 +484,13 @@ export default function EpaperViewer({ initialIssues, initialSelectedDate }: Epa
           <div 
             ref={containerRef}
             onWheel={handleWheel}
-            className="relative overflow-auto flex justify-center bg-[#f0f0f0] p-3 sm:p-4 min-h-[550px] max-h-[900px] scrollbar-thin scrollbar-thumb-gray-400 select-none group/container"
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+            className={`relative overflow-auto flex justify-center bg-[#f0f0f0] p-3 sm:p-4 min-h-[550px] max-h-[900px] scrollbar-thin scrollbar-thumb-gray-400 select-none group/container ${
+              zoomScale > 1.05 ? (isDragging ? 'cursor-grabbing' : 'cursor-grab') : 'cursor-default'
+            }`}
           >
             {/* Floating Left Overlay Button (Previous Page) */}
             {activePageIndex > 0 && (
@@ -446,15 +517,15 @@ export default function EpaperViewer({ initialIssues, initialSelectedDate }: Epa
             )}
 
             <div 
-              className="transition-all duration-150 flex justify-center"
+              className="transition-all duration-150 flex justify-center shrink-0"
               style={{ width: `${zoomScale * 100}%` }}
             >
               <img
                 src={pages[activePageIndex]}
                 alt={getPageLabel(activePageIndex, pages.length)}
-                onClick={() => setLightboxOpen(true)}
-                title="বড় করে দেখতে ছবিতে ক্লিক করুন"
-                className="w-full h-auto object-contain block cursor-pointer border border-gray-300 shadow-md bg-white epaper-sharp rounded-xs transition-all duration-300 hover:scale-[1.01]"
+                onDoubleClick={() => setZoomScale((z) => (z > 1.1 ? 1.0 : 2.0))}
+                title="ডাবল ক্লিক করুন জুম ইন/আউট করতে, অথবা ফুলস্ক্রিন দেখুন"
+                className="w-full h-auto object-contain block cursor-pointer border border-gray-300 shadow-md bg-white epaper-sharp rounded-xs transition-all duration-200"
                 style={{
                   imageRendering: 'crisp-edges',
                   WebkitFontSmoothing: 'antialiased',
@@ -562,7 +633,7 @@ export default function EpaperViewer({ initialIssues, initialSelectedDate }: Epa
       {/* 5. LIGHTBOX SLIDER POPUP WITH WORKING HD CRISP ZOOM CONTROLS */}
       {lightboxOpen && pages[activePageIndex] && (
         <div className="fixed inset-0 z-50 bg-black/95 flex flex-col items-center justify-between p-3 sm:p-5 select-none">
-          {/* Header Bar */}
+          {/* Header Bar with Interactive Zoom Range Slider */}
           <div className="w-full flex flex-wrap items-center justify-between text-white max-w-6xl border-b border-white/20 pb-2.5 gap-2">
             <div className="flex items-center gap-2 shrink-0">
               <span className="font-bold text-sm sm:text-lg text-white">
@@ -573,8 +644,37 @@ export default function EpaperViewer({ initialIssues, initialSelectedDate }: Epa
               </span>
             </div>
 
-            {/* Lightbox Zoom Controls */}
-            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 shrink-0">
+            {/* Lightbox Zoom Controls with Range Slider */}
+            <div className="flex flex-wrap items-center gap-2 shrink-0">
+              <div className="flex items-center gap-1.5 bg-white/10 px-2.5 py-1 rounded border border-white/20">
+                <button
+                  type="button"
+                  onClick={() => setLightboxZoom((z) => Math.max(Number((z - 0.20).toFixed(2)), 0.5))}
+                  className="hover:text-emerald-400 transition cursor-pointer"
+                  title="জুম আউট (-)"
+                >
+                  <Minus size={14} />
+                </button>
+                <input
+                  type="range"
+                  min="50"
+                  max="450"
+                  step="5"
+                  value={Math.round(lightboxZoom * 100)}
+                  onChange={(e) => setLightboxZoom(Number(e.target.value) / 100)}
+                  className="w-24 sm:w-36 h-1.5 bg-white/20 rounded-lg appearance-none cursor-pointer accent-emerald-400"
+                  title="ইচ্ছামত জুম ইন-আউট করতে স্লাইডার টানুন"
+                />
+                <button
+                  type="button"
+                  onClick={() => setLightboxZoom((z) => Math.min(Number((z + 0.20).toFixed(2)), 4.5))}
+                  className="hover:text-emerald-400 transition cursor-pointer"
+                  title="জুম ইন (+)"
+                >
+                  <Plus size={14} />
+                </button>
+              </div>
+
               <button
                 type="button"
                 onClick={() => setLightboxZoom(1.0)}
@@ -597,30 +697,12 @@ export default function EpaperViewer({ initialIssues, initialSelectedDate }: Epa
 
               <button
                 type="button"
-                onClick={() => setLightboxZoom(2.25)}
+                onClick={() => setLightboxZoom(2.5)}
                 className={`px-2.5 py-1 rounded text-xs font-extrabold transition cursor-pointer border ${
-                  lightboxZoom === 2.25 ? 'bg-[#A00B01] text-white border-[#A00B01]' : 'bg-white/20 hover:bg-white/30 text-white border-white/20'
+                  lightboxZoom === 2.5 ? 'bg-[#A00B01] text-white border-[#A00B01]' : 'bg-white/20 hover:bg-white/30 text-white border-white/20'
                 }`}
               >
-                ২২৫% আল্ট্রা
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setLightboxZoom((z) => Math.max(z - 0.25, 0.75))}
-                className="bg-white/20 hover:bg-white/30 text-white px-2.5 py-1 rounded text-xs font-bold transition flex items-center gap-1 cursor-pointer"
-                title="জুম আউট (-)"
-              >
-                <Minus size={15} />
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setLightboxZoom((z) => Math.min(z + 0.25, 4))}
-                className="bg-white/20 hover:bg-white/30 text-white px-2.5 py-1 rounded text-xs font-bold transition flex items-center gap-1 cursor-pointer"
-                title="জুম ইন (+)"
-              >
-                <Plus size={15} />
+                ২৫০% আল্ট্রা
               </button>
 
               <button
@@ -634,27 +716,27 @@ export default function EpaperViewer({ initialIssues, initialSelectedDate }: Epa
             </div>
           </div>
 
-          {/* Main Newspaper Image Display */}
+          {/* Main Newspaper Image Display with Drag and Pan */}
           <div 
-            onWheel={(e) => {
-              if (e.ctrlKey || e.metaKey) {
-                e.preventDefault();
-                if (e.deltaY < 0) {
-                  setLightboxZoom((z) => Math.min(z + 0.25, 4));
-                } else {
-                  setLightboxZoom((z) => Math.max(z - 0.25, 0.75));
-                }
-              }
-            }}
-            className="flex-1 w-full flex items-start justify-center overflow-auto p-2 my-2 scrollbar-thin scrollbar-thumb-white/40"
+            ref={lightboxContainerRef}
+            onWheel={handleLbWheel}
+            onMouseDown={handleLbMouseDown}
+            onMouseMove={handleLbMouseMove}
+            onMouseUp={handleLbMouseUp}
+            onMouseLeave={handleLbMouseUp}
+            className={`flex-1 w-full flex items-start justify-center overflow-auto p-2 my-2 scrollbar-thin scrollbar-thumb-white/40 ${
+              lightboxZoom > 1.05 ? (lbDragging ? 'cursor-grabbing' : 'cursor-grab') : 'cursor-default'
+            }`}
           >
             <div 
-              className="transition-all duration-150 flex justify-center"
+              className="transition-all duration-150 flex justify-center shrink-0"
               style={{ width: `${lightboxZoom * 100}%` }}
             >
               <img
                 src={pages[activePageIndex]}
                 alt={getPageLabel(activePageIndex, pages.length)}
+                onDoubleClick={() => setLightboxZoom((z) => (z > 1.2 ? 1.0 : 2.25))}
+                title="ডাবল ক্লিক করুন জুম ইন/আউট করতে, মাউস দিয়ে টেনে প্যান করুন"
                 className="w-full h-auto object-contain rounded bg-white shadow-2xl epaper-sharp"
                 style={{
                   imageRendering: 'crisp-edges',
