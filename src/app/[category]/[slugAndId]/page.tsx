@@ -188,11 +188,60 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
     console.error('Error finding news item:', err);
   }
 
-  // 2. If news not found, check if slugAndId is actually a subcategory slug (e.g. /khulnanchal/khulna)
+  // 2. If news not found, check if slugAndId is actually a category/subcategory slug or alias (e.g. /category/khela, /category/economic)
   if (!news) {
+    const slugAliases: Record<string, string[]> = {
+      'bangladesh': ['bangladesh'],
+      'politics': ['politics', 'rajniti'],
+      'rajniti': ['politics', 'rajniti'],
+      'sports': ['sports', 'khela'],
+      'khela': ['sports', 'khela'],
+      'entertainment': ['entertainment', 'binodon'],
+      'binodon': ['entertainment', 'binodon'],
+      'khulna': ['khulna', 'khulnanchal'],
+      'khulnanchal': ['khulna', 'khulnanchal'],
+      'economy': ['economy', 'economic', 'orthoniti'],
+      'economic': ['economy', 'economic', 'orthoniti'],
+      'orthoniti': ['economy', 'economic', 'orthoniti'],
+      'international': ['international', 'antorjatik', 'antarjatik'],
+      'antorjatik': ['international', 'antorjatik', 'antarjatik'],
+      'antarjatik': ['international', 'antorjatik', 'antarjatik'],
+      'education': ['education', 'shikkha'],
+      'shikkha': ['education', 'shikkha'],
+      'islam': ['islam', 'islam-and-life', 'islam-life'],
+      'islam-and-life': ['islam', 'islam-and-life', 'islam-life'],
+      'islam-life': ['islam', 'islam-and-life', 'islam-life'],
+      'technology': ['technology', 'it'],
+      'it': ['technology', 'it'],
+      'health': ['health', 'chikitsa', 'chikitsha'],
+      'chikitsa': ['health', 'chikitsa', 'chikitsha'],
+      'chikitsha': ['health', 'chikitsa', 'chikitsha'],
+      'literature': ['literature', 'sahitto', 'sahitya'],
+      'sahitto': ['literature', 'sahitto', 'sahitya'],
+      'sahitya': ['literature', 'sahitto', 'sahitya'],
+      'mukto-bhabna': ['mukto-bhabna', 'muktobhabna', 'free-thinking', 'motamot'],
+      'muktobhabna': ['mukto-bhabna', 'muktobhabna', 'free-thinking', 'motamot'],
+      'free-thinking': ['mukto-bhabna', 'muktobhabna', 'free-thinking', 'motamot'],
+      'motamot': ['mukto-bhabna', 'muktobhabna', 'free-thinking', 'motamot'],
+      'chitro-bichitro': ['chitro-bichitro', 'weird-news', 'chitra-bichitra'],
+      'chitra-bichitra': ['chitro-bichitro', 'weird-news', 'chitra-bichitra'],
+      'weird-news': ['chitro-bichitro', 'weird-news', 'chitra-bichitra'],
+      'social-media': ['social-media'],
+      'lifestyle': ['lifestyle', 'life-style'],
+      'life-style': ['lifestyle', 'life-style'],
+      'gazette-exclusive': ['gazette-exclusive'],
+    };
+
+    const targetAliases = slugAliases[slugAndId] || [slugAndId];
     const targetSubCatRoute = await prisma.category.findFirst({
-      where: { slug: slugAndId },
+      where: {
+        OR: [
+          { slug: { in: targetAliases } },
+          { slug: slugAndId }
+        ]
+      },
     });
+
     if (targetSubCatRoute) {
       return CategoryPage({ params: { category: targetSubCatRoute.slug }, searchParams });
     }
