@@ -523,9 +523,10 @@ export default function EpaperViewer({ initialIssues, initialSelectedDate }: Epa
               <img
                 src={pages[activePageIndex]}
                 alt={getPageLabel(activePageIndex, pages.length)}
+                onClick={() => setLightboxOpen(true)}
                 onDoubleClick={() => setZoomScale((z) => (z > 1.1 ? 1.0 : 2.0))}
-                title="ডাবল ক্লিক করুন জুম ইন/আউট করতে, অথবা ফুলস্ক্রিন দেখুন"
-                className="w-full h-auto object-contain block cursor-pointer border border-gray-300 shadow-md bg-white epaper-sharp rounded-xs transition-all duration-200"
+                title="ইমেজটিতে ক্লিক করুন ফুল স্ক্রিন উইন্ডো জুড়ে পত্রিকা পড়তে"
+                className="w-full h-auto object-contain block cursor-pointer border border-gray-300 shadow-md bg-white epaper-sharp rounded-xs transition-all duration-200 hover:shadow-2xl hover:opacity-95"
                 style={{
                   imageRendering: 'crisp-edges',
                   WebkitFontSmoothing: 'antialiased',
