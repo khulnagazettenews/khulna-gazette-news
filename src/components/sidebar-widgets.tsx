@@ -122,42 +122,44 @@ export default function SidebarWidgets({
         </a>
       </div>
 
-      {/* 2. EPAPER PROMO BANNER (ই-পেপার সংস্করণ - অনলাইনে পৃষ্ঠা উল্টে পড়ুন - 2nd) */}
-      <div className="bg-white rounded border border-gray-200 shadow-2xs overflow-hidden font-sans">
-        <div 
-          className="bg-[#353d4c] text-white py-1 px-2 text-center font-normal border-b border-gray-200"
-          style={{
-            fontFamily: 'Bangla, sans-serif',
-            fontSize: '20px',
-            fontWeight: 400,
-            lineHeight: '22px',
-            letterSpacing: '-0.2px',
-            textAlign: 'center',
-          }}
-        >
-          ই-পেপার সংস্করণ
-        </div>
-        <Link href="/epaper" className="block relative aspect-[4/3] w-full overflow-hidden bg-[#243c3b] group p-1.5 rounded-xs">
-          <img
-            src="/uploads/sidebar/epaper_promo.jpg"
-            alt="ই-পেপার সংস্করণ"
-            className="w-full h-full object-cover object-top rounded-xs group-hover:scale-105 transition duration-500 shadow-md"
-          />
+      {/* 2. EPAPER PROMO BANNER (ই-পেপার সংস্করণ - অনলাইনে পৃষ্ঠা উল্টে পড়ুন - Hidden when already on /epaper page) */}
+      {!isEpaperPage && (
+        <div className="bg-white rounded border border-gray-200 shadow-2xs overflow-hidden font-sans">
           <div 
-            className="absolute inset-x-0 bottom-0 bg-[#353d4c]/95 text-white py-1.5 px-2 text-center flex items-center justify-center gap-1.5"
+            className="bg-[#353d4c] text-white py-1 px-2 text-center font-normal border-b border-gray-200"
             style={{
               fontFamily: 'Bangla, sans-serif',
-              fontSize: '17px',
+              fontSize: '20px',
               fontWeight: 400,
               lineHeight: '22px',
               letterSpacing: '-0.2px',
+              textAlign: 'center',
             }}
           >
-            <span>অনলাইনে পৃষ্ঠা উল্টে পড়ুন</span>
-            <span className="text-amber-400 font-bold text-base">➔</span>
+            ই-পেপার সংস্করণ
           </div>
-        </Link>
-      </div>
+          <Link href="/epaper" className="block relative aspect-[4/3] w-full overflow-hidden bg-[#243c3b] group p-1.5 rounded-xs">
+            <img
+              src="/uploads/sidebar/epaper_promo.jpg"
+              alt="ই-পেপার সংস্করণ"
+              className="w-full h-full object-cover object-top rounded-xs group-hover:scale-105 transition duration-500 shadow-md"
+            />
+            <div 
+              className="absolute inset-x-0 bottom-0 bg-[#353d4c]/95 text-white py-1.5 px-2 text-center flex items-center justify-center gap-1.5"
+              style={{
+                fontFamily: 'Bangla, sans-serif',
+                fontSize: '17px',
+                fontWeight: 400,
+                lineHeight: '22px',
+                letterSpacing: '-0.2px',
+              }}
+            >
+              <span>অনলাইনে পৃষ্ঠা উল্টে পড়ুন</span>
+              <span className="text-amber-400 font-bold text-base">➔</span>
+            </div>
+          </Link>
+        </div>
+      )}
 
       {/* 3. GAZETTE EXCLUSIVE NEWS BOX (গেজেট এক্সক্লুসিভ - 3rd) */}
       <div className="bg-white rounded border border-gray-200 shadow-2xs overflow-hidden">
