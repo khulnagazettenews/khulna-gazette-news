@@ -398,88 +398,6 @@ export default function EpaperViewer({ initialIssues, initialSelectedDate }: Epa
       ) : (
         <div className="max-w-[1050px] mx-auto my-6 bg-white border border-[#e2e2e2] rounded shadow-2xs overflow-hidden">
           
-          {/* Dedicated Custom Zoom Toolbar with Range Slider */}
-          <div className="bg-[#f8f9fa] border-b border-[#e2e2e2] px-3 py-2 flex flex-wrap items-center justify-between gap-2.5 text-xs font-bold select-none">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="text-slate-700 font-extrabold flex items-center gap-1">
-                <span>জুম:</span>
-                <span className="text-[#A00B01] font-black text-sm">{Math.round(zoomScale * 100)}%</span>
-              </span>
-
-              {/* Slider for Custom Zoom */}
-              <div className="flex items-center gap-1.5 bg-white px-2.5 py-1 rounded border border-slate-300 shadow-2xs">
-                <button
-                  type="button"
-                  onClick={handleZoomOut}
-                  className="p-0.5 hover:text-[#A00B01] transition cursor-pointer"
-                  title="জুম আউট (-)"
-                >
-                  <Minus size={14} />
-                </button>
-
-                <input
-                  type="range"
-                  min="50"
-                  max="400"
-                  step="5"
-                  value={Math.round(zoomScale * 100)}
-                  onChange={(e) => setZoomScale(Number(e.target.value) / 100)}
-                  className="w-20 sm:w-32 h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#A00B01]"
-                  title="ইচ্ছামত জুম ইন-আউট করতে স্লাইডার টানুন"
-                />
-
-                <button
-                  type="button"
-                  onClick={handleZoomIn}
-                  className="p-0.5 hover:text-[#A00B01] transition cursor-pointer"
-                  title="জুম ইন (+)"
-                >
-                  <Plus size={14} />
-                </button>
-              </div>
-
-              {/* Preset Buttons */}
-              <button
-                type="button"
-                onClick={() => setZoomScale(1)}
-                className={`px-2.5 py-1 rounded text-xs font-extrabold transition cursor-pointer border ${
-                  zoomScale === 1 ? 'bg-[#A00B01] text-white border-[#A00B01]' : 'bg-white hover:bg-slate-100 text-slate-800 border-slate-300'
-                }`}
-              >
-                ১০০% ফিট
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setZoomScale(1.5)}
-                className={`px-2.5 py-1 rounded text-xs font-extrabold transition cursor-pointer border ${
-                  zoomScale === 1.5 ? 'bg-[#A00B01] text-white border-[#A00B01]' : 'bg-white hover:bg-slate-100 text-slate-800 border-slate-300'
-                }`}
-              >
-                ১৫০% HD
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setZoomScale(2.5)}
-                className={`px-2.5 py-1 rounded text-xs font-extrabold transition cursor-pointer border hidden sm:inline-block ${
-                  zoomScale === 2.5 ? 'bg-[#A00B01] text-white border-[#A00B01]' : 'bg-white hover:bg-slate-100 text-slate-800 border-slate-300'
-                }`}
-              >
-                ২৫০% আল্ট্রা
-              </button>
-            </div>
-
-            <button
-              type="button"
-              onClick={() => setLightboxOpen(true)}
-              className="bg-[#222222] hover:bg-[#A00B01] text-white px-3 py-1 rounded text-xs font-extrabold flex items-center gap-1.5 transition cursor-pointer shadow-2xs ml-auto"
-            >
-              <Maximize2 size={13} />
-              <span>ফুলস্ক্রিন এইচডি</span>
-            </button>
-          </div>
-
           {/* Scrollable Container with Crisp HD Sharp Rendering */}
           <div 
             ref={containerRef}
@@ -645,36 +563,25 @@ export default function EpaperViewer({ initialIssues, initialSelectedDate }: Epa
               </span>
             </div>
 
-            {/* Lightbox Zoom Controls with Range Slider */}
+            {/* Lightbox Zoom Controls */}
             <div className="flex flex-wrap items-center gap-2 shrink-0">
-              <div className="flex items-center gap-1.5 bg-white/10 px-2.5 py-1 rounded border border-white/20">
-                <button
-                  type="button"
-                  onClick={() => setLightboxZoom((z) => Math.max(Number((z - 0.20).toFixed(2)), 0.5))}
-                  className="hover:text-emerald-400 transition cursor-pointer"
-                  title="জুম আউট (-)"
-                >
-                  <Minus size={14} />
-                </button>
-                <input
-                  type="range"
-                  min="50"
-                  max="450"
-                  step="5"
-                  value={Math.round(lightboxZoom * 100)}
-                  onChange={(e) => setLightboxZoom(Number(e.target.value) / 100)}
-                  className="w-24 sm:w-36 h-1.5 bg-white/20 rounded-lg appearance-none cursor-pointer accent-emerald-400"
-                  title="ইচ্ছামত জুম ইন-আউট করতে স্লাইডার টানুন"
-                />
-                <button
-                  type="button"
-                  onClick={() => setLightboxZoom((z) => Math.min(Number((z + 0.20).toFixed(2)), 4.5))}
-                  className="hover:text-emerald-400 transition cursor-pointer"
-                  title="জুম ইন (+)"
-                >
-                  <Plus size={14} />
-                </button>
-              </div>
+              <button
+                type="button"
+                onClick={() => setLightboxZoom((z) => Math.max(Number((z - 0.25).toFixed(2)), 0.5))}
+                className="bg-white/20 hover:bg-white/30 text-white p-1.5 rounded transition cursor-pointer"
+                title="জুম আউট (-)"
+              >
+                <Minus size={16} />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setLightboxZoom((z) => Math.min(Number((z + 0.25).toFixed(2)), 6.0))}
+                className="bg-white/20 hover:bg-white/30 text-white p-1.5 rounded transition cursor-pointer"
+                title="জুম ইন (+)"
+              >
+                <Plus size={16} />
+              </button>
 
               <button
                 type="button"
