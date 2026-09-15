@@ -343,9 +343,77 @@ export default function EpaperViewer({ initialIssues, initialSelectedDate }: Epa
         </div>
       ) : (
         <div className="max-w-[1050px] mx-auto my-6 bg-white border border-[#e2e2e2] rounded shadow-2xs overflow-hidden">
+          
+          {/* Dedicated Zoom Control Bar above Newspaper Image */}
+          <div className="bg-[#f8f9fa] border-b border-[#e2e2e2] px-3 py-2 flex flex-wrap items-center justify-between gap-2 text-xs font-bold select-none">
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <span className="text-slate-700 font-extrabold flex items-center gap-1">
+                <span>জুম:</span>
+                <span className="text-[#A00B01] font-black">{Math.round(zoomScale * 100)}%</span>
+              </span>
 
+              <div className="h-4 w-[1px] bg-slate-300 mx-1 hidden sm:block"></div>
 
+              <button
+                type="button"
+                onClick={() => setZoomScale((z) => Math.max(z - 0.25, 0.5))}
+                className="bg-white hover:bg-slate-200 border border-slate-300 text-slate-800 px-2.5 py-1 rounded text-xs font-black flex items-center gap-1 transition cursor-pointer shadow-2xs"
+                title="জুম আউট (-)"
+              >
+                <Minus size={14} />
+                <span>আউট</span>
+              </button>
 
+              <button
+                type="button"
+                onClick={() => setZoomScale((z) => Math.min(z + 0.25, 3.5))}
+                className="bg-white hover:bg-slate-200 border border-slate-300 text-slate-800 px-2.5 py-1 rounded text-xs font-black flex items-center gap-1 transition cursor-pointer shadow-2xs"
+                title="জুম ইন (+)"
+              >
+                <Plus size={14} />
+                <span>ইন</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setZoomScale(1)}
+                className={`px-2.5 py-1 rounded text-xs font-extrabold transition cursor-pointer border ${
+                  zoomScale === 1 ? 'bg-[#A00B01] text-white border-[#A00B01]' : 'bg-white hover:bg-slate-100 text-slate-800 border-slate-300'
+                }`}
+              >
+                ১০০% ফিট
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setZoomScale(1.5)}
+                className={`px-2.5 py-1 rounded text-xs font-extrabold transition cursor-pointer border ${
+                  zoomScale === 1.5 ? 'bg-[#A00B01] text-white border-[#A00B01]' : 'bg-white hover:bg-slate-100 text-slate-800 border-slate-300'
+                }`}
+              >
+                ১৫০% এইচডি
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setZoomScale(2.0)}
+                className={`px-2.5 py-1 rounded text-xs font-extrabold transition cursor-pointer border hidden sm:inline-block ${
+                  zoomScale === 2.0 ? 'bg-[#A00B01] text-white border-[#A00B01]' : 'bg-white hover:bg-slate-100 text-slate-800 border-slate-300'
+                }`}
+              >
+                ২০০% আল্ট্রা
+              </button>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setLightboxOpen(true)}
+              className="bg-[#222222] hover:bg-[#A00B01] text-white px-3 py-1 rounded text-xs font-extrabold flex items-center gap-1.5 transition cursor-pointer shadow-2xs ml-auto"
+            >
+              <Maximize2 size={13} />
+              <span>ফুলস্ক্রিন (এইচডি)</span>
+            </button>
+          </div>
 
           {/* Scrollable Container with Crisp HD Sharp Rendering */}
           <div 
@@ -495,9 +563,9 @@ export default function EpaperViewer({ initialIssues, initialSelectedDate }: Epa
       {lightboxOpen && pages[activePageIndex] && (
         <div className="fixed inset-0 z-50 bg-black/95 flex flex-col items-center justify-between p-3 sm:p-5 select-none">
           {/* Header Bar */}
-          <div className="w-full flex items-center justify-between text-white max-w-6xl border-b border-white/20 pb-2">
-            <div className="flex items-center gap-3">
-              <span className="font-bold text-base sm:text-lg">
+          <div className="w-full flex flex-wrap items-center justify-between text-white max-w-6xl border-b border-white/20 pb-2.5 gap-2">
+            <div className="flex items-center gap-2 shrink-0">
+              <span className="font-bold text-sm sm:text-lg text-white">
                 {getPageLabel(activePageIndex, pages.length)} - ই-পেপার (এইচডি ভিউ)
               </span>
               <span className="text-xs text-emerald-400 font-extrabold bg-white/10 px-2.5 py-0.5 rounded border border-emerald-500/30">
@@ -506,47 +574,62 @@ export default function EpaperViewer({ initialIssues, initialSelectedDate }: Epa
             </div>
 
             {/* Lightbox Zoom Controls */}
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 shrink-0">
+              <button
+                type="button"
+                onClick={() => setLightboxZoom(1.0)}
+                className={`px-2.5 py-1 rounded text-xs font-extrabold transition cursor-pointer border ${
+                  lightboxZoom === 1.0 ? 'bg-[#A00B01] text-white border-[#A00B01]' : 'bg-white/20 hover:bg-white/30 text-white border-white/20'
+                }`}
+              >
+                ১০০% ফিট
+              </button>
+
               <button
                 type="button"
                 onClick={() => setLightboxZoom(1.5)}
-                className="bg-white/20 hover:bg-white/30 text-white px-2.5 py-1 rounded text-xs font-bold transition"
+                className={`px-2.5 py-1 rounded text-xs font-extrabold transition cursor-pointer border ${
+                  lightboxZoom === 1.5 ? 'bg-[#A00B01] text-white border-[#A00B01]' : 'bg-white/20 hover:bg-white/30 text-white border-white/20'
+                }`}
               >
-                150% HD
+                ১৫০% HD
               </button>
+
               <button
                 type="button"
                 onClick={() => setLightboxZoom(2.25)}
-                className="bg-white/20 hover:bg-white/30 text-white px-2.5 py-1 rounded text-xs font-bold transition"
+                className={`px-2.5 py-1 rounded text-xs font-extrabold transition cursor-pointer border ${
+                  lightboxZoom === 2.25 ? 'bg-[#A00B01] text-white border-[#A00B01]' : 'bg-white/20 hover:bg-white/30 text-white border-white/20'
+                }`}
               >
-                225% আল্ট্রা
+                ২২৫% আল্ট্রা
               </button>
 
               <button
                 type="button"
                 onClick={() => setLightboxZoom((z) => Math.max(z - 0.25, 0.75))}
-                className="bg-white/20 hover:bg-white/30 text-white px-2 py-1 rounded text-xs font-bold transition flex items-center gap-1"
+                className="bg-white/20 hover:bg-white/30 text-white px-2.5 py-1 rounded text-xs font-bold transition flex items-center gap-1 cursor-pointer"
                 title="জুম আউট (-)"
               >
-                <Minus size={14} />
+                <Minus size={15} />
               </button>
 
               <button
                 type="button"
                 onClick={() => setLightboxZoom((z) => Math.min(z + 0.25, 4))}
-                className="bg-white/20 hover:bg-white/30 text-white px-2 py-1 rounded text-xs font-bold transition flex items-center gap-1"
+                className="bg-white/20 hover:bg-white/30 text-white px-2.5 py-1 rounded text-xs font-bold transition flex items-center gap-1 cursor-pointer"
                 title="জুম ইন (+)"
               >
-                <Plus size={14} />
+                <Plus size={15} />
               </button>
 
               <button
                 type="button"
                 onClick={() => setLightboxOpen(false)}
-                className="bg-white/20 hover:bg-[#A00B01] text-white p-1.5 rounded-full transition cursor-pointer ml-2"
+                className="bg-white/20 hover:bg-[#A00B01] text-white p-1.5 rounded-full transition cursor-pointer ml-1 sm:ml-2"
                 title="বন্ধ করুন"
               >
-                <X size={22} />
+                <X size={20} />
               </button>
             </div>
           </div>
