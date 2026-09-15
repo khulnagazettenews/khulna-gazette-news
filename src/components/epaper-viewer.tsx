@@ -184,27 +184,27 @@ export default function EpaperViewer({ initialIssues, initialSelectedDate }: Epa
 
   // Zoom handlers
   const handleZoomOut = () => {
-    setZoomScale((z) => Math.max(Number((z - 0.20).toFixed(2)), 0.5));
+    setZoomScale((z) => Math.max(Number((z - 0.25).toFixed(2)), 0.5));
   };
 
   const handleZoomIn = () => {
-    setZoomScale((z) => Math.min(Number((z + 0.20).toFixed(2)), 4.0));
+    setZoomScale((z) => Math.min(Number((z + 0.25).toFixed(2)), 6.0));
   };
 
   // Direct Mouse Wheel Zooming on Image Container
   const handleWheel = (e: React.WheelEvent) => {
     if (e.ctrlKey || e.metaKey || e.shiftKey) {
       e.preventDefault();
-      const delta = e.deltaY < 0 ? 0.15 : -0.15;
-      setZoomScale((z) => Math.min(Math.max(Number((z + delta).toFixed(2)), 0.5), 4.0));
+      const delta = e.deltaY < 0 ? 0.25 : -0.25;
+      setZoomScale((z) => Math.min(Math.max(Number((z + delta).toFixed(2)), 0.5), 6.0));
     }
   };
 
   const handleLbWheel = (e: React.WheelEvent) => {
     if (e.ctrlKey || e.metaKey || e.shiftKey) {
       e.preventDefault();
-      const delta = e.deltaY < 0 ? 0.20 : -0.20;
-      setLightboxZoom((z) => Math.min(Math.max(Number((z + delta).toFixed(2)), 0.5), 4.5));
+      const delta = e.deltaY < 0 ? 0.25 : -0.25;
+      setLightboxZoom((z) => Math.min(Math.max(Number((z + delta).toFixed(2)), 0.5), 6.0));
     }
   };
 
