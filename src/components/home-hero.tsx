@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { getReporterTitle } from '@/lib/reporter-helper';
+import SafeImage from '@/components/safe-image';
 
 interface HeroNewsItem {
   id: string;
@@ -108,10 +109,9 @@ export default function HomeHero({ news }: HomeHeroProps) {
                 href={`/${mainLead.category?.slug || 'news'}/${mainLead.id}`}
                 className="block w-full h-full min-h-[250px] sm:min-h-[280px] lg:min-h-[310px] overflow-hidden rounded-none bg-gray-100 shadow-xs relative"
               >
-                <img
-                  src={mainLead.featuredImage || '/default-news.jpg'}
+                <SafeImage
+                  src={mainLead.featuredImage}
                   alt={mainLead.title}
-                  onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/default-news.jpg'; }}
                   className="w-full h-full object-cover object-center group-hover:scale-[1.03] transition duration-500 ease-out rounded-none"
                 />
                 <div className="absolute inset-0 ring-1 ring-black/5 rounded-none pointer-events-none" />
@@ -137,10 +137,9 @@ export default function HomeHero({ news }: HomeHeroProps) {
                     href={`/${categorySlug}/${story.id}`}
                     className="block w-28 aspect-[354/199] sm:w-full sm:h-auto sm:aspect-[354/199] shrink-0 overflow-hidden rounded bg-gray-100"
                   >
-                    <img
-                      src={story.featuredImage || '/default-news.jpg'}
+                    <SafeImage
+                      src={story.featuredImage}
                       alt={story.title}
-                      onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/default-news.jpg'; }}
                       className="w-full h-full object-cover group-hover:scale-[1.02] transition duration-300"
                     />
                   </Link>

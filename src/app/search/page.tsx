@@ -4,6 +4,8 @@ import PublicFooter from '@/components/public-footer';
 import TabsWidget from '@/components/tabs-widget';
 import PrayerWidget from '@/components/prayer-widget';
 import Link from 'next/link';
+import { getReporterTitle } from '@/lib/reporter-helper';
+import SafeImage from '@/components/safe-image';
 
 export const revalidate = 0; // Live queries for search
 
@@ -91,10 +93,9 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                     className={`group flex flex-row sm:flex-col items-center sm:items-start gap-3 sm:gap-2 border-b border-gray-100 sm:border-b-0 pb-3 sm:pb-0 last:border-b-0 ${!isFirstRow ? 'sm:border-t sm:border-gray-200/80 sm:pt-3.5' : ''}`}
                   >
                     <Link href={`/${item.category?.slug || 'news'}/${item.id}`} className="block w-28 aspect-[354/199] sm:w-full sm:h-auto sm:aspect-[354/199] shrink-0 overflow-hidden bg-gray-100 rounded">
-                      <img
-                        src={item.featuredImage || '/default-news.jpg'}
+                      <SafeImage
+                        src={item.featuredImage}
                         alt={item.title}
-                        onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/default-news.jpg'; }}
                         className="w-full h-full object-cover group-hover:scale-[1.02] transition duration-300"
                       />
                     </Link>

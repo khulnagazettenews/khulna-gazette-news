@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { getReporterTitle } from '@/lib/reporter-helper';
+import SafeImage from '@/components/safe-image';
 
 interface BlockNewsItem {
   id: string;
@@ -73,19 +74,16 @@ export default function CategoryBlock({
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
             {/* Left Side: 1 Big Lead Story (Image + Title + Excerpt) */}
             <div className="lg:col-span-7 space-y-2 group">
-              {lead.featuredImage && (
-                <Link
-                  href={`/${slug}/${lead.id}`}
-                  className="block aspect-[16/9] w-full overflow-hidden rounded bg-gray-100"
-                >
-                  <img
-                    src={lead.featuredImage || '/default-news.jpg'}
-                    alt={lead.title}
-                    onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/default-news.jpg'; }}
-                    className="w-full h-full object-cover group-hover:scale-[1.02] transition duration-300"
-                  />
-                </Link>
-              )}
+              <Link
+                href={`/${slug}/${lead.id}`}
+                className="block aspect-[16/9] w-full overflow-hidden rounded bg-gray-100"
+              >
+                <SafeImage
+                  src={lead.featuredImage}
+                  alt={lead.title}
+                  className="w-full h-full object-cover group-hover:scale-[1.02] transition duration-300"
+                />
+              </Link>
               <Link href={`/${slug}/${lead.id}`} className="block pt-0.5 space-y-1">
                 <h3
                   style={{
@@ -124,10 +122,9 @@ export default function CategoryBlock({
                     href={`/${slug}/${item.id}`}
                     className="block aspect-[16/9] w-full overflow-hidden rounded bg-gray-100"
                   >
-                    <img
-                      src={item.featuredImage || '/default-news.jpg'}
+                    <SafeImage
+                      src={item.featuredImage}
                       alt={item.title}
-                      onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/default-news.jpg'; }}
                       className="w-full h-full object-cover group-hover:scale-[1.02] transition duration-300"
                     />
                   </Link>
@@ -155,19 +152,16 @@ export default function CategoryBlock({
           <div className="space-y-3">
             {/* Top Main Lead Story (Image on Top + Bold Headline below) */}
             <div className="group space-y-2">
-              {lead.featuredImage && (
-                <Link
-                  href={`/${slug}/${lead.id}`}
-                  className="block aspect-[546/307] w-full overflow-hidden rounded bg-gray-100"
-                >
-                  <img
-                    src={lead.featuredImage || '/default-news.jpg'}
-                    alt={lead.title}
-                    onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/default-news.jpg'; }}
-                    className="w-full h-full object-cover group-hover:scale-[1.02] transition duration-300"
-                  />
-                </Link>
-              )}
+              <Link
+                href={`/${slug}/${lead.id}`}
+                className="block aspect-[546/307] w-full overflow-hidden rounded bg-gray-100"
+              >
+                <SafeImage
+                  src={lead.featuredImage}
+                  alt={lead.title}
+                  className="w-full h-full object-cover group-hover:scale-[1.02] transition duration-300"
+                />
+              </Link>
               <Link href={`/${slug}/${lead.id}`} className="block pt-0.5">
                 <h3
                   style={{
@@ -193,15 +187,13 @@ export default function CategoryBlock({
                   href={`/${slug}/${item.id}`}
                   className="flex gap-3 group items-center py-1 border-b border-gray-100 last:border-b-0"
                 >
-                  {item.featuredImage && (
-                    <div className="w-[120px] h-[62px] rounded overflow-hidden bg-gray-100 shrink-0">
-                      <img
-                        src={item.featuredImage}
-                        alt={item.title}
-                        className="w-full h-full object-cover group-hover:scale-[1.03] transition duration-300"
-                      />
-                    </div>
-                  )}
+                  <div className="w-[120px] h-[62px] rounded overflow-hidden bg-gray-100 shrink-0">
+                    <SafeImage
+                      src={item.featuredImage}
+                      alt={item.title}
+                      className="w-full h-full object-cover group-hover:scale-[1.03] transition duration-300"
+                    />
+                  </div>
                   <h4
                     style={{
                       fontFamily: 'Bangla, sans-serif',

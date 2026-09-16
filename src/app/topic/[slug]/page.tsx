@@ -5,6 +5,7 @@ import PublicFooter from '@/components/public-footer';
 import TabsWidget from '@/components/tabs-widget';
 import PrayerWidget from '@/components/prayer-widget';
 import { getReporterTitle } from '@/lib/reporter-helper';
+import SafeImage from '@/components/safe-image';
 import Link from 'next/link';
 
 export const revalidate = 60; // 60 seconds (ISR)
@@ -98,10 +99,9 @@ export default async function TopicPage({ params, searchParams }: TopicPageProps
                 <div key={item.id} className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm flex flex-col justify-between group">
                   <div>
                     <Link href={`/${item.category?.slug || 'news'}/${item.id}`} className="block aspect-[354/199] overflow-hidden bg-gray-50">
-                      <img
-                        src={item.featuredImage || '/default-news.jpg'}
+                      <SafeImage
+                        src={item.featuredImage}
                         alt={item.title}
-                        onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/default-news.jpg'; }}
                         className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
                       />
                     </Link>

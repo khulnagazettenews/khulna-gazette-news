@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { Calendar, ArrowRight } from 'lucide-react';
+import { Calendar, ArrowRight, Flame } from 'lucide-react';
+import SafeImage from '@/components/safe-image';
 
 interface SpecialNewsItem {
   id: string;
@@ -219,10 +220,9 @@ export default function SpecialTopicSection({
                   href={`/${itemCenter.category?.slug || 'news'}/${itemCenter.id}`}
                   className="block aspect-[16/9] max-h-44 sm:max-h-48 w-full overflow-hidden rounded-lg bg-slate-100 border border-slate-100"
                 >
-                    <img
-                      src={itemCenter.featuredImage || '/default-news.jpg'}
+                    <SafeImage
+                      src={itemCenter.featuredImage}
                       alt={itemCenter.title}
-                      onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/default-news.jpg'; }}
                       className="w-full h-full object-cover group-hover:scale-[1.02] transition duration-500"
                     />
                 </Link>

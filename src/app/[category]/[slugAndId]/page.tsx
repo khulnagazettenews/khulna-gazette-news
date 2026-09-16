@@ -11,6 +11,7 @@ import AppPromoBanner from '@/components/app-promo-banner';
 import Link from 'next/link';
 import { Calendar, Home, Clock } from 'lucide-react';
 import SidebarWidgets from '@/components/sidebar-widgets';
+import SafeImage from '@/components/safe-image';
 import AdBanner from '@/components/ad-banner';
 import { Metadata } from 'next';
 import { getReporterTitle } from '@/lib/reporter-helper';
@@ -126,7 +127,7 @@ export async function generateMetadata({ params }: RouteProps): Promise<Metadata
   return {
     title: articleTitle,
     description: description,
-    keywords: news.tags?.map(t => t.tag.name) || [news.category?.name || 'সংবাদ', 'খুলনা গেজেট'],
+    keywords: news.tags?.map(t => t?.tag?.name).filter((name): name is string => Boolean(name)) || [news.category?.name || 'সংবাদ', 'খুলনা গেজেট'],
     alternates: {
       canonical: canonicalUrl,
     },
@@ -436,12 +437,11 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
                 {/* Featured Image */}
                 <figure className="space-y-1.5 my-3" itemProp="image" itemScope itemType="https://schema.org/ImageObject">
                   <div className="w-full rounded overflow-hidden relative bg-gray-50 border border-gray-100 shadow-2xs">
-                    <img
-                      src={news.featuredImage || '/default-news.jpg'}
+                    <SafeImage
+                      src={news.featuredImage}
                       alt={news.title}
                       itemProp="url"
                       loading="eager"
-                      onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/default-news.jpg'; }}
                       className="w-full h-auto object-cover max-h-[500px]"
                     />
                   </div>
@@ -490,10 +490,9 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
                           className={`bg-white group flex flex-row sm:flex-col items-center sm:items-start gap-3 sm:gap-2 border-b border-gray-100 sm:border-b-0 pb-3 sm:pb-0 last:border-b-0 ${!isFirstRow ? 'sm:border-t sm:border-gray-200/80 sm:pt-3.5' : ''}`}
                         >
                           <Link href={`/${item.category?.slug || 'news'}/${item.id}`} className="block w-28 aspect-[354/199] sm:w-full sm:h-auto sm:aspect-[354/199] shrink-0 overflow-hidden rounded bg-gray-100">
-                            <img
-                              src={item.featuredImage || '/default-news.jpg'}
+                            <SafeImage
+                              src={item.featuredImage}
                               alt={item.title}
-                              onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/default-news.jpg'; }}
                               className="w-full h-full object-cover group-hover:scale-[1.02] transition duration-300"
                             />
                           </Link>
@@ -650,10 +649,9 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
                     className={`bg-white group flex flex-row sm:flex-col items-center sm:items-start gap-3 sm:gap-2 border-b border-gray-100 sm:border-b-0 pb-3 sm:pb-0 last:border-b-0 ${!isFirstRow ? 'sm:border-t sm:border-gray-200/80 sm:pt-3.5' : ''}`}
                   >
                     <Link href={`/${category}/${item.id}`} className="block w-28 aspect-[354/199] sm:w-full sm:h-auto sm:aspect-[354/199] shrink-0 overflow-hidden rounded bg-gray-100">
-                      <img
-                        src={item.featuredImage || '/default-news.jpg'}
+                      <SafeImage
+                        src={item.featuredImage}
                         alt={item.title}
-                        onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/default-news.jpg'; }}
                         className="w-full h-full object-cover group-hover:scale-[1.02] transition duration-300"
                       />
                     </Link>

@@ -2,6 +2,8 @@ import { prisma } from '@/lib/prisma';
 import { notFound } from 'next/navigation';
 import PublicHeader from '@/components/public-header';
 import PublicFooter from '@/components/public-footer';
+import SidebarWidgets from '@/components/sidebar-widgets';
+import SafeImage from '@/components/safe-image';
 import TabsWidget from '@/components/tabs-widget';
 import PrayerWidget from '@/components/prayer-widget';
 import Link from 'next/link';
@@ -218,10 +220,9 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
                       href={`/${item.category?.slug || category}/${item.id}`} 
                       className="block w-28 aspect-[354/199] sm:w-full sm:h-auto sm:aspect-[354/199] shrink-0 overflow-hidden rounded bg-gray-100"
                     >
-                      <img 
-                        src={item.featuredImage || '/default-news.jpg'} 
+                      <SafeImage 
+                        src={item.featuredImage} 
                         alt={item.title} 
-                        onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/default-news.jpg'; }}
                         className="w-full h-full object-cover group-hover:scale-[1.02] transition duration-300" 
                       />
                     </Link>

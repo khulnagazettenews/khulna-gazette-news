@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import TabsWidget from './tabs-widget';
+import TabsWidget from '@/components/tabs-widget';
+import SafeImage from '@/components/safe-image';
 import CalendarArchiveWidget from './calendar-archive-widget';
 import PrayerWidget from './prayer-widget';
 import AdBanner from './ad-banner';
@@ -184,10 +185,9 @@ export default function SidebarWidgets({
                   href={`/${item.category?.slug || 'news'}/${item.id}`}
                   className="w-[110px] sm:w-[115px] h-[68px] sm:h-[72px] shrink-0 overflow-hidden rounded-xs bg-gray-100 block relative shadow-2xs border border-gray-100"
                 >
-                  <img
-                    src={item.featuredImage || '/default-news.jpg'}
+                  <SafeImage
+                    src={item.featuredImage}
                     alt={item.title}
-                    onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/default-news.jpg'; }}
                     className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
                   />
                 </Link>
