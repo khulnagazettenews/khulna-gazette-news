@@ -219,17 +219,12 @@ export default function SpecialTopicSection({
                   href={`/${itemCenter.category?.slug || 'news'}/${itemCenter.id}`}
                   className="block aspect-[16/9] max-h-44 sm:max-h-48 w-full overflow-hidden rounded-lg bg-slate-100 border border-slate-100"
                 >
-                  {itemCenter.featuredImage ? (
                     <img
-                      src={itemCenter.featuredImage}
+                      src={itemCenter.featuredImage || '/default-news.jpg'}
                       alt={itemCenter.title}
+                      onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/default-news.jpg'; }}
                       className="w-full h-full object-cover group-hover:scale-[1.02] transition duration-500"
                     />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-400 font-bold text-xs">
-                      খুলনা গেজেট
-                    </div>
-                  )}
                 </Link>
 
                 {/* Excerpt Paragraph Text under Image */}

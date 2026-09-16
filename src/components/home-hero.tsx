@@ -104,23 +104,18 @@ export default function HomeHero({ news }: HomeHeroProps) {
 
             {/* Right Side: Featured Image Column (order-2 on MD/LG, 7 cols - Aligned Top & Bottom Baseline) */}
             <div className="order-1 md:order-2 md:col-span-7 group flex flex-col justify-between h-full py-0">
-              {mainLead.featuredImage ? (
-                <Link
-                  href={`/${mainLead.category?.slug || 'news'}/${mainLead.id}`}
-                  className="block w-full h-full min-h-[250px] sm:min-h-[280px] lg:min-h-[310px] overflow-hidden rounded-none bg-gray-100 shadow-xs relative"
-                >
-                  <img
-                    src={mainLead.featuredImage}
-                    alt={mainLead.title}
-                    className="w-full h-full object-cover object-center group-hover:scale-[1.03] transition duration-500 ease-out rounded-none"
-                  />
-                  <div className="absolute inset-0 ring-1 ring-black/5 rounded-none pointer-events-none" />
-                </Link>
-              ) : (
-                <div className="w-full h-full min-h-[250px] sm:min-h-[280px] lg:min-h-[310px] bg-gray-100 rounded-none flex items-center justify-center text-gray-400 font-bold text-base">
-                  খুলনা গেজেট
-                </div>
-              )}
+              <Link
+                href={`/${mainLead.category?.slug || 'news'}/${mainLead.id}`}
+                className="block w-full h-full min-h-[250px] sm:min-h-[280px] lg:min-h-[310px] overflow-hidden rounded-none bg-gray-100 shadow-xs relative"
+              >
+                <img
+                  src={mainLead.featuredImage || '/default-news.jpg'}
+                  alt={mainLead.title}
+                  onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/default-news.jpg'; }}
+                  className="w-full h-full object-cover object-center group-hover:scale-[1.03] transition duration-500 ease-out rounded-none"
+                />
+                <div className="absolute inset-0 ring-1 ring-black/5 rounded-none pointer-events-none" />
+              </Link>
             </div>
           </div>
         </div>
@@ -138,22 +133,17 @@ export default function HomeHero({ news }: HomeHeroProps) {
                   key={story.id} 
                   className={`group flex flex-row sm:flex-col items-center sm:items-start gap-3 sm:gap-2 border-b border-gray-100 sm:border-b-0 pb-3 sm:pb-0 last:border-b-0 ${!isFirstRow ? 'sm:border-t sm:border-gray-200/80 sm:pt-3.5' : ''}`}
                 >
-                  {story.featuredImage ? (
-                    <Link
-                      href={`/${categorySlug}/${story.id}`}
-                      className="block w-28 aspect-[354/199] sm:w-full sm:h-auto sm:aspect-[354/199] shrink-0 overflow-hidden rounded bg-gray-100"
-                    >
-                      <img
-                        src={story.featuredImage}
-                        alt={story.title}
-                        className="w-full h-full object-cover group-hover:scale-[1.02] transition duration-300"
-                      />
-                    </Link>
-                  ) : (
-                    <div className="w-28 aspect-[354/199] sm:w-full sm:h-auto sm:aspect-[354/199] shrink-0 bg-gray-100 rounded flex items-center justify-center text-gray-400 font-bold text-xs">
-                      খুলনা গেজেট
-                    </div>
-                  )}
+                  <Link
+                    href={`/${categorySlug}/${story.id}`}
+                    className="block w-28 aspect-[354/199] sm:w-full sm:h-auto sm:aspect-[354/199] shrink-0 overflow-hidden rounded bg-gray-100"
+                  >
+                    <img
+                      src={story.featuredImage || '/default-news.jpg'}
+                      alt={story.title}
+                      onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/default-news.jpg'; }}
+                      className="w-full h-full object-cover group-hover:scale-[1.02] transition duration-300"
+                    />
+                  </Link>
                   <div className="block pt-0.5 flex-1 min-w-0 space-y-1">
                     <Link href={`/${categorySlug}/${story.id}`}>
                       <h3 

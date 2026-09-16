@@ -214,22 +214,17 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
                     key={item.id} 
                     className={`group flex flex-row sm:flex-col items-center sm:items-start gap-3 sm:gap-2 border-b border-gray-100 sm:border-b-0 pb-3 sm:pb-0 last:border-b-0 ${!isFirstRow ? 'sm:border-t sm:border-gray-200/80 sm:pt-3.5' : ''}`}
                   >
-                    {item.featuredImage ? (
-                      <Link 
-                        href={`/${item.category?.slug || category}/${item.id}`} 
-                        className="block w-28 aspect-[354/199] sm:w-full sm:h-auto sm:aspect-[354/199] shrink-0 overflow-hidden rounded bg-gray-100"
-                      >
-                        <img 
-                          src={item.featuredImage} 
-                          alt={item.title} 
-                          className="w-full h-full object-cover group-hover:scale-[1.02] transition duration-300" 
-                        />
-                      </Link>
-                    ) : (
-                      <div className="w-28 aspect-[354/199] sm:w-full sm:h-auto sm:aspect-[354/199] shrink-0 rounded bg-gray-100 flex items-center justify-center text-gray-400 text-xs font-bold">
-                        খুলনা গেজেট
-                      </div>
-                    )}
+                    <Link 
+                      href={`/${item.category?.slug || category}/${item.id}`} 
+                      className="block w-28 aspect-[354/199] sm:w-full sm:h-auto sm:aspect-[354/199] shrink-0 overflow-hidden rounded bg-gray-100"
+                    >
+                      <img 
+                        src={item.featuredImage || '/default-news.jpg'} 
+                        alt={item.title} 
+                        onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/default-news.jpg'; }}
+                        className="w-full h-full object-cover group-hover:scale-[1.02] transition duration-300" 
+                      />
+                    </Link>
                     
                     <div className="block pt-0.5 flex-1 min-w-0 space-y-1">
                       <Link href={`/${item.category?.slug || category}/${item.id}`}>

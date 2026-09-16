@@ -184,17 +184,12 @@ export default function SidebarWidgets({
                   href={`/${item.category?.slug || 'news'}/${item.id}`}
                   className="w-[110px] sm:w-[115px] h-[68px] sm:h-[72px] shrink-0 overflow-hidden rounded-xs bg-gray-100 block relative shadow-2xs border border-gray-100"
                 >
-                  {item.featuredImage ? (
-                    <img
-                      src={item.featuredImage}
-                      alt={item.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-gray-200 flex items-center justify-center text-[10px] text-gray-500 font-bold">
-                      খুলনা গেজেট
-                    </div>
-                  )}
+                  <img
+                    src={item.featuredImage || '/default-news.jpg'}
+                    alt={item.title}
+                    onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/default-news.jpg'; }}
+                    className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                  />
                 </Link>
                 <div className="flex-1 min-w-0 pt-0.5">
                   <Link

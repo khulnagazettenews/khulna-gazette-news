@@ -79,8 +79,9 @@ export default function CategoryBlock({
                   className="block aspect-[16/9] w-full overflow-hidden rounded bg-gray-100"
                 >
                   <img
-                    src={lead.featuredImage}
+                    src={lead.featuredImage || '/default-news.jpg'}
                     alt={lead.title}
+                    onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/default-news.jpg'; }}
                     className="w-full h-full object-cover group-hover:scale-[1.02] transition duration-300"
                   />
                 </Link>
@@ -119,18 +120,17 @@ export default function CategoryBlock({
             <div className="lg:col-span-5 grid grid-cols-2 gap-3.5">
               {secondary.map((item) => (
                 <div key={item.id} className="group space-y-1.5">
-                  {item.featuredImage && (
-                    <Link
-                      href={`/${slug}/${item.id}`}
-                      className="block aspect-[16/9] w-full overflow-hidden rounded bg-gray-100"
-                    >
-                      <img
-                        src={item.featuredImage}
-                        alt={item.title}
-                        className="w-full h-full object-cover group-hover:scale-[1.02] transition duration-300"
-                      />
-                    </Link>
-                  )}
+                  <Link
+                    href={`/${slug}/${item.id}`}
+                    className="block aspect-[16/9] w-full overflow-hidden rounded bg-gray-100"
+                  >
+                    <img
+                      src={item.featuredImage || '/default-news.jpg'}
+                      alt={item.title}
+                      onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/default-news.jpg'; }}
+                      className="w-full h-full object-cover group-hover:scale-[1.02] transition duration-300"
+                    />
+                  </Link>
                   <Link href={`/${slug}/${item.id}`} className="block pt-0.5 min-w-0">
                     <h4
                       style={{
@@ -161,8 +161,9 @@ export default function CategoryBlock({
                   className="block aspect-[546/307] w-full overflow-hidden rounded bg-gray-100"
                 >
                   <img
-                    src={lead.featuredImage}
+                    src={lead.featuredImage || '/default-news.jpg'}
                     alt={lead.title}
+                    onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/default-news.jpg'; }}
                     className="w-full h-full object-cover group-hover:scale-[1.02] transition duration-300"
                   />
                 </Link>
