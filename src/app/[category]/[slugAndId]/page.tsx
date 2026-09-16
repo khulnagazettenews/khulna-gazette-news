@@ -9,7 +9,7 @@ import CommentSection from '@/components/comment-section';
 import SocialShareBar from '@/components/social-share-bar';
 import AppPromoBanner from '@/components/app-promo-banner';
 import Link from 'next/link';
-import { Calendar, User, Home, Clock } from 'lucide-react';
+import { Calendar, Home, Clock } from 'lucide-react';
 import SidebarWidgets from '@/components/sidebar-widgets';
 import AdBanner from '@/components/ad-banner';
 import { Metadata } from 'next';
@@ -406,28 +406,23 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
                       className="flex flex-wrap items-center gap-3 text-black"
                       style={{
                         fontFamily: 'Bangla, sans-serif',
-                        fontSize: '16px',
-                        fontWeight: 400,
-                        lineHeight: '17.6px',
+                        fontSize: '18px',
+                        fontWeight: 500,
+                        lineHeight: '22px',
                         letterSpacing: '-0.2px',
                         textAlign: 'left',
                       }}
                     >
-                      <span className="flex items-center gap-1.5" itemProp="author" itemScope itemType="https://schema.org/Person">
-                        <User size={16} className="text-black fill-black shrink-0" />
-                        <span itemProp="name" className="text-black">{getReporterTitle(news)}</span>
-                      </span>
-
                       {dateStr && (
                         <span className="flex items-center gap-1.5 text-black">
-                          <Calendar size={16} className="text-black fill-black shrink-0" />
+                          <Calendar size={18} className="text-black fill-black shrink-0" />
                           <span className="text-black">{dateStr}</span>
                         </span>
                       )}
 
                       {timeStr && (
                         <span className="flex items-center gap-1.5 text-black">
-                          <Clock size={16} className="text-black fill-black shrink-0" />
+                          <Clock size={18} className="text-black fill-black shrink-0" />
                           <span className="text-black">{timeStr}</span>
                         </span>
                       )}
@@ -465,11 +460,6 @@ export default async function DynamicRouteResolver({ params, searchParams }: Rou
                   className="prose max-w-none break-words [&_img]:rounded [&_img]:my-3 [&_iframe]:w-full [&_iframe]:aspect-video"
                   dangerouslySetInnerHTML={{ __html: news.content }}
                 />
-
-                {/* Article Bottom Sign-off */}
-                <div className="pt-3 border-t border-gray-100 text-[14px] sm:text-[15px] font-medium text-gray-600 italic">
-                  খুলনা গেজেট/এএজে
-                </div>
 
                 {/* Tags */}
                 {news.tags.length > 0 && (
