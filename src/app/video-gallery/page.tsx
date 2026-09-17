@@ -42,7 +42,7 @@ export default async function PublicVideoGallery() {
   let dbVideos: any[] = [];
   try {
     dbVideos = await prisma.galleryVideo.findMany({
-      orderBy: { order: 'asc' },
+      orderBy: { createdAt: 'desc' },
     });
   } catch (err) {
     console.error('Error fetching gallery videos:', err);

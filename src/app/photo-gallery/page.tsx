@@ -41,46 +41,16 @@ const FALLBACK_PHOTOS = [
 
 export default async function PublicPhotoGallery() {
   let dbPhotos: any[] = [];
-  let newsWithPhotos: any[] = [];
   try {
-    const res = await Promise.all([
-      prisma.galleryPhoto.findMany({
-        orderBy: { order: 'asc' },
-      }),
-      prisma.news.findMany({
-        where: {
-          status: 'PUBLISHED',
-          featuredImage: { not: null },
-        },
-        orderBy: { publishedAt: 'desc' },
-        take: 20,
-        include: { category: true },
-      }),
-    ]);
-    dbPhotos = res[0];
-    newsWithPhotos = res[1];
+    dbPhotos = await prisma.galleryPhoto.findMany({
+      orderBy: { createdAt: 'desc' },
+    });
   } catch (err) {
     console.error('Error fetching gallery photos:', err);
   }
 
   const combinedPhotos: any[] = [];
 
-  // Map published news images to gallery items
-  if (newsWithPhotos && newsWithPhotos.length > 0) {
-    newsWithPhotos.forEach((item) => {
-      if (item.featuredImage) {
-        combinedPhotos.push({
-          id: `news-${item.id}`,
-          imageUrl: item.featuredImage,
-          caption: item.title,
-          credit: item.photoCredit || item.reporterName || 'খুলনা গেজেট',
-          newsUrl: `/${item.category?.slug || 'bangladesh'}/${item.slug}-${item.id}`,
-        });
-      }
-    });
-  }
-
-  // Include DB gallery photos
   if (dbPhotos && dbPhotos.length > 0) {
     dbPhotos.forEach((ph) => {
       if (ph.imageUrl) {

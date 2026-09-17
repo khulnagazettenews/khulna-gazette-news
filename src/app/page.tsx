@@ -205,12 +205,12 @@ export default async function HomePage() {
       }),
       // Photos
       prisma.galleryPhoto.findMany({
-        orderBy: { order: 'asc' },
-        take: 5,
+        orderBy: { createdAt: 'desc' },
+        take: 50,
       }),
       // Videos
       prisma.galleryVideo.findMany({
-        orderBy: { order: 'asc' },
+        orderBy: { createdAt: 'desc' },
         take: 10,
       }),
       // Advertisements
@@ -496,7 +496,7 @@ export default async function HomePage() {
             <AdBanner ad={getAd('home_before_photo_gallery')} className="h-20 sm:h-24" />
 
             {/* Prothom Alo Style Photo Section */}
-            <PhotoSection photos={serializeList(photos)} newsWithPhotos={serializeList(heroNews)} />
+            <PhotoSection photos={serializeList(photos)} newsWithPhotos={serializeList(latestNews)} />
           </div>
 
           {/* Right Column (3 Cols on LG): Full Sidebar Widgets */}

@@ -5,7 +5,7 @@ import { NextResponse } from 'next/server';
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> | { id: string } }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -13,8 +13,10 @@ export async function DELETE(
       return NextResponse.json({ error: 'অননুমোদিত অ্যাক্সেস' }, { status: 403 });
     }
 
+    const { id } = await params;
+
     await prisma.galleryPhoto.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({ message: 'ফটো সফলভাবে মুছে ফেলা হয়েছে।' });

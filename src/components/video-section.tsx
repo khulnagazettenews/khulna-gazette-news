@@ -70,7 +70,7 @@ export default function VideoSection({ videos = [] }: VideoSectionProps) {
   const activeVideo = displayVideos[activeIdx] || displayVideos[0];
   const activeYtId = getYoutubeId(activeVideo?.youtubeUrl || '');
   const activeThumb = activeYtId
-    ? `https://img.youtube.com/vi/${activeYtId}/hqdefault.jpg`
+    ? `https://i.ytimg.com/vi/${activeYtId}/hqdefault.jpg`
     : '';
 
   const sideVideos = displayVideos.filter((_, idx) => idx !== activeIdx).slice(0, 4);
@@ -222,7 +222,7 @@ export default function VideoSection({ videos = [] }: VideoSectionProps) {
               {playlistVideos.map((vid) => {
                 const ytId = getYoutubeId(vid.youtubeUrl);
                 const thumb = ytId
-                  ? `https://img.youtube.com/vi/${ytId}/mqdefault.jpg`
+                  ? `https://i.ytimg.com/vi/${ytId}/hqdefault.jpg`
                   : '';
 
                 return (

@@ -72,24 +72,8 @@ export default function PhotoSection({ photos = [], newsWithPhotos = [] }: Photo
   const [isPlaying, setIsPlaying] = useState(true);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
-  // Format items from news or gallery photos
+  // Format items from DB gallery photos first, then photo news
   const items: PhotoNewsItem[] = [];
-
-  if (newsWithPhotos && newsWithPhotos.length > 0) {
-    newsWithPhotos.forEach((item) => {
-      if (item.featuredImage) {
-        items.push({
-          id: item.id,
-          title: item.title,
-          imageUrl: item.featuredImage,
-          caption: item.imageCaption || item.subtitle || item.title,
-          credit: item.photoCredit || item.reporterName || item.author?.name || 'খুলনা গেজেট',
-          timeAgo: item.publishedAt ? 'সাম্প্রতিক' : '',
-          newsUrl: `/${item.category?.slug || 'bangladesh'}/${item.slug}-${item.id}`,
-        });
-      }
-    });
-  }
 
   if (photos && photos.length > 0) {
     photos.forEach((ph) => {
@@ -102,6 +86,20 @@ export default function PhotoSection({ photos = [], newsWithPhotos = [] }: Photo
           credit: ph.credit || 'খুলনা গেজেট',
           timeAgo: 'গ্যালারি',
           newsUrl: '/photo-gallery',
+        });
+      }
+    });
+  } else if (newsWithPhotos && newsWithPhotos.length > 0) {
+    newsWithPhotos.forEach((item) => {
+      if (item.featuredImage) {
+        items.push({
+          id: item.id,
+          title: item.title,
+          imageUrl: item.featuredImage,
+          caption: item.imageCaption || item.subtitle || item.title,
+          credit: item.photoCredit || item.reporterName || item.author?.name || 'খুলনা গেজেট',
+          timeAgo: item.publishedAt ? 'সাম্প্রতিক' : '',
+          newsUrl: `/${item.category?.slug || 'photo-gallery'}/${item.slug}-${item.id}`,
         });
       }
     });
