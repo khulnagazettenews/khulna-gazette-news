@@ -72,7 +72,16 @@ export default async function PublicEpaperList({
         select: listSelect,
       }),
       prisma.news.findMany({
-        where: { isFeatured: true, status: 'PUBLISHED' },
+        where: {
+          status: 'PUBLISHED',
+          OR: [
+            { category: { slug: { in: ['gazette-exclusive', 'exclusive', 'gazetteexclusive'] } } },
+            { category: { name: { contains: 'গেজেট এক্সক্লুসিভ' } } },
+            { subCategory: { slug: { in: ['gazette-exclusive', 'exclusive', 'gazetteexclusive'] } } },
+            { subCategory: { name: { contains: 'গেজেট এক্সক্লুসিভ' } } },
+          ],
+        },
+        orderBy: { publishedAt: 'desc' },
         take: 5,
         select: listSelect,
       }),

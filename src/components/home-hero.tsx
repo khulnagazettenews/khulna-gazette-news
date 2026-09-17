@@ -79,7 +79,7 @@ export default function HomeHero({ news }: HomeHeroProps) {
                       letterSpacing: '-0.2px',
                       textAlign: 'left',
                       display: '-webkit-box',
-                      WebkitLineClamp: 9,
+                      WebkitLineClamp: 10,
                       WebkitBoxOrient: 'vertical',
                       overflow: 'hidden',
                     }}

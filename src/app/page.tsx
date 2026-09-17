@@ -218,10 +218,19 @@ export default async function HomePage() {
         where: { status: 'ACTIVE' },
         orderBy: { createdAt: 'desc' },
       }),
-      // Exclusive news
+      // Exclusive news: fetch strictly from 'গেজেট এক্সক্লুসিভ' category
       prisma.news.findMany({
-        where: { isFeatured: true, status: 'PUBLISHED' },
-        take: 5,
+        where: {
+          status: 'PUBLISHED',
+          OR: [
+            { category: { slug: { in: ['gazette-exclusive', 'exclusive', 'gazetteexclusive'] } } },
+            { category: { name: { contains: 'গেজেট এক্সক্লুসিভ' } } },
+            { subCategory: { slug: { in: ['gazette-exclusive', 'exclusive', 'gazetteexclusive'] } } },
+            { subCategory: { name: { contains: 'গেজেট এক্সক্লুসিভ' } } },
+          ],
+        },
+        orderBy: { publishedAt: 'desc' },
+        take: 10,
         select: listSelect,
       }),
       specialTopicBannerNewsQuery,
@@ -478,7 +487,7 @@ export default async function HomePage() {
             <CategoryBlock
               title="গেজেট এক্সক্লুসিভ"
               slug="gazette-exclusive"
-              news={(exclusiveNews && exclusiveNews.length >= 5 ? exclusiveNews : (exclusiveNews.concat(heroNewsFallback).slice(0, 5))) as any}
+              news={exclusiveNews as any}
               variant="sports"
               excerptLines={2}
             />

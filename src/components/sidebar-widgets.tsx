@@ -179,7 +179,7 @@ export default function SidebarWidgets({
         </div>
         <div className="p-3 bg-white">
           <div className="space-y-3.5 divide-y divide-gray-100">
-            {(exclusiveNews.length > 0 ? exclusiveNews.slice(0, 5) : latestNews.slice(0, 5)).map((item, index) => (
+            {(exclusiveNews || []).slice(0, 5).map((item, index) => (
               <div key={item.id} className={`flex items-start gap-3 group ${index > 0 ? 'pt-3.5' : ''}`}>
                 <Link
                   href={`/${item.category?.slug || 'news'}/${item.id}`}
