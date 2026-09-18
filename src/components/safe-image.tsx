@@ -22,6 +22,8 @@ export default function SafeImage({
 
   return (
     <img
+      loading={props.loading || 'lazy'}
+      decoding={props.decoding || 'async'}
       {...props}
       src={imgSrc || fallbackSrc}
       alt={alt}

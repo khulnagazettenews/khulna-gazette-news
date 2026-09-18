@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ChevronLeft, ChevronRight, Search } from 'lucide-react';
 
@@ -52,7 +52,7 @@ interface CalendarArchiveWidgetProps {
   onSelectDate?: (dateStr: string) => void;
 }
 
-export default function CalendarArchiveWidget({
+function CalendarArchiveWidgetContent({
   title = 'আর্কাইভ',
   targetPath = '/archive',
   availableDates,
@@ -316,5 +316,13 @@ export default function CalendarArchiveWidget({
         </div>
       </div>
     </div>
+  );
+}
+
+export default function CalendarArchiveWidget(props: CalendarArchiveWidgetProps) {
+  return (
+    <Suspense fallback={<div className="bg-white border border-slate-200 rounded-sm p-4 h-64 animate-pulse shrink-0" />}>
+      <CalendarArchiveWidgetContent {...props} />
+    </Suspense>
   );
 }

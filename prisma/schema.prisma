@@ -34,6 +34,9 @@ model Category {
   
   news          News[]     @relation("CategoryNews")
   subNews       News[]     @relation("SubCategoryNews")
+
+  @@index([slug])
+  @@index([parentId])
 }
 
 model Tag {
@@ -50,6 +53,7 @@ model NewsTag {
   tag    Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
   @@id([newsId, tagId])
+  @@index([tagId])
 }
 
 model News {
@@ -91,6 +95,14 @@ model News {
   updatedAt       DateTime    @updatedAt
   
   comments        Comment[]
+
+  @@index([status, publishedAt])
+  @@index([categoryId, status, publishedAt])
+  @@index([subCategoryId, status, publishedAt])
+  @@index([status, viewCount])
+  @@index([status, isBreaking, publishedAt])
+  @@index([status, isFeatured, publishedAt])
+  @@index([authorId])
 }
 
 model EpaperIssue {
@@ -146,6 +158,8 @@ model Comment {
   approved  Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([newsId, approved])
 }
 
 model Advertisement {
@@ -165,6 +179,8 @@ model Advertisement {
   views       Int       @default(0)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+
+  @@index([position, status])
 }
 
 model SpecialTopic {

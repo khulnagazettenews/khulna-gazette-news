@@ -104,6 +104,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   // 2. Categories Group, Reorder & Special Topics
   if (['SUPER_ADMIN', 'ADMIN', 'EDITOR', 'SUB_EDITOR'].includes(role)) {
     navigation.push(
+      { name: 'সর্বশেষ টেক্সট টিকার', href: '/admin/breaking-news', icon: Sparkles },
       { name: 'নিউজ রিঅর্ডার', href: '/admin/reorder', icon: ArrowUpDown },
       {
         name: 'ক্যাটাগরি',
