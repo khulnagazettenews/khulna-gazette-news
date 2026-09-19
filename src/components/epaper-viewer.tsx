@@ -93,7 +93,7 @@ export default function EpaperViewer({ initialIssues, initialSelectedDate }: Epa
 
   const [activeIssue, setActiveIssue] = useState<EpaperIssue | null>(matchedInitialIssue);
   const [activePageIndex, setActivePageIndex] = useState<number>(0);
-  const [zoomScale, setZoomScale] = useState<number>(1); // Default to 100% Full Page Fit View
+  const [zoomScale, setZoomScale] = useState<number>(1.15); // Default to 115% for optimal full width & height view
   const [viewMode, setViewMode] = useState<'image' | 'pdf'>('image'); // Mode switcher
   const [lightboxOpen, setLightboxOpen] = useState<boolean>(false);
   const [lightboxZoom, setLightboxZoom] = useState<number>(1.75);
@@ -171,14 +171,14 @@ export default function EpaperViewer({ initialIssues, initialSelectedDate }: Epa
   const goToPrevPage = () => {
     if (activePageIndex > 0) {
       setActivePageIndex((prev) => prev - 1);
-      setZoomScale(1.25);
+      setZoomScale(1.15);
     }
   };
 
   const goToNextPage = () => {
     if (activePageIndex < pages.length - 1) {
       setActivePageIndex((prev) => prev + 1);
-      setZoomScale(1.25);
+      setZoomScale(1.15);
     }
   };
 
@@ -352,7 +352,7 @@ export default function EpaperViewer({ initialIssues, initialSelectedDate }: Epa
                   key={idx}
                   onClick={() => {
                     setActivePageIndex(idx);
-                    setZoomScale(1.25);
+                    setZoomScale(1.15);
                     setViewMode('image');
                   }}
                   className={`p-1.5 rounded-[3px] cursor-pointer transition flex flex-col items-center select-none ${
@@ -396,7 +396,7 @@ export default function EpaperViewer({ initialIssues, initialSelectedDate }: Epa
           />
         </div>
       ) : (
-        <div className="max-w-[1050px] mx-auto my-6 bg-white border border-[#e2e2e2] rounded shadow-2xs overflow-hidden">
+        <div className="w-full mx-auto my-4 bg-white border border-[#e2e2e2] rounded shadow-2xs overflow-hidden">
           
           {/* Scrollable Container with Crisp HD Sharp Rendering */}
           <div 
@@ -406,7 +406,7 @@ export default function EpaperViewer({ initialIssues, initialSelectedDate }: Epa
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp}
-            className={`relative overflow-auto flex justify-center bg-[#f0f0f0] p-3 sm:p-4 min-h-[550px] max-h-[900px] scrollbar-thin scrollbar-thumb-gray-400 select-none group/container ${
+            className={`relative overflow-auto flex justify-center bg-[#f0f0f0] p-1 sm:p-2 min-h-[700px] max-h-[1100px] sm:max-h-[1250px] scrollbar-thin scrollbar-thumb-gray-400 select-none group/container ${
               isDragging ? 'cursor-grabbing' : 'cursor-grab'
             }`}
           >
@@ -415,7 +415,7 @@ export default function EpaperViewer({ initialIssues, initialSelectedDate }: Epa
               <button
                 type="button"
                 onClick={goToPrevPage}
-                className="fixed sm:absolute left-4 top-1/2 -translate-y-1/2 z-30 bg-slate-900/85 hover:bg-[#A00B01] text-white p-3 rounded-full shadow-2xl transition backdrop-blur-xs flex items-center justify-center cursor-pointer border border-white/20 hover:scale-110"
+                className="fixed sm:absolute left-2 top-1/2 -translate-y-1/2 z-30 bg-slate-900/85 hover:bg-[#A00B01] text-white p-3 rounded-full shadow-2xl transition backdrop-blur-xs flex items-center justify-center cursor-pointer border border-white/20 hover:scale-110"
                 title="আগের পাতায় যান"
               >
                 <ChevronLeft size={24} />
@@ -427,7 +427,7 @@ export default function EpaperViewer({ initialIssues, initialSelectedDate }: Epa
               <button
                 type="button"
                 onClick={goToNextPage}
-                className="fixed sm:absolute right-4 top-1/2 -translate-y-1/2 z-30 bg-slate-900/85 hover:bg-[#A00B01] text-white p-3 rounded-full shadow-2xl transition backdrop-blur-xs flex items-center justify-center cursor-pointer border border-white/20 hover:scale-110"
+                className="fixed sm:absolute right-2 top-1/2 -translate-y-1/2 z-30 bg-slate-900/85 hover:bg-[#A00B01] text-white p-3 rounded-full shadow-2xl transition backdrop-blur-xs flex items-center justify-center cursor-pointer border border-white/20 hover:scale-110"
                 title="পরের পাতায় যান"
               >
                 <ChevronRight size={24} />
@@ -473,7 +473,7 @@ export default function EpaperViewer({ initialIssues, initialSelectedDate }: Epa
                     type="button"
                     onClick={() => {
                       setActivePageIndex(idx);
-                      setZoomScale(1.25);
+                      setZoomScale(1.15);
                     }}
                     className={`group flex flex-col items-center gap-1 p-1 rounded-xl transition cursor-pointer select-none ${
                       isCurrent
