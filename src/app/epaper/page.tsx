@@ -6,6 +6,7 @@ import PublicFooter from '@/components/public-footer';
 import EpaperViewer from '@/components/epaper-viewer';
 import SidebarWidgets from '@/components/sidebar-widgets';
 
+export const dynamic = 'force-dynamic';
 export const revalidate = 60; // Cache for 60s
 
 export const metadata: Metadata = {
