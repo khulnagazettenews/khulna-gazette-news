@@ -307,10 +307,12 @@ h5 {
 .epaper-sharp {
   image-rendering: -webkit-optimize-contrast;
   image-rendering: crisp-edges;
+  image-rendering: pixelated;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transform: translateZ(0);
   backface-visibility: hidden;
+  filter: contrast(1.04) brightness(1.01);
 }
 
 /* Custom Visible Scrollbar matching khulnagazette.com */
