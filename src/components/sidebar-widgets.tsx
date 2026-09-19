@@ -94,6 +94,13 @@ export default function SidebarWidgets({
       {/* 1. TABS WIDGET (সর্বশেষ | সর্বাধিক পঠিত - 1st) */}
       <TabsWidget latest={latestNews} popular={popularNews} />
 
+      {/* 2. CALENDAR ARCHIVE WIDGET (আর্কাইভ / ই-পেপার আর্কাইভ - Right below TabsWidget) */}
+      <CalendarArchiveWidget
+        title={isEpaperPage ? 'ই-পেপার আর্কাইভ' : 'আর্কাইভ'}
+        targetPath={isEpaperPage ? '/epaper' : '/archive'}
+        availableDates={availableDates}
+      />
+
       {/* 2. APP DOWNLOAD BANNER (খুলনা গেজেটের app পেতে ক্লিক করুন - Right under TabsWidget) */}
       <div className="bg-white rounded border border-[#1e293b]/30 shadow-xs overflow-hidden">
         <div 
@@ -225,13 +232,6 @@ export default function SidebarWidgets({
       {middleAds.map(ad => (
         <RenderAdItem key={ad.id} ad={ad} />
       ))}
-
-      {/* 5. CALENDAR ARCHIVE WIDGET (আর্কাইভ / ই-পেপার আর্কাইভ - 5th) */}
-      <CalendarArchiveWidget
-        title={isEpaperPage ? 'ই-পেপার আর্কাইভ' : 'আর্কাইভ'}
-        targetPath={isEpaperPage ? '/epaper' : '/archive'}
-        availableDates={availableDates}
-      />
 
       {/* 6. LIKE US ON FACEBOOK WIDGET (6th) */}
       <FacebookWidget />
