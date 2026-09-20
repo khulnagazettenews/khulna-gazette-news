@@ -2,6 +2,7 @@ import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { prisma } from '@/lib/prisma';
 import PublicHeader from '@/components/public-header';
+import BreakingNewsTicker from '@/components/breaking-news';
 import PublicFooter from '@/components/public-footer';
 import EpaperViewer from '@/components/epaper-viewer';
 import SidebarWidgets from '@/components/sidebar-widgets';
@@ -127,17 +128,20 @@ export default async function PublicEpaperList({
   return (
     <div className="flex flex-col min-h-screen bg-slate-50/70">
       <PublicHeader />
+      <BreakingNewsTicker />
 
-      <main className="flex-grow w-full max-w-[1850px] mx-auto px-2 sm:px-4 lg:px-6 py-3 sm:py-5">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-          {/* Main Epaper Viewer Section (9 Columns) */}
-          <div className="lg:col-span-9 bg-white rounded-2xl p-1 sm:p-2 border border-slate-200/80 shadow-xs">
-            <Suspense fallback={<div className="p-8 text-center font-bold text-slate-500">ই-পেপার লোড হচ্ছে...</div>}>
-              <EpaperViewer initialIssues={issues} initialSelectedDate={selectedDate} />
-            </Suspense>
+      <main className="flex-grow w-full max-w-[1520px] mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          {/* Main Epaper Viewer Section (9 Columns - Same as Homepage Left Layout) */}
+          <div className="lg:col-span-9 space-y-6">
+            <div className="bg-white rounded-xl p-3 sm:p-5 border border-slate-200/80 shadow-xs">
+              <Suspense fallback={<div className="p-8 text-center font-bold text-slate-500">ই-পেপার লোড হচ্ছে...</div>}>
+                <EpaperViewer initialIssues={issues} initialSelectedDate={selectedDate} />
+              </Suspense>
+            </div>
           </div>
 
-          {/* Sidebar Section (3 Columns): Latest & Popular News Tabs + App Banner + Epaper Archive Widget */}
+          {/* Sidebar Section (3 Columns - Same as Homepage Sidebar Layout) */}
           <div className="lg:col-span-3">
             <Suspense fallback={<div className="p-4 text-center text-slate-400">সাইডবার লোড হচ্ছে...</div>}>
               <SidebarWidgets

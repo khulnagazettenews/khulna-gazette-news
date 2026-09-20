@@ -440,10 +440,10 @@ export default function EpaperViewer({ initialIssues, initialSelectedDate }: Epa
         {/* Divider line */}
         <div className="w-full h-[1px] bg-[#ececec] mt-3 mb-5"></div>
 
-        {/* 2. TOP PAGE THUMBNAILS CONTAINER (.epaper-thumbnails-container - Auto Adjust Grid) */}
+        {/* 2. TOP PAGE THUMBNAILS CONTAINER (.epaper-thumbnails-container - Auto Adjust & Center Grid) */}
         <div className="bg-[#f7f7f7] p-2 sm:p-3 rounded-[5px] shadow-[0_1px_3px_rgba(0,0,0,0.1)] border border-[#eeeeee]">
           <div 
-            className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-2 sm:gap-2.5"
+            className="flex flex-wrap items-start justify-center gap-2 sm:gap-3"
           >
             {pages.map((imgUrl, idx) => {
               const label = getPageLabel(idx, pages.length);
@@ -458,7 +458,7 @@ export default function EpaperViewer({ initialIssues, initialSelectedDate }: Epa
                     setLightboxOpen(true);
                     setViewMode('image');
                   }}
-                  className={`p-1.5 rounded-[3px] cursor-pointer transition flex flex-col items-center select-none ${
+                  className={`p-1.5 rounded-[3px] cursor-pointer transition flex flex-col items-center select-none flex-1 min-w-[95px] max-w-[145px] sm:min-w-[115px] sm:max-w-[165px] ${
                     isActive
                       ? 'border-2 border-[#A00B01] bg-white shadow-xs'
                       : 'border-2 border-transparent hover:border-[#A00B01] bg-transparent'
@@ -503,17 +503,7 @@ export default function EpaperViewer({ initialIssues, initialSelectedDate }: Epa
           
           {/* Scrollable Container with Crisp HD Sharp Rendering */}
           <div 
-            ref={containerRef}
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleMouseUp}
-            className={`relative w-full overflow-hidden flex items-start justify-center bg-slate-200/40 p-1 sm:p-2 min-h-[520px] sm:min-h-[1100px] lg:min-h-[1350px] select-none rounded-lg border border-slate-200/60 ${
-              isDragging ? 'cursor-grabbing' : zoomScale > 1.05 ? 'cursor-grab' : 'cursor-zoom-in'
-            }`}
+            className="relative w-full overflow-hidden flex items-start justify-center bg-slate-200/40 p-1 sm:p-2 min-h-[520px] sm:min-h-[1100px] lg:min-h-[1350px] select-none rounded-lg border border-slate-200/60"
           >
             {/* Floating Left Overlay Button (Previous Page) */}
             {activePageIndex > 0 && (
@@ -539,38 +529,19 @@ export default function EpaperViewer({ initialIssues, initialSelectedDate }: Epa
               </button>
             )}
 
-            <div 
-              style={{ 
-                transform: `translate3d(${panPos.x}px, ${panPos.y}px, 0px) scale(${zoomScale})`,
-                transition: isDragging ? 'none' : 'transform 0.12s cubic-bezier(0.2, 0, 0, 1)',
-                transformOrigin: 'top center',
-              }}
-              className="flex justify-center items-start shrink-0 w-full max-w-[1250px] lg:max-w-[1450px] xl:max-w-[1600px]"
-            >
+            <div className="flex justify-center items-start shrink-0 w-full max-w-[1250px] lg:max-w-[1450px] xl:max-w-[1600px]">
               <img
                 src={pages[activePageIndex]}
                 alt={getPageLabel(activePageIndex, pages.length)}
                 draggable={false}
                 onDragStart={(e) => e.preventDefault()}
                 onClick={() => {
-                  if (!hasMoved) {
-                    setLightboxZoom(1.0);
-                    setLbPanPos({ x: 0, y: 0 });
-                    setLightboxOpen(true);
-                  }
+                  setLightboxZoom(1.0);
+                  setLbPanPos({ x: 0, y: 0 });
+                  setLightboxOpen(true);
                 }}
-                onDoubleClick={() => {
-                  if (zoomScale > 1.05) {
-                    setZoomScale(1.0);
-                    setPanPos({ x: 0, y: 0 });
-                  } else {
-                    setZoomScale(1.8);
-                  }
-                }}
-                title="ক্লিক করুন আলাদা ফুল-উইন্ডো পপআপ দেখতে, মাউস টেনে যেকোনো দিকে সরান"
-                className={`w-full h-auto object-contain block border border-gray-300 shadow-2xl bg-white rounded-sm epaper-sharp ${
-                  isDragging ? 'cursor-grabbing' : zoomScale > 1.05 ? 'cursor-grab' : 'cursor-zoom-in'
-                }`}
+                title="ক্লিক করুন আলাদা ফুল-উইন্ডোতে ইচ্ছেমতো জুম ইন/আউট করে দেখতে"
+                className="w-full h-auto object-contain block border border-gray-300 shadow-2xl bg-white rounded-sm epaper-sharp cursor-pointer hover:opacity-95 transition-opacity"
               />
             </div>
           </div>
@@ -701,10 +672,16 @@ export default function EpaperViewer({ initialIssues, initialSelectedDate }: Epa
                 <input
                   type="range"
                   min="50"
-                  max="350"
+                  max="600"
                   step="5"
                   value={Math.round(lightboxZoom * 100)}
-                  onChange={(e) => setLightboxZoom(Number(e.target.value) / 100)}
+                  onChange={(e) => {
+                    const newZoom = Number(e.target.value) / 100;
+                    setLightboxZoom(newZoom);
+                    if (newZoom <= 1.05) {
+                      setLbPanPos({ x: 0, y: 0 });
+                    }
+                  }}
                   className="w-24 sm:w-36 accent-emerald-400 cursor-pointer"
                   title="স্লাইডার টেনে ইচ্ছেমতো জুম কম-বেশি করুন"
                 />
@@ -715,7 +692,7 @@ export default function EpaperViewer({ initialIssues, initialSelectedDate }: Epa
 
               <button
                 type="button"
-                onClick={() => setLightboxZoom((z) => Math.min(Number((z + 0.15).toFixed(2)), 3.5))}
+                onClick={() => setLightboxZoom((z) => Math.min(Number((z + 0.25).toFixed(2)), 6.0))}
                 className="bg-white/20 hover:bg-white/30 text-white p-1.5 rounded-lg transition cursor-pointer"
                 title="জুম ইন (+)"
               >
@@ -724,32 +701,45 @@ export default function EpaperViewer({ initialIssues, initialSelectedDate }: Epa
 
               <button
                 type="button"
-                onClick={() => setLightboxZoom(1.0)}
-                className={`px-3 py-1 rounded-lg text-xs font-extrabold transition cursor-pointer border ${
+                onClick={() => {
+                  setLightboxZoom(1.0);
+                  setLbPanPos({ x: 0, y: 0 });
+                }}
+                className={`px-2.5 py-1 rounded-lg text-xs font-extrabold transition cursor-pointer border ${
                   lightboxZoom === 1.0 ? 'bg-[#A00B01] text-white border-[#A00B01]' : 'bg-white/20 hover:bg-white/30 text-white border-white/20'
                 }`}
               >
-                ১০০% ফিট
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setLightboxZoom(1.5)}
-                className={`px-3 py-1 rounded-lg text-xs font-extrabold transition cursor-pointer border ${
-                  lightboxZoom === 1.5 ? 'bg-[#A00B01] text-white border-[#A00B01]' : 'bg-white/20 hover:bg-white/30 text-white border-white/20'
-                }`}
-              >
-                ১৫০%
+                ১০০%
               </button>
 
               <button
                 type="button"
                 onClick={() => setLightboxZoom(2.0)}
-                className={`px-3 py-1 rounded-lg text-xs font-extrabold transition cursor-pointer border ${
+                className={`px-2.5 py-1 rounded-lg text-xs font-extrabold transition cursor-pointer border ${
                   lightboxZoom === 2.0 ? 'bg-[#A00B01] text-white border-[#A00B01]' : 'bg-white/20 hover:bg-white/30 text-white border-white/20'
                 }`}
               >
                 ২০০%
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setLightboxZoom(3.0)}
+                className={`px-2.5 py-1 rounded-lg text-xs font-extrabold transition cursor-pointer border ${
+                  lightboxZoom === 3.0 ? 'bg-[#A00B01] text-white border-[#A00B01]' : 'bg-white/20 hover:bg-white/30 text-white border-white/20'
+                }`}
+              >
+                ৩০০%
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setLightboxZoom(4.0)}
+                className={`px-2.5 py-1 rounded-lg text-xs font-extrabold transition cursor-pointer border ${
+                  lightboxZoom === 4.0 ? 'bg-[#A00B01] text-white border-[#A00B01]' : 'bg-white/20 hover:bg-white/30 text-white border-white/20'
+                }`}
+              >
+                ৪০০%
               </button>
 
               <button
@@ -763,7 +753,7 @@ export default function EpaperViewer({ initialIssues, initialSelectedDate }: Epa
             </div>
           </div>
 
-          {/* Main Newspaper Image Display with 2D Drag and Pan */}
+          {/* Main Newspaper Image Display with 2D Drag and Pan & Wheel Zoom */}
           <div 
             ref={lightboxContainerRef}
             onMouseDown={handleLbMouseDown}
@@ -773,6 +763,11 @@ export default function EpaperViewer({ initialIssues, initialSelectedDate }: Epa
             onTouchStart={handleLbTouchStart}
             onTouchMove={handleLbTouchMove}
             onTouchEnd={handleLbMouseUp}
+            onWheel={(e) => {
+              e.preventDefault();
+              const delta = e.deltaY < 0 ? 0.2 : -0.2;
+              setLightboxZoom((z) => Math.max(0.5, Math.min(6.0, Number((z + delta).toFixed(2)))));
+            }}
             className={`flex-1 w-full h-full overflow-hidden flex items-center justify-center p-2 my-1 select-none relative ${
               lbDragging ? 'cursor-grabbing' : lightboxZoom > 1.05 ? 'cursor-grab' : 'cursor-zoom-in'
             }`}
@@ -796,7 +791,7 @@ export default function EpaperViewer({ initialIssues, initialSelectedDate }: Epa
                       setLightboxZoom(1.0);
                       setLbPanPos({ x: 0, y: 0 });
                     } else {
-                      setLightboxZoom(1.8);
+                      setLightboxZoom(2.5);
                     }
                   }
                 }}
@@ -805,11 +800,11 @@ export default function EpaperViewer({ initialIssues, initialSelectedDate }: Epa
                     setLightboxZoom(1.0);
                     setLbPanPos({ x: 0, y: 0 });
                   } else {
-                    setLightboxZoom(1.8);
+                    setLightboxZoom(2.5);
                   }
                 }}
-                title="মাউস দিয়ে ক্লিক করে জুম ইন করুন, অথবা মাউস দিয়ে টেনে যেকোনো দিকে সরান"
-                className={`max-h-[92vh] max-w-[98vw] w-auto h-auto object-contain rounded bg-white shadow-2xl epaper-sharp ${
+                title="মাউস দিয়ে ক্লিক করে বা হুইল ঘুরিয়ে জুম ইন করুন, মাউস টেনে যেকোনো দিকে সরান"
+                className={`max-h-[84vh] max-w-[96vw] w-auto h-auto object-contain rounded bg-white shadow-2xl epaper-sharp ${
                   lbDragging ? 'cursor-grabbing' : lightboxZoom > 1.05 ? 'cursor-zoom-out' : 'cursor-zoom-in'
                 }`}
               />
