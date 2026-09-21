@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import SafeImage from '@/components/safe-image';
 
@@ -18,22 +18,35 @@ interface TabsWidgetProps {
   popular: TabNewsItem[];
 }
 
-export default function TabsWidget({ latest, popular }: TabsWidgetProps) {
+export default function TabsWidget({ latest: initialLatest, popular: initialPopular }: TabsWidgetProps) {
   const [activeTab, setActiveTab] = useState<'latest' | 'popular'>('latest');
+  const [latestList, setLatestList] = useState<TabNewsItem[]>(initialLatest);
+  const [popularList, setPopularList] = useState<TabNewsItem[]>(initialPopular);
 
-  const rawList = activeTab === 'popular' ? popular : latest;
+  useEffect(() => {
+    // Background live 5-second polling for instant live sidebar news update
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch('/api/public/latest-news', { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.latest && data.latest.length > 0) {
+            setLatestList(data.latest);
+          }
+          if (data.popular && data.popular.length > 0) {
+            setPopularList(data.popular);
+          }
+        }
+      } catch (err) {
+        // Silent catch for smooth uninterrupted user experience
+      }
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const rawList = activeTab === 'popular' ? popularList : latestList;
   const list = activeTab === 'popular' ? rawList.slice(0, 10) : rawList.slice(0, 20);
-
-  const getTimeAgo = (dateVal?: string | Date | null) => {
-    if (!dateVal) return '';
-    const date = new Date(dateVal);
-    const diffMin = Math.floor((Date.now() - date.getTime()) / (1000 * 60));
-    if (diffMin < 1) return '০ মিনিট আগে';
-    if (diffMin < 60) return `${diffMin.toLocaleString('bn-BD')} মিনিট আগে`;
-    const diffHours = Math.floor(diffMin / 60);
-    if (diffHours < 24) return `${diffHours.toLocaleString('bn-BD')} ঘণ্টা আগে`;
-    return date.toLocaleDateString('bn-BD', { month: 'short', day: 'numeric' });
-  };
 
   return (
     <div className="bg-white border border-gray-200 rounded shadow-2xs font-sans overflow-hidden">
@@ -42,7 +55,7 @@ export default function TabsWidget({ latest, popular }: TabsWidgetProps) {
         <button
           type="button"
           onClick={() => setActiveTab('latest')}
-          className={`w-full py-1 px-2 text-center transition cursor-pointer flex items-center justify-center ${
+          className={`w-full py-1 px-2 text-center transition cursor-pointer flex items-center justify-center gap-1.5 ${
             activeTab === 'latest'
               ? 'bg-[#000000] text-white font-normal'
               : 'bg-[#343e56] text-white font-normal hover:bg-[#283145]'
@@ -56,7 +69,8 @@ export default function TabsWidget({ latest, popular }: TabsWidgetProps) {
             textAlign: 'center',
           }}
         >
-          সর্বশেষ
+          <span>সর্বশেষ</span>
+          <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse inline-block"></span>
         </button>
         <button
           type="button"
