@@ -48,12 +48,10 @@ export default function NavbarMenuManagement() {
         setMenuItems(data);
         setParentOptions(data.filter((c: NavbarItem) => c.parentId === null));
       } else {
-        setError(data.error || 'নেভবার মেনু লোড করা সম্ভব হয়নি।');
+        setError(data.error || 'Failed to load navbar menu.');
       }
     } catch (err) {
-      setError('নেটওয়ার্ক ত্রুটি। আবার চেষ্টা করুন।');
-    } finally {
-      setLoading(false);
+      setError('Network error. Please try again.');
     }
   };
 
@@ -83,7 +81,7 @@ export default function NavbarMenuManagement() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !url) {
-      setError('নাম এবং ইউআরএল আবশ্যক।');
+      setError('Name and URL are required.');
       return;
     }
 
@@ -111,21 +109,21 @@ export default function NavbarMenuManagement() {
       const data = await res.json();
 
       if (res.ok) {
-        setSuccess(editingId ? 'নেভবার মেনু আইটেম আপডেট করা হয়েছে।' : 'নতুন মেনু আইটেম যোগ করা হয়েছে।');
+        setSuccess(editingId ? 'Navbar item updated successfully.' : 'New navbar item added.');
         handleCancel();
         fetchMenuItems();
       } else {
-        setError(data.error || 'একটি ত্রুটি ঘটেছে।');
+        setError(data.error || 'An error occurred.');
       }
     } catch (err) {
-      setError('অনুরোধ পাঠানো সম্ভব হয়নি।');
+      setError('Failed to send request.');
     } finally {
       setFormLoading(false);
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('আপনি কি নিশ্চিত যে এই মেনু আইটেমটি মুছে ফেলতে চান?')) {
+    if (!confirm('Are you sure you want to delete this navbar menu item?')) {
       return;
     }
 
@@ -139,13 +137,13 @@ export default function NavbarMenuManagement() {
       const data = await res.json();
 
       if (res.ok) {
-        setSuccess('মেনু আইটেম মুছে ফেলা হয়েছে।');
+        setSuccess('Navbar menu item deleted.');
         fetchMenuItems();
       } else {
-        setError(data.error || 'মুছে ফেলার অনুমতি নেই বা সমস্যা হয়েছে।');
+        setError(data.error || 'Failed to delete navbar item.');
       }
     } catch (err) {
-      setError('মুছে ফেলা সম্ভব হয়নি।');
+      setError('An error occurred during deletion.');
     }
   };
 
@@ -156,16 +154,16 @@ export default function NavbarMenuManagement() {
         <div>
           <div className="flex items-center gap-2 text-xs font-bold text-red-600 mb-1">
             <FolderKanban size={16} />
-            <span>নেভবার ম্যানুয়াল বিল্ডার</span>
+            <span>Navigation Builder</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-            <span>নেভবার মেনু ম্যানেজমেন্ট</span>
+            <span>Navigation Menu</span>
             <span className="text-xs font-bold bg-slate-100 text-slate-700 px-2.5 py-1 rounded-full border border-slate-200">
-              {menuItems.length} টি মেনু আইটেম
+              {menuItems.length} Menu Items
             </span>
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            পোটালের নেভবার (Navbar) ড্রপডাউন ও মেনু আইটেমগুলো স্বাধীনভাবে নিয়ন্ত্রণ ও সাজান।
+            Customize header navigation menus, dropdown links, and portal order.
           </p>
         </div>
       </div>
@@ -191,48 +189,48 @@ export default function NavbarMenuManagement() {
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
             <h3 className="font-extrabold text-base text-slate-900 flex items-center gap-2">
               <FolderPlus size={18} className="text-red-600" />
-              <span>{editingId ? 'মেনু আইটেম সম্পাদনা' : 'নতুন নেভবার মেনু যোগ করুন'}</span>
+              <span>{editingId ? 'Edit Menu Item' : 'Add New Navbar Item'}</span>
             </h3>
             {editingId && (
               <span className="text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200 px-2 py-0.5 rounded-full">
-                সম্পাদনা মোড
+                Edit Mode
               </span>
             )}
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4 text-xs font-semibold text-slate-700">
             <div>
-              <label className="block mb-1.5 font-bold text-slate-900">মেনুর নাম (যেমন: বাংলাদেশ)</label>
+              <label className="block mb-1.5 font-bold text-slate-900">Menu Label</label>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="w-full border border-slate-200 rounded-2xl px-3.5 py-2.5 bg-slate-50 focus:bg-white focus:outline-none focus:border-red-500 font-bold transition"
-                placeholder="যেমন: বাংলাদেশ"
+                placeholder="e.g. Bangladesh"
                 required
               />
             </div>
 
             <div>
-              <label className="block mb-1.5 font-bold text-slate-900">ইউআরএল (Link / Page Path)</label>
+              <label className="block mb-1.5 font-bold text-slate-900">URL / Link Path</label>
               <input
                 type="text"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 className="w-full border border-slate-200 rounded-2xl px-3.5 py-2.5 bg-slate-50 focus:bg-white focus:outline-none focus:border-red-500 font-bold transition"
-                placeholder="যেমন: /bangladesh অথবা /photo-gallery"
+                placeholder="e.g. /bangladesh or /photos"
                 required
               />
             </div>
 
             <div>
-              <label className="block mb-1.5 font-bold text-slate-900">প্যারেন্ট মেনু (ড্রপডাউন সাব-আইটেমের জন্য)</label>
+              <label className="block mb-1.5 font-bold text-slate-900">Parent Menu (For Dropdowns)</label>
               <select
                 value={parentId}
                 onChange={(e) => setParentId(e.target.value)}
                 className="w-full border border-slate-200 rounded-2xl px-3.5 py-2.5 bg-slate-50 focus:bg-white focus:outline-none focus:border-red-500 font-bold transition cursor-pointer"
               >
-                <option value="">কোনো প্যারেন্ট নেই (প্রধান নেভবার আইটেম)</option>
+                <option value="">None (Primary Top Menu)</option>
                 {parentOptions.map((opt) => (
                   <option key={opt.id} value={opt.id}>
                     {opt.name}
@@ -242,7 +240,7 @@ export default function NavbarMenuManagement() {
             </div>
 
             <div>
-              <label className="block mb-1.5 font-bold text-slate-900">ক্রম নম্বর (Order - সিরিয়াল)</label>
+              <label className="block mb-1.5 font-bold text-slate-900">Sort Order</label>
               <input
                 type="number"
                 value={order}
@@ -258,7 +256,7 @@ export default function NavbarMenuManagement() {
                 disabled={formLoading}
                 className="flex-1 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white text-xs font-black py-3 rounded-2xl shadow-xs transition disabled:opacity-50"
               >
-                {editingId ? 'আপডেট করুন' : 'তৈরি করুন'}
+                {editingId ? 'Update Item' : 'Add Item'}
               </button>
               {editingId && (
                 <button
@@ -266,7 +264,7 @@ export default function NavbarMenuManagement() {
                   onClick={handleCancel}
                   className="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold py-3 px-4 rounded-2xl transition"
                 >
-                  বাতিল
+                  Cancel
                 </button>
               )}
             </div>
@@ -278,18 +276,18 @@ export default function NavbarMenuManagement() {
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
             <h3 className="font-extrabold text-base text-slate-900 flex items-center gap-2">
               <Layers size={18} className="text-teal-600" />
-              <span>নেভবার মেনু তালিকা</span>
+              <span>Navbar Structure</span>
             </h3>
-            <span className="text-xs text-slate-400 font-bold">নেভবার ড্রপডাউন হাইরারকি</span>
+            <span className="text-xs text-slate-400 font-bold">Dropdown Hierarchy</span>
           </div>
 
           {loading ? (
             <div className="text-center py-12 text-slate-400 font-bold">
               <div className="animate-spin rounded-full h-7 w-7 border-b-2 border-red-600 mx-auto mb-2"></div>
-              মেনু লোড হচ্ছে...
+              Loading navbar items...
             </div>
           ) : menuItems.length === 0 ? (
-            <div className="text-center py-12 text-slate-400 font-medium">কোনো মেনু আইটেম পাওয়া যায়নি।</div>
+            <div className="text-center py-12 text-slate-400 font-medium">No menu items found.</div>
           ) : (
             <div className="space-y-3">
               {menuItems.map((item) => (
@@ -308,19 +306,19 @@ export default function NavbarMenuManagement() {
 
                     <div className="flex items-center gap-2">
                       <span className="text-[11px] text-slate-600 bg-slate-200/70 px-2.5 py-0.5 rounded-lg font-bold">
-                        ক্রম: {item.order}
+                        Order: {item.order}
                       </span>
                       <button
                         onClick={() => handleEdit(item)}
                         className="p-1.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition"
-                        title="সম্পাদনা"
+                        title="Edit"
                       >
                         <Pencil size={15} />
                       </button>
                       <button
                         onClick={() => handleDelete(item.id)}
                         className="p-1.5 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition"
-                        title="মুছে ফেলুন"
+                        title="Delete"
                       >
                         <Trash2 size={15} />
                       </button>
@@ -338,18 +336,18 @@ export default function NavbarMenuManagement() {
                             <span className="text-[10px] font-mono text-slate-400">{sub.url}</span>
                           </div>
                           <div className="flex items-center gap-2">
-                            <span className="text-[10px] text-slate-400 font-mono">ক্রম: {sub.order}</span>
+                            <span className="text-[10px] text-slate-400 font-mono">Order: {sub.order}</span>
                             <button
                               onClick={() => handleEdit(sub)}
                               className="p-1 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition"
-                              title="সম্পাদনা"
+                              title="Edit"
                             >
                               <Pencil size={14} />
                             </button>
                             <button
                               onClick={() => handleDelete(sub.id)}
                               className="p-1 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition"
-                              title="মুছে ফেলুন"
+                              title="Delete"
                             >
                               <Trash2 size={14} />
                             </button>

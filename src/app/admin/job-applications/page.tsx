@@ -89,7 +89,7 @@ export default function AdminJobApplicationsPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('আপনি কি নিশ্চিত যে এই আবেদনটি মুছে ফেলতে চান?')) return;
+    if (!confirm('Are you sure you want to delete this job application?')) return;
     try {
       const res = await fetch(`/api/job-applications/${id}`, {
         method: 'DELETE',
@@ -126,28 +126,28 @@ export default function AdminJobApplicationsPage() {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 font-sans">
       {/* Top Title & Stats */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
         <div>
           <h1 className="text-2xl font-black text-slate-900 flex items-center gap-2.5">
             <Briefcase className="text-[#e60023] w-7 h-7" />
-            চাকরির আবেদনসমূহ (Job Applications)
+            Job Applications
           </h1>
           <p className="text-sm text-slate-500 mt-1">
-            ওয়েবসাইট থেকে আবেদনকারী সকল প্রার্থীর জীবনবৃত্তান্ত ও তথ্য এখানে জমা হচ্ছে।
+            Review applicant resumes and candidate submissions sent through the portal.
           </p>
         </div>
 
         <div className="flex flex-wrap gap-2 text-xs font-semibold">
           <span className="bg-blue-50 text-blue-700 px-3 py-1.5 rounded-lg border border-blue-200">
-            মোট: {applications.length} জন
+            Total: {applications.length}
           </span>
           <span className="bg-amber-50 text-amber-700 px-3 py-1.5 rounded-lg border border-amber-200">
-            অপেক্ষমাণ: {applications.filter((a) => a.status === 'PENDING').length} জন
+            Pending: {applications.filter((a) => a.status === 'PENDING').length}
           </span>
           <span className="bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-lg border border-emerald-200">
-            বাছাইকৃত: {applications.filter((a) => a.status === 'SHORTLISTED').length} জন
+            Shortlisted: {applications.filter((a) => a.status === 'SHORTLISTED').length}
           </span>
         </div>
       </div>
@@ -160,23 +160,23 @@ export default function AdminJobApplicationsPage() {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="আবেদনকারীর নাম, পদ বা মোবাইল দিয়ে খুঁজুন..."
+            placeholder="Search by candidate name, position, or phone..."
             className="w-full pl-10 pr-4 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg outline-none focus:border-blue-500"
           />
         </div>
 
         <div className="flex items-center gap-2 w-full sm:w-auto">
-          <span className="text-xs font-semibold text-slate-600">স্ট্যাটাস:</span>
+          <span className="text-xs font-semibold text-slate-600">Status:</span>
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
             className="bg-slate-50 border border-slate-200 text-slate-800 text-sm font-semibold rounded-lg px-3 py-2 outline-none"
           >
-            <option value="ALL">সকল আবেদন</option>
-            <option value="PENDING">অপেক্ষমাণ (Pending)</option>
-            <option value="REVIEWED">প্যালোচিত (Reviewed)</option>
-            <option value="SHORTLISTED">বাছাইকৃত (Shortlisted)</option>
-            <option value="REJECTED">বাতিলকৃত (Rejected)</option>
+            <option value="ALL">All Applications</option>
+            <option value="PENDING">Pending</option>
+            <option value="REVIEWED">Reviewed</option>
+            <option value="SHORTLISTED">Shortlisted</option>
+            <option value="REJECTED">Rejected</option>
           </select>
         </div>
       </div>
@@ -184,20 +184,20 @@ export default function AdminJobApplicationsPage() {
       {/* Applications Table */}
       <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
         {loading ? (
-          <div className="p-12 text-center text-slate-500 font-medium">আবেদনগুলো লোড হচ্ছে...</div>
+          <div className="p-12 text-center text-slate-500 font-medium">Loading applications...</div>
         ) : filteredApps.length === 0 ? (
-          <div className="p-12 text-center text-slate-500 font-medium">কোনো চাকরির আবেদন পাওয়া যায়নি।</div>
+          <div className="p-12 text-center text-slate-500 font-medium">No job applications found.</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-slate-50 border-b border-slate-200 text-slate-600 text-xs uppercase font-bold tracking-wider">
-                  <th className="p-4">আবেদনকারী</th>
-                  <th className="p-4">আবেদনের পদ</th>
-                  <th className="p-4">যোগাযোগ</th>
-                  <th className="p-4">তারিখ</th>
-                  <th className="p-4">স্ট্যাটাস</th>
-                  <th className="p-4 text-right">অ্যাকশন</th>
+                  <th className="p-4">Applicant</th>
+                  <th className="p-4">Position</th>
+                  <th className="p-4">Contact</th>
+                  <th className="p-4">Date</th>
+                  <th className="p-4">Status</th>
+                  <th className="p-4 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 text-sm">
@@ -205,7 +205,7 @@ export default function AdminJobApplicationsPage() {
                   <tr key={app.id} className="hover:bg-slate-50/80 transition">
                     <td className="p-4">
                       <div className="font-bold text-slate-900">{app.fullName}</div>
-                      {app.dob && <div className="text-xs text-slate-500">জন্ম: {app.dob}</div>}
+                      {app.dob && <div className="text-xs text-slate-500">DOB: {app.dob}</div>}
                     </td>
 
                     <td className="p-4">
@@ -226,7 +226,7 @@ export default function AdminJobApplicationsPage() {
                     </td>
 
                     <td className="p-4 text-xs text-slate-500 whitespace-nowrap">
-                      {new Date(app.createdAt).toLocaleDateString('bn-BD')}
+                      {new Date(app.createdAt).toLocaleDateString('en-US')}
                     </td>
 
                     <td className="p-4">
@@ -246,12 +246,12 @@ export default function AdminJobApplicationsPage() {
                         {app.status === 'REJECTED' && <XCircle className="w-3 h-3" />}
                         {app.status === 'PENDING' && <Clock className="w-3 h-3" />}
                         {app.status === 'SHORTLISTED'
-                          ? 'বাছাইকৃত'
+                          ? 'Shortlisted'
                           : app.status === 'REVIEWED'
-                          ? 'প্যালোচিত'
+                          ? 'Reviewed'
                           : app.status === 'REJECTED'
-                          ? 'বাতিল'
-                          : 'অপেক্ষমাণ'}
+                          ? 'Rejected'
+                          : 'Pending'}
                       </span>
                     </td>
 
@@ -260,14 +260,14 @@ export default function AdminJobApplicationsPage() {
                         <button
                           onClick={() => setSelectedApp(app)}
                           className="p-1.5 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition"
-                          title="বিস্তারিত দেখুন"
+                          title="View Details"
                         >
                           <Eye className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => handleDelete(app.id)}
                           className="p-1.5 rounded-lg bg-rose-50 text-rose-600 hover:bg-rose-100 transition"
-                          title="মুছে ফেলুন"
+                          title="Delete"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -295,30 +295,30 @@ export default function AdminJobApplicationsPage() {
             {/* Modal Header */}
             <div className="border-b border-slate-200 pb-4">
               <h2 className="text-xl font-bold text-slate-900">{selectedApp.fullName}</h2>
-              <p className="text-sm font-semibold text-[#e60023] mt-0.5">আবেদনের পদ: {selectedApp.position}</p>
+              <p className="text-sm font-semibold text-[#e60023] mt-0.5">Applied Position: {selectedApp.position}</p>
             </div>
 
             {/* Contact Details */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm bg-slate-50 p-4 rounded-xl">
               <div>
-                <span className="text-xs text-slate-500 font-bold block">মোবাইল</span>
+                <span className="text-xs text-slate-500 font-bold block">Mobile</span>
                 <span className="font-semibold text-slate-900">{selectedApp.mobile}</span>
               </div>
               <div>
-                <span className="text-xs text-slate-500 font-bold block">ইমেইল</span>
+                <span className="text-xs text-slate-500 font-bold block">Email</span>
                 <span className="font-semibold text-slate-900">{selectedApp.email}</span>
               </div>
               {selectedApp.dob && (
                 <div>
-                  <span className="text-xs text-slate-500 font-bold block">জন্মতারিখ</span>
+                  <span className="text-xs text-slate-500 font-bold block">Date of Birth</span>
                   <span className="font-semibold text-slate-900">{selectedApp.dob}</span>
                 </div>
               )}
               {selectedApp.facebookLink && (
                 <div>
-                  <span className="text-xs text-slate-500 font-bold block">ফেসবুক প্রোফাইল</span>
+                  <span className="text-xs text-slate-500 font-bold block">Facebook Profile</span>
                   <a href={selectedApp.facebookLink} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline text-xs flex items-center gap-1 font-semibold">
-                    <Globe className="w-3.5 h-3.5" /> প্রোফাইল দেখুন
+                    <Globe className="w-3.5 h-3.5" /> View Profile
                   </a>
                 </div>
               )}
@@ -328,16 +328,16 @@ export default function AdminJobApplicationsPage() {
             {(selectedApp.presentAddress || selectedApp.permanentAddress) && (
               <div className="space-y-3">
                 <h3 className="text-sm font-bold text-slate-900 flex items-center gap-1.5">
-                  <MapPin className="w-4 h-4 text-slate-500" /> ঠিকানা
+                  <MapPin className="w-4 h-4 text-slate-500" /> Address
                 </h3>
                 {selectedApp.presentAddress && (
                   <p className="text-xs text-slate-700 bg-slate-50 p-3 rounded-lg">
-                    <strong>বর্তমান ঠিকানা:</strong> {selectedApp.presentAddress}
+                    <strong>Present Address:</strong> {selectedApp.presentAddress}
                   </p>
                 )}
                 {selectedApp.permanentAddress && (
                   <p className="text-xs text-slate-700 bg-slate-50 p-3 rounded-lg">
-                    <strong>স্থায়ী ঠিকানা:</strong> {selectedApp.permanentAddress}
+                    <strong>Permanent Address:</strong> {selectedApp.permanentAddress}
                   </p>
                 )}
               </div>
@@ -347,12 +347,12 @@ export default function AdminJobApplicationsPage() {
             {parseJSON(selectedApp.educations).length > 0 && (
               <div className="space-y-2">
                 <h3 className="text-sm font-bold text-slate-900 flex items-center gap-1.5">
-                  <GraduationCap className="w-4 h-4 text-slate-500" /> শিক্ষাগত যোগ্যতা
+                  <GraduationCap className="w-4 h-4 text-slate-500" /> Educational Qualifications
                 </h3>
                 <div className="space-y-2">
                   {parseJSON(selectedApp.educations).map((edu: any, i: number) => (
                     <div key={i} className="text-xs bg-slate-50 p-3 rounded-lg flex justify-between">
-                      <span className="font-semibold text-slate-900">{edu.certificate || 'সনদ'}</span>
+                      <span className="font-semibold text-slate-900">{edu.certificate || 'Degree'}</span>
                       <span className="text-slate-600">{edu.institute}</span>
                       <span className="text-slate-500 font-bold">{edu.passingYear}</span>
                     </div>
@@ -365,7 +365,7 @@ export default function AdminJobApplicationsPage() {
             {parseJSON(selectedApp.experiences).length > 0 && (
               <div className="space-y-2">
                 <h3 className="text-sm font-bold text-slate-900 flex items-center gap-1.5">
-                  <Building2 className="w-4 h-4 text-slate-500" /> অভিজ্ঞতা
+                  <Building2 className="w-4 h-4 text-slate-500" /> Work Experience
                 </h3>
                 <div className="space-y-2">
                   {parseJSON(selectedApp.experiences).map((exp: any, i: number) => (
@@ -381,7 +381,7 @@ export default function AdminJobApplicationsPage() {
             {/* Work Links */}
             {parseJSON(selectedApp.workLinks).length > 0 && (
               <div className="space-y-2">
-                <h3 className="text-sm font-bold text-slate-900">কাজের লিংকসমূহ</h3>
+                <h3 className="text-sm font-bold text-slate-900">Work Portfolio Links</h3>
                 <div className="space-y-1">
                   {parseJSON(selectedApp.workLinks).map((link: string, i: number) => (
                     <a key={i} href={link} target="_blank" rel="noreferrer" className="text-xs text-blue-600 hover:underline block truncate">
@@ -395,7 +395,7 @@ export default function AdminJobApplicationsPage() {
             {/* Notes */}
             {selectedApp.notes && (
               <div className="space-y-1">
-                <h3 className="text-sm font-bold text-slate-900">অন্যান্য তথ্য</h3>
+                <h3 className="text-sm font-bold text-slate-900">Additional Information</h3>
                 <p className="text-xs text-slate-700 bg-slate-50 p-3 rounded-lg whitespace-pre-wrap">{selectedApp.notes}</p>
               </div>
             )}
@@ -406,19 +406,19 @@ export default function AdminJobApplicationsPage() {
                 onClick={() => handleUpdateStatus(selectedApp.id, 'SHORTLISTED')}
                 className="px-3.5 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-semibold hover:bg-emerald-700 transition"
               >
-                বাছাই করুন (Shortlist)
+                Shortlist
               </button>
               <button
                 onClick={() => handleUpdateStatus(selectedApp.id, 'REVIEWED')}
                 className="px-3.5 py-1.5 bg-blue-600 text-white rounded-lg text-xs font-semibold hover:bg-blue-700 transition"
               >
-                পর্যালোচিত (Reviewed)
+                Mark Reviewed
               </button>
               <button
                 onClick={() => handleUpdateStatus(selectedApp.id, 'REJECTED')}
                 className="px-3.5 py-1.5 bg-rose-600 text-white rounded-lg text-xs font-semibold hover:bg-rose-700 transition"
               >
-                বাতিল করুন (Reject)
+                Reject
               </button>
             </div>
           </div>

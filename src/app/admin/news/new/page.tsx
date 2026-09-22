@@ -4,8 +4,8 @@ export default function CreateNews() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-bold text-gray-800">নতুন খবর প্রকাশ করুন</h2>
-        <p className="text-sm text-gray-500">আপনার পাঠকদের জন্য নতুন সংবাদ লিখুন এবং ছবিসহ প্রকাশ করুন।</p>
+        <h2 className="text-xl font-bold text-gray-800">Add New Post</h2>
+        <p className="text-sm text-gray-500">Write and publish a new article with images and details for your readers.</p>
       </div>
 
       <NewsForm />

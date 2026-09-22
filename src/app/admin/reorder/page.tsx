@@ -68,10 +68,10 @@ export default function AdminReorderPage() {
         setNewsList(data.news || []);
         setPoolNews(data.poolNews || []);
       } else {
-        setMessage({ type: 'error', text: data.error || 'ডাটা লোড করা সম্ভব হয়নি' });
+        setMessage({ type: 'error', text: data.error || 'Failed to load grid data' });
       }
     } catch (err) {
-      setMessage({ type: 'error', text: 'সার্ভারে কানেক্ট করতে সমস্যা হয়েছে' });
+      setMessage({ type: 'error', text: 'Server connection failed' });
     } finally {
       setLoading(false);
     }
@@ -100,7 +100,7 @@ export default function AdminReorderPage() {
 
   const addNewsToTop = (item: NewsItem) => {
     if (newsList.some((n) => n.id === item.id)) {
-      alert('এই খবরটি ইতিমধ্যে গ্রিডে রয়েছে');
+      alert('This article is already in the grid');
       return;
     }
     setNewsList([item, ...newsList]);
@@ -145,12 +145,12 @@ export default function AdminReorderPage() {
 
       const data = await res.json();
       if (res.ok) {
-        setMessage({ type: 'success', text: data.message || 'সংবাদের গ্রিড ক্রম সফলভাবে সংরক্ষিত হয়েছে!' });
+        setMessage({ type: 'success', text: data.message || 'Homepage grid position reordered successfully!' });
       } else {
-        setMessage({ type: 'error', text: data.error || 'সংরক্ষণ করতে সমস্যা হয়েছে' });
+        setMessage({ type: 'error', text: data.error || 'Failed to save reorder configuration' });
       }
     } catch (err) {
-      setMessage({ type: 'error', text: 'সেভ করার সময় ত্রুটি ঘটেছে' });
+      setMessage({ type: 'error', text: 'An error occurred while saving' });
     } finally {
       setSaving(false);
     }
@@ -173,8 +173,8 @@ export default function AdminReorderPage() {
           className="border-2 border-dashed border-slate-300 rounded-2xl p-6 flex flex-col items-center justify-center text-slate-400 hover:border-red-400 hover:text-red-600 transition cursor-pointer bg-slate-50/50 min-h-[160px]"
         >
           <Plus size={24} />
-          <span className="text-xs font-bold mt-1">পজিশন #{index + 1} খালি রয়েছে</span>
-          <span className="text-[10px] text-slate-400 mt-0.5">খবর যুক্ত করতে ক্লিক করুন</span>
+          <span className="text-xs font-bold mt-1">Position #{index + 1} Empty</span>
+          <span className="text-[10px] text-slate-400 mt-0.5">Click to add article</span>
         </div>
       );
     }
@@ -199,10 +199,10 @@ export default function AdminReorderPage() {
             : 'bg-slate-50 text-slate-700 border-slate-100'
         }`}>
           <div className="flex items-center gap-1.5">
-            <span className="cursor-grab active:cursor-grabbing hover:opacity-80 p-0.5" title="মাউস দিয়ে ড্রাগ করুন">
+            <span className="cursor-grab active:cursor-grabbing hover:opacity-80 p-0.5" title="Drag to reorder">
               <GripVertical size={14} />
             </span>
-            <span>{isMainLead ? '⭐ পজিশন #১ (মেইন লিড / MAIN LEAD)' : `পজিশন #${index + 1}`}</span>
+            <span>{isMainLead ? '⭐ Position #1 (MAIN LEAD)' : `Position #${index + 1}`}</span>
           </div>
 
           {item.category && (
@@ -224,7 +224,7 @@ export default function AdminReorderPage() {
           {isMainLead && (
             <span className="absolute top-2 left-2 bg-red-600 text-white font-extrabold text-[10px] px-2.5 py-1 rounded shadow-md uppercase tracking-wider flex items-center gap-1">
               <Star size={12} className="fill-white text-white" />
-              MAIN LEAD (প্রচ্ছদের সেরা খবর)
+              MAIN LEAD (Top Story)
             </span>
           )}
         </div>
@@ -242,10 +242,10 @@ export default function AdminReorderPage() {
                 type="button"
                 onClick={() => makeMainLead(index)}
                 className="text-[10px] font-black text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 px-2.5 py-1 rounded-lg transition flex items-center gap-1 cursor-pointer"
-                title="মেইন লিড খবর হিসেবে সেট করুন"
+                title="Set as Main Lead"
               >
                 <Star size={12} className="fill-amber-500 text-amber-500" />
-                <span>মেইন লিড বানান</span>
+                <span>Make Main Lead</span>
               </button>
             )}
 
@@ -255,7 +255,7 @@ export default function AdminReorderPage() {
                 onClick={() => moveItem(index, index - 1)}
                 disabled={index === 0}
                 className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 disabled:opacity-30 transition"
-                title="পিছনে নিন"
+                title="Move Left/Up"
               >
                 <ArrowLeft size={13} />
               </button>
@@ -265,7 +265,7 @@ export default function AdminReorderPage() {
                 onClick={() => moveItem(index, index + 1)}
                 disabled={index === newsList.length - 1}
                 className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 disabled:opacity-30 transition"
-                title="সামনে নিন"
+                title="Move Right/Down"
               >
                 <ArrowRight size={13} />
               </button>
@@ -274,7 +274,7 @@ export default function AdminReorderPage() {
                 type="button"
                 onClick={() => removeItem(index)}
                 className="p-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 transition"
-                title="সরিয়ে ফেলুন"
+                title="Remove"
               >
                 <Trash2 size={13} />
               </button>
@@ -293,13 +293,13 @@ export default function AdminReorderPage() {
         <div>
           <div className="flex items-center gap-2 text-xs font-bold text-red-600 mb-1">
             <Grid size={16} />
-            <span>হোমপেজ ভিজ্যুয়াল গ্রিড ম্যানেজার</span>
+            <span>Visual Layout Grid Manager</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-            নিউজ গ্রিড রিঅর্ডার (Visual Grid Reorder)
+            News Position Reorder
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            মাউস দিয়ে যেকোনো কার্ড ড্রাগ করে বা অ্যারো টিপে গ্রিডের পজিশন পরিবর্তন করুন।
+            Drag and drop cards or use arrow keys to customize homepage post positions.
           </p>
         </div>
 
@@ -309,7 +309,7 @@ export default function AdminReorderPage() {
             className="inline-flex items-center gap-1.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-extrabold px-4 py-2.5 rounded-2xl shadow-xs transition"
           >
             <Plus size={16} />
-            <span>খবর যুক্ত করুন</span>
+            <span>Add Article</span>
           </button>
           
           <button
@@ -318,7 +318,7 @@ export default function AdminReorderPage() {
             className="inline-flex items-center gap-2 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white text-xs sm:text-sm font-black px-5 py-2.5 rounded-2xl shadow-md shadow-red-600/20 transition duration-200 disabled:opacity-50"
           >
             <Save size={16} />
-            <span>{saving ? 'সংরক্ষণ হচ্ছে...' : 'নতুন গ্রিড ক্রম সেভ করুন'}</span>
+            <span>{saving ? 'Saving...' : 'Save Reordered Grid'}</span>
           </button>
         </div>
       </div>
@@ -336,7 +336,7 @@ export default function AdminReorderPage() {
       {/* 2. Category Selector Tabs */}
       <div className="bg-white rounded-2xl p-4 shadow-xs border border-slate-200/80 space-y-3">
         <label className="text-xs font-extrabold text-slate-700 uppercase tracking-wider block">
-          ক্যাটাগরি বা হোম সেকশন নির্বাচন করুন:
+          Select Homepage Section or Category:
         </label>
         
         <div className="flex flex-wrap gap-2">
@@ -349,7 +349,7 @@ export default function AdminReorderPage() {
             }`}
           >
             <Sparkles size={14} />
-            <span>⭐ টপ নিউজ (হোমপেজ গ্রিড)</span>
+            <span>⭐ Top News (Homepage Grid)</span>
           </button>
 
           {categories.map((cat) => (
@@ -372,7 +372,7 @@ export default function AdminReorderPage() {
       {loading ? (
         <div className="bg-white rounded-3xl p-12 text-center shadow-xs border border-slate-200">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600 mx-auto"></div>
-          <p className="text-xs text-slate-500 font-bold mt-3">সংবাদ গ্রিড ডাটা লোড হচ্ছে...</p>
+          <p className="text-xs text-slate-500 font-bold mt-3">Loading news grid...</p>
         </div>
       ) : selectedCategory === 'top_news' ? (
         /* Top News Homepage Visual Layout Grid */
@@ -382,16 +382,16 @@ export default function AdminReorderPage() {
             <div className="flex items-center justify-between border-b border-slate-800 pb-3">
               <span className="font-extrabold text-xs text-amber-400 uppercase tracking-widest flex items-center gap-1.5">
                 <Sparkles size={16} />
-                <span>হোমপেজ হিরো ভিজ্যুয়াল গ্রিড (Home Hero Grid Preview)</span>
+                <span>Homepage Hero Grid Preview</span>
               </span>
-              <span className="text-[11px] text-slate-400 font-bold">পজিশন ৩ = সেন্টার মেইন লিড</span>
+              <span className="text-[11px] text-slate-400 font-bold">Position #1 = Center Main Lead</span>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
               {/* Main Lead Banner (Position #1) */}
               <div className="lg:col-span-12 space-y-3">
                 <div className="text-[11px] font-black text-red-400 border-b border-slate-800 pb-1 flex items-center justify-between">
-                  <span>⭐ প্রচ্ছদের প্রধান খবর (MAIN LEAD) — Position #1</span>
+                  <span>⭐ Main Lead Article — Position #1</span>
                   <span className="text-white text-[10px] bg-red-600 px-2.5 py-0.5 rounded font-extrabold">MAIN LEAD BANNER</span>
                 </div>
                 {renderGridCard(newsList[0], 0)}
@@ -399,7 +399,7 @@ export default function AdminReorderPage() {
 
               {/* Sub-grid of remaining top news cards (Positions #2 to #12) */}
               <div className="lg:col-span-12 pt-3 border-t border-slate-800 space-y-3">
-                <span className="text-[11px] font-bold text-amber-400 block">অন্যান্য প্রধান খবরসমূহ (Positions 2-15):</span>
+                <span className="text-[11px] font-bold text-amber-400 block">Top News Secondary Grid (Positions 2-15):</span>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                   {Array.from({ length: 14 }, (_, i) => i + 1).map((idx) => (
                     <div key={idx}>
@@ -415,9 +415,9 @@ export default function AdminReorderPage() {
           <div className="bg-white rounded-3xl p-5 border border-slate-200 space-y-3 shadow-xs">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <h3 className="font-extrabold text-sm text-slate-900">
-                অন্যান্য টপ নিউজ গ্রিড (Positions 8 - 15)
+                Additional Top News Cards (Positions 8 - 15)
               </h3>
-              <span className="text-xs text-slate-400 font-bold">মোট: {Math.max(newsList.length, 15)} টি</span>
+              <span className="text-xs text-slate-400 font-bold">Total: {Math.max(newsList.length, 15)} items</span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -433,9 +433,9 @@ export default function AdminReorderPage() {
         <div className="bg-white rounded-3xl p-5 border border-slate-200 space-y-4 shadow-xs">
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
             <h3 className="font-extrabold text-sm text-slate-900">
-              ক্যাটাগরি গ্রিড পজিশন ({selectedCategory.toUpperCase()})
+              Category Grid Positions ({selectedCategory.toUpperCase()})
             </h3>
-            <span className="text-xs text-slate-400 font-bold">মোট: {newsList.length} টি</span>
+            <span className="text-xs text-slate-400 font-bold">Total: {newsList.length} items</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -450,7 +450,7 @@ export default function AdminReorderPage() {
           <div className="bg-white rounded-3xl max-w-xl w-full p-6 shadow-2xl space-y-4 border border-slate-200 max-h-[85vh] flex flex-col">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <h3 className="font-extrabold text-base text-slate-900">
-                প্রকাশিত সংবাদ তালিকা থেকে যুক্ত করুন
+                Add Article to Grid
               </h3>
               <button 
                 onClick={() => setModalOpen(false)} 
@@ -465,7 +465,7 @@ export default function AdminReorderPage() {
               <Search size={16} className="absolute left-3.5 top-3 text-slate-400" />
               <input
                 type="text"
-                placeholder="সংবাদের শিরোনাম দিয়ে খুঁজুন..."
+                placeholder="Search articles by title..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-10 pr-4 py-2.5 text-xs font-bold bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-red-500"
@@ -476,7 +476,7 @@ export default function AdminReorderPage() {
             <div className="flex-1 overflow-y-auto space-y-2 pr-1">
               {filteredPool.length === 0 ? (
                 <p className="text-xs text-slate-400 font-medium text-center py-8">
-                  কোনো সংবাদ পাওয়া যায়নি।
+                  No articles found.
                 </p>
               ) : (
                 filteredPool.map((item) => {
@@ -503,7 +503,7 @@ export default function AdminReorderPage() {
                             : 'bg-red-600 hover:bg-red-700 text-white shadow-2xs'
                         }`}
                       >
-                        {isAdded ? 'যুক্ত আছে' : '+ যুক্ত করুন'}
+                        {isAdded ? 'Added' : '+ Add'}
                       </button>
                     </div>
                   );

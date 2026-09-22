@@ -21,7 +21,7 @@ export default function AdminLogin() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
-      setError('ইমেইল এবং পাসওয়ার্ড দুটোই প্রদান করুন।');
+      setError('Please provide both email and password.');
       return;
     }
 
@@ -41,7 +41,7 @@ export default function AdminLogin() {
         window.location.href = '/admin';
       }
     } catch (err) {
-      setError('লগইন করার সময় একটি সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+      setError('An error occurred during login. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -49,18 +49,18 @@ export default function AdminLogin() {
 
   if (status === 'loading') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-900 text-white">
-        <div className="text-xl">অপেক্ষা করুন...</div>
+      <div className="min-h-screen flex items-center justify-center bg-slate-900 text-white font-sans">
+        <div className="text-xl">Loading...</div>
       </div>
     );
   }
 
   return (
-    <div className="admin-portal min-h-screen flex items-center justify-center bg-gradient-to-tr from-slate-950 via-slate-900 to-slate-800 px-4">
+    <div className="admin-portal min-h-screen flex items-center justify-center bg-gradient-to-tr from-slate-950 via-slate-900 to-slate-800 px-4 font-sans">
       <div className="w-full max-w-md bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-8 shadow-2xl">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white tracking-wide">খুলনা গেজেট</h1>
-          <p className="text-slate-400 mt-2">অ্যাডমিন প্যানেল লগইন</p>
+          <h1 className="text-3xl font-bold text-white tracking-wide">Khulna Gazette</h1>
+          <p className="text-slate-400 mt-2">Admin Dashboard Sign In</p>
         </div>
 
         {error && (
@@ -71,7 +71,7 @@ export default function AdminLogin() {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-slate-300 text-sm font-medium mb-2">ইমেইল ঠিকানা</label>
+            <label className="block text-slate-300 text-sm font-medium mb-2">Email Address</label>
             <input
               type="email"
               value={email}
@@ -83,7 +83,7 @@ export default function AdminLogin() {
           </div>
 
           <div>
-            <label className="block text-slate-300 text-sm font-medium mb-2">পাসওয়ার্ড</label>
+            <label className="block text-slate-300 text-sm font-medium mb-2">Password</label>
             <input
               type="password"
               value={password}
@@ -99,7 +99,7 @@ export default function AdminLogin() {
             disabled={loading}
             className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold rounded-lg py-3 shadow-lg shadow-red-600/25 transition disabled:opacity-50"
           >
-            {loading ? 'প্রবেশ করা হচ্ছে...' : 'প্রবেশ করুন'}
+            {loading ? 'Signing In...' : 'Sign In'}
           </button>
         </form>
       </div>

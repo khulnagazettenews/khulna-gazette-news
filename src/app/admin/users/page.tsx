@@ -54,12 +54,12 @@ export default function RoleManagementPage() {
       const res = await fetch('/api/users');
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error || 'ব্যবহারকারী তালিকা লোড করা যায়নি।');
+        throw new Error(data.error || 'Failed to load user list.');
       }
       const data = await res.json();
       setUsers(data);
     } catch (err: any) {
-      setError(err.message || 'একটি ত্রুটি ঘটেছে।');
+      setError(err.message || 'An error occurred.');
     } finally {
       setLoading(false);
     }
@@ -88,9 +88,9 @@ export default function RoleManagementPage() {
         <div className="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
           <ShieldAlert size={32} />
         </div>
-        <h2 className="text-xl font-bold text-slate-900 mb-2">অননুমোদিত অ্যাক্সেস!</h2>
+        <h2 className="text-xl font-bold text-slate-900 mb-2">Unauthorized Access!</h2>
         <p className="text-slate-600 text-xs sm:text-sm mb-4">
-          এই পৃষ্ঠাটি শুধুমাত্র অ্যাডমিন বা সুপার অ্যাডমিনদের জন্য সংরক্ষিত।
+          This page is restricted to Admin or Super Admin users only.
         </p>
       </div>
     );
@@ -110,15 +110,15 @@ export default function RoleManagementPage() {
 
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error || 'ব্যবহারকারী তৈরি করা সম্ভব হয়নি।');
+        throw new Error(data.error || 'Failed to create user.');
       }
 
-      setSuccess('নতুন ব্যবহারকারী সফলভাবে যোগ করা হয়েছে।');
+      setSuccess('New user added successfully.');
       setIsAddModalOpen(false);
       setFormData({ name: '', email: '', password: '', role: 'REPORTER', bio: '' });
       fetchUsers();
     } catch (err: any) {
-      setError(err.message || 'একটি ত্রুটি ঘটেছে।');
+      setError(err.message || 'An error occurred.');
     }
   };
 
@@ -149,26 +149,26 @@ export default function RoleManagementPage() {
 
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error || 'ব্যবহারকারী আপডেট করা সম্ভব হয়নি।');
+        throw new Error(data.error || 'Failed to update user.');
       }
 
-      setSuccess('ব্যবহারকারীর তথ্য সফলভাবে আপডেট করা হয়েছে।');
+      setSuccess('User details updated successfully.');
       setIsEditModalOpen(false);
       setFormData({ name: '', email: '', password: '', role: 'REPORTER', bio: '' });
       setCurrentUser(null);
       fetchUsers();
     } catch (err: any) {
-      setError(err.message || 'একটি ত্রুটি ঘটেছে।');
+      setError(err.message || 'An error occurred.');
     }
   };
 
   const handleDelete = async (user: User) => {
     if (user.id === (session.user as any).id) {
-      alert('আপনি নিজের অ্যাকাউন্ট মুছে ফেলতে পারবেন না!');
+      alert('You cannot delete your own account!');
       return;
     }
 
-    if (!confirm(`${user.name}-কে কি আপনি নিশ্চিতভাবে মুছে ফেলতে চান?`)) {
+    if (!confirm(`Are you sure you want to delete ${user.name}?`)) {
       return;
     }
 
@@ -182,13 +182,13 @@ export default function RoleManagementPage() {
 
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error || 'ব্যবহারকারী মুছে ফেলা সম্ভব হয়নি।');
+        throw new Error(data.error || 'Failed to delete user.');
       }
 
-      setSuccess('ব্যবহারকারী সফলভাবে মুছে ফেলা হয়েছে।');
+      setSuccess('User deleted successfully.');
       fetchUsers();
     } catch (err: any) {
-      setError(err.message || 'একটি ত্রুটি ঘটেছে।');
+      setError(err.message || 'An error occurred.');
     }
   };
 
@@ -210,43 +210,43 @@ export default function RoleManagementPage() {
         return (
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black bg-rose-50 text-rose-700 border border-rose-200">
             <ShieldCheck size={13} />
-            <span>সুপার অ্যাডমিন</span>
+            <span>Super Admin</span>
           </span>
         );
       case 'ADMIN':
         return (
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black bg-purple-50 text-purple-750 border border-purple-200">
-            <span>অ্যাডমিন</span>
+            <span>Admin</span>
           </span>
         );
       case 'EDITOR':
         return (
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black bg-blue-50 text-blue-700 border border-blue-200">
-            <span>সম্পাদক</span>
+            <span>Editor</span>
           </span>
         );
       case 'SUB_EDITOR':
         return (
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black bg-indigo-50 text-indigo-700 border border-indigo-200">
-            <span>সহকারী সম্পাদক</span>
+            <span>Sub Editor</span>
           </span>
         );
       case 'REPORTER':
         return (
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200">
-            <span>প্রতিবেদক</span>
+            <span>Reporter</span>
           </span>
         );
       case 'CONTRIBUTOR':
         return (
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black bg-teal-50 text-teal-700 border border-teal-200">
-            <span>কন্ট্রিবিউটর</span>
+            <span>Contributor</span>
           </span>
         );
       case 'ADVERTISEMENT_MANAGER':
         return (
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black bg-amber-50 text-amber-700 border border-amber-200">
-            <span>বিজ্ঞাপন ম্যানেজার</span>
+            <span>Ad Manager</span>
           </span>
         );
       default:
@@ -265,16 +265,16 @@ export default function RoleManagementPage() {
         <div>
           <div className="flex items-center gap-2 text-xs font-bold text-red-600 mb-1">
             <Users size={16} />
-            <span>টিম পারমিশন ও এক্সেস কন্ট্রোল</span>
+            <span>Team Permissions & Access Control</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-            <span>ইউজার ও রোলস ব্যবস্থাপনা</span>
+            <span>Users & Roles Management</span>
             <span className="text-xs font-bold bg-slate-100 text-slate-700 px-2.5 py-1 rounded-full border border-slate-200">
-              মোট {users.length} জন
+              Total {users.length} Users
             </span>
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            খুলনা গেজেটের সম্পাদকীয় এবং প্রযুক্তিগত দলের রোল পারমিশন পরিচালনা করুন।
+            Manage editorial and technical team user accounts, roles, and permissions.
           </p>
         </div>
 
@@ -286,7 +286,7 @@ export default function RoleManagementPage() {
           className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-extrabold text-xs sm:text-sm px-5 py-3 rounded-2xl shadow-md shadow-red-600/20 transition transform hover:-translate-y-0.5 shrink-0"
         >
           <UserPlus size={18} />
-          <span>নতুন সদস্য যোগ করুন</span>
+          <span>Add New User</span>
         </button>
       </div>
 
@@ -310,11 +310,11 @@ export default function RoleManagementPage() {
           <table className="w-full border-collapse text-left">
             <thead>
               <tr className="bg-slate-50/70 border-b border-slate-150 text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">
-                <th className="px-6 py-4">সদস্যের নাম</th>
-                <th className="px-6 py-4">ইমেইল ঠিকানা</th>
-                <th className="px-6 py-4">রোল / পদবী</th>
-                <th className="px-6 py-4">যোগদানের তারিখ</th>
-                <th className="px-6 py-4 text-right">অ্যাকশন</th>
+                <th className="px-6 py-4">User Name</th>
+                <th className="px-6 py-4">Email Address</th>
+                <th className="px-6 py-4">Role</th>
+                <th className="px-6 py-4">Joined Date</th>
+                <th className="px-6 py-4 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-xs">
@@ -322,13 +322,13 @@ export default function RoleManagementPage() {
                 <tr>
                   <td colSpan={5} className="px-6 py-12 text-center text-slate-400 font-bold">
                     <div className="animate-spin rounded-full h-7 w-7 border-b-2 border-red-600 mx-auto mb-2"></div>
-                    ইউজার তালিকা লোড হচ্ছে...
+                    Loading users...
                   </td>
                 </tr>
               ) : users.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="px-6 py-12 text-center text-slate-400 font-medium">
-                    কোনো ব্যবহারকারী পাওয়া যায়নি।
+                    No users found.
                   </td>
                 </tr>
               ) : (
@@ -348,9 +348,9 @@ export default function RoleManagementPage() {
                     <td className="px-6 py-4 text-slate-700 font-semibold">{user.email}</td>
                     <td className="px-6 py-4">{getRoleBadge(user.role)}</td>
                     <td className="px-6 py-4 text-slate-500 font-medium">
-                      {new Date(user.createdAt).toLocaleDateString('bn-BD', {
+                      {new Date(user.createdAt).toLocaleDateString('en-US', {
                         year: 'numeric',
-                        month: 'long',
+                        month: 'short',
                         day: 'numeric'
                       })}
                     </td>
@@ -360,7 +360,7 @@ export default function RoleManagementPage() {
                           onClick={() => openEditModal(user)}
                           disabled={user.role === 'SUPER_ADMIN' && role === 'ADMIN'}
                           className="p-1.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition disabled:opacity-30"
-                          title="সম্পাদনা"
+                          title="Edit User"
                         >
                           <Pencil size={15} />
                         </button>
@@ -368,7 +368,7 @@ export default function RoleManagementPage() {
                           onClick={() => handleDelete(user)}
                           disabled={user.id === (session.user as any).id || (user.role === 'SUPER_ADMIN' && role === 'ADMIN')}
                           className="p-1.5 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition disabled:opacity-30"
-                          title="মুছে ফেলুন"
+                          title="Delete User"
                         >
                           <Trash2 size={15} />
                         </button>
@@ -389,7 +389,7 @@ export default function RoleManagementPage() {
             <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
               <h3 className="font-extrabold text-slate-900 text-base flex items-center gap-2">
                 <UserPlus size={18} className="text-red-600" />
-                <span>নতুন সদস্য যোগ করুন</span>
+                <span>Add New User</span>
               </h3>
               <button 
                 onClick={() => setIsAddModalOpen(false)}
@@ -401,7 +401,7 @@ export default function RoleManagementPage() {
             
             <form onSubmit={handleAddSubmit} className="p-6 space-y-4 text-xs font-semibold text-slate-700">
               <div>
-                <label className="block mb-1.5 font-bold text-slate-900">সম্পূর্ণ নাম</label>
+                <label className="block mb-1.5 font-bold text-slate-900">Full Name</label>
                 <div className="relative">
                   <UserIcon size={16} className="absolute left-3.5 top-3 text-slate-400" />
                   <input
@@ -409,14 +409,14 @@ export default function RoleManagementPage() {
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="যেমন: সাকিব আল হাসান"
+                    placeholder="e.g. John Doe"
                     className="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-red-500 focus:bg-white font-bold transition"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block mb-1.5 font-bold text-slate-900">ইমেইল ঠিকানা</label>
+                <label className="block mb-1.5 font-bold text-slate-900">Email Address</label>
                 <div className="relative">
                   <Mail size={16} className="absolute left-3.5 top-3 text-slate-400" />
                   <input
@@ -424,14 +424,14 @@ export default function RoleManagementPage() {
                     required
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    placeholder="যেমন: mail@example.com"
+                    placeholder="e.g. mail@example.com"
                     className="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-red-500 focus:bg-white font-bold transition"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block mb-1.5 font-bold text-slate-900">পাসওয়ার্ড</label>
+                <label className="block mb-1.5 font-bold text-slate-900">Password</label>
                 <div className="relative">
                   <Lock size={16} className="absolute left-3.5 top-3 text-slate-400" />
                   <input
@@ -439,38 +439,38 @@ export default function RoleManagementPage() {
                     required
                     value={formData.password}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                    placeholder="কমপক্ষে ৬টি অক্ষর"
+                    placeholder="At least 6 characters"
                     className="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-red-500 focus:bg-white font-bold transition"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block mb-1.5 font-bold text-slate-900">রোল / পদবী</label>
+                <label className="block mb-1.5 font-bold text-slate-900">Role</label>
                 <select
                   value={formData.role}
                   onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                   className="w-full px-3.5 py-2.5 border border-slate-200 rounded-2xl focus:outline-none focus:border-red-500 bg-slate-50 font-bold transition cursor-pointer"
                 >
-                  <option value="SUBSCRIBER">সাবস্ক্রাইবার (Subscriber)</option>
-                  <option value="CONTRIBUTOR">কন্ট্রিবিউটর (Contributor)</option>
-                  <option value="REPORTER">প্রতিবেদক (Reporter)</option>
-                  <option value="SUB_EDITOR">সহকারী সম্পাদক (Sub Editor)</option>
-                  <option value="EDITOR">সম্পাদক (Editor)</option>
-                  <option value="ADVERTISEMENT_MANAGER">বিজ্ঞাপন ম্যানেজার (Advertisement Manager)</option>
-                  <option value="ADMIN">অ্যাডমিন (Admin)</option>
+                  <option value="SUBSCRIBER">Subscriber</option>
+                  <option value="CONTRIBUTOR">Contributor</option>
+                  <option value="REPORTER">Reporter</option>
+                  <option value="SUB_EDITOR">Sub Editor</option>
+                  <option value="EDITOR">Editor</option>
+                  <option value="ADVERTISEMENT_MANAGER">Ad Manager</option>
+                  <option value="ADMIN">Admin</option>
                   {role === 'SUPER_ADMIN' && (
-                    <option value="SUPER_ADMIN">সুপার অ্যাডমিন (Super Admin)</option>
+                    <option value="SUPER_ADMIN">Super Admin</option>
                   )}
                 </select>
               </div>
 
               <div>
-                <label className="block mb-1.5 font-bold text-slate-900">সংক্ষিপ্ত বায়ো (ঐচ্ছিক)</label>
+                <label className="block mb-1.5 font-bold text-slate-900">Short Bio (Optional)</label>
                 <textarea
                   value={formData.bio}
                   onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-                  placeholder="যেমন: খুলনা ব্যুরো প্রধান"
+                  placeholder="e.g. Senior Staff Reporter"
                   rows={2}
                   className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-red-500 font-semibold transition"
                 />
@@ -482,13 +482,13 @@ export default function RoleManagementPage() {
                   onClick={() => setIsAddModalOpen(false)}
                   className="w-1/2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 rounded-2xl transition"
                 >
-                  বাতিল করুন
+                  Cancel
                 </button>
                 <button
                   type="submit"
                   className="w-1/2 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-black py-3 rounded-2xl shadow-xs transition"
                 >
-                  সদস্য যোগ করুন
+                  Add User
                 </button>
               </div>
             </form>
@@ -503,7 +503,7 @@ export default function RoleManagementPage() {
             <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
               <h3 className="font-extrabold text-slate-900 text-base flex items-center gap-2">
                 <Pencil size={18} className="text-blue-600" />
-                <span>সদস্যের তথ্য সম্পাদন</span>
+                <span>Edit User Details</span>
               </h3>
               <button 
                 onClick={() => {
@@ -518,7 +518,7 @@ export default function RoleManagementPage() {
             
             <form onSubmit={handleEditSubmit} className="p-6 space-y-4 text-xs font-semibold text-slate-700">
               <div>
-                <label className="block mb-1.5 font-bold text-slate-900">সম্পূর্ণ নাম</label>
+                <label className="block mb-1.5 font-bold text-slate-900">Full Name</label>
                 <div className="relative">
                   <UserIcon size={16} className="absolute left-3.5 top-3 text-slate-400" />
                   <input
@@ -532,7 +532,7 @@ export default function RoleManagementPage() {
               </div>
 
               <div>
-                <label className="block mb-1.5 font-bold text-slate-900">ইমেইল ঠিকানা</label>
+                <label className="block mb-1.5 font-bold text-slate-900">Email Address</label>
                 <div className="relative">
                   <Mail size={16} className="absolute left-3.5 top-3 text-slate-400" />
                   <input
@@ -547,7 +547,7 @@ export default function RoleManagementPage() {
 
               <div>
                 <label className="block mb-1.5 font-bold text-slate-900">
-                  পাসওয়ার্ড পরিবর্তন করুন (ঐচ্ছিক)
+                  Change Password (Optional)
                 </label>
                 <div className="relative">
                   <Lock size={16} className="absolute left-3.5 top-3 text-slate-400" />
@@ -555,35 +555,35 @@ export default function RoleManagementPage() {
                     type="password"
                     value={formData.password}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                    placeholder="অপরিবর্তিত রাখতে খালি রাখুন"
+                    placeholder="Leave empty to keep unchanged"
                     className="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-red-500 focus:bg-white font-bold transition"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block mb-1.5 font-bold text-slate-900">রোল / পদবী</label>
+                <label className="block mb-1.5 font-bold text-slate-900">Role</label>
                 <select
                   value={formData.role}
                   onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                   disabled={currentUser.id === (session.user as any).id}
                   className="w-full px-3.5 py-2.5 border border-slate-200 rounded-2xl focus:outline-none focus:border-red-500 bg-slate-50 font-bold transition cursor-pointer disabled:opacity-50"
                 >
-                  <option value="SUBSCRIBER">সাবস্ক্রাইবার (Subscriber)</option>
-                  <option value="CONTRIBUTOR">কন্ট্রিবিউটর (Contributor)</option>
-                  <option value="REPORTER">প্রতিবেদক (Reporter)</option>
-                  <option value="SUB_EDITOR">সহকারী সম্পাদক (Sub Editor)</option>
-                  <option value="EDITOR">সম্পাদক (Editor)</option>
-                  <option value="ADVERTISEMENT_MANAGER">বিজ্ঞাপন ম্যানেজার (Advertisement Manager)</option>
-                  <option value="ADMIN">অ্যাডমিন (Admin)</option>
+                  <option value="SUBSCRIBER">Subscriber</option>
+                  <option value="CONTRIBUTOR">Contributor</option>
+                  <option value="REPORTER">Reporter</option>
+                  <option value="SUB_EDITOR">Sub Editor</option>
+                  <option value="EDITOR">Editor</option>
+                  <option value="ADVERTISEMENT_MANAGER">Ad Manager</option>
+                  <option value="ADMIN">Admin</option>
                   {role === 'SUPER_ADMIN' && (
-                    <option value="SUPER_ADMIN">সুপার অ্যাডমিন (Super Admin)</option>
+                    <option value="SUPER_ADMIN">Super Admin</option>
                   )}
                 </select>
               </div>
 
               <div>
-                <label className="block mb-1.5 font-bold text-slate-900">সংক্ষিপ্ত বায়ো (ঐচ্ছিক)</label>
+                <label className="block mb-1.5 font-bold text-slate-900">Short Bio (Optional)</label>
                 <textarea
                   value={formData.bio}
                   onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
@@ -601,13 +601,13 @@ export default function RoleManagementPage() {
                   }}
                   className="w-1/2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 rounded-2xl transition"
                 >
-                  বাতিল করুন
+                  Cancel
                 </button>
                 <button
                   type="submit"
                   className="w-1/2 bg-blue-600 hover:bg-blue-700 text-white font-black py-3 rounded-2xl shadow-xs transition"
                 >
-                  আপডেট করুন
+                  Update User
                 </button>
               </div>
             </form>
@@ -617,3 +617,4 @@ export default function RoleManagementPage() {
     </div>
   );
 }
+

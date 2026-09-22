@@ -23,16 +23,10 @@ interface EpaperIssue {
   imageUrls?: string[];
 }
 
-const toBengaliDigit = (num: number) => {
-  const bnDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
-  return num.toString().split('').map((d) => bnDigits[parseInt(d)] || d).join('');
-};
-
 const getAdminPageName = (idx: number, total: number) => {
-  if (idx === 0) return '১ম পৃষ্ঠা (প্রথম-পাতা)';
-  if (total > 1 && idx === total - 1) return `${toBengaliDigit(idx + 1)}তম পৃষ্ঠা (শেষ-পাতা)`;
-  const ordinals = ['১ম', '২য়', '৩য়', '৪র্থ', '৫ম', '৬ষ্ঠ', '৭ম', '৮ম', '৯ম', '১০ম', '১১দশ', '১২দশ'];
-  return `${ordinals[idx] || `${toBengaliDigit(idx + 1)}তম`} পৃষ্ঠা`;
+  if (idx === 0) return 'Front Page (P1)';
+  if (total > 1 && idx === total - 1) return `Back Page (P${idx + 1})`;
+  return `Page ${idx + 1}`;
 };
 
 export default function EpaperManagement() {
@@ -91,10 +85,10 @@ export default function EpaperManagement() {
           return next;
         });
       } else {
-        setError(data.error || `${file.name} আপলোড করতে সমস্যা হয়েছে।`);
+        setError(data.error || `Failed to upload ${file.name}.`);
       }
     } catch (err) {
-      setError('আপলোড ত্রুটি ঘটেছে।');
+      setError('Upload error occurred.');
     } finally {
       setUploadingSlot(null);
     }
@@ -154,13 +148,13 @@ export default function EpaperManagement() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!date) {
-      setError('প্রকাশের তারিখ নির্বাচন করুন।');
+      setError('Please select a publication date.');
       return;
     }
 
     const validUrls = imageUrls.filter((url) => url.trim() !== '');
     if (validUrls.length === 0) {
-      setError('অন্ততঃ ১টি পৃষ্ঠা আপলোড করা আবশ্যক।');
+      setError('At least 1 page image is required.');
       return;
     }
 
@@ -177,22 +171,22 @@ export default function EpaperManagement() {
 
       const data = await res.json();
       if (res.ok) {
-        setSuccess(`১ দিনের মোট ${validUrls.length}টি পৃষ্ঠার ই-পেপার সফলভাবে প্রকাশিত হয়েছে!`);
+        setSuccess(`E-Paper edition with ${validUrls.length} pages published successfully!`);
         setDate('');
         setImageUrls(['', '', '', '', '', '', '', '']);
         fetchIssues();
       } else {
-        setError(data.error || 'সংরক্ষণ করা সম্ভব হয়নি।');
+        setError(data.error || 'Failed to save e-paper issue.');
       }
     } catch (err) {
-      setError('অনুরোধ পাঠানো সম্ভব হয়নি।');
+      setError('Failed to send request.');
     } finally {
       setSubmitting(false);
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('আপনি কি নিশ্চিত যে এই দিনের ই-পেপারটি মুছে ফেলতে চান?')) {
+    if (!confirm('Are you sure you want to delete this e-paper issue?')) {
       return;
     }
 
@@ -202,14 +196,14 @@ export default function EpaperManagement() {
         method: 'DELETE',
       });
       if (res.ok) {
-        setSuccess('ই-পেপার সংকলন মুছে ফেলা হয়েছে।');
+        setSuccess('E-paper issue deleted successfully.');
         fetchIssues();
       } else {
         const err = await res.json();
-        setError(err.error || 'মুছে ফেলা সম্ভব হয়নি।');
+        setError(err.error || 'Failed to delete e-paper.');
       }
     } catch (err) {
-      setError('নেটওয়ার্ক ত্রুটি।');
+      setError('Network error occurred.');
     }
   };
 
@@ -220,16 +214,16 @@ export default function EpaperManagement() {
         <div>
           <div className="flex items-center gap-2 text-xs font-bold text-red-600 mb-1">
             <FileImage size={16} />
-            <span>ডিজিটাল ই-পেপার আর্কাইভ (১ থেকে ৮+ পৃষ্ঠা)</span>
+            <span>Digital E-Paper Archive (1 to 8+ Pages)</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-            <span>ই-পেপার ব্যবস্থাপনা</span>
+            <span>E-Paper Management</span>
             <span className="text-xs font-bold bg-slate-100 text-slate-700 px-2.5 py-1 rounded-full border border-slate-200">
-              {issues.length} টি প্রকাশনা
+              {issues.length} Issues
             </span>
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            প্রতিটি প্রকাশের দিনের জন্য ১ থেকে ৮ (বা প্রয়োজন অনুযায়ী যতখুশি) পৃষ্ঠা আপলোড ও স্বয়ংক্রিয়ভাবে নিয়ন্ত্রণ করুন।
+            Upload and manage daily 1 to 8 (or custom) page digital newspaper editions.
           </p>
         </div>
       </div>
@@ -254,14 +248,14 @@ export default function EpaperManagement() {
         <div className="lg:col-span-5 bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs space-y-5">
           <h3 className="font-extrabold text-slate-900 text-base flex items-center gap-2 border-b border-slate-100 pb-3">
             <Upload size={18} className="text-red-600" />
-            <span>১ দিনের ই-পেপার আপলোড (১ থেকে ৮+ পৃষ্ঠা)</span>
+            <span>Upload E-Paper Edition (1 to 8+ Pages)</span>
           </h3>
 
           <form onSubmit={handleSubmit} className="space-y-4 text-xs font-semibold text-slate-700">
             {/* Date Input */}
             <div>
               <label className="block mb-1.5 font-extrabold text-slate-900">
-                পত্রিকা প্রকাশের তারিখ <span className="text-red-600">*</span>
+                Publication Date <span className="text-red-600">*</span>
               </label>
               <div className="relative">
                 <Calendar size={16} className="absolute left-3.5 top-3 text-slate-400" />
@@ -278,7 +272,7 @@ export default function EpaperManagement() {
             {/* Quick Bulk Upload */}
             <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 space-y-1">
               <label className="block text-[11px] font-bold text-slate-700">
-                একসাথে ৮টি (বা সব) পৃষ্ঠার ছবি ফাইল নির্বাচন করুন:
+                Bulk upload 8 (or all) page image files at once:
               </label>
               <input
                 type="file"
@@ -293,14 +287,14 @@ export default function EpaperManagement() {
             <div className="space-y-2 pt-1">
               <div className="flex items-center justify-between">
                 <label className="block text-xs font-extrabold text-slate-900">
-                  পৃষ্ঠা অনুযায়ী ছবি প্রিভিউ (মোট {imageUrls.length}টি স্লট):
+                  Page Preview Slots ({imageUrls.length} total):
                 </label>
                 <button
                   type="button"
                   onClick={addExtraSlot}
                   className="text-[11px] font-extrabold text-red-600 hover:underline"
                 >
-                  + স্লট বাড়ান
+                  + Add Slot
                 </button>
               </div>
 
@@ -324,7 +318,7 @@ export default function EpaperManagement() {
                               type="button"
                               onClick={() => removeSlotEntirely(idx)}
                               className="text-slate-400 hover:text-red-600 transition"
-                              title="স্লট রিমুভ করুন"
+                              title="Remove slot"
                             >
                               <X size={12} />
                             </button>
@@ -339,7 +333,7 @@ export default function EpaperManagement() {
                             type="button"
                             onClick={() => removeSlotImage(idx)}
                             className="absolute top-1.5 right-1.5 bg-red-600 text-white p-1 rounded-full hover:bg-red-700 shadow-md transition"
-                            title="মুছে ফেলুন"
+                            title="Delete"
                           >
                             <X size={14} />
                           </button>
@@ -348,13 +342,13 @@ export default function EpaperManagement() {
                         <label className="aspect-[3/4] border-2 border-dashed border-slate-300 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-red-600 bg-white transition p-2 text-center">
                           {isUploading ? (
                             <span className="text-[10px] font-extrabold text-red-600 animate-pulse">
-                              আপলোড হচ্ছে...
+                              Uploading...
                             </span>
                           ) : (
                             <>
                               <Upload size={18} className="text-slate-400 mb-1" />
                               <span className="text-[10px] font-bold text-slate-600">
-                                আপলোড করুন
+                                Upload Page
                               </span>
                             </>
                           )}
@@ -378,7 +372,7 @@ export default function EpaperManagement() {
               disabled={submitting}
               className="w-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-black text-xs sm:text-sm py-3 rounded-2xl transition disabled:opacity-50 shadow-md shadow-red-600/20"
             >
-              {submitting ? 'প্রকাশিত করা হচ্ছে...' : 'ই-পেপার প্রকাশ করুন'}
+              {submitting ? 'Publishing...' : 'Publish E-Paper'}
             </button>
           </form>
         </div>
@@ -386,17 +380,17 @@ export default function EpaperManagement() {
         {/* Epaper Issues list (Right Column) */}
         <div className="lg:col-span-7 bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs space-y-4">
           <h3 className="font-extrabold text-slate-900 text-base border-b border-slate-100 pb-3 flex items-center justify-between">
-            <span>প্রকাশিত ই-পেপার সংখ্যার তালিকা</span>
-            <span className="text-xs text-slate-400 font-bold">মোট: {issues.length} টি</span>
+            <span>Published E-Paper Editions</span>
+            <span className="text-xs text-slate-400 font-bold">Total: {issues.length} Issues</span>
           </h3>
 
           {loading ? (
             <div className="text-center py-12 text-slate-400 font-bold">
               <div className="animate-spin rounded-full h-7 w-7 border-b-2 border-red-600 mx-auto mb-2"></div>
-              ই-পেপার লোড হচ্ছে...
+              Loading E-Papers...
             </div>
           ) : issues.length === 0 ? (
-            <div className="text-center py-12 text-slate-400 font-medium">কোনো ই-পেপার পাওয়া যায়নি।</div>
+            <div className="text-center py-12 text-slate-400 font-medium">No e-paper issues found.</div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               {issues.map((issue) => {
@@ -408,7 +402,7 @@ export default function EpaperManagement() {
                   <div key={issue.id} className="border border-slate-200/90 rounded-2xl overflow-hidden shadow-2xs bg-slate-50/70 p-3.5 space-y-3">
                     <div className="flex items-center justify-between border-b border-slate-200/80 pb-2">
                       <span className="font-black text-xs text-slate-900">
-                        {new Date(issue.date).toLocaleDateString('bn-BD', {
+                        {new Date(issue.date).toLocaleDateString('en-US', {
                           year: 'numeric',
                           month: 'long',
                           day: 'numeric',
@@ -418,7 +412,7 @@ export default function EpaperManagement() {
                       <button
                         onClick={() => handleDelete(issue.id)}
                         className="text-slate-400 hover:text-red-600 p-1 rounded-lg transition"
-                        title="ই-পেপার সংকলন মুছে ফেলুন"
+                        title="Delete e-paper issue"
                       >
                         <Trash2 size={16} />
                       </button>
@@ -440,7 +434,7 @@ export default function EpaperManagement() {
                               <img src={img} alt={`Page ${slotIdx + 1}`} className="w-full h-full object-cover epaper-sharp" />
                             ) : (
                               <div className="w-full h-full flex items-center justify-center text-[9px] text-slate-300 font-bold">
-                                খালি
+                                Empty
                               </div>
                             )}
                             <span className="absolute bottom-0 inset-x-0 bg-slate-900/90 text-white text-[8px] font-black text-center py-0.2">
@@ -452,11 +446,11 @@ export default function EpaperManagement() {
                     </div>
 
                     <div className="flex items-center justify-between text-[11px] text-slate-500 font-bold pt-0.5">
-                      <span>মোট পৃষ্ঠা: {list.length}টি</span>
+                      <span>Total Pages: {list.length}</span>
                       {issue.pdfUrl && (
                         <a href={issue.pdfUrl} target="_blank" className="text-red-600 hover:underline flex items-center gap-1">
                           <Download size={12} />
-                          <span>পিডিএফ (PDF)</span>
+                          <span>PDF Document</span>
                         </a>
                       )}
                     </div>

@@ -44,12 +44,12 @@ export default function CommentsModerationPage() {
       const isApproved = activeTab === 'approved';
       const res = await fetch(`/api/comments?approved=${isApproved}`);
       if (!res.ok) {
-        throw new Error('মন্তব্য তালিকা লোড করা সম্ভব হয়নি।');
+        throw new Error('Failed to load comments.');
       }
       const data = await res.json();
       setComments(data);
     } catch (err: any) {
-      setError(err.message || 'একটি ত্রুটি ঘটেছে।');
+      setError(err.message || 'An error occurred.');
     } finally {
       setLoading(false);
     }
@@ -78,9 +78,9 @@ export default function CommentsModerationPage() {
         <div className="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
           <MessageSquare size={32} />
         </div>
-        <h2 className="text-xl font-bold text-slate-900 mb-2">অননুমোদিত অ্যাক্সেস!</h2>
+        <h2 className="text-xl font-bold text-slate-900 mb-2">Unauthorized Access!</h2>
         <p className="text-slate-600 text-xs sm:text-sm mb-4">
-          এই পৃষ্ঠাটি শুধুমাত্র মডারেটর এবং এডিটরদের জন্য সংরক্ষিত।
+          This page is reserved for administrators and editors.
         </p>
       </div>
     );
@@ -98,18 +98,18 @@ export default function CommentsModerationPage() {
 
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error || 'মন্তব্যের স্থিতি পরিবর্তন করা সম্ভব হয়নি।');
+        throw new Error(data.error || 'Failed to update comment status.');
       }
 
-      setSuccess(approve ? 'মন্তব্যটি সফলভাবে অনুমোদন করা হয়েছে।' : 'মন্তব্যের অনুমোদন বাতিল করা হয়েছে।');
+      setSuccess(approve ? 'Comment approved successfully.' : 'Comment approval revoked.');
       fetchComments();
     } catch (err: any) {
-      setError(err.message || 'একটি ত্রুটি ঘটেছে।');
+      setError(err.message || 'An error occurred.');
     }
   };
 
   const handleDelete = async (commentId: string) => {
-    if (!confirm('আপনি কি নিশ্চিত যে এই মন্তব্যটি স্থায়ীভাবে মুছে ফেলতে চান?')) {
+    if (!confirm('Are you sure you want to permanently delete this comment?')) {
       return;
     }
 
@@ -122,13 +122,13 @@ export default function CommentsModerationPage() {
 
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error || 'মন্তব্য মুছে ফেলা সম্ভব হয়নি।');
+        throw new Error(data.error || 'Failed to delete comment.');
       }
 
-      setSuccess('মন্তব্যটি সফলভাবে মুছে ফেলা হয়েছে।');
+      setSuccess('Comment deleted successfully.');
       fetchComments();
     } catch (err: any) {
-      setError(err.message || 'একটি ত্রুটি ঘটেছে।');
+      setError(err.message || 'An error occurred.');
     }
   };
 
@@ -139,16 +139,16 @@ export default function CommentsModerationPage() {
         <div>
           <div className="flex items-center gap-2 text-xs font-bold text-red-600 mb-1">
             <MessageSquare size={16} />
-            <span>পাঠকদের মন্তব্য ও ফিডব্যাক মডারেশন</span>
+            <span>Comments & Feedback Moderation</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-            <span>মন্তব্য মডারেশন প্যানেল</span>
+            <span>Comments</span>
             <span className="text-xs font-bold bg-slate-100 text-slate-700 px-2.5 py-1 rounded-full border border-slate-200">
-              {comments.length} টি মন্তব্য
+              {comments.length} Total
             </span>
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            পাঠকদের প্রকাশিত বা অপেক্ষমান মন্তব্যের মডারেশন নিয়ন্ত্রণ করুন।
+            Moderate, approve, or remove reader comments across published articles.
           </p>
         </div>
       </div>
@@ -164,7 +164,7 @@ export default function CommentsModerationPage() {
           }`}
         >
           <Clock size={15} />
-          <span>অপেক্ষমান মন্তব্য (Pending)</span>
+          <span>Pending Comments</span>
         </button>
         <button
           onClick={() => setActiveTab('approved')}
@@ -175,7 +175,7 @@ export default function CommentsModerationPage() {
           }`}
         >
           <CheckCircle2 size={15} />
-          <span>অনুমোদিত মন্তব্য (Approved)</span>
+          <span>Approved Comments</span>
         </button>
       </div>
 
@@ -197,12 +197,12 @@ export default function CommentsModerationPage() {
       {loading ? (
         <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xs p-12 text-center text-slate-400 font-bold">
           <div className="animate-spin rounded-full h-7 w-7 border-b-2 border-red-600 mx-auto mb-2"></div>
-          মন্তব্য তালিকা লোড হচ্ছে...
+          Loading comments...
         </div>
       ) : comments.length === 0 ? (
         <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xs p-12 text-center text-slate-400 select-none font-medium">
           <MessageCircle size={40} className="mx-auto text-slate-300 mb-3" />
-          <span>কোনো মন্তব্য পাওয়া যায়নি।</span>
+          <span>No comments found.</span>
         </div>
       ) : (
         <div className="space-y-4">
@@ -217,7 +217,7 @@ export default function CommentsModerationPage() {
                   <div>
                     <span className="font-extrabold text-slate-900 text-sm block">{comment.name}</span>
                     <span className="text-[10px] text-slate-400 font-semibold block">
-                      {new Date(comment.createdAt).toLocaleDateString('bn-BD', {
+                      {new Date(comment.createdAt).toLocaleDateString('en-US', {
                         year: 'numeric',
                         month: 'short',
                         day: 'numeric',
@@ -236,7 +236,7 @@ export default function CommentsModerationPage() {
                 {/* Article link */}
                 {comment.news && (
                   <div className="pt-1 flex items-center gap-1.5 text-xs text-blue-600 hover:underline font-bold">
-                    <span className="text-slate-400 font-semibold">সংবাদ:</span>
+                    <span className="text-slate-400 font-semibold">Article:</span>
                     <Link href={`/${comment.news.slug}`} target="_blank" className="inline-flex items-center gap-1">
                       <span>{comment.news.title}</span>
                       <ExternalLink size={12} />
@@ -253,7 +253,7 @@ export default function CommentsModerationPage() {
                     className="flex items-center gap-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white px-4 py-2.5 rounded-2xl shadow-xs transition"
                   >
                     <Check size={15} />
-                    <span>অনুমোদন দিন</span>
+                    <span>Approve</span>
                   </button>
                 ) : (
                   <button
@@ -261,7 +261,7 @@ export default function CommentsModerationPage() {
                     className="flex items-center gap-1.5 bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 px-4 py-2.5 rounded-2xl transition"
                   >
                     <X size={15} />
-                    <span>অনুমোদন বাতিল</span>
+                    <span>Unapprove</span>
                   </button>
                 )}
                 <button
@@ -269,7 +269,7 @@ export default function CommentsModerationPage() {
                   className="flex items-center gap-1.5 bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 px-3.5 py-2.5 rounded-2xl transition"
                 >
                   <Trash2 size={15} />
-                  <span>মুছুন</span>
+                  <span>Delete</span>
                 </button>
               </div>
             </div>

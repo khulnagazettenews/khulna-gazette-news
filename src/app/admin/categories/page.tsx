@@ -50,12 +50,10 @@ export default function CategoryManagement() {
         setCategories(data);
         setParentOptions(data.filter((c: Category) => c.parentId === null));
       } else {
-        setError(data.error || 'ক্যাটাগরি লোড করা সম্ভব হয়নি।');
+        setError(data.error || 'Failed to load categories.');
       }
     } catch (err) {
-      setError('নেটওয়ার্ক ত্রুটি। আবার চেষ্টা করুন।');
-    } finally {
-      setLoading(false);
+      setError('Network error. Please try again.');
     }
   };
 
@@ -85,7 +83,7 @@ export default function CategoryManagement() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !slug) {
-      setError('নাম এবং স্লাগ আবশ্যক।');
+      setError('Name and slug are required.');
       return;
     }
 
@@ -113,21 +111,21 @@ export default function CategoryManagement() {
       const data = await res.json();
 
       if (res.ok) {
-        setSuccess(editingId ? 'ক্যাটাগরি আপডেট করা হয়েছে।' : 'নতুন ক্যাটাগরি সফলভাবে তৈরি করা হয়েছে।');
+        setSuccess(editingId ? 'Category updated successfully.' : 'New category created successfully.');
         handleCancel();
         fetchCategories();
       } else {
-        setError(data.error || 'একটি ত্রুটি ঘটেছে।');
+        setError(data.error || 'An error occurred.');
       }
     } catch (err) {
-      setError('অনুরোধ পাঠানো সম্ভব হয়নি।');
+      setError('Failed to send request.');
     } finally {
       setFormLoading(false);
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('আপনি কি নিশ্চিত যে এই ক্যাটাগরি এবং এর অধীনে থাকা সকল সাব-ক্যাটাগরি মুছে ফেলতে চান?')) {
+    if (!confirm('Are you sure you want to delete this category and all its subcategories?')) {
       return;
     }
 
@@ -141,13 +139,13 @@ export default function CategoryManagement() {
       const data = await res.json();
 
       if (res.ok) {
-        setSuccess('ক্যাটাগরি মুছে ফেলা হয়েছে।');
+        setSuccess('Category deleted successfully.');
         fetchCategories();
       } else {
-        setError(data.error || 'মুছে ফেলার অনুমতি নেই বা সমস্যা হয়েছে।');
+        setError(data.error || 'Failed to delete category.');
       }
     } catch (err) {
-      setError('মুছে ফেলা সম্ভব হয়নি।');
+      setError('An error occurred during deletion.');
     }
   };
 
@@ -158,16 +156,16 @@ export default function CategoryManagement() {
         <div>
           <div className="flex items-center gap-2 text-xs font-bold text-red-600 mb-1">
             <FolderKanban size={16} />
-            <span>ওয়েবসাইট স্ট্রাকচার ম্যানেজমেন্ট</span>
+            <span>Structure Management</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-            <span>পোস্ট ক্যাটাগরি</span>
+            <span>Categories</span>
             <span className="text-xs font-bold bg-slate-100 text-slate-700 px-2.5 py-1 rounded-full border border-slate-200">
-              {categories.length} টি ক্যাটাগরি
+              {categories.length} Categories
             </span>
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            খুলনা গেজেট পোর্টালে প্রকাশনার ক্যাটাগরি ও সাব-ক্যাটাগরি পরিচালনা করুন।
+            Manage primary categories and sub-categories across the Khulna Gazette portal.
           </p>
         </div>
       </div>
@@ -193,48 +191,48 @@ export default function CategoryManagement() {
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
             <h3 className="font-extrabold text-base text-slate-900 flex items-center gap-2">
               <FolderPlus size={18} className="text-red-600" />
-              <span>{editingId ? 'ক্যাটাগরি সম্পাদনা' : 'নতুন ক্যাটাগরি যোগ করুন'}</span>
+              <span>{editingId ? 'Edit Category' : 'Add New Category'}</span>
             </h3>
             {editingId && (
               <span className="text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200 px-2 py-0.5 rounded-full">
-                সম্পাদনা মোড
+                Edit Mode
               </span>
             )}
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4 text-xs font-semibold text-slate-700">
             <div>
-              <label className="block mb-1.5 font-bold text-slate-900">ক্যাটাগরির নাম (বাংলা)</label>
+              <label className="block mb-1.5 font-bold text-slate-900">Category Name</label>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="w-full border border-slate-200 rounded-2xl px-3.5 py-2.5 bg-slate-50 focus:bg-white focus:outline-none focus:border-red-500 font-bold transition"
-                placeholder="যেমন: বাংলাদেশ"
+                placeholder="e.g. Bangladesh"
                 required
               />
             </div>
 
             <div>
-              <label className="block mb-1.5 font-bold text-slate-900">স্লাগ (Slug - ইংরেজিতে)</label>
+              <label className="block mb-1.5 font-bold text-slate-900">Slug (URL string)</label>
               <input
                 type="text"
                 value={slug}
                 onChange={(e) => setSlug(e.target.value)}
                 className="w-full border border-slate-200 rounded-2xl px-3.5 py-2.5 bg-slate-50 focus:bg-white focus:outline-none focus:border-red-500 font-bold transition"
-                placeholder="যেমন: bangladesh"
+                placeholder="e.g. bangladesh"
                 required
               />
             </div>
 
             <div>
-              <label className="block mb-1.5 font-bold text-slate-900">প্যারেন্ট ক্যাটাগরি (ঐচ্ছিক)</label>
+              <label className="block mb-1.5 font-bold text-slate-900">Parent Category (Optional)</label>
               <select
                 value={parentId}
                 onChange={(e) => setParentId(e.target.value)}
                 className="w-full border border-slate-200 rounded-2xl px-3.5 py-2.5 bg-slate-50 focus:bg-white focus:outline-none focus:border-red-500 font-bold transition cursor-pointer"
               >
-                <option value="">কোনো প্যারেন্ট নেই (মূল ক্যাটাগরি)</option>
+                <option value="">None (Primary Category)</option>
                 {parentOptions.map((opt) => (
                   <option key={opt.id} value={opt.id}>
                     {opt.name}
@@ -244,7 +242,7 @@ export default function CategoryManagement() {
             </div>
 
             <div>
-              <label className="block mb-1.5 font-bold text-slate-900">ক্রম নম্বর (Order)</label>
+              <label className="block mb-1.5 font-bold text-slate-900">Sort Order</label>
               <input
                 type="number"
                 value={order}
@@ -260,7 +258,7 @@ export default function CategoryManagement() {
                 disabled={formLoading}
                 className="flex-1 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white text-xs font-black py-3 rounded-2xl shadow-xs transition disabled:opacity-50"
               >
-                {editingId ? 'আপডেট করুন' : 'তৈরি করুন'}
+                {editingId ? 'Update Category' : 'Create Category'}
               </button>
               {editingId && (
                 <button
@@ -268,7 +266,7 @@ export default function CategoryManagement() {
                   onClick={handleCancel}
                   className="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold py-3 px-4 rounded-2xl transition"
                 >
-                  বাতিল
+                  Cancel
                 </button>
               )}
             </div>
@@ -280,18 +278,18 @@ export default function CategoryManagement() {
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
             <h3 className="font-extrabold text-base text-slate-900 flex items-center gap-2">
               <Layers size={18} className="text-teal-600" />
-              <span>ক্যাটাগরি ও সাব-ক্যাটাগরি তালিকা</span>
+              <span>Categories & Sub-categories List</span>
             </h3>
-            <span className="text-xs text-slate-400 font-bold">প্যারেন্ট ও সাব-ক্যাটাগরি ভিউ</span>
+            <span className="text-xs text-slate-400 font-bold">Hierarchy View</span>
           </div>
 
           {loading ? (
             <div className="text-center py-12 text-slate-400 font-bold">
               <div className="animate-spin rounded-full h-7 w-7 border-b-2 border-red-600 mx-auto mb-2"></div>
-              ক্যাটাগরি লোড হচ্ছে...
+              Loading categories...
             </div>
           ) : categories.length === 0 ? (
-            <div className="text-center py-12 text-slate-400 font-medium">কোনো ক্যাটাগরি পাওয়া যায়নি।</div>
+            <div className="text-center py-12 text-slate-400 font-medium">No categories found.</div>
           ) : (
             <div className="space-y-3">
               {categories.map((cat) => (
@@ -310,19 +308,19 @@ export default function CategoryManagement() {
 
                     <div className="flex items-center gap-2">
                       <span className="text-[11px] text-slate-600 bg-slate-200/70 px-2.5 py-0.5 rounded-lg font-bold">
-                        ক্রম: {cat.order}
+                        Order: {cat.order}
                       </span>
                       <button
                         onClick={() => handleEdit(cat)}
                         className="p-1.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition"
-                        title="সম্পাদনা"
+                        title="Edit"
                       >
                         <Pencil size={15} />
                       </button>
                       <button
                         onClick={() => handleDelete(cat.id)}
                         className="p-1.5 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition"
-                        title="মুছে ফেলুন"
+                        title="Delete"
                       >
                         <Trash2 size={15} />
                       </button>
@@ -340,18 +338,18 @@ export default function CategoryManagement() {
                             <span className="text-[10px] font-mono text-slate-400">/{sub.slug}</span>
                           </div>
                           <div className="flex items-center gap-2">
-                            <span className="text-[10px] text-slate-400 font-mono">ক্রম: {sub.order}</span>
+                            <span className="text-[10px] text-slate-400 font-mono">Order: {sub.order}</span>
                             <button
                               onClick={() => handleEdit(sub)}
                               className="p-1 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition"
-                              title="সম্পাদনা"
+                              title="Edit"
                             >
                               <Pencil size={14} />
                             </button>
                             <button
                               onClick={() => handleDelete(sub.id)}
                               className="p-1 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition"
-                              title="মুছে ফেলুন"
+                              title="Delete"
                             >
                               <Trash2 size={14} />
                             </button>

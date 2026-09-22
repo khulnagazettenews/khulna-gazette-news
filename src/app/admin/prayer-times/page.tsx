@@ -61,7 +61,7 @@ export default function PrayerTimesManagement() {
         setEsha('');
       }
     } catch (err) {
-      setError('ডাটা লোড করতে সমস্যা হয়েছে।');
+      setError('Failed to load prayer time data.');
     } finally {
       setLoading(false);
     }
@@ -88,12 +88,12 @@ export default function PrayerTimesManagement() {
         setAsr(data.timings.asr);
         setMagrib(data.timings.magrib);
         setEsha(data.timings.esha);
-        setSuccess(`লাইভ এপিআই (${selectedCity}) থেকে আজকের সময় সফলভাবে ইনপুট বক্সে আনা হয়েছে। কাস্টমাইজ করতে পারেন বা সেভ করতে পারেন।`);
+        setSuccess(`Live prayer timings for ${selectedCity} fetched successfully. You may customize or save them.`);
       } else {
-        setError(data.error || 'লাইভ সময় লোড করা সম্ভব হয়নি।');
+        setError(data.error || 'Failed to load live prayer timings.');
       }
     } catch (err) {
-      setError('লাইভ সার্ভিস কানেকশনে সমস্যা হয়েছে।');
+      setError('Live service connection failed.');
     } finally {
       setFetchingLive(false);
     }
@@ -102,7 +102,7 @@ export default function PrayerTimesManagement() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!date || !fajr || !sunrise || !zohr || !asr || !magrib || !esha) {
-      setError('সকল ওয়াক্তের সময় প্রদান করা আবশ্যক।');
+      setError('All prayer time fields are required.');
       return;
     }
 
@@ -116,17 +116,17 @@ export default function PrayerTimesManagement() {
       const res = await fetch('/api/prayer-times', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({ ...payload }),
       });
 
       const data = await res.json();
       if (res.ok) {
-        setSuccess('নামাজের সময়সূচি সফলভাবে সংরক্ষণ করা হয়েছে।');
+        setSuccess('Prayer schedule saved successfully.');
       } else {
-        setError(data.error || 'সংরক্ষণ ব্যর্থ হয়েছে।');
+        setError(data.error || 'Failed to save prayer timings.');
       }
     } catch (err) {
-      setError('অনুরোধ পাঠানো সম্ভব হয়নি।');
+      setError('Failed to send request.');
     } finally {
       setSubmitting(false);
     }
@@ -135,9 +135,9 @@ export default function PrayerTimesManagement() {
   return (
     <div className="space-y-6 max-w-xl font-sans">
       <div>
-        <h2 className="text-2xl font-black text-slate-900">নামাজের সময়সূচি ব্যবস্থাপনা</h2>
+        <h2 className="text-2xl font-black text-slate-900">Prayer Times Management</h2>
         <p className="text-xs sm:text-sm text-slate-500 mt-1">
-          লাইভ বিডি এপিআই থেকে সরাসরি সময় লোড করুন অথবা ম্যানুয়ালি নিজের মতো কাস্টম নামাজের সময়সূচি সেটআপ করুন।
+          Fetch live prayer timings from BD API or manually customize prayer schedules.
         </p>
       </div>
 
@@ -159,7 +159,7 @@ export default function PrayerTimesManagement() {
           <div className="flex items-center gap-3">
             <Clock className="text-red-600 shrink-0" size={24} />
             <div>
-              <label className="block text-xs font-bold text-slate-500 mb-1">তারিখ নির্বাচন করুন</label>
+              <label className="block text-xs font-bold text-slate-500 mb-1">Select Date</label>
               <input
                 type="date"
                 value={date}
@@ -178,7 +178,7 @@ export default function PrayerTimesManagement() {
             >
               {BD_DISTRICTS.map((d) => (
                 <option key={d.city} value={d.city}>
-                  {d.bn}
+                  {d.city}
                 </option>
               ))}
             </select>
@@ -194,7 +194,7 @@ export default function PrayerTimesManagement() {
               ) : (
                 <Sparkles size={14} className="text-indigo-600" />
               )}
-              <span>লাইভ সময় আনুন</span>
+              <span>Fetch Live</span>
             </button>
           </div>
         </div>
@@ -202,86 +202,86 @@ export default function PrayerTimesManagement() {
         {loading ? (
           <div className="text-center py-10 text-slate-400 font-bold text-xs">
             <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-red-600 mx-auto mb-2"></div>
-            সময়সূচি লোড হচ্ছে...
+            Loading prayer schedule...
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="bg-blue-50/70 border border-blue-100 rounded-2xl p-3.5 text-xs text-blue-800 font-semibold flex items-start gap-2">
               <Info size={16} className="shrink-0 mt-0.5 text-blue-600" />
               <p>
-                ম্যানুয়ালি পরিবর্তন করতে নিচে পছন্দসই সময় টাইপ করুন (যেমন: 04:15 বা 05:40)। এটি ওয়েবসাইটের পাবলিক উইজেটে প্রদর্শিত হবে।
+                Enter custom prayer times below (e.g. 04:15 or 05:40). These will be displayed on the public widget.
               </p>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold text-slate-900 mb-1.5">ফজর (Fajr)</label>
+                <label className="block text-xs font-bold text-slate-900 mb-1.5">Fajr</label>
                 <input
                   type="text"
                   value={fajr}
                   onChange={(e) => setFajr(e.target.value)}
                   className="w-full border border-slate-200 rounded-2xl px-3.5 py-2.5 text-xs font-bold focus:outline-none focus:border-red-500 bg-slate-50 transition"
-                  placeholder="যেমন: 04:15"
+                  placeholder="e.g. 04:15"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-900 mb-1.5">সূর্যোদয় (Sunrise)</label>
+                <label className="block text-xs font-bold text-slate-900 mb-1.5">Sunrise</label>
                 <input
                   type="text"
                   value={sunrise}
                   onChange={(e) => setSunrise(e.target.value)}
                   className="w-full border border-slate-200 rounded-2xl px-3.5 py-2.5 text-xs font-bold focus:outline-none focus:border-red-500 bg-slate-50 transition"
-                  placeholder="যেমন: 05:40"
+                  placeholder="e.g. 05:40"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-900 mb-1.5">যোহর (Dhuhr)</label>
+                <label className="block text-xs font-bold text-slate-900 mb-1.5">Dhuhr (Zohr)</label>
                 <input
                   type="text"
                   value={zohr}
                   onChange={(e) => setZohr(e.target.value)}
                   className="w-full border border-slate-200 rounded-2xl px-3.5 py-2.5 text-xs font-bold focus:outline-none focus:border-red-500 bg-slate-50 transition"
-                  placeholder="যেমন: 12:15"
+                  placeholder="e.g. 12:15"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-900 mb-1.5">আছর (Asr)</label>
+                <label className="block text-xs font-bold text-slate-900 mb-1.5">Asr</label>
                 <input
                   type="text"
                   value={asr}
                   onChange={(e) => setAsr(e.target.value)}
                   className="w-full border border-slate-200 rounded-2xl px-3.5 py-2.5 text-xs font-bold focus:outline-none focus:border-red-500 bg-slate-50 transition"
-                  placeholder="যেমন: 15:30"
+                  placeholder="e.g. 15:30"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-900 mb-1.5">মাগরিব (Maghrib)</label>
+                <label className="block text-xs font-bold text-slate-900 mb-1.5">Maghrib</label>
                 <input
                   type="text"
                   value={magrib}
                   onChange={(e) => setMagrib(e.target.value)}
                   className="w-full border border-slate-200 rounded-2xl px-3.5 py-2.5 text-xs font-bold focus:outline-none focus:border-red-500 bg-slate-50 transition"
-                  placeholder="যেমন: 18:48"
+                  placeholder="e.g. 18:48"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-900 mb-1.5">এশা (Isha)</label>
+                <label className="block text-xs font-bold text-slate-900 mb-1.5">Isha</label>
                 <input
                   type="text"
                   value={esha}
                   onChange={(e) => setEsha(e.target.value)}
                   className="w-full border border-slate-200 rounded-2xl px-3.5 py-2.5 text-xs font-bold focus:outline-none focus:border-red-500 bg-slate-50 transition"
-                  placeholder="যেমন: 20:15"
+                  placeholder="e.g. 20:15"
                   required
                 />
               </div>
@@ -293,7 +293,7 @@ export default function PrayerTimesManagement() {
               className="w-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-extrabold text-xs sm:text-sm py-3 rounded-2xl shadow-md transition flex items-center justify-center gap-2 disabled:opacity-50"
             >
               <Save size={16} />
-              <span>{submitting ? 'সংরক্ষণ করা হচ্ছে...' : 'সময়সূচি ম্যানুয়ালি সংরক্ষণ করুন'}</span>
+              <span>{submitting ? 'Saving...' : 'Save Prayer Schedule'}</span>
             </button>
           </form>
         )}

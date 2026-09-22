@@ -98,7 +98,7 @@ export default async function AdminDashboard() {
   // Calculate publication ratio
   const publishRatio = totalNews > 0 ? Math.round((publishedNewsCount / totalNews) * 100) : 0;
 
-  // Date & Greeting in Bengali (Asia/Dhaka Timezone Aware)
+  // Date & Greeting in English
   const currentHour = parseInt(
     new Intl.DateTimeFormat('en-US', {
       timeZone: 'Asia/Dhaka',
@@ -108,13 +108,13 @@ export default async function AdminDashboard() {
     10
   );
 
-  let greetingBn = 'স্বাগতম';
-  if (currentHour >= 5 && currentHour < 12) greetingBn = 'শুভ সকাল';
-  else if (currentHour >= 12 && currentHour < 16) greetingBn = 'শুভ দুপুর';
-  else if (currentHour >= 16 && currentHour < 19) greetingBn = 'শুভ বিকেল';
-  else greetingBn = 'শুভ রাত';
+  let greetingEn = 'Welcome';
+  if (currentHour >= 5 && currentHour < 12) greetingEn = 'Good Morning';
+  else if (currentHour >= 12 && currentHour < 16) greetingEn = 'Good Afternoon';
+  else if (currentHour >= 16 && currentHour < 19) greetingEn = 'Good Evening';
+  else greetingEn = 'Good Night';
 
-  const todayBn = new Date().toLocaleDateString('bn-BD', {
+  const todayEn = new Date().toLocaleDateString('en-US', {
     timeZone: 'Asia/Dhaka',
     weekday: 'long',
     year: 'numeric',
@@ -132,27 +132,27 @@ export default async function AdminDashboard() {
               <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-extrabold bg-blue-500/25 text-blue-200 border border-blue-400/40">
                 <ShieldCheck size={15} className="text-blue-400" />
                   {(() => {
-                    if (role === 'SUPER_ADMIN') return 'সুপার অ্যাডমিন প্যানেল';
-                    if (role === 'ADMIN') return 'অ্যাডমিন প্যানেল';
-                    if (role === 'EDITOR') return 'সম্পাদক ড্যাশবোর্ড';
-                    if (role === 'SUB_EDITOR') return 'সহকারী সম্পাদক ড্যাশবোর্ড';
-                    if (role === 'REPORTER') return 'প্রতিবেদক প্যানেল';
-                    if (role === 'CONTRIBUTOR') return 'সহযোগী লেখক প্যানেল';
-                    if (role === 'ADVERTISEMENT_MANAGER') return 'বিজ্ঞাপন ম্যানেজার';
-                    return 'কন্ট্রোল প্যানেল';
+                    if (role === 'SUPER_ADMIN') return 'Super Admin Panel';
+                    if (role === 'ADMIN') return 'Admin Panel';
+                    if (role === 'EDITOR') return 'Editor Dashboard';
+                    if (role === 'SUB_EDITOR') return 'Sub-Editor Dashboard';
+                    if (role === 'REPORTER') return 'Reporter Panel';
+                    if (role === 'CONTRIBUTOR') return 'Contributor Panel';
+                    if (role === 'ADVERTISEMENT_MANAGER') return 'Ad Manager Panel';
+                    return 'Control Panel';
                   })()}
                 </span>
                 <span className="text-xs text-slate-200 font-bold flex items-center gap-1.5 bg-slate-800 px-3.5 py-1.5 rounded-full border border-slate-700">
                   <Clock size={14} className="text-blue-400" />
-                  <span>{todayBn}</span>
+                  <span>{todayEn}</span>
                 </span>
               </div>
 
               <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-white leading-tight">
-                {greetingBn}, <span className="text-blue-400">{session?.user?.name || 'অ্যাডমিন'}</span>!
+                {greetingEn}, <span className="text-blue-400">{session?.user?.name || 'Admin'}</span>!
               </h1>
               <p className="text-sm sm:text-base text-slate-200 max-w-2xl leading-relaxed font-medium">
-                খুলনা গেজেট নিউজ পোর্টালে আপনার সংবাদ কন্টেন্ট, বিশেষ প্রতিবেদন, বিজ্ঞাপন এবং সার্বিক পারফরম্যান্স রিয়েলটাইমে নিয়ন্ত্রণ করুন।
+                Manage your news content, special reports, advertisements, and overall website performance in real time.
               </p>
             </div>
 
@@ -163,7 +163,7 @@ export default async function AdminDashboard() {
                 className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-black text-xs sm:text-sm px-5 py-3 rounded-2xl shadow-lg shadow-blue-600/30 border border-blue-400/40 transition-all duration-200"
               >
                 <PlusCircle size={18} />
-                <span>নতুন খবর লিখুন</span>
+                <span>Add New Post</span>
               </Link>
             )}
             <Link
@@ -172,7 +172,7 @@ export default async function AdminDashboard() {
               className="inline-flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-100 font-extrabold text-xs sm:text-sm px-4 py-3 rounded-2xl border border-slate-700 transition-all duration-200"
             >
               <ExternalLink size={16} className="text-blue-400" />
-              <span>লাইভ সাইট</span>
+              <span>Visit Site</span>
             </Link>
           </div>
         </div>
@@ -185,7 +185,7 @@ export default async function AdminDashboard() {
           <div className="absolute top-0 inset-x-0 h-1 bg-blue-600"></div>
           <div className="flex items-center justify-between">
             <span className="text-xs font-black text-slate-700 uppercase tracking-wider">
-              {restrictsToOwnNews ? 'আমার মোট সংবাদ' : 'মোট প্রকাশিত সংবাদ'}
+              {restrictsToOwnNews ? 'My Total Posts' : 'Total Posts'}
             </span>
             <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition duration-200">
               <Newspaper size={20} />
@@ -195,7 +195,7 @@ export default async function AdminDashboard() {
             <h2 className="text-3xl font-black text-slate-900 tracking-tight">{totalNews}</h2>
             <span className="text-xs font-black text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-full flex items-center gap-1 border border-emerald-200">
               <CheckCircle2 size={13} />
-              <span>{publishedNewsCount} প্রকাশিত</span>
+              <span>{publishedNewsCount} Published</span>
             </span>
           </div>
           {/* Ratio bar */}
@@ -212,7 +212,7 @@ export default async function AdminDashboard() {
           <div className="absolute top-0 inset-x-0 h-1 bg-amber-500"></div>
           <div className="flex items-center justify-between">
             <span className="text-xs font-black text-slate-700 uppercase tracking-wider">
-              {restrictsToOwnNews ? 'আমার খসড়া সংবাদ' : 'খসড়া সংবাদ'}
+              {restrictsToOwnNews ? 'My Draft Posts' : 'Draft Posts'}
             </span>
             <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center group-hover:bg-amber-600 group-hover:text-white transition duration-200">
               <FileText size={20} />
@@ -221,11 +221,11 @@ export default async function AdminDashboard() {
           <div className="mt-4 flex items-baseline justify-between">
             <h2 className="text-3xl font-black text-slate-900 tracking-tight">{draftNews}</h2>
             <span className="text-xs font-black text-amber-800 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-200">
-              ড্রাফটে রয়েছে
+              In Draft
             </span>
           </div>
           <p className="mt-3 text-xs text-slate-600 font-semibold truncate">
-            {draftNews > 0 ? 'সম্পাদনা ও প্রকাশের অপেক্ষায়' : 'কোনো খসড়া বাকি নেই'}
+            {draftNews > 0 ? 'Pending Review & Publish' : 'No Drafts Pending'}
           </p>
         </div>
 
@@ -234,7 +234,7 @@ export default async function AdminDashboard() {
           <div className="bg-white rounded-2xl p-5 shadow-2xs border border-slate-300 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 relative overflow-hidden group">
             <div className="absolute top-0 inset-x-0 h-1 bg-emerald-600"></div>
             <div className="flex items-center justify-between">
-              <span className="text-xs font-black text-slate-700 uppercase tracking-wider">টিম মেম্বার</span>
+              <span className="text-xs font-black text-slate-700 uppercase tracking-wider">Users</span>
               <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition duration-200">
                 <Users size={20} />
               </div>
@@ -242,18 +242,18 @@ export default async function AdminDashboard() {
             <div className="mt-4 flex items-baseline justify-between">
               <h2 className="text-3xl font-black text-slate-900 tracking-tight">{totalUsers}</h2>
               <span className="text-xs font-black text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
-                অ্যাক্টিভ ইউজার
+                Active Users
               </span>
             </div>
             <p className="mt-3 text-xs text-slate-600 font-semibold truncate">
-              সিস্টেম রোল ব্যবস্থাপনা সক্রিয়
+              System Roles Active
             </p>
           </div>
         ) : (
           <div className="bg-white rounded-2xl p-5 shadow-2xs border border-slate-300 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 relative overflow-hidden group">
             <div className="absolute top-0 inset-x-0 h-1 bg-emerald-600"></div>
             <div className="flex items-center justify-between">
-              <span className="text-xs font-black text-slate-700 uppercase tracking-wider">ক্যাটাগরি</span>
+              <span className="text-xs font-black text-slate-700 uppercase tracking-wider">Categories</span>
               <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition duration-200">
                 <FolderKanban size={20} />
               </div>
@@ -261,11 +261,11 @@ export default async function AdminDashboard() {
             <div className="mt-4 flex items-baseline justify-between">
               <h2 className="text-3xl font-black text-slate-900 tracking-tight">{totalCategories}</h2>
               <span className="text-xs font-black text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
-                সচল ক্যাটাগরি
+                Active Categories
               </span>
             </div>
             <p className="mt-3 text-xs text-slate-600 font-semibold truncate">
-              হোমপেজ সেকশন কনফিগার করা
+              Configured on Site
             </p>
           </div>
         )}
@@ -275,21 +275,21 @@ export default async function AdminDashboard() {
           <div className="absolute top-0 inset-x-0 h-1 bg-indigo-600"></div>
           <div className="flex items-center justify-between">
             <span className="text-xs font-black text-slate-700 uppercase tracking-wider">
-              {restrictsToOwnNews ? 'আমার মোট পঠিত' : 'মোট পাঠ সংখ্যা (ভিউ)'}
+              {restrictsToOwnNews ? 'My Total Views' : 'Total Post Views'}
             </span>
             <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition duration-200">
               <Eye size={20} />
             </div>
           </div>
           <div className="mt-4 flex items-baseline justify-between">
-            <h2 className="text-3xl font-black text-slate-900 tracking-tight">{totalViews.toLocaleString('bn-BD')}</h2>
+            <h2 className="text-3xl font-black text-slate-900 tracking-tight">{totalViews.toLocaleString('en-US')}</h2>
             <span className="text-xs font-black text-indigo-800 bg-indigo-50 px-2.5 py-1 rounded-full flex items-center gap-1 border border-indigo-200">
               <TrendingUp size={13} />
-              <span>লাইভ ভিউ</span>
+              <span>Live Views</span>
             </span>
           </div>
           <p className="mt-3 text-xs text-slate-600 font-semibold truncate">
-            পাঠকদের রিয়েলটাইম আগ্রহের হিসাব
+            Realtime Reader Engagement
           </p>
         </div>
 
@@ -298,7 +298,7 @@ export default async function AdminDashboard() {
           <div className="bg-white rounded-2xl p-5 shadow-2xs border border-slate-300 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 relative overflow-hidden group">
             <div className="absolute top-0 inset-x-0 h-1 bg-rose-500"></div>
             <div className="flex items-center justify-between">
-              <span className="text-xs font-black text-slate-700 uppercase tracking-wider">নতুন মন্তব্য</span>
+              <span className="text-xs font-black text-slate-700 uppercase tracking-wider font-sans">Pending Comments</span>
               <div className="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center group-hover:bg-rose-600 group-hover:text-white transition duration-200">
                 <MessageSquare size={20} />
               </div>
@@ -306,11 +306,11 @@ export default async function AdminDashboard() {
             <div className="mt-4 flex items-baseline justify-between">
               <h2 className="text-3xl font-black text-slate-900 tracking-tight">{pendingComments}</h2>
               <span className="text-xs font-black text-rose-800 bg-rose-50 px-2.5 py-1 rounded-full border border-rose-200">
-                অনুমোদনের অপেক্ষায়
+                Awaiting Approval
               </span>
             </div>
             <p className="mt-3 text-xs text-slate-600 font-semibold truncate">
-              {pendingComments > 0 ? 'পেন্ডিং মন্তব্য রিভিউ করুন' : 'সকল মন্তব্য অনুমোদিত'}
+              {pendingComments > 0 ? 'Review Pending Comments' : 'All Comments Approved'}
             </p>
           </div>
         )}
@@ -326,31 +326,31 @@ export default async function AdminDashboard() {
                 <BarChart3 size={20} />
               </div>
               <div>
-                <h3 className="font-black text-base text-slate-900">কন্টেন্ট পারফরম্যান্স ও ভিউ অ্যানালিটিক্স</h3>
-                <p className="text-xs text-slate-600 font-semibold">সংবাদ রিডারশিপ এবং নিয়মিত প্রকাশের ডেনসিটি</p>
+                <h3 className="font-black text-base text-slate-900">Content Performance & Analytics</h3>
+                <p className="text-xs text-slate-600 font-semibold">Post Readership and Publication Density</p>
               </div>
             </div>
             <span className="text-xs font-black text-blue-800 bg-blue-50 px-3 py-1 rounded-xl border border-blue-200 flex items-center gap-1">
               <Activity size={14} />
-              <span>গড় {avgViews} ভিউ / পোস্ট</span>
+              <span>Avg {avgViews} Views / Post</span>
             </span>
           </div>
 
           {/* Lightweight SVG Visual Bar Graph */}
           <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200 relative">
             <div className="flex items-center justify-between text-xs text-slate-700 font-extrabold mb-3">
-              <span>সাপ্তাহিক নিউজ ওভারভিউ</span>
-              <span className="text-emerald-700 font-black">+{publishRatio}% পাবলিকেশন হার</span>
+              <span>Weekly Posts Overview</span>
+              <span className="text-emerald-700 font-black">+{publishRatio}% Publication Rate</span>
             </div>
             <div className="h-32 flex items-end justify-between gap-3 pt-4 px-2">
               {[
-                { day: 'শনিবার', val: 65 },
-                { day: 'রবিবার', val: 80 },
-                { day: 'সোমবার', val: 45 },
-                { day: 'মঙ্গলবার', val: 95 },
-                { day: 'বুধবার', val: 70 },
-                { day: 'বৃহস্পতিবার', val: 85 },
-                { day: 'শুক্রবার', val: 90 }
+                { day: 'Sat', val: 65 },
+                { day: 'Sun', val: 80 },
+                { day: 'Mon', val: 45 },
+                { day: 'Tue', val: 95 },
+                { day: 'Wed', val: 70 },
+                { day: 'Thu', val: 85 },
+                { day: 'Fri', val: 90 }
               ].map((item, idx) => (
                 <div key={idx} className="flex-1 flex flex-col items-center gap-2 group">
                   <div className="w-full bg-slate-200 rounded-t-lg h-24 flex items-end overflow-hidden p-0.5">
@@ -365,8 +365,8 @@ export default async function AdminDashboard() {
                       style={{ height: `${item.val}%` }}
                     />
                   </div>
-                  <span className="text-xs font-bold text-slate-700 group-hover:text-slate-900 transition">
-                    {item.day.slice(0, 3)}
+                  <span className="text-xs font-bold text-slate-700 group-hover:text-slate-900 transition font-sans">
+                    {item.day}
                   </span>
                 </div>
               ))}
@@ -375,15 +375,15 @@ export default async function AdminDashboard() {
 
           <div className="grid grid-cols-3 gap-3 text-center">
             <div className="p-3 bg-slate-50 rounded-2xl border border-slate-200">
-              <span className="text-xs font-bold text-slate-500 uppercase block">মোট পোস্ট</span>
+              <span className="text-xs font-bold text-slate-500 uppercase block">Total Posts</span>
               <span className="text-lg font-black text-slate-900">{totalNews}</span>
             </div>
             <div className="p-3 bg-emerald-50 rounded-2xl border border-emerald-200">
-              <span className="text-xs font-bold text-emerald-800 uppercase block">প্রকাশিত</span>
+              <span className="text-xs font-bold text-emerald-800 uppercase block">Published</span>
               <span className="text-lg font-black text-emerald-900">{publishedNewsCount}</span>
             </div>
             <div className="p-3 bg-amber-50 rounded-2xl border border-amber-200">
-              <span className="text-xs font-bold text-amber-800 uppercase block">খসড়া</span>
+              <span className="text-xs font-bold text-amber-800 uppercase block">Drafts</span>
               <span className="text-lg font-black text-amber-900">{draftNews}</span>
             </div>
           </div>
@@ -397,22 +397,22 @@ export default async function AdminDashboard() {
                 <PieChart size={20} />
               </div>
               <div>
-                <h3 className="font-black text-base text-slate-900">ক্যাটাগরি কভারেজ</h3>
-                <p className="text-xs text-slate-600 font-semibold">বিভাগ অনুযায়ী প্রকাশিত সংবাদের শেয়ার</p>
+                <h3 className="font-black text-base text-slate-900">Category Breakdown</h3>
+                <p className="text-xs text-slate-600 font-semibold">Share of Published Posts by Category</p>
               </div>
             </div>
             <Link 
               href="/admin/categories" 
               className="text-xs font-extrabold text-blue-600 hover:text-blue-800 transition flex items-center gap-1"
             >
-              <span>ম্যানেজ</span>
+              <span>Manage</span>
               <ArrowRight size={14} />
             </Link>
           </div>
 
           <div className="space-y-4 flex-1">
             {categoriesWithCount.length === 0 ? (
-              <p className="text-xs text-slate-500 text-center py-6 font-semibold">কোনো ক্যাটাগরি কনফিগার করা নেই</p>
+              <p className="text-xs text-slate-500 text-center py-6 font-semibold">No Categories Configured</p>
             ) : (
               categoriesWithCount.map((cat, idx) => {
                 const count = cat._count.news;
@@ -434,7 +434,7 @@ export default async function AdminDashboard() {
                         {cat.name}
                       </span>
                       <span className="font-mono text-slate-700 font-black">
-                        {count} টি ({pct}%)
+                        {count} ({pct}%)
                       </span>
                     </div>
                     <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden border border-slate-200/60">
@@ -451,7 +451,7 @@ export default async function AdminDashboard() {
 
           <div className="pt-3 border-t border-slate-100 text-center">
             <span className="text-xs font-bold text-slate-600">
-              মোট {totalCategories} টি সচল ক্যাটাগরি পোর্টালে যুক্ত আছে
+              Total {totalCategories} Active Categories Configured
             </span>
           </div>
         </div>
@@ -464,11 +464,11 @@ export default async function AdminDashboard() {
             <div className="flex items-center gap-2">
               <Flame className="text-amber-400" size={20} />
               <h3 className="font-black text-sm uppercase tracking-wider text-white">
-                আজকের সবচেয়ে জনপ্রিয় খবর (Top Read Articles)
+                Top Read Articles
               </h3>
             </div>
             <span className="text-xs font-mono font-bold text-blue-200 bg-blue-950 px-3 py-1 rounded-full border border-blue-700">
-              লাইভ ভিউ র‌্যাঙ্কিং
+              Live Ranking
             </span>
           </div>
 
@@ -484,7 +484,7 @@ export default async function AdminDashboard() {
                     #{idx + 1}
                   </span>
                   <span className="text-xs font-bold text-blue-200 bg-slate-900 px-2.5 py-0.5 rounded-md border border-slate-700">
-                    {news.category?.name || 'খবর'}
+                    {news.category?.name || 'Post'}
                   </span>
                 </div>
                 <h4 className="font-extrabold text-xs sm:text-sm leading-snug line-clamp-2 text-slate-100 group-hover:text-blue-300 transition">
@@ -493,10 +493,10 @@ export default async function AdminDashboard() {
                 <div className="flex items-center justify-between text-xs text-slate-300 pt-1.5 border-t border-slate-700/80">
                   <span className="flex items-center gap-1 text-blue-300 font-extrabold">
                     <Eye size={14} />
-                    <span>{news.viewCount.toLocaleString('bn-BD')} ভিউ</span>
+                    <span>{news.viewCount.toLocaleString('en-US')} Views</span>
                   </span>
                   <span className="text-xs font-bold text-slate-200 group-hover:translate-x-0.5 transition-transform">
-                    সম্পাদনা &rarr;
+                    Edit &rarr;
                   </span>
                 </div>
               </Link>
@@ -516,16 +516,16 @@ export default async function AdminDashboard() {
               </div>
               <div>
                 <h2 className="font-black text-base text-slate-900 leading-snug">
-                  {restrictsToOwnNews ? 'আমার সাম্প্রতিক খবরসমূহ' : 'সাম্প্রতিক খবরসমূহ'}
+                  {restrictsToOwnNews ? 'My Recent Posts' : 'Recent Posts'}
                 </h2>
-                <p className="text-xs text-slate-600 font-semibold">সর্বশেষ আপলোড হওয়া সংবাদের তালিকা</p>
+                <p className="text-xs text-slate-600 font-semibold">Latest uploaded posts list</p>
               </div>
             </div>
             <Link 
               href="/admin/news" 
               className="inline-flex items-center gap-1 text-xs text-blue-700 font-black hover:text-blue-800 transition bg-blue-50 hover:bg-blue-100 px-3.5 py-1.5 rounded-xl border border-blue-200"
             >
-              <span>সব খবর দেখুন</span>
+              <span>View All Posts</span>
               <ArrowUpRight size={14} />
             </Link>
           </div>
@@ -533,19 +533,19 @@ export default async function AdminDashboard() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-slate-100/80 border-b border-slate-200 text-xs font-black text-slate-600 uppercase tracking-wider">
-                  <th className="px-6 py-3.5">সংবাদ</th>
-                  <th className="px-4 py-3.5">ক্যাটাগরি</th>
-                  <th className="px-4 py-3.5">অবস্থা</th>
-                  <th className="px-4 py-3.5 text-center">ভিউ</th>
-                  <th className="px-6 py-3.5 text-right">অ্যাকশন</th>
+                <tr className="bg-slate-100/80 border-b border-slate-200 text-xs font-black text-slate-600 uppercase tracking-wider font-sans">
+                  <th className="px-6 py-3.5">Post</th>
+                  <th className="px-4 py-3.5">Category</th>
+                  <th className="px-4 py-3.5">Status</th>
+                  <th className="px-4 py-3.5 text-center">Views</th>
+                  <th className="px-6 py-3.5 text-right">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200 text-xs sm:text-sm">
                 {recentNews.length === 0 ? (
                   <tr>
                     <td colSpan={5} className="px-6 py-12 text-center text-slate-500 font-semibold">
-                      কোনো খবর পাওয়া যায়নি।
+                      No posts found.
                     </td>
                   </tr>
                 ) : (
@@ -574,8 +574,8 @@ export default async function AdminDashboard() {
                             >
                               {news.title}
                             </Link>
-                            <span className="text-xs text-slate-500 block mt-0.5 font-semibold">
-                              {new Date(news.createdAt).toLocaleDateString('bn-BD', {
+                            <span className="text-xs text-slate-500 block mt-0.5 font-semibold font-sans">
+                              {new Date(news.createdAt).toLocaleDateString('en-US', {
                                 year: 'numeric',
                                 month: 'short',
                                 day: 'numeric'
@@ -586,7 +586,7 @@ export default async function AdminDashboard() {
                       </td>
                       <td className="px-4 py-3.5">
                         <span className="text-xs font-extrabold text-blue-900 bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-200 inline-block">
-                          {news.category?.name || 'সাধারণ'}
+                          {news.category?.name || 'General'}
                         </span>
                       </td>
                       <td className="px-4 py-3.5">
@@ -596,11 +596,11 @@ export default async function AdminDashboard() {
                             : 'bg-amber-50 text-amber-800 border border-amber-200'
                         }`}>
                           <span className={`w-1.5 h-1.5 rounded-full ${news.status === 'PUBLISHED' ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'}`}></span>
-                          <span>{news.status === 'PUBLISHED' ? 'প্রকাশিত' : 'খসড়া'}</span>
+                          <span>{news.status === 'PUBLISHED' ? 'Published' : 'Draft'}</span>
                         </span>
                       </td>
-                      <td className="px-4 py-3.5 text-center font-black text-slate-800">
-                        {news.viewCount.toLocaleString('bn-BD')}
+                      <td className="px-4 py-3.5 text-center font-black text-slate-800 font-sans">
+                        {news.viewCount.toLocaleString('en-US')}
                       </td>
                       <td className="px-6 py-3.5 text-right">
                         <Link
@@ -608,7 +608,7 @@ export default async function AdminDashboard() {
                           className="inline-flex items-center gap-1 text-xs font-black text-slate-800 hover:text-blue-600 bg-slate-100 hover:bg-blue-50 border border-slate-300 hover:border-blue-300 px-3.5 py-1.5 rounded-xl transition duration-200"
                         >
                           <Edit3 size={14} />
-                          <span>সম্পাদনা</span>
+                          <span>Edit</span>
                         </Link>
                       </td>
                     </tr>
@@ -626,7 +626,7 @@ export default async function AdminDashboard() {
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <h2 className="font-extrabold text-sm text-slate-900 flex items-center gap-2">
                 <Zap size={18} className="text-amber-500" />
-                <span>সহজ অ্যাকশন (Quick Actions)</span>
+                <span>Quick Actions</span>
               </h2>
             </div>
             
@@ -641,8 +641,8 @@ export default async function AdminDashboard() {
                       <PlusCircle size={17} />
                     </div>
                     <div>
-                      <span className="block font-black text-slate-900 group-hover:text-blue-700 transition text-xs sm:text-sm">নতুন খবর লিখুন</span>
-                      <span className="text-xs text-slate-600 font-semibold">পোর্টালের জন্য নতুন পোস্ট তৈরি করুন</span>
+                      <span className="block font-black text-slate-900 group-hover:text-blue-700 transition text-xs sm:text-sm">Add New Post</span>
+                      <span className="text-xs text-slate-600 font-semibold">Create new post for site</span>
                     </div>
                   </div>
                   <ArrowUpRight size={16} className="text-blue-600 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
@@ -659,8 +659,8 @@ export default async function AdminDashboard() {
                       <Sparkles size={17} />
                     </div>
                     <div>
-                      <span className="block font-black text-slate-900 group-hover:text-indigo-700 transition text-xs sm:text-sm">বিশেষ প্রতিবেদন সাজান</span>
-                      <span className="text-xs text-slate-600 font-semibold">হোমপেজের মূল কভার প্রতিবেদন নির্বাচন</span>
+                      <span className="block font-black text-slate-900 group-hover:text-indigo-700 transition text-xs sm:text-sm">Special Reports</span>
+                      <span className="text-xs text-slate-600 font-semibold">Configure homepage cover section</span>
                     </div>
                   </div>
                   <ArrowUpRight size={16} className="text-indigo-600 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
@@ -677,8 +677,8 @@ export default async function AdminDashboard() {
                       <FolderKanban size={17} />
                     </div>
                     <div>
-                      <span className="block font-black text-slate-900 transition text-xs sm:text-sm">ক্যাটাগরি ম্যানেজমেন্ট</span>
-                      <span className="text-xs text-slate-600 font-semibold">বিষয়শ্রেণী ও অর্ডারিং কনফিগার</span>
+                      <span className="block font-black text-slate-900 transition text-xs sm:text-sm">Categories</span>
+                      <span className="text-xs text-slate-600 font-semibold">Manage categories & navbar order</span>
                     </div>
                   </div>
                   <ArrowUpRight size={16} className="text-slate-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
@@ -695,8 +695,8 @@ export default async function AdminDashboard() {
                       <Megaphone size={17} />
                     </div>
                     <div>
-                      <span className="block font-black text-slate-900 group-hover:text-amber-700 transition text-xs sm:text-sm">বিজ্ঞাপন স্পেস</span>
-                      <span className="text-xs text-slate-600 font-semibold">ব্যানার বিজ্ঞাপন ও এনালিটিক্স</span>
+                      <span className="block font-black text-slate-900 group-hover:text-amber-700 transition text-xs sm:text-sm">Advertisements</span>
+                      <span className="text-xs text-slate-600 font-semibold">Ad banners & analytics</span>
                     </div>
                   </div>
                   <ArrowUpRight size={16} className="text-amber-600 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
@@ -713,8 +713,8 @@ export default async function AdminDashboard() {
                       <Users size={17} />
                     </div>
                     <div>
-                      <span className="block font-black text-slate-900 group-hover:text-emerald-700 transition text-xs sm:text-sm">ইউজার ও রোলস</span>
-                      <span className="text-xs text-slate-600 font-semibold">এডমিন ও রিপোর্টার পারমিশন</span>
+                      <span className="block font-black text-slate-900 group-hover:text-emerald-700 transition text-xs sm:text-sm">Users & Roles</span>
+                      <span className="text-xs text-slate-600 font-semibold">User permissions & roles</span>
                     </div>
                   </div>
                   <ArrowUpRight size={16} className="text-emerald-600 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
@@ -728,26 +728,26 @@ export default async function AdminDashboard() {
             <div className="flex items-center justify-between border-b border-slate-800 pb-3">
               <h3 className="font-extrabold text-xs sm:text-sm text-white flex items-center gap-2 uppercase tracking-wider font-mono">
                 <Server size={16} className="text-blue-400" />
-                <span>সিস্টেম হেলথ ডায়াগনস্টিক</span>
+                <span>System Health Diagnostic</span>
               </h3>
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
             </div>
 
             <div className="space-y-3 text-xs sm:text-sm">
               <div className="flex items-center justify-between p-3 rounded-xl bg-slate-800 border border-slate-700">
-                <span className="text-slate-300 font-semibold">ডাটাবেস কানেকশন</span>
+                <span className="text-slate-300 font-semibold">Database Connection</span>
                 <span className="font-bold text-emerald-400 flex items-center gap-1">
                   <CheckCircle2 size={14} />
-                  <span>MongoDB Atlas (সচল)</span>
+                  <span>MongoDB Atlas (Connected)</span>
                 </span>
               </div>
               <div className="flex items-center justify-between p-3 rounded-xl bg-slate-800 border border-slate-700">
-                <span className="text-slate-300 font-semibold">অন-ডিমান্ড রিভ্যালিডেশন</span>
-                <span className="font-bold text-blue-400">সক্রিয়</span>
+                <span className="text-slate-300 font-semibold">On-Demand Revalidation</span>
+                <span className="font-bold text-blue-400">Active</span>
               </div>
               <div className="flex items-center justify-between p-3 rounded-xl bg-slate-800 border border-slate-700">
-                <span className="text-slate-300 font-semibold">পাবলিকেশন রেট</span>
-                <span className="font-bold text-slate-100">{publishRatio}% সফল</span>
+                <span className="text-slate-300 font-semibold">Publication Rate</span>
+                <span className="font-bold text-slate-100">{publishRatio}% Successful</span>
               </div>
             </div>
           </div>

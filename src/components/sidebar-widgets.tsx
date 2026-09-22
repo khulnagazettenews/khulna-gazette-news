@@ -6,6 +6,7 @@ import PrayerWidget from './prayer-widget';
 import AdBanner from './ad-banner';
 import { Smartphone } from 'lucide-react';
 import FacebookWidget from './facebook-widget';
+import GazetteExclusiveTicker from './gazette-exclusive-ticker';
 
 interface SidebarWidgetsProps {
   latestNews: any[];
@@ -169,7 +170,7 @@ export default function SidebarWidgets({
         </div>
       )}
 
-      {/* 2.5. ANNIVERSARY SUPPLEMENT WIDGET (বর্ষপূর্তির ক্রোড়পত্র) */}
+      {/* 2.5. UDBODHONI CRODPOTRO WIDGET (উদ্বোধনী ক্রোড়পত্র) */}
       <div className="bg-white rounded border border-gray-200 shadow-2xs overflow-hidden font-sans">
         <div 
           className="bg-[#353d4c] text-white py-1 px-2 text-center font-normal border-b border-gray-200"
@@ -182,67 +183,19 @@ export default function SidebarWidgets({
             textAlign: 'center',
           }}
         >
-          বর্ষপূর্তির ক্রোড়পত্র
+          উদ্বোধনী ক্রোড়পত্র
         </div>
-        <Link href="/borshopurti-crodpotro" className="block relative w-full overflow-hidden bg-slate-900 group p-1.5 rounded-xs">
+        <Link href="/udbodhoni-crodpotro" className="block relative w-full overflow-hidden bg-slate-900 group p-1.5 rounded-xs">
           <img
-            src="/uploads/sidebar/anniversary_promo.jpg"
-            alt="বর্ষপূর্তির ক্রোড়পত্র"
+            src="/uploads/sidebar/udbodhoni_promo.jpg"
+            alt="উদ্বোধনী ক্রোড়পত্র"
             className="w-full h-auto object-cover rounded-xs group-hover:scale-105 transition duration-500 shadow-md block"
           />
         </Link>
       </div>
 
       {/* 3. GAZETTE EXCLUSIVE NEWS BOX (গেজেট এক্সক্লুসিভ - 3rd) */}
-      <div className="bg-white rounded border border-gray-200 shadow-2xs overflow-hidden">
-        <div 
-          className="bg-[#353d4c] text-white py-2 px-3 text-center font-normal border-b border-gray-200"
-          style={{
-            fontFamily: 'Bangla, sans-serif',
-            fontSize: '21px',
-            fontWeight: 400,
-            lineHeight: '23.1px',
-            letterSpacing: '-0.2px',
-            textAlign: 'center',
-          }}
-        >
-          গেজেট এক্সক্লুসিভ
-        </div>
-        <div className="p-3 bg-white">
-          <div className="space-y-3.5 divide-y divide-gray-100">
-            {(exclusiveNews || []).slice(0, 5).map((item, index) => (
-              <div key={item.id} className={`flex items-start gap-3 group ${index > 0 ? 'pt-3.5' : ''}`}>
-                <Link
-                  href={`/${item.category?.slug || 'news'}/${item.id}`}
-                  className="w-[110px] sm:w-[115px] h-[68px] sm:h-[72px] shrink-0 overflow-hidden rounded-xs bg-gray-100 block relative shadow-2xs border border-gray-100"
-                >
-                  <SafeImage
-                    src={item.featuredImage}
-                    alt={item.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
-                  />
-                </Link>
-                <div className="flex-1 min-w-0 pt-0.5">
-                  <Link
-                    href={`/${item.category?.slug || 'news'}/${item.id}`}
-                    className="text-[21px] font-normal text-[#000000] group-hover:text-[rgb(0,86,179)] hover:text-[rgb(0,86,179)] transition leading-[22px] tracking-[-0.2px] line-clamp-3 block"
-                    style={{
-                      fontFamily: 'Bangla, sans-serif',
-                      fontSize: '21px',
-                      fontWeight: 400,
-                      lineHeight: '22px',
-                      letterSpacing: '-0.2px',
-                      WebkitFontSmoothing: 'antialiased',
-                    }}
-                  >
-                    {item.title}
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+      <GazetteExclusiveTicker exclusiveNews={exclusiveNews} />
 
       {/* DYNAMIC TOP SIDEBAR ADS */}
       {topAds.map(ad => (

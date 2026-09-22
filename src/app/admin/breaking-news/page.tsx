@@ -46,10 +46,10 @@ export default function BreakingNewsAdminPage() {
           setTitles(['']);
         }
       } else {
-        setMessage({ type: 'error', text: data.error || 'কনফিগারেশন লোড করা যায়নি' });
+        setMessage({ type: 'error', text: data.error || 'Failed to load configuration' });
       }
     } catch (err) {
-      setMessage({ type: 'error', text: 'সার্ভারের সাথে যোগাযোগে সমস্যা হয়েছে' });
+      setMessage({ type: 'error', text: 'Server connection failed' });
     } finally {
       setLoading(false);
     }
@@ -101,17 +101,17 @@ export default function BreakingNewsAdminPage() {
 
       const data = await res.json();
       if (res.ok) {
-        setMessage({ type: 'success', text: data.message || 'সফলভাবে সংরক্ষিত হয়েছে।' });
+        setMessage({ type: 'success', text: data.message || 'Saved successfully.' });
         if (cleanTitles.length > 0) {
           setTitles(cleanTitles);
         } else {
           setTitles(['']);
         }
       } else {
-        setMessage({ type: 'error', text: data.error || 'সংরক্ষণ করতে সমস্যা হয়েছে' });
+        setMessage({ type: 'error', text: data.error || 'Failed to save settings' });
       }
     } catch (err) {
-      setMessage({ type: 'error', text: 'সংরক্ষণকালে নেটওয়ার্ক সমস্যা হয়েছে' });
+      setMessage({ type: 'error', text: 'Network error occurred during save' });
     } finally {
       setSaving(false);
     }
@@ -122,7 +122,7 @@ export default function BreakingNewsAdminPage() {
       <div className="p-12 flex items-center justify-center min-h-[450px]">
         <div className="flex flex-col items-center gap-3 text-slate-600 font-medium">
           <div className="w-8 h-8 border-3 border-red-600 border-t-transparent rounded-full animate-spin"></div>
-          <span className="text-sm">সর্বশেষ টিকারে সেটিংস লোড করা হচ্ছে...</span>
+          <span className="text-sm">Loading ticker settings...</span>
         </div>
       </div>
     );
@@ -143,10 +143,10 @@ export default function BreakingNewsAdminPage() {
               <span>Live Ticker Manager</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-              'সর্বশেষ' কাস্টম টেক্সট টিকার
+              Breaking News Ticker
             </h1>
             <p className="text-slate-300 text-sm max-w-2xl leading-relaxed">
-              মূল সংবাদের সাথে কোনোরকম লিঙ্ক ছাড়াই স্বাধীন হেডিং বা জরুরী বিজ্ঞপ্তি লিখুন, যা পোর্টালের শীর্ষে লাল 'সর্বশেষ' বারে স্ক্রোল করবে।
+              Create independent custom headlines or urgent notices that scroll in the red Breaking News ticker bar at the top of the portal.
             </p>
           </div>
 
@@ -156,7 +156,7 @@ export default function BreakingNewsAdminPage() {
             className="inline-flex items-center justify-center gap-2.5 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-bold px-6 py-3 rounded-2xl transition-all shadow-lg hover:shadow-red-900/40 active:scale-98 disabled:opacity-50 text-sm shrink-0"
           >
             <Save className="w-4 h-4" />
-            <span>{saving ? 'সংরক্ষণ হচ্ছে...' : 'সেটিংস সেভ করুন'}</span>
+            <span>{saving ? 'Saving...' : 'Save Settings'}</span>
           </button>
         </div>
       </div>
@@ -208,8 +208,8 @@ export default function BreakingNewsAdminPage() {
                 <Sparkles className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="font-bold text-slate-900 text-base">কাস্টম টেক্সট মোড</h3>
-                <p className="text-xs text-slate-500 font-medium mt-0.5">স্বাধীন কাস্টম হেডিং দেখাবে</p>
+                <h3 className="font-bold text-slate-900 text-base">Custom Text Mode</h3>
+                <p className="text-xs text-slate-500 font-medium mt-0.5">Show custom ticker text</p>
               </div>
             </div>
             <input
@@ -221,7 +221,7 @@ export default function BreakingNewsAdminPage() {
           </div>
 
           <p className="text-xs text-slate-600 leading-relaxed bg-white/70 p-3 rounded-xl border border-slate-200/60">
-            নিচে আপনার দেওয়া স্বাধীন টেক্সটসমূহ ওয়েবসাইট শীর্ষে লাল বারে দেখাবে। মূল খবরের পেজের সাথে কোনো কানেকশন থাকবে না।
+            Displays your custom text entries in the top red breaking news ticker bar.
           </p>
         </div>
 
@@ -247,14 +247,14 @@ export default function BreakingNewsAdminPage() {
                 <h3
                   className={`font-bold text-base ${!isActive ? 'text-white' : 'text-slate-900'}`}
                 >
-                  অটো নিউজ মোড (ডিফল্ট)
+                  Auto News Mode (Default)
                 </h3>
                 <p
                   className={`text-xs font-medium mt-0.5 ${
                     !isActive ? 'text-slate-300' : 'text-slate-500'
                   }`}
                 >
-                  সরাসরি ওয়েবসাইটের সংবাদ স্ক্রোল করবে
+                  Automatically scroll published articles
                 </p>
               </div>
             </div>
@@ -273,7 +273,7 @@ export default function BreakingNewsAdminPage() {
                 : 'bg-slate-50 border-slate-200/60 text-slate-600'
             }`}
           >
-            পাবলিশ হওয়া লেটেস্ট ব্রেকিং নিউজ এবং সংবাদগুলো স্বয়ংক্রিয়ভাবে হেডলাইন আকারে রিডারদের দেখানো হবে।
+            Latest published breaking news articles will be automatically displayed as ticker headlines.
           </p>
         </div>
       </div>
@@ -284,17 +284,17 @@ export default function BreakingNewsAdminPage() {
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
               <Eye className="w-4 h-4 text-red-600" />
-              <span>লাইভ ওয়েবসাইট প্রিভিউ (Live Preview)</span>
+              <span>Live Preview</span>
             </span>
             <span className="text-[11px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">
-              {activeTitles.length} টি টেক্সট অ্যাক্টিভ
+              {activeTitles.length} Active Lines
             </span>
           </div>
 
           <div className="w-full bg-slate-900 p-2 rounded-xl overflow-hidden shadow-inner">
             <div className="flex items-center overflow-hidden rounded-md bg-[#cc2b2b]">
               <div className="bg-black text-white px-4 py-1 text-sm font-bold shrink-0">
-                সর্বশেষ
+                LATEST
               </div>
               <div className="overflow-hidden whitespace-nowrap py-1.5 px-3 flex items-center gap-6 text-white text-sm font-medium w-full">
                 {activeTitles.length > 0 ? (
@@ -306,7 +306,7 @@ export default function BreakingNewsAdminPage() {
                   ))
                 ) : (
                   <span className="text-white/70 italic text-xs">
-                    (কোনো টেক্সট ইনপুট দেওয়া হয়নি)
+                    (No custom headlines entered)
                   </span>
                 )}
               </div>
@@ -321,10 +321,10 @@ export default function BreakingNewsAdminPage() {
           <div>
             <h2 className="font-extrabold text-slate-900 text-lg flex items-center gap-2.5">
               <Type className="w-5 h-5 text-red-600" />
-              <span>কাস্টম শিরোনামের তালিকা</span>
+              <span>Custom Headline Entries</span>
             </h2>
             <p className="text-xs text-slate-500 mt-1">
-              পর পর টেক্সট ইনপুট দিন। টিকারে এগুলো পর পর স্বয়ংক্রিয়ভাবে লুপ হতে থাকবে।
+              Enter headlines sequentially. These will continuously loop in the ticker.
             </p>
           </div>
 
@@ -334,7 +334,7 @@ export default function BreakingNewsAdminPage() {
             className="inline-flex items-center justify-center gap-2 text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 border border-red-200 px-4 py-2 rounded-xl transition shrink-0"
           >
             <Plus className="w-4 h-4" />
-            <span>নতুন শিরোনাম যোগ করুন</span>
+            <span>Add Headline</span>
           </button>
         </div>
 
@@ -350,7 +350,7 @@ export default function BreakingNewsAdminPage() {
                   disabled={index === 0}
                   onClick={() => moveTitle(index, 'up')}
                   className="text-slate-400 hover:text-slate-800 disabled:opacity-20 transition"
-                  title="উপরে সরান"
+                  title="Move Up"
                 >
                   <ArrowUp className="w-3.5 h-3.5" />
                 </button>
@@ -359,7 +359,7 @@ export default function BreakingNewsAdminPage() {
                   disabled={index === titles.length - 1}
                   onClick={() => moveTitle(index, 'down')}
                   className="text-slate-400 hover:text-slate-800 disabled:opacity-20 transition"
-                  title="নিচে সরান"
+                  title="Move Down"
                 >
                   <ArrowDown className="w-3.5 h-3.5" />
                 </button>
@@ -373,14 +373,14 @@ export default function BreakingNewsAdminPage() {
                 type="text"
                 value={title}
                 onChange={(e) => handleTitleChange(index, e.target.value)}
-                placeholder="যেমন: খুলনা অঞ্চলে তীব্র তাপপ্রবাহের সতর্কতা..."
+                placeholder="Enter headline text..."
                 className="flex-1 bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent transition font-medium"
               />
 
               <button
                 type="button"
                 onClick={() => handleRemoveTitle(index)}
-                title="মুছে ফেলুন"
+                title="Delete"
                 className="p-2.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition shrink-0"
               >
                 <Trash2 className="w-4 h-4" />
@@ -397,7 +397,7 @@ export default function BreakingNewsAdminPage() {
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 text-sm font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200 px-5 py-2.5 rounded-xl transition"
           >
             <Plus className="w-4 h-4 text-red-600" />
-            <span>আরেকটি শিরোনাম লাইন যুক্ত করুন</span>
+            <span>Add Another Line</span>
           </button>
 
           <button
@@ -406,7 +406,7 @@ export default function BreakingNewsAdminPage() {
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-bold px-8 py-2.5 rounded-xl transition shadow-md hover:shadow-red-900/30 disabled:opacity-50 text-sm"
           >
             <Save className="w-4 h-4" />
-            <span>{saving ? 'সংরক্ষণ হচ্ছে...' : 'পরিবর্তনগুলো সেভ করুন'}</span>
+            <span>{saving ? 'Saving...' : 'Save Changes'}</span>
           </button>
         </div>
       </div>

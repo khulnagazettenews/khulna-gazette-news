@@ -232,28 +232,28 @@ export default function NewsForm({ initialData, newsId }: NewsFormProps) {
         if (typeof window !== 'undefined') {
           localStorage.removeItem('kg_news_draft');
         }
-        setSuccess(newsId ? 'সংবাদটি আপডেট করা হয়েছে।' : 'নতুন সংবাদ প্রকাশিত হয়েছে।');
+        setSuccess(newsId ? 'Post updated successfully.' : 'New post created successfully.');
         // Redirect to listing
         setTimeout(() => {
           router.push('/admin/news');
         }, 1500);
       } else {
-        setError(data.error || 'সংবাদ প্রকাশ করতে সমস্যা হয়েছে।');
+        setError(data.error || 'Failed to save post.');
       }
     } catch (err) {
-      setError('অনুরোধ পাঠানো সম্ভব হয়নি।');
+      setError('Network request failed.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8 max-w-5xl">
+    <form onSubmit={handleSubmit} className="space-y-8 max-w-5xl font-sans">
       {hasDraft && (
         <div className="bg-amber-50 border border-amber-300 text-amber-900 px-4 py-3 rounded-xl text-xs sm:text-sm flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs">
           <div className="flex items-center gap-2">
             <AlertCircle size={18} className="text-amber-600 shrink-0" />
-            <span>আপনার পূর্বে অসম্পূর্ণ রাখা একটি খসড়া সংবাদ পাওয়া গেছে! আপনি কি এটি পুনরুদ্ধার করতে চান?</span>
+            <span>An unsaved local draft was found! Would you like to restore it?</span>
           </div>
           <div className="flex items-center gap-2 shrink-0">
             <button
@@ -261,27 +261,27 @@ export default function NewsForm({ initialData, newsId }: NewsFormProps) {
               onClick={handleRestoreDraft}
               className="bg-amber-600 hover:bg-amber-700 text-white font-bold px-3 py-1.5 rounded-lg text-xs transition"
             >
-              পুনরুদ্ধার করুন
+              Restore Draft
             </button>
             <button
               type="button"
               onClick={handleDiscardDraft}
               className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold px-3 py-1.5 rounded-lg text-xs transition"
             >
-              মুছে ফেলুন
+              Discard
             </button>
           </div>
         </div>
       )}
 
       {success && (
-        <div className="bg-green-150 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm">
+        <div className="bg-green-100 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm font-semibold">
           {success}
         </div>
       )}
 
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm flex items-center gap-2">
+        <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm flex items-center gap-2 font-semibold">
           <AlertCircle size={18} />
           <span>{error}</span>
         </div>
@@ -292,61 +292,57 @@ export default function NewsForm({ initialData, newsId }: NewsFormProps) {
         <div className="lg:col-span-2 space-y-6">
           <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">শিরোনাম</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
               <input
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                spellCheck={true}
-                lang="bn"
                 className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-red-600"
-                placeholder="সংবাদের প্রধান শিরোনাম লিখুন"
+                placeholder="Enter post title..."
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">উপ-শিরোনাম (ঐচ্ছিক)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Subtitle (Optional)</label>
               <input
                 type="text"
                 value={subtitle}
                 onChange={(e) => setSubtitle(e.target.value)}
-                spellCheck={true}
-                lang="bn"
                 className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-red-600"
-                placeholder="সংবাদের উপ-শিরোনাম লিখুন"
+                placeholder="Enter post subtitle..."
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">খবরের বিস্তারিত বিবরণ</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Post Content</label>
               <TiptapEditor value={content} onChange={setContent} />
             </div>
           </div>
 
           {/* SEO Metadata Card */}
           <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
-            <h3 className="font-bold text-gray-800 text-sm border-b border-gray-100 pb-2">এসইও (SEO) মেটাডাটা</h3>
+            <h3 className="font-bold text-gray-800 text-sm border-b border-gray-100 pb-2">SEO Metadata</h3>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">এসইও টাইটেল (ঐচ্ছিক)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Meta Title (Optional)</label>
               <input
                 type="text"
                 value={metaTitle}
                 onChange={(e) => setMetaTitle(e.target.value)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-red-600"
-                placeholder="সার্চ ইঞ্জিনের জন্য টাইটেল"
+                placeholder="Meta title for search engines..."
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">মেটা ডেসক্রিপশন (ঐচ্ছিক)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Meta Description (Optional)</label>
               <textarea
                 value={metaDescription}
                 onChange={(e) => setMetaDescription(e.target.value)}
                 rows={3}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-red-600"
-                placeholder="সংবাদের সংক্ষিপ্ত মেটা বিবরণ লিখুন"
+                placeholder="Short meta summary for search engines..."
               />
             </div>
           </div>
@@ -356,7 +352,7 @@ export default function NewsForm({ initialData, newsId }: NewsFormProps) {
         <div className="space-y-6">
           {/* Featured Image card */}
           <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
-            <h3 className="font-bold text-gray-800 text-sm border-b border-gray-100 pb-2">ফিচার্ড ইমেজ</h3>
+            <h3 className="font-bold text-gray-800 text-sm border-b border-gray-100 pb-2">Featured Image</h3>
             
             {featuredImage ? (
               <div className="relative border border-gray-200 rounded-lg overflow-hidden bg-gray-50 aspect-video flex items-center justify-center">
@@ -373,46 +369,46 @@ export default function NewsForm({ initialData, newsId }: NewsFormProps) {
               role === 'CONTRIBUTOR' ? (
                 <div className="border-2 border-dashed border-gray-250 rounded-lg h-36 flex flex-col items-center justify-center bg-gray-50 text-gray-400 select-none">
                   <Upload className="text-gray-300 mb-2" size={24} />
-                  <span className="text-xs">ছবি আপলোডের অনুমতি নেই</span>
+                  <span className="text-xs">Image upload restricted for contributors</span>
                 </div>
               ) : (
                 <label className="border-2 border-dashed border-gray-300 rounded-lg h-36 flex flex-col items-center justify-center cursor-pointer hover:border-red-650 transition bg-gray-50">
                   <Upload className="text-gray-400 mb-2" size={24} />
-                  <span className="text-xs text-gray-500">{uploading ? 'আপলোড হচ্ছে...' : 'ছবি নির্বাচন করুন'}</span>
+                  <span className="text-xs text-gray-500">{uploading ? 'Uploading...' : 'Select Featured Image'}</span>
                   <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
                 </label>
               )
             )}
 
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">ইমেজের ক্যাপশন</label>
+              <label className="block text-xs font-medium text-gray-700 mb-1">Image Caption</label>
               <input
                 type="text"
                 value={imageCaption}
                 onChange={(e) => setImageCaption(e.target.value)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-red-600"
-                placeholder="ইমেজের ক্যাপশন লিখুন"
+                placeholder="Enter image caption..."
               />
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">ফটো ক্রেডিট</label>
+              <label className="block text-xs font-medium text-gray-700 mb-1">Photo Credit</label>
               <input
                 type="text"
                 value={photoCredit}
                 onChange={(e) => setPhotoCredit(e.target.value)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-red-600"
-                placeholder="যেমন: খুলনা গেজেট"
+                placeholder="e.g. Khulna Gazette / Staff Reporter"
               />
             </div>
           </div>
 
           {/* Categories Card */}
           <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
-            <h3 className="font-bold text-gray-800 text-sm border-b border-gray-100 pb-2">শ্রেণীবিন্যাস</h3>
+            <h3 className="font-bold text-gray-800 text-sm border-b border-gray-100 pb-2">Taxonomy</h3>
             
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">প্রধান ক্যাটাগরি</label>
+              <label className="block text-xs font-medium text-gray-700 mb-1">Primary Category</label>
               <select
                 value={categoryId}
                 onChange={(e) => {
@@ -422,7 +418,7 @@ export default function NewsForm({ initialData, newsId }: NewsFormProps) {
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-red-600"
                 required
               >
-                <option value="">ক্যাটাগরি সিলেক্ট করুন</option>
+                <option value="">Select Category</option>
                 {categories.map((c) => (
                   <option key={c.id} value={c.id}>
                     {c.name}
@@ -434,14 +430,14 @@ export default function NewsForm({ initialData, newsId }: NewsFormProps) {
             {subCategories.length > 0 && (
               <div>
                 <label className="block text-xs font-medium text-gray-700 mb-1">
-                  সাব-ক্যাটাগরি / জেলা
+                  Sub-category / District
                 </label>
                 <select
                   value={subCategoryId}
                   onChange={(e) => setSubCategoryId(e.target.value)}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-red-600"
                 >
-                  <option value="">সাব-ক্যাটাগরি সিলেক্ট করুন</option>
+                  <option value="">Select Sub-category</option>
                   {subCategories.map((sub) => (
                     <option key={sub.id} value={sub.id}>
                       {sub.name}
@@ -452,48 +448,48 @@ export default function NewsForm({ initialData, newsId }: NewsFormProps) {
             )}
 
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">প্রতিবেদকের নাম (ফ্রি টেক্সট)</label>
+              <label className="block text-xs font-medium text-gray-700 mb-1">Reporter Name</label>
               <input
                 type="text"
                 value={reporterName}
                 onChange={(e) => setReporterName(e.target.value)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-red-600"
-                placeholder="যেমন: নিজস্ব প্রতিবেদক / খুলনা প্রতিনিধি"
+                placeholder="e.g. Staff Reporter / Khulna Bureau"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">News Author Title (লেখকের পদবী / খেতাব)</label>
+              <label className="block text-xs font-medium text-gray-700 mb-1">Author Title / Designation</label>
               <input
                 type="text"
                 value={authorTitle}
                 onChange={(e) => setAuthorTitle(e.target.value)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-red-600"
-                placeholder="যেমন: বিশেষ প্রতিনিধি / খুলনা প্রতিনিধি / স্টাফ রিপোর্টার"
+                placeholder="e.g. Special Correspondent / District Reporter"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">ট্যাগসমূহ (কমা দিয়ে আলাদা করুন)</label>
+              <label className="block text-xs font-medium text-gray-700 mb-1">Tags (Comma Separated)</label>
               <input
                 type="text"
                 value={tagsInput}
                 onChange={(e) => setTagsInput(e.target.value)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-red-600"
-                placeholder="বিশ্বকাপ, রাজনীতি, বাজেট"
+                placeholder="Sports, Politics, Economy"
               />
             </div>
           </div>
 
           {/* Publishing Settings & Actions */}
           <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
-            <h3 className="font-bold text-gray-800 text-sm border-b border-gray-100 pb-2">প্রকাশনার সেটিংস</h3>
+            <h3 className="font-bold text-gray-800 text-sm border-b border-gray-100 pb-2">Publish Settings</h3>
 
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">অবস্থা (Status)</label>
+              <label className="block text-xs font-medium text-gray-700 mb-1">Status</label>
               {isReporterOrContributor ? (
                 <div className="w-full border border-gray-250 bg-gray-50 text-gray-500 rounded-lg px-3 py-2 text-sm font-medium">
-                  খসড়া (DRAFT) — প্রকাশ করতে সম্পাদকের অনুমতি লাগবে
+                  Draft — requires editor review before publication
                 </div>
               ) : (
                 <select
@@ -501,21 +497,21 @@ export default function NewsForm({ initialData, newsId }: NewsFormProps) {
                   onChange={(e) => setStatus(e.target.value)}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-red-650 focus:border-red-650 bg-white"
                 >
-                  <option value="DRAFT">খসড়া (Draft)</option>
+                  <option value="DRAFT">Draft</option>
                   {(canPublish || (isSubEditor && initialData?.status === 'PUBLISHED')) && (
-                    <option value="PUBLISHED">প্রকাশ করুন (Published)</option>
+                    <option value="PUBLISHED">Published</option>
                   )}
                   {(canPublish || (isSubEditor && initialData?.status === 'SCHEDULED')) && (
-                    <option value="SCHEDULED">শিডিউল (Scheduled)</option>
+                    <option value="SCHEDULED">Scheduled</option>
                   )}
-                  <option value="TRASHED">মুছে ফেলুন (Trashed)</option>
+                  <option value="TRASHED">Trash</option>
                 </select>
               )}
             </div>
 
             {status === 'SCHEDULED' && !isReporterOrContributor && (
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">শিডিউল প্রকাশের সময়</label>
+                <label className="block text-xs font-medium text-gray-700 mb-1">Schedule Publishing Time</label>
                 <input
                   type="datetime-local"
                   value={scheduledAt}
@@ -529,7 +525,7 @@ export default function NewsForm({ initialData, newsId }: NewsFormProps) {
             {!isReporterOrContributor && (
               <div>
                 <label className="block text-xs font-medium text-gray-700 mb-1">
-                  প্রকাশের তারিখ ও সময় (ঐচ্ছিক / ব্যাকডেট সংবাদের জন্য)
+                  Publish Date & Time (Optional / Backdate)
                 </label>
                 <input
                   type="datetime-local"
@@ -538,7 +534,7 @@ export default function NewsForm({ initialData, newsId }: NewsFormProps) {
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-red-600"
                 />
                 <p className="text-[11px] text-gray-500 mt-1">
-                  ফাঁকা রাখলে বর্তমান সময় ধরা হবে। ১-২ দিন বা ১ মাস আগের সংবাদ আপলোডের ক্ষেত্রে ব্যাকডেট সময় সিলেক্ট করুন।
+                  Leave blank for current time. Select date to publish as backdated article.
                 </p>
               </div>
             )}
@@ -552,7 +548,7 @@ export default function NewsForm({ initialData, newsId }: NewsFormProps) {
                     onChange={(e) => setIsBreaking(e.target.checked)}
                     className="rounded text-red-600 focus:ring-red-600"
                   />
-                  <span>ব্রেকিং নিউজ স্ট্রিপে দেখান</span>
+                  <span>Show in Breaking News ticker</span>
                 </label>
 
                 <label className="flex items-center gap-2 cursor-pointer text-sm font-medium text-gray-700">
@@ -562,7 +558,7 @@ export default function NewsForm({ initialData, newsId }: NewsFormProps) {
                     onChange={(e) => setIsFeatured(e.target.checked)}
                     className="rounded text-red-600 focus:ring-red-600"
                   />
-                  <span>ফিচার্ড স্টোরি হিসেবে হাইলাইট করুন</span>
+                  <span>Highlight as Featured Story</span>
                 </label>
               </div>
             )}
@@ -573,7 +569,7 @@ export default function NewsForm({ initialData, newsId }: NewsFormProps) {
               className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold text-sm py-2.5 rounded-lg transition flex items-center justify-center gap-2 disabled:opacity-50"
             >
               <Save size={16} />
-              <span>{loading ? 'সংরক্ষণ করা হচ্ছে...' : 'সংবাদটি সংরক্ষণ করুন'}</span>
+              <span>{loading ? 'Saving...' : 'Save Post'}</span>
             </button>
           </div>
         </div>

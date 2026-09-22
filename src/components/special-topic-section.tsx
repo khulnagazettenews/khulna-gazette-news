@@ -65,7 +65,7 @@ export default function SpecialTopicSection({
       {/* ================= CAMPAIGN BANNER HEADER ================= */}
       {bannerImage ? (
         <div className="relative w-full overflow-hidden rounded-xl mb-3 border border-gray-200 shadow-xs">
-          <Link href="/borshopurti-crodpotro" className="block relative w-full group">
+          <Link href="/udbodhoni-crodpotro" className="block relative w-full group">
             <img
               src={bannerImage}
               alt={title}

@@ -98,30 +98,30 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   // 1. Dashboard
   if (role !== 'SUBSCRIBER') {
-    navigation.push({ name: 'ড্যাশবোর্ড', href: '/admin', icon: LayoutDashboard });
+    navigation.push({ name: 'Dashboard', href: '/admin', icon: LayoutDashboard });
   }
 
   // 2. Categories Group, Reorder & Special Topics
   if (['SUPER_ADMIN', 'ADMIN', 'EDITOR', 'SUB_EDITOR'].includes(role)) {
     navigation.push(
-      { name: 'সর্বশেষ টেক্সট টিকার', href: '/admin/breaking-news', icon: Sparkles },
-      { name: 'নিউজ রিঅর্ডার', href: '/admin/reorder', icon: ArrowUpDown },
+      { name: 'Breaking Ticker', href: '/admin/breaking-news', icon: Sparkles },
+      { name: 'Reorder Posts', href: '/admin/reorder', icon: ArrowUpDown },
       {
-        name: 'ক্যাটাগরি',
+        name: 'Categories',
         icon: FolderKanban,
         subItems: [
-          { name: 'পোস্ট ক্যাটাগরি', href: '/admin/categories', icon: FolderKanban },
-          { name: 'নেভবার মেনু ম্যানেজমেন্ট', href: '/admin/navbar-menu', icon: Globe },
+          { name: 'Categories', href: '/admin/categories', icon: FolderKanban },
+          { name: 'Navbar Menu', href: '/admin/navbar-menu', icon: Globe },
         ],
       },
-      { name: 'বিশেষ প্রতিবেদন সেকশন', href: '/admin/special-topics', icon: Sparkles }
+      { name: 'Special Reports', href: '/admin/special-topics', icon: Sparkles }
     );
   }
 
-  // 3. News Articles
+  // 3. Posts
   if (['SUPER_ADMIN', 'ADMIN', 'EDITOR', 'SUB_EDITOR', 'REPORTER', 'CONTRIBUTOR'].includes(role)) {
     navigation.push({
-      name: 'খবরসমূহ',
+      name: 'Posts',
       href: '/admin/news',
       icon: Newspaper,
       badge: counts.draftNews > 0 ? counts.draftNews : null,
@@ -132,35 +132,35 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   // 4. Media & Prayer Times
   if (['SUPER_ADMIN', 'ADMIN', 'EDITOR', 'SUB_EDITOR'].includes(role)) {
     navigation.push(
-      { name: 'ই-পেপার', href: '/admin/epaper', icon: FileImage },
-      { name: 'ফটো গ্যালারি', href: '/admin/photos', icon: ImageIcon },
-      { name: 'ভিডিও গ্যালারি', href: '/admin/videos', icon: Video },
-      { name: 'নামাজের সময়সূচি', href: '/admin/prayer-times', icon: Clock }
+      { name: 'E-Paper', href: '/admin/epaper', icon: FileImage },
+      { name: 'Photo Gallery', href: '/admin/photos', icon: ImageIcon },
+      { name: 'Video Gallery', href: '/admin/videos', icon: Video },
+      { name: 'Prayer Times', href: '/admin/prayer-times', icon: Clock }
     );
   }
 
   // 5. Advertisements & Sidebar Widgets
   if (['SUPER_ADMIN', 'ADMIN', 'ADVERTISEMENT_MANAGER', 'EDITOR', 'SUB_EDITOR'].includes(role)) {
-    navigation.push({ name: 'বিজ্ঞাপন', href: '/admin/advertisements', icon: Megaphone });
+    navigation.push({ name: 'Advertisements', href: '/admin/advertisements', icon: Megaphone });
   }
 
   // 6. Comments & Job Applications
   if (['SUPER_ADMIN', 'ADMIN', 'EDITOR'].includes(role)) {
     navigation.push(
       {
-        name: 'মন্তব্যসমূহ',
+        name: 'Comments',
         href: '/admin/comments',
         icon: MessageSquare,
         badge: counts.pendingComments > 0 ? counts.pendingComments : null,
         badgeColor: 'bg-rose-500 text-white animate-pulse',
       },
-      { name: 'চাকরির আবেদনসমূহ', href: '/admin/job-applications', icon: Briefcase }
+      { name: 'Job Applications', href: '/admin/job-applications', icon: Briefcase }
     );
   }
 
   // 7. Users & Roles
   if (['SUPER_ADMIN', 'ADMIN'].includes(role)) {
-    navigation.push({ name: 'ইউজার ও রোলস', href: '/admin/users', icon: Users });
+    navigation.push({ name: 'Users', href: '/admin/users', icon: Users });
   }
 
   const handleLogout = () => {
@@ -168,7 +168,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   };
 
   // Get active breadcrumb title
-  let activeTitle = 'অ্যাডমিন পোর্টাল';
+  let activeTitle = 'Admin Panel';
   for (const item of navigation) {
     if (item.href && (pathname === item.href || (item.href !== '/admin' && pathname?.startsWith(item.href)))) {
       activeTitle = item.name;
@@ -204,14 +204,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <div className="h-16 flex items-center justify-between px-6 border-b border-slate-800 bg-slate-900">
             <Link href="/admin" className="flex items-center gap-3 group min-w-0">
               <div className="w-9.5 h-9.5 rounded-xl bg-blue-600 flex items-center justify-center text-white font-black text-base shadow-md shadow-blue-600/30 group-hover:bg-blue-500 transition duration-300 shrink-0">
-                খ
+                KG
               </div>
               <div className="flex flex-col min-w-0">
                 <span className="text-base font-extrabold text-white tracking-tight leading-tight group-hover:text-blue-400 transition-colors truncate">
-                  খুলনা গেজেট
+                  Khulna Gazette
                 </span>
                 <span className="text-xs text-blue-400 font-mono tracking-wider font-bold uppercase">
-                  Admin Portal
+                  Admin Panel
                 </span>
               </div>
             </Link>
@@ -227,7 +227,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <div className="px-3.5 pt-5 pb-2">
             <div className="px-3 mb-2.5 flex items-center justify-between">
               <span className="text-xs font-extrabold text-slate-300 uppercase tracking-wider font-mono">
-                মূল মেনু
+                Main Menu
               </span>
               <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
             </div>
@@ -325,22 +325,22 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-extrabold text-white truncate">
-                {session?.user?.name || 'অ্যাডমিন'}
+                {session?.user?.name || 'Admin'}
               </p>
               <div className="flex items-center gap-1 text-xs text-blue-300 font-bold">
                 <ShieldCheck size={12} className="shrink-0 text-blue-400" />
                 <span className="truncate">
                   {(() => {
                     const r = (session?.user as any)?.role;
-                    if (r === 'SUPER_ADMIN') return 'সুপার অ্যাডমিন';
-                    if (r === 'ADMIN') return 'অ্যাডমিন';
-                    if (r === 'EDITOR') return 'সম্পাদক';
-                    if (r === 'SUB_EDITOR') return 'সহকারী সম্পাদক';
-                    if (r === 'REPORTER') return 'প্রতিবেদক';
-                    if (r === 'CONTRIBUTOR') return 'কন্ট্রিবিউটর';
-                    if (r === 'ADVERTISEMENT_MANAGER') return 'বিজ্ঞাপন ম্যানেজার';
-                    if (r === 'SUBSCRIBER') return 'সাবস্ক্রাইবার';
-                    return 'প্রতিবেদক';
+                    if (r === 'SUPER_ADMIN') return 'Super Admin';
+                    if (r === 'ADMIN') return 'Administrator';
+                    if (r === 'EDITOR') return 'Editor';
+                    if (r === 'SUB_EDITOR') return 'Sub Editor';
+                    if (r === 'REPORTER') return 'Reporter';
+                    if (r === 'CONTRIBUTOR') return 'Contributor';
+                    if (r === 'ADVERTISEMENT_MANAGER') return 'Ad Manager';
+                    if (r === 'SUBSCRIBER') return 'Subscriber';
+                    return 'Reporter';
                   })()}
                 </span>
               </div>
@@ -352,7 +352,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             className="w-full flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700/80 text-xs font-bold py-2.5 rounded-xl transition duration-200"
           >
             <LogOut size={14} />
-            <span>লগআউট করুন</span>
+            <span>Log out</span>
           </button>
         </div>
       </aside>
@@ -373,7 +373,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-slate-700">
               <Link href="/admin" className="text-slate-400 hover:text-slate-700 transition flex items-center gap-1">
                 <Home size={14} />
-                <span className="hidden sm:inline">হোম</span>
+                <span className="hidden sm:inline">Home</span>
               </Link>
               <ChevronRight size={13} className="text-slate-300" />
               <span className="text-slate-900 font-extrabold">{activeTitle}</span>
@@ -389,14 +389,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 className="inline-flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs px-3.5 py-2 rounded-xl shadow-sm shadow-blue-600/20 border border-blue-500/30 transition duration-200"
               >
                 <PlusCircle size={15} />
-                <span className="hidden sm:inline">নতুন খবর</span>
+                <span className="hidden sm:inline">Add New Post</span>
               </Link>
             )}
 
             {/* Live Status Badge */}
             <div className="hidden xl:flex items-center gap-2 bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-xl border border-emerald-200/80 text-xs font-bold">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span>সিস্টেম লাইভ</span>
+              <span>System Live</span>
             </div>
 
             {/* View Live Site Link */}
@@ -406,7 +406,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200/80 border border-slate-200 px-3 py-2 rounded-xl shadow-2xs transition duration-200"
             >
               <Globe size={14} className="text-teal-600" />
-              <span className="hidden md:inline">ওয়েবসাইট</span>
+              <span className="hidden md:inline">Visit Site</span>
               <ExternalLink size={12} className="text-slate-400" />
             </Link>
           </div>

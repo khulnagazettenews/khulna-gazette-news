@@ -78,12 +78,12 @@ export default function AdvertisementManagementPage() {
     try {
       const res = await fetch('/api/advertisements');
       if (!res.ok) {
-        throw new Error('বিজ্ঞাপন তালিকা লোড করা যায়নি।');
+        throw new Error('Failed to load ad list.');
       }
       const data = await res.json();
       setAds(data);
     } catch (err: any) {
-      setError(err.message || 'একটি ত্রুটি ঘটেছে।');
+      setError(err.message || 'An error occurred.');
     } finally {
       setLoading(false);
     }
@@ -117,9 +117,9 @@ export default function AdvertisementManagementPage() {
         <div className="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
           <Megaphone size={32} />
         </div>
-        <h2 className="text-xl font-bold text-slate-900 mb-2">অননুমোদিত অ্যাক্সেস!</h2>
+        <h2 className="text-xl font-bold text-slate-900 mb-2">Unauthorized Access!</h2>
         <p className="text-slate-600 text-xs sm:text-sm mb-4">
-          এই পৃষ্ঠাটি শুধুমাত্র বিজ্ঞাপন ম্যানেজার ও অ্যাডমিনদের জন্য সংরক্ষিত।
+          This page is restricted to Ad Managers and Admins only.
         </p>
       </div>
     );
@@ -145,10 +145,10 @@ export default function AdvertisementManagementPage() {
       if (res.ok) {
         setFormData(prev => ({ ...prev, imageUrl: data.url }));
       } else {
-        setError(data.error || 'ছবি আপলোড ব্যর্থ হয়েছে।');
+        setError(data.error || 'Image upload failed.');
       }
     } catch (err) {
-      setError('ছবি আপলোডের সময় নেটওয়ার্ক সমস্যা হয়েছে।');
+      setError('Network error during image upload.');
     } finally {
       setUploading(false);
     }
@@ -171,15 +171,15 @@ export default function AdvertisementManagementPage() {
 
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error || 'বিজ্ঞাপন তৈরি করা সম্ভব হয়নি।');
+        throw new Error(data.error || 'Failed to create ad/widget.');
       }
 
-      setSuccess('নতুন বিজ্ঞাপন / কাস্টম উইজেট সফলভাবে যোগ করা হয়েছে।');
+      setSuccess('New ad / custom widget added successfully.');
       setIsAddModalOpen(false);
       resetFormData();
       fetchAds();
     } catch (err: any) {
-      setError(err.message || 'একটি ত্রুটি ঘটেছে।');
+      setError(err.message || 'An error occurred.');
     }
   };
 
@@ -199,21 +199,21 @@ export default function AdvertisementManagementPage() {
 
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error || 'বিজ্ঞাপন আপডেট করা সম্ভব হয়নি।');
+        throw new Error(data.error || 'Failed to update ad.');
       }
 
-      setSuccess('বিজ্ঞাপন সফলভাবে আপডেট করা হয়েছে।');
+      setSuccess('Ad updated successfully.');
       setIsEditModalOpen(false);
       resetFormData();
       setCurrentAd(null);
       fetchAds();
     } catch (err: any) {
-      setError(err.message || 'একটি ত্রুটি ঘটেছে।');
+      setError(err.message || 'An error occurred.');
     }
   };
 
   const handleDelete = async (ad: Advertisement) => {
-    if (!confirm(`"${ad.title}" বিজ্ঞাপনটি কি আপনি নিশ্চিতভাবে মুছে ফেলতে চান?`)) {
+    if (!confirm(`Are you sure you want to delete "${ad.title || 'this ad'}"?`)) {
       return;
     }
 
@@ -227,13 +227,13 @@ export default function AdvertisementManagementPage() {
 
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error || 'বিজ্ঞাপন মুছে ফেলা সম্ভব হয়নি।');
+        throw new Error(data.error || 'Failed to delete ad.');
       }
 
-      setSuccess('বিজ্ঞাপন সফলভাবে মুছে ফেলা হয়েছে।');
+      setSuccess('Ad deleted successfully.');
       fetchAds();
     } catch (err: any) {
-      setError(err.message || 'একটি ত্রুটি ঘটেছে।');
+      setError(err.message || 'An error occurred.');
     }
   };
 
@@ -265,11 +265,11 @@ export default function AdvertisementManagementPage() {
       });
 
       if (!res.ok) {
-        throw new Error('ক্রম সংরক্ষণ করা যায়নি।');
+        throw new Error('Failed to save order.');
       }
-      setSuccess('বিজ্ঞাপনের নতুন সিকোয়েন্স/ক্রম সংরক্ষিত হয়েছে।');
+      setSuccess('Ad position sequence updated.');
     } catch (err: any) {
-      setError(err.message || 'ক্রম আপডেট করতে সমস্যা হয়েছে।');
+      setError(err.message || 'Error updating sequence.');
       fetchAds(); // Revert
     } finally {
       setReordering(false);
@@ -309,29 +309,29 @@ export default function AdvertisementManagementPage() {
   };
 
 const HOME_POSITIONS = [
-  { value: 'top_banner', label: 'শীর্ষ ব্যানার (Top Banner - হেডার নিচে)' },
-  { value: 'home_after_hero', label: 'হিরো সেকশনের পর (After Main Hero)' },
-  { value: 'home_before_bangladesh_khulna', label: 'বাংলাদেশ ও খুলনাঞ্চল সেকশনের পূর্বে' },
-  { value: 'home_before_sports', label: 'খেলা সেকশনের পূর্বে' },
-  { value: 'home_before_entertainment', label: 'বিনোদন সেকশনের পূর্বে' },
-  { value: 'middle_banner', label: 'রাজনীতি ও অর্থনীতি সেকশনের পূর্বে (Middle Banner)' },
-  { value: 'home_before_international', label: 'আন্তর্জাতিক সেকশনের পূর্বে' },
-  { value: 'home_before_education_islam', label: 'শিক্ষা ও ইসলাম ও জীবন সেকশনের পূর্বে' },
-  { value: 'home_before_technology', label: 'আইটি / টেকনোলজি সেকশনের পূর্বে' },
-  { value: 'home_before_lifestyle_health', label: 'লাইফ স্টাইল ও চিকিৎসা সেকশনের পূর্বে' },
-  { value: 'home_before_literature', label: 'সাহিত্য সেকশনের পূর্বে' },
-  { value: 'home_before_chitro_social', label: 'চিত্র বিচিত্র ও সোশ্যাল মিডিয়া সেকশনের পূর্বে' },
-  { value: 'home_before_mukto_bhabna', label: 'মুক্ত ভাবনা সেকশনের পূর্বে' },
-  { value: 'home_before_exclusive', label: 'গেজেট এক্সক্লুসিভ সেকশনের পূর্বে' },
-  { value: 'home_before_photo_gallery', label: 'ফটোগ্যালারি সেকশনের পূর্বে' },
-  { value: 'home_before_video_section', label: 'ভিডিও সেকশনের পূর্বে (হোমপেজ বটম)' },
+  { value: 'top_banner', label: 'Top Banner (Below Header)' },
+  { value: 'home_after_hero', label: 'After Main Hero' },
+  { value: 'home_before_bangladesh_khulna', label: 'Before Bangladesh & Khulna Section' },
+  { value: 'home_before_sports', label: 'Before Sports Section' },
+  { value: 'home_before_entertainment', label: 'Before Entertainment Section' },
+  { value: 'middle_banner', label: 'Middle Banner (Before Politics & Economy)' },
+  { value: 'home_before_international', label: 'Before International Section' },
+  { value: 'home_before_education_islam', label: 'Before Education & Islam Section' },
+  { value: 'home_before_technology', label: 'Before IT / Technology Section' },
+  { value: 'home_before_lifestyle_health', label: 'Before Lifestyle & Health Section' },
+  { value: 'home_before_literature', label: 'Before Literature Section' },
+  { value: 'home_before_chitro_social', label: 'Before Social Media & Features Section' },
+  { value: 'home_before_mukto_bhabna', label: 'Before Opinion Section' },
+  { value: 'home_before_exclusive', label: 'Before Gazette Exclusive Section' },
+  { value: 'home_before_photo_gallery', label: 'Before Photo Gallery Section' },
+  { value: 'home_before_video_section', label: 'Before Video Section (Homepage Bottom)' },
 ];
 
 const SIDEBAR_POSITIONS = [
-  { value: 'sidebar_widget_top', label: 'সাইডবার টপ উইজেট (Sidebar Top)' },
-  { value: 'sidebar_widget_middle', label: 'সাইডবার মিডল উইজেট (Sidebar Middle)' },
-  { value: 'sidebar_widget_bottom', label: 'সাইডবার বটম উইজেট (Sidebar Bottom)' },
-  { value: 'sidebar_banner', label: 'সাইডবার ব্যানার (Sidebar Banner)' },
+  { value: 'sidebar_widget_top', label: 'Sidebar Top Widget' },
+  { value: 'sidebar_widget_middle', label: 'Sidebar Middle Widget' },
+  { value: 'sidebar_widget_bottom', label: 'Sidebar Bottom Widget' },
+  { value: 'sidebar_banner', label: 'Sidebar Banner' },
 ];
 
 const ALL_POSITIONS = [...HOME_POSITIONS, ...SIDEBAR_POSITIONS];
@@ -344,11 +344,11 @@ const ALL_POSITIONS = [...HOME_POSITIONS, ...SIDEBAR_POSITIONS];
   const getAdTypeLabel = (type: string) => {
     switch (type) {
       case 'IMAGE':
-        return '📷 ইমেজ ব্যানার';
+        return '📷 Image Banner';
       case 'HTML_SCRIPT':
-        return '📜 HTML/AdSense কোড';
+        return '📜 HTML/AdSense Code';
       case 'TEXT_IMAGE':
-        return '📝 টেক্সট + ইমেজ';
+        return '📝 Text + Image';
       default:
         return type;
     }
@@ -361,16 +361,16 @@ const ALL_POSITIONS = [...HOME_POSITIONS, ...SIDEBAR_POSITIONS];
         <div>
           <div className="flex items-center gap-2 text-xs font-bold text-red-600 mb-1">
             <Megaphone size={16} />
-            <span>স্পন্সর ও ব্যানার ক্যাম্পেইন মডিউল</span>
+            <span>Sponsor & Banner Campaign Module</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-            <span>সাইডবার উইজেট ও বিজ্ঞাপন ব্যবস্থাপনা</span>
+            <span>Advertisements & Widgets Management</span>
             <span className="text-xs font-bold bg-slate-100 text-slate-700 px-2.5 py-1 rounded-full border border-slate-200">
-              {ads.length} টি উইজেট/ব্যানার
+              {ads.length} Widgets/Banners
             </span>
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            সাইডবার ও ওয়েবসাইটের বিভিন্ন স্লটে ম্যানুয়াল ব্যানার, AdSense কাস্টম স্ক্রিপ্ট কোড ও টেক্সট উইজেট যুক্ত করুন এবং Up/Down দিয়ে স্থান পরিবর্তন করুন।
+            Manage banner ads, AdSense scripts, and sidebar custom widgets. Reorder slots easily with Up/Down buttons.
           </p>
         </div>
 
@@ -382,7 +382,7 @@ const ALL_POSITIONS = [...HOME_POSITIONS, ...SIDEBAR_POSITIONS];
           className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-extrabold text-xs sm:text-sm px-5 py-3 rounded-2xl shadow-md shadow-red-600/20 transition transform hover:-translate-y-0.5 shrink-0"
         >
           <PlusCircle size={18} />
-          <span>নতুন বিজ্ঞাপন / উইজেট যোগ করুন</span>
+          <span>Add New Ad / Widget</span>
         </button>
       </div>
 
@@ -411,7 +411,7 @@ const ALL_POSITIONS = [...HOME_POSITIONS, ...SIDEBAR_POSITIONS];
               : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
           }`}
         >
-          সকল বিজ্ঞাপন ({ads.length})
+          All Ads ({ads.length})
         </button>
 
         <button
@@ -423,7 +423,7 @@ const ALL_POSITIONS = [...HOME_POSITIONS, ...SIDEBAR_POSITIONS];
               : 'text-slate-600 hover:text-red-600 hover:bg-white/60'
           }`}
         >
-          📌 নতুন হোম সেকশন বিজ্ঞাপন ({ads.filter(a => !a.position.startsWith('sidebar')).length})
+          📌 Home Section Ads ({ads.filter(a => !a.position.startsWith('sidebar')).length})
         </button>
 
         <button
@@ -435,7 +435,7 @@ const ALL_POSITIONS = [...HOME_POSITIONS, ...SIDEBAR_POSITIONS];
               : 'text-slate-600 hover:text-blue-600 hover:bg-white/60'
           }`}
         >
-          📌 সাইডবার বিজ্ঞাপন ({ads.filter(a => a.position.startsWith('sidebar')).length})
+          📌 Sidebar Ads ({ads.filter(a => a.position.startsWith('sidebar')).length})
         </button>
       </div>
 
@@ -443,12 +443,12 @@ const ALL_POSITIONS = [...HOME_POSITIONS, ...SIDEBAR_POSITIONS];
       {loading ? (
         <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xs p-12 text-center text-slate-400 font-bold">
           <div className="animate-spin rounded-full h-7 w-7 border-b-2 border-red-600 mx-auto mb-2"></div>
-          বিজ্ঞাপন ও উইজেট তালিকা লোড হচ্ছে...
+          Loading advertisements and widgets...
         </div>
       ) : ads.length === 0 ? (
         <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xs p-12 text-center text-slate-400 font-medium">
           <Megaphone size={40} className="mx-auto text-slate-300 mb-3" />
-          <span>কোনো ম্যানুয়াল বিজ্ঞাপন বা উইজেট যুক্ত করা হয়নি।</span>
+          <span>No ad banners or widgets found.</span>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -465,7 +465,7 @@ const ALL_POSITIONS = [...HOME_POSITIONS, ...SIDEBAR_POSITIONS];
                 <div className="px-4 py-3 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
                   <div className="flex items-center gap-2 text-xs font-bold text-slate-700">
                     <GripVertical size={16} className="text-slate-400" />
-                    <span>পজিশন ক্রম: #{index + 1}</span>
+                    <span>Order Position: #{index + 1}</span>
                   </div>
                   
                   {/* Up / Down Reorder Buttons */}
@@ -475,7 +475,7 @@ const ALL_POSITIONS = [...HOME_POSITIONS, ...SIDEBAR_POSITIONS];
                       disabled={index === 0 || reordering}
                       onClick={() => handleMove(index, 'up')}
                       className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-red-50 hover:text-red-600 disabled:opacity-30 transition"
-                      title="উপরে সরান"
+                      title="Move Up"
                     >
                       <ArrowUp size={14} />
                     </button>
@@ -484,7 +484,7 @@ const ALL_POSITIONS = [...HOME_POSITIONS, ...SIDEBAR_POSITIONS];
                       disabled={index === ads.length - 1 || reordering}
                       onClick={() => handleMove(index, 'down')}
                       className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-red-50 hover:text-red-600 disabled:opacity-30 transition"
-                      title="নিচে সরান"
+                      title="Move Down"
                     >
                       <ArrowDown size={14} />
                     </button>
@@ -503,7 +503,7 @@ const ALL_POSITIONS = [...HOME_POSITIONS, ...SIDEBAR_POSITIONS];
                   ) : (
                     <div className="p-3 text-center text-xs text-slate-400 font-bold">
                       <ImageIcon size={24} className="mx-auto mb-1 opacity-50" />
-                      ইমেজ লিংক সেট করা হয়নি
+                      No Image Set
                     </div>
                   )}
 
@@ -512,13 +512,13 @@ const ALL_POSITIONS = [...HOME_POSITIONS, ...SIDEBAR_POSITIONS];
                       ? 'bg-emerald-500 text-white'
                       : 'bg-slate-900/80 text-white backdrop-blur-xs'
                   }`}>
-                    {ad.status === 'ACTIVE' ? '● সক্রিয় (Active)' : 'নিষ্ক্রিয়'}
+                    {ad.status === 'ACTIVE' ? '● Active' : 'Inactive'}
                   </span>
                 </div>
 
                 <div className="p-5 space-y-3 text-xs">
                   <div>
-                    <h3 className="font-extrabold text-slate-900 text-sm line-clamp-1">{ad.title}</h3>
+                    <h3 className="font-extrabold text-slate-900 text-sm line-clamp-1">{ad.title || 'Untitled Ad'}</h3>
                     <div className="flex flex-wrap gap-1.5 mt-2">
                       <span className="text-[10px] font-bold text-teal-800 bg-teal-50 px-2 py-0.5 rounded-md border border-teal-100">
                         {getPositionLabel(ad.position)}
@@ -546,11 +546,11 @@ const ALL_POSITIONS = [...HOME_POSITIONS, ...SIDEBAR_POSITIONS];
                   <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100 text-slate-500 font-bold text-[11px]">
                     <div className="flex items-center gap-1.5 bg-slate-50 p-2 rounded-xl">
                       <Eye size={14} className="text-slate-400" />
-                      <span>{ad.views || 0} ভিউ</span>
+                      <span>{ad.views || 0} Views</span>
                     </div>
                     <div className="flex items-center gap-1.5 bg-slate-50 p-2 rounded-xl">
                       <MousePointerClick size={14} className="text-slate-400" />
-                      <span>{ad.clicks || 0} ক্লিক</span>
+                      <span>{ad.clicks || 0} Clicks</span>
                     </div>
                   </div>
                 </div>
@@ -563,14 +563,14 @@ const ALL_POSITIONS = [...HOME_POSITIONS, ...SIDEBAR_POSITIONS];
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 font-bold text-xs shadow-2xs transition"
                 >
                   <Pencil size={13} />
-                  <span>সম্পাদন</span>
+                  <span>Edit</span>
                 </button>
                 <button
                   onClick={() => handleDelete(ad)}
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-50 border border-red-200 text-red-600 hover:bg-red-100 font-bold text-xs shadow-2xs transition"
                 >
                   <Trash2 size={13} />
-                  <span>মুছুন</span>
+                  <span>Delete</span>
                 </button>
               </div>
             </div>
@@ -585,17 +585,8 @@ const ALL_POSITIONS = [...HOME_POSITIONS, ...SIDEBAR_POSITIONS];
             <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between shrink-0">
               <h3 className="font-extrabold text-slate-900 flex items-center gap-2">
                 <PlusCircle size={18} className="text-red-600 shrink-0" />
-                <span
-                  style={{
-                    fontFamily: 'Bangla, sans-serif',
-                    fontSize: '22px',
-                    fontWeight: 400,
-                    lineHeight: '24px',
-                    letterSpacing: '-0.2px',
-                  }}
-                  className="text-slate-900"
-                >
-                  নতুন বিজ্ঞাপন / উইজেট তৈরি
+                <span className="text-slate-900 font-black text-base">
+                  Create New Ad / Widget
                 </span>
               </h3>
               <button 
@@ -608,12 +599,12 @@ const ALL_POSITIONS = [...HOME_POSITIONS, ...SIDEBAR_POSITIONS];
             
             <form onSubmit={handleAddSubmit} className="p-6 space-y-4 text-xs font-semibold text-slate-700 overflow-y-auto">
               <div>
-                <label className="block mb-1.5 font-bold text-slate-900">বিজ্ঞাপনের ধরন (Ad Type)</label>
+                <label className="block mb-1.5 font-bold text-slate-900">Ad Type</label>
                 <div className="grid grid-cols-3 gap-2">
                   {[
-                    { id: 'IMAGE', label: '📷 ইমেজ ব্যানার' },
+                    { id: 'IMAGE', label: '📷 Image Banner' },
                     { id: 'HTML_SCRIPT', label: '📜 HTML/AdSense' },
-                    { id: 'TEXT_IMAGE', label: '📝 টেক্সট + ইমেজ' },
+                    { id: 'TEXT_IMAGE', label: '📝 Text + Image' },
                   ].map((type) => (
                     <button
                       key={type.id}
@@ -632,21 +623,12 @@ const ALL_POSITIONS = [...HOME_POSITIONS, ...SIDEBAR_POSITIONS];
               </div>
 
               <div>
-                <label
-                  style={{
-                    fontFamily: 'Bangla, sans-serif',
-                    fontSize: '22px',
-                    fontWeight: 400,
-                    lineHeight: '24px',
-                    letterSpacing: '-0.2px',
-                  }}
-                  className="block mb-1.5 text-slate-900"
-                >
-                  বিজ্ঞাপনের শিরোনাম / নাম (ঐচ্ছিক)
+                <label className="block mb-1.5 font-bold text-slate-900">
+                  Ad Title / Name (Optional)
                 </label>
                 <input
                   type="text"
-                  placeholder="যেমন: দারাজ অফার ব্যানার (ফাঁকা রাখলে টাইটেল ছাড়া সুধু ইমেজ দেখাবে)"
+                  placeholder="e.g. Special Campaign Banner"
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-red-500 font-bold transition"
@@ -656,7 +638,7 @@ const ALL_POSITIONS = [...HOME_POSITIONS, ...SIDEBAR_POSITIONS];
               {/* Form Fields according to adType */}
               {formData.adType === 'HTML_SCRIPT' ? (
                 <div>
-                  <label className="block mb-1.5 font-bold text-slate-900">কাস্টম HTML / AdSense স্ক্রিপ্ট কোড</label>
+                  <label className="block mb-1.5 font-bold text-slate-900">Custom HTML / AdSense Script Code</label>
                   <textarea
                     rows={5}
                     required
@@ -669,7 +651,7 @@ const ALL_POSITIONS = [...HOME_POSITIONS, ...SIDEBAR_POSITIONS];
               ) : (
                 <>
                   <div>
-                    <label className="block mb-1.5 font-bold text-slate-900">বিজ্ঞাপন ইমেজ ব্যানার</label>
+                    <label className="block mb-1.5 font-bold text-slate-900">Banner Image</label>
                     {formData.imageUrl ? (
                       <div className="relative border border-slate-200 rounded-2xl overflow-hidden bg-slate-50 aspect-[3/1] flex items-center justify-center">
                         <img src={formData.imageUrl} alt="Ad Preview" className="w-full h-full object-cover" />
@@ -684,14 +666,14 @@ const ALL_POSITIONS = [...HOME_POSITIONS, ...SIDEBAR_POSITIONS];
                     ) : (
                       <label className="border-2 border-dashed border-slate-300 rounded-2xl h-24 flex flex-col items-center justify-center cursor-pointer hover:border-red-600 transition bg-slate-50">
                         <Upload className="text-slate-400 mb-1" size={20} />
-                        <span className="text-[10px] text-slate-500 font-bold">{uploading ? 'আপলোড হচ্ছে...' : 'ব্যানার ফাইল আপলোড করুন'}</span>
+                        <span className="text-[10px] text-slate-500 font-bold">{uploading ? 'Uploading...' : 'Upload Banner File'}</span>
                         <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
                       </label>
                     )}
                   </div>
 
                   <div>
-                    <label className="block mb-1.5 font-bold text-slate-900">ক্লিক করলে যে লিংকে যাবে (Target URL)</label>
+                    <label className="block mb-1.5 font-bold text-slate-900">Target URL (On Click)</label>
                     <input
                       type="url"
                       placeholder="https://example.com"
@@ -705,10 +687,10 @@ const ALL_POSITIONS = [...HOME_POSITIONS, ...SIDEBAR_POSITIONS];
 
               {formData.adType === 'TEXT_IMAGE' && (
                 <div>
-                  <label className="block mb-1.5 font-bold text-slate-900">টেক্সট / বিবরণ</label>
+                  <label className="block mb-1.5 font-bold text-slate-900">Description / Content</label>
                   <textarea
                     rows={3}
-                    placeholder="বিজ্ঞাপনের বিবরণ বা টেক্সট লিখুন..."
+                    placeholder="Enter ad description text..."
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                     className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-red-500 font-medium transition"
@@ -718,20 +700,20 @@ const ALL_POSITIONS = [...HOME_POSITIONS, ...SIDEBAR_POSITIONS];
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block mb-1.5 font-bold text-slate-900">বিজ্ঞাপনের পজিশন</label>
+                  <label className="block mb-1.5 font-bold text-slate-900">Ad Position Slot</label>
                   <select
                     value={formData.position}
                     onChange={(e) => setFormData({ ...formData, position: e.target.value })}
                     className="w-full px-3.5 py-2.5 border border-slate-200 rounded-2xl focus:outline-none focus:border-red-500 bg-slate-50 font-bold transition cursor-pointer"
                   >
-                    <optgroup label="📌 হোম সেকশন বিজ্ঞাপন (Home Section Ads)">
+                    <optgroup label="📌 Home Section Ads">
                       {HOME_POSITIONS.map((pos) => (
                         <option key={pos.value} value={pos.value}>
                           {pos.label}
                         </option>
                       ))}
                     </optgroup>
-                    <optgroup label="📌 সাইডবার বিজ্ঞাপন (Sidebar Ads)">
+                    <optgroup label="📌 Sidebar Ads">
                       {SIDEBAR_POSITIONS.map((pos) => (
                         <option key={pos.value} value={pos.value}>
                           {pos.label}
@@ -742,14 +724,14 @@ const ALL_POSITIONS = [...HOME_POSITIONS, ...SIDEBAR_POSITIONS];
                 </div>
 
                 <div>
-                  <label className="block mb-1.5 font-bold text-slate-900">অবস্থা (Status)</label>
+                  <label className="block mb-1.5 font-bold text-slate-900">Status</label>
                   <select
                     value={formData.status}
                     onChange={(e) => setFormData({ ...formData, status: e.target.value })}
                     className="w-full px-3.5 py-2.5 border border-slate-200 rounded-2xl focus:outline-none focus:border-red-500 bg-slate-50 font-bold transition cursor-pointer"
                   >
-                    <option value="ACTIVE">সক্রিয় (Active)</option>
-                    <option value="INACTIVE">নিষ্ক্রিয় (Inactive)</option>
+                    <option value="ACTIVE">Active</option>
+                    <option value="INACTIVE">Inactive</option>
                   </select>
                 </div>
               </div>
@@ -760,13 +742,13 @@ const ALL_POSITIONS = [...HOME_POSITIONS, ...SIDEBAR_POSITIONS];
                   onClick={() => setIsAddModalOpen(false)}
                   className="w-1/2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 rounded-2xl transition"
                 >
-                  বাতিল করুন
+                  Cancel
                 </button>
                 <button
                   type="submit"
                   className="w-1/2 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-black py-3 rounded-2xl shadow-xs transition"
                 >
-                  যোগ করুন
+                  Add Widget
                 </button>
               </div>
             </form>
@@ -781,7 +763,7 @@ const ALL_POSITIONS = [...HOME_POSITIONS, ...SIDEBAR_POSITIONS];
             <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between shrink-0">
               <h3 className="font-extrabold text-slate-900 text-base flex items-center gap-2">
                 <Pencil size={18} className="text-blue-600" />
-                <span>বিজ্ঞাপন সম্পাদন</span>
+                <span>Edit Advertisement</span>
               </h3>
               <button 
                 onClick={() => {
@@ -796,12 +778,12 @@ const ALL_POSITIONS = [...HOME_POSITIONS, ...SIDEBAR_POSITIONS];
             
             <form onSubmit={handleEditSubmit} className="p-6 space-y-4 text-xs font-semibold text-slate-700 overflow-y-auto">
               <div>
-                <label className="block mb-1.5 font-bold text-slate-900">বিজ্ঞাপনের ধরন (Ad Type)</label>
+                <label className="block mb-1.5 font-bold text-slate-900">Ad Type</label>
                 <div className="grid grid-cols-3 gap-2">
                   {[
-                    { id: 'IMAGE', label: '📷 ইমেজ ব্যানার' },
+                    { id: 'IMAGE', label: '📷 Image Banner' },
                     { id: 'HTML_SCRIPT', label: '📜 HTML/AdSense' },
-                    { id: 'TEXT_IMAGE', label: '📝 টেক্সট + ইমেজ' },
+                    { id: 'TEXT_IMAGE', label: '📝 Text + Image' },
                   ].map((type) => (
                     <button
                       key={type.id}
@@ -820,21 +802,12 @@ const ALL_POSITIONS = [...HOME_POSITIONS, ...SIDEBAR_POSITIONS];
               </div>
 
               <div>
-                <label
-                  style={{
-                    fontFamily: 'Bangla, sans-serif',
-                    fontSize: '22px',
-                    fontWeight: 400,
-                    lineHeight: '24px',
-                    letterSpacing: '-0.2px',
-                  }}
-                  className="block mb-1.5 text-slate-900"
-                >
-                  বিজ্ঞাপনের শিরোনাম / নাম (ঐচ্ছিক)
+                <label className="block mb-1.5 font-bold text-slate-900">
+                  Ad Title / Name (Optional)
                 </label>
                 <input
                   type="text"
-                  placeholder="যেমন: দারাজ অফার ব্যানার"
+                  placeholder="e.g. Special Offer Banner"
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-blue-500 font-bold transition"
@@ -843,7 +816,7 @@ const ALL_POSITIONS = [...HOME_POSITIONS, ...SIDEBAR_POSITIONS];
 
               {formData.adType === 'HTML_SCRIPT' ? (
                 <div>
-                  <label className="block mb-1.5 font-bold text-slate-900">কাস্টম HTML / AdSense স্ক্রিপ্ট কোড</label>
+                  <label className="block mb-1.5 font-bold text-slate-900">Custom HTML / AdSense Script Code</label>
                   <textarea
                     rows={5}
                     required
@@ -855,7 +828,7 @@ const ALL_POSITIONS = [...HOME_POSITIONS, ...SIDEBAR_POSITIONS];
               ) : (
                 <>
                   <div>
-                    <label className="block mb-1.5 font-bold text-slate-900">বিজ্ঞাপন ইমেজ ব্যানার</label>
+                    <label className="block mb-1.5 font-bold text-slate-900">Banner Image</label>
                     {formData.imageUrl ? (
                       <div className="relative border border-slate-200 rounded-2xl overflow-hidden bg-slate-50 aspect-[3/1] flex items-center justify-center">
                         <img src={formData.imageUrl} alt="Ad Preview" className="w-full h-full object-cover" />
@@ -870,14 +843,14 @@ const ALL_POSITIONS = [...HOME_POSITIONS, ...SIDEBAR_POSITIONS];
                     ) : (
                       <label className="border-2 border-dashed border-slate-300 rounded-2xl h-24 flex flex-col items-center justify-center cursor-pointer hover:border-blue-600 transition bg-slate-50">
                         <Upload className="text-slate-400 mb-1" size={20} />
-                        <span className="text-[10px] text-slate-500 font-bold">{uploading ? 'আপলোড হচ্ছে...' : 'ব্যানার ফাইল আপলোড করুন'}</span>
+                        <span className="text-[10px] text-slate-500 font-bold">{uploading ? 'Uploading...' : 'Upload Banner File'}</span>
                         <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
                       </label>
                     )}
                   </div>
 
                   <div>
-                    <label className="block mb-1.5 font-bold text-slate-900">ক্লিক করলে যে লিংকে যাবে (Target URL)</label>
+                    <label className="block mb-1.5 font-bold text-slate-900">Target URL (On Click)</label>
                     <input
                       type="url"
                       value={formData.targetUrl}
@@ -890,7 +863,7 @@ const ALL_POSITIONS = [...HOME_POSITIONS, ...SIDEBAR_POSITIONS];
 
               {formData.adType === 'TEXT_IMAGE' && (
                 <div>
-                  <label className="block mb-1.5 font-bold text-slate-900">টেক্সট / বিবরণ</label>
+                  <label className="block mb-1.5 font-bold text-slate-900">Description / Content</label>
                   <textarea
                     rows={3}
                     value={formData.description}
@@ -902,20 +875,20 @@ const ALL_POSITIONS = [...HOME_POSITIONS, ...SIDEBAR_POSITIONS];
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block mb-1.5 font-bold text-slate-900">বিজ্ঞাপনের পজিশন</label>
+                  <label className="block mb-1.5 font-bold text-slate-900">Ad Position Slot</label>
                   <select
                     value={formData.position}
                     onChange={(e) => setFormData({ ...formData, position: e.target.value })}
                     className="w-full px-3.5 py-2.5 border border-slate-200 rounded-2xl focus:outline-none focus:border-blue-500 bg-slate-50 font-bold transition cursor-pointer"
                   >
-                    <optgroup label="📌 হোম সেকশন বিজ্ঞাপন (Home Section Ads)">
+                    <optgroup label="📌 Home Section Ads">
                       {HOME_POSITIONS.map((pos) => (
                         <option key={pos.value} value={pos.value}>
                           {pos.label}
                         </option>
                       ))}
                     </optgroup>
-                    <optgroup label="📌 সাইডবার বিজ্ঞাপন (Sidebar Ads)">
+                    <optgroup label="📌 Sidebar Ads">
                       {SIDEBAR_POSITIONS.map((pos) => (
                         <option key={pos.value} value={pos.value}>
                           {pos.label}
@@ -926,14 +899,14 @@ const ALL_POSITIONS = [...HOME_POSITIONS, ...SIDEBAR_POSITIONS];
                 </div>
 
                 <div>
-                  <label className="block mb-1.5 font-bold text-slate-900">অবস্থা (Status)</label>
+                  <label className="block mb-1.5 font-bold text-slate-900">Status</label>
                   <select
                     value={formData.status}
                     onChange={(e) => setFormData({ ...formData, status: e.target.value })}
                     className="w-full px-3.5 py-2.5 border border-slate-200 rounded-2xl focus:outline-none focus:border-blue-500 bg-slate-50 font-bold transition cursor-pointer"
                   >
-                    <option value="ACTIVE">সক্রিয় (Active)</option>
-                    <option value="INACTIVE">নিষ্ক্রিয় (Inactive)</option>
+                    <option value="ACTIVE">Active</option>
+                    <option value="INACTIVE">Inactive</option>
                   </select>
                 </div>
               </div>
@@ -947,13 +920,13 @@ const ALL_POSITIONS = [...HOME_POSITIONS, ...SIDEBAR_POSITIONS];
                   }}
                   className="w-1/2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 rounded-2xl transition"
                 >
-                  বাতিল করুন
+                  Cancel
                 </button>
                 <button
                   type="submit"
                   className="w-1/2 bg-blue-600 hover:bg-blue-700 text-white font-black py-3 rounded-2xl shadow-xs transition"
                 >
-                  আপডেট করুন
+                  Update Ad
                 </button>
               </div>
             </form>
@@ -963,3 +936,4 @@ const ALL_POSITIONS = [...HOME_POSITIONS, ...SIDEBAR_POSITIONS];
     </div>
   );
 }
+

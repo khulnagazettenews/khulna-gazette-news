@@ -103,15 +103,15 @@ export default function NewsManagementList() {
         );
       } else {
         const data = await res.json();
-        alert(data.error || 'স্ট্যাটাস পরিবর্তন ব্যর্থ হয়েছে');
+        alert(data.error || 'Failed to change status');
       }
     } catch (err) {
-      alert('নেটওয়ার্ক ত্রুটি');
+      alert('Network error');
     }
   };
 
   const handleSetMainLead = async (newsItem: NewsItem) => {
-    if (!confirm(`"${newsItem.title}"-সংবাদটিকে হোমপেজের মেইন লিড (MAIN LEAD) হিসেবে সেট করতে চান?`)) {
+    if (!confirm(`Set "${newsItem.title}" as homepage MAIN LEAD?`)) {
       return;
     }
     try {
@@ -132,17 +132,17 @@ export default function NewsManagementList() {
       });
 
       if (resSave.ok) {
-        alert(`"${newsItem.title}" সফলভাবে হোমপেজের মেইন লিড (MAIN LEAD) হিসেবে সেট করা হয়েছে!`);
+        alert(`"${newsItem.title}" set as homepage MAIN LEAD successfully!`);
       } else {
-        alert('মেইন লিড সেট করতে সমস্যা হয়েছে');
+        alert('Failed to set Main Lead');
       }
     } catch (err) {
-      alert('সার্ভারে সমস্যা হয়েছে');
+      alert('Server error occurred');
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('আপনি কি নিশ্চিত যে এই সংবাদটি স্থায়ীভাবে মুছে ফেলতে চান?')) {
+    if (!confirm('Are you sure you want to permanently delete this post?')) {
       return;
     }
 
@@ -154,10 +154,10 @@ export default function NewsManagementList() {
         fetchNewsList();
       } else {
         const err = await res.json();
-        alert(err.error || 'মুছে ফেলা সম্ভব হয়নি।');
+        alert(err.error || 'Failed to delete post.');
       }
     } catch (err) {
-      alert('একটি সমস্যা হয়েছে।');
+      alert('An error occurred.');
     }
   };
 
@@ -170,16 +170,16 @@ export default function NewsManagementList() {
         <div>
           <div className="flex items-center gap-2 text-xs font-bold text-red-600 mb-1">
             <Newspaper size={16} />
-            <span>সংবাদ কন্টেন্ট ব্যবস্থাপনা</span>
+            <span>Posts Management</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-            <span>সংবাদসমূহ</span>
+            <span>All Posts</span>
             <span className="text-xs font-bold bg-slate-100 text-slate-700 px-2.5 py-1 rounded-full border border-slate-200">
-              মোট {total} টি
+              Total {total}
             </span>
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            খুলনা গেজেট পোর্টালের সকল সংবাদ এখান থেকে সম্পাদনা, ফিল্টার এবং রিভিউ করুন।
+            Manage, edit, filter, and review all articles published on Khulna Gazette.
           </p>
         </div>
 
@@ -187,9 +187,9 @@ export default function NewsManagementList() {
           <Link
             href="/admin/reorder"
             className="inline-flex items-center justify-center gap-1.5 bg-slate-900 hover:bg-slate-800 text-amber-400 font-extrabold text-xs sm:text-sm px-4 py-3 rounded-2xl shadow-xs transition"
-            title="হোমপেজ নিউজ পজিশন ও সিকোয়েন্স সেট করুন"
+            title="Reorder homepage post positions"
           >
-            <span>⭐ পজিশন সেটিং (Reorder)</span>
+            <span>⭐ Position Reorder</span>
           </Link>
 
           <Link
@@ -197,7 +197,7 @@ export default function NewsManagementList() {
             className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-extrabold text-xs sm:text-sm px-5 py-3 rounded-2xl shadow-md shadow-red-600/20 transition transform hover:-translate-y-0.5 active:translate-y-0 shrink-0"
           >
             <PlusCircle size={18} />
-            <span>নতুন সংবাদ লিখুন</span>
+            <span>Add New Post</span>
           </Link>
         </div>
       </div>
@@ -212,7 +212,7 @@ export default function NewsManagementList() {
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="সংবাদের শিরোনাম বা বিষয়বস্তু খুঁজুন..."
+              placeholder="Search posts by title or keyword..."
               className="w-full pl-10 pr-4 py-2.5 text-xs sm:text-sm font-semibold bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-red-500 focus:bg-white transition"
             />
           </form>
@@ -226,7 +226,7 @@ export default function NewsManagementList() {
             }}
             className="bg-slate-50 border border-slate-200 text-slate-800 text-xs sm:text-sm font-bold rounded-2xl px-3 py-2.5 focus:outline-none focus:border-red-500"
           >
-            <option value="">সকল ক্যাটাগরি</option>
+            <option value="">All Categories</option>
             {categories.map((cat) => (
               <option key={cat.id} value={cat.id}>
                 {cat.name}
@@ -246,7 +246,7 @@ export default function NewsManagementList() {
                 : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
             }`}
           >
-            সকল অবস্থা
+            All Statuses
           </button>
           <button
             type="button"
@@ -258,7 +258,7 @@ export default function NewsManagementList() {
             }`}
           >
             <CheckCircle2 size={13} />
-            <span>প্রকাশিত</span>
+            <span>Published</span>
           </button>
           <button
             type="button"
@@ -270,7 +270,7 @@ export default function NewsManagementList() {
             }`}
           >
             <Clock size={13} />
-            <span>খসড়া</span>
+            <span>Draft</span>
           </button>
         </div>
       </div>
@@ -281,12 +281,12 @@ export default function NewsManagementList() {
           <table className="w-full border-collapse text-left">
             <thead>
               <tr className="bg-slate-50/70 border-b border-slate-150 text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">
-                <th className="px-6 py-4">সংবাদের শিরোনাম</th>
-                <th className="px-4 py-4">ক্যাটাগরি</th>
-                <th className="px-4 py-4">লেখক</th>
-                <th className="px-4 py-4">অবস্থা (কুইক চেঞ্জ)</th>
-                <th className="px-4 py-4 text-center">ভিউ</th>
-                <th className="px-6 py-4 text-right">অ্যাকশন</th>
+                <th className="px-6 py-4">Title</th>
+                <th className="px-4 py-4">Category</th>
+                <th className="px-4 py-4">Author</th>
+                <th className="px-4 py-4">Status</th>
+                <th className="px-4 py-4 text-center">Views</th>
+                <th className="px-6 py-4 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-xs">
@@ -294,13 +294,13 @@ export default function NewsManagementList() {
                 <tr>
                   <td colSpan={6} className="px-6 py-12 text-center text-slate-400 font-bold">
                     <div className="animate-spin rounded-full h-7 w-7 border-b-2 border-red-600 mx-auto mb-2"></div>
-                    সংবাদ তালিকা লোড হচ্ছে...
+                    Loading posts list...
                   </td>
                 </tr>
               ) : news.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="px-6 py-12 text-center text-slate-400 font-medium">
-                    কোনো সংবাদ পাওয়া যায়নি।
+                    No posts found.
                   </td>
                 </tr>
               ) : (
@@ -327,7 +327,7 @@ export default function NewsManagementList() {
                             {item.title}
                           </Link>
                           <span className="text-[10px] text-slate-400 block mt-0.5 font-medium">
-                            {new Date(item.createdAt).toLocaleDateString('bn-BD', {
+                            {new Date(item.createdAt).toLocaleDateString('en-US', {
                               year: 'numeric',
                               month: 'short',
                               day: 'numeric'
@@ -340,7 +340,7 @@ export default function NewsManagementList() {
                     {/* Category Pill */}
                     <td className="px-4 py-3.5">
                       <span className="text-[11px] font-bold text-teal-800 bg-teal-50 px-2.5 py-1 rounded-lg border border-teal-100 inline-block">
-                        {item.category?.name || 'সাধারণ'}
+                        {item.category?.name || 'General'}
                       </span>
                       {item.subCategory && (
                         <span className="text-slate-400 text-[10px] font-semibold block mt-0.5">
@@ -355,7 +355,7 @@ export default function NewsManagementList() {
                         <div className="w-5 h-5 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-[10px] font-extrabold">
                           {item.author?.name ? item.author.name.charAt(0) : <UserIcon size={10} />}
                         </div>
-                        <span className="truncate">{item.author?.name || 'রিপোর্টার'}</span>
+                        <span className="truncate">{item.author?.name || 'Reporter'}</span>
                       </div>
                     </td>
 
@@ -372,16 +372,16 @@ export default function NewsManagementList() {
                             : 'bg-indigo-50 text-indigo-700 border-indigo-200 hover:bg-indigo-100'
                         }`}
                       >
-                        <option value="PUBLISHED">✓ প্রকাশিত</option>
-                        <option value="DRAFT">⏳ খসড়া</option>
-                        <option value="SCHEDULED">📅 শিডিউলড</option>
-                        <option value="TRASHED">🗑️ মুছে ফেলুন</option>
+                        <option value="PUBLISHED">✓ Published</option>
+                        <option value="DRAFT">⏳ Draft</option>
+                        <option value="SCHEDULED">📅 Scheduled</option>
+                        <option value="TRASHED">🗑️ Trash</option>
                       </select>
                     </td>
 
                     {/* Views */}
                     <td className="px-4 py-3.5 text-center font-extrabold text-slate-700">
-                      {item.viewCount.toLocaleString('bn-BD')}
+                      {item.viewCount.toLocaleString('en-US')}
                     </td>
 
                     {/* Action buttons */}
@@ -393,16 +393,16 @@ export default function NewsManagementList() {
                               type="button"
                               onClick={() => handleSetMainLead(item)}
                               className="px-2 py-1 text-[11px] font-bold text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-lg transition flex items-center gap-1 cursor-pointer"
-                              title="হোমপেজের মেইন লিড (MAIN LEAD) হিসেবে সেট করুন"
+                              title="Set as homepage Main Lead"
                             >
                               <Star size={12} className="fill-amber-500 text-amber-500" />
-                              <span>মেইন লিড</span>
+                              <span>Main Lead</span>
                             </button>
                             <Link
                               href={`/${item.category?.slug || 'news'}/${item.id}`}
                               target="_blank"
                               className="p-1.5 text-slate-500 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition"
-                              title="ওয়েবসাইটে দেখুন"
+                              title="View on Website"
                             >
                               <ExternalLink size={15} />
                             </Link>
@@ -411,7 +411,7 @@ export default function NewsManagementList() {
                         <Link
                           href={`/admin/news/${item.id}/edit`}
                           className="p-1.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition"
-                          title="সম্পাদনা করুন"
+                          title="Edit"
                         >
                           <Pencil size={15} />
                         </Link>
@@ -419,7 +419,7 @@ export default function NewsManagementList() {
                           type="button"
                           onClick={() => handleDelete(item.id)}
                           className="p-1.5 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition"
-                          title="মুছে ফেলুন"
+                          title="Delete"
                         >
                           <Trash2 size={15} />
                         </button>
@@ -436,7 +436,7 @@ export default function NewsManagementList() {
         {totalPages > 1 && (
           <div className="px-6 py-4 border-t border-slate-100 bg-slate-50/60 flex flex-col sm:flex-row items-center justify-between gap-3">
             <span className="text-xs text-slate-500 font-medium">
-              পৃষ্ঠা <span className="font-bold text-slate-900">{page}</span> / {totalPages} (মোট {total}টি সংবাদ)
+              Page <span className="font-bold text-slate-900">{page}</span> of {totalPages} ({total} total posts)
             </span>
 
             <div className="flex items-center gap-2">
@@ -447,7 +447,7 @@ export default function NewsManagementList() {
                 className="inline-flex items-center gap-1 bg-white border border-slate-200 text-slate-700 text-xs font-bold px-3 py-1.5 rounded-xl hover:bg-slate-100 transition disabled:opacity-40 shadow-2xs"
               >
                 <ChevronLeft size={14} />
-                <span>পূর্ববর্তী</span>
+                <span>Previous</span>
               </button>
 
               <button
@@ -456,7 +456,7 @@ export default function NewsManagementList() {
                 disabled={page === totalPages}
                 className="inline-flex items-center gap-1 bg-white border border-slate-200 text-slate-700 text-xs font-bold px-3 py-1.5 rounded-xl hover:bg-slate-100 transition disabled:opacity-40 shadow-2xs"
               >
-                <span>পরবর্তী</span>
+                <span>Next</span>
                 <ChevronRight size={14} />
               </button>
             </div>

@@ -43,8 +43,8 @@ export default function SpecialTopicManagement() {
 
   // Form states
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [title, setTitle] = useState('বিশেষ প্রতিবেদন ও আন্তর্জাতিক সংবাদ');
-  const [bannerSubtitle, setBannerSubtitle] = useState('বিস্তারিত দেখতে কভার খবরের যেকোনো একটিতে ক্লিক করুন');
+  const [title, setTitle] = useState('Special Report & International News');
+  const [bannerSubtitle, setBannerSubtitle] = useState('Click any cover story to read full details');
   const [isActive, setIsActive] = useState(true);
   const [selectedNewsIds, setSelectedNewsIds] = useState<string[]>([]);
   const [order, setOrder] = useState('0');
@@ -78,10 +78,10 @@ export default function SpecialTopicManagement() {
         }
       } else {
         setTopics([]);
-        if (!res.ok) setError(data.error || 'সেকশন তথ্য লোড করা সম্ভব হয়নি।');
+        if (!res.ok) setError(data.error || 'Failed to load section data.');
       }
     } catch (err) {
-      setError('নেটওয়ার্ক ত্রুটি। আবার চেষ্টা করুন।');
+      setError('Network error. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -130,8 +130,8 @@ export default function SpecialTopicManagement() {
 
   const handleResetForm = () => {
     setEditingId(null);
-    setTitle('বিশেষ প্রতিবেদন ও আন্তর্জাতিক সংবাদ');
-    setBannerSubtitle('বিস্তারিত দেখতে কভার খবরের যেকোনো একটিতে ক্লিক করুন');
+    setTitle('Special Report & International News');
+    setBannerSubtitle('Click any cover story to read full details');
     setIsActive(true);
     setSelectedNewsIds([]);
     setOrder('0');
@@ -154,20 +154,20 @@ export default function SpecialTopicManagement() {
         if (editingId === topic.id) {
           setIsActive(newStatus);
         }
-        setSuccess(newStatus ? 'সেকশনটি দৃশ্যমান (Show) করা হয়েছে।' : 'সেকশনটি হাইড (Hide) করা হয়েছে।');
+        setSuccess(newStatus ? 'Section is now visible (Show).' : 'Section is now hidden (Hide).');
       } else {
         const data = await res.json();
-        setError(data.error || 'আপডেট করতে সমস্যা হয়েছে।');
+        setError(data.error || 'Failed to update section visibility.');
       }
     } catch (err) {
-      setError('নেটওয়ার্ক ত্রুটি।');
+      setError('Network error.');
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title) {
-      setError('শিরোনাম আবশ্যক।');
+      setError('Title is required.');
       return;
     }
 
@@ -196,20 +196,20 @@ export default function SpecialTopicManagement() {
       const data = await res.json();
 
       if (res.ok) {
-        setSuccess(editingId ? 'সেকশন আপডেট করা হয়েছে।' : 'নতুন স্পেশাল টপিক সেকশন তৈরি করা হয়েছে।');
+        setSuccess(editingId ? 'Special topic section updated.' : 'New special topic section created.');
         fetchTopics();
       } else {
-        setError(data.error || 'একটি ত্রুটি ঘটেছে।');
+        setError(data.error || 'An error occurred.');
       }
     } catch (err) {
-      setError('অনুরোধ পাঠানো সম্ভব হয়নি।');
+      setError('Failed to send request.');
     } finally {
       setSubmitting(false);
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('আপনি কি নিশ্চিত যে এই বিশেষ সেকশনটি মুছে ফেলতে চান?')) {
+    if (!confirm('Are you sure you want to delete this special section?')) {
       return;
     }
 
@@ -222,15 +222,15 @@ export default function SpecialTopicManagement() {
       });
 
       if (res.ok) {
-        setSuccess('সেকশন মুছে ফেলা হয়েছে।');
+        setSuccess('Section deleted successfully.');
         if (editingId === id) handleResetForm();
         fetchTopics();
       } else {
         const data = await res.json();
-        setError(data.error || 'মুছে ফেলা সম্ভব হয়নি।');
+        setError(data.error || 'Failed to delete section.');
       }
     } catch (err) {
-      setError('নেটওয়ার্ক ত্রুটি।');
+      setError('Network error.');
     }
   };
 
@@ -257,7 +257,7 @@ export default function SpecialTopicManagement() {
       setSelectedNewsIds(selectedNewsIds.filter((item) => item !== id));
     } else {
       if (selectedNewsIds.length >= 6) {
-        alert('সর্বোচ্চ ৬ টি খবর নির্বাচন করা সম্ভব।');
+        alert('Maximum of 6 posts can be selected.');
         return;
       }
       setSelectedNewsIds([...selectedNewsIds, id]);
@@ -278,10 +278,10 @@ export default function SpecialTopicManagement() {
             <div className="w-8 h-8 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center border border-teal-200/60">
               <Sparkles size={18} />
             </div>
-            <span>বিশেষ প্রতিবেদন সেকশন ম্যানেজমেন্ট</span>
+            <span>Special Topic Sections</span>
           </h2>
           <p className="text-xs text-slate-500 mt-1">
-            হোমপেজের বিশেষ প্রতিবেদন ও কভার নিউজ সেকশনটি চালু/বন্ধ (Hide/Show) করুন এবং নির্দিষ্ট খবরসমূহ নির্বাচন করুন।
+            Toggle visibility (Hide/Show) for special feature sections on homepage and select featured posts.
           </p>
         </div>
       </div>
@@ -304,7 +304,7 @@ export default function SpecialTopicManagement() {
           <h3 className="font-extrabold text-slate-800 border-b border-slate-100 pb-3 flex items-center justify-between text-sm">
             <span className="flex items-center gap-2">
               <PlusCircle size={18} className="text-teal-600" />
-              {editingId ? 'সেকশন সম্পাদনা করুন' : 'নতুন বিশেষ সেকশন যোগ করুন'}
+              {editingId ? 'Edit Section' : 'Add New Special Topic'}
             </span>
             {editingId && (
               <button
@@ -312,7 +312,7 @@ export default function SpecialTopicManagement() {
                 onClick={handleResetForm}
                 className="text-xs text-teal-700 hover:underline font-bold"
               >
-                নতুন যোগ করুন
+                Add New
               </button>
             )}
           </h3>
@@ -320,28 +320,28 @@ export default function SpecialTopicManagement() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-xs font-bold text-slate-700 mb-1">
-                সেকশনের মূল শিরোনাম (Title)
+                Section Main Title
               </label>
               <input
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-teal-500/30 focus:border-teal-500 transition"
-                placeholder="যেমন: বিশেষ প্রতিবেদন ও আন্তর্জাতিক সংবাদ"
+                placeholder="e.g. Special Report & International News"
                 required
               />
             </div>
 
             <div>
               <label className="block text-xs font-bold text-slate-700 mb-1">
-                ব্যানার সাব-টাইটেল (Subtitle)
+                Banner Subtitle
               </label>
               <input
                 type="text"
                 value={bannerSubtitle}
                 onChange={(e) => setBannerSubtitle(e.target.value)}
                 className="w-full border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-teal-500/30 focus:border-teal-500 transition"
-                placeholder="যেমন: বিস্তারিত দেখতে কভার খবরের যেকোনো একটিতে ক্লিক করুন"
+                placeholder="e.g. Click any cover story to read full details"
               />
             </div>
 
@@ -354,9 +354,9 @@ export default function SpecialTopicManagement() {
               }`}
             >
               <div>
-                <span className="text-xs font-black text-slate-900 block">হোমপেজে দৃশ্যমান থাকবে?</span>
+                <span className="text-xs font-black text-slate-900 block">Visible on Homepage?</span>
                 <span className={`text-[11px] font-extrabold ${isActive ? 'text-teal-700' : 'text-slate-500'}`}>
-                  {isActive ? '✓ অন রয়েছে (Show)' : '✕ অফ রয়েছে (Hide)'}
+                  {isActive ? '✓ Active (Show)' : '✕ Inactive (Hide)'}
                 </span>
               </div>
               <button
@@ -378,7 +378,7 @@ export default function SpecialTopicManagement() {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">ক্রম (Order)</label>
+              <label className="block text-xs font-bold text-slate-700 mb-1">Order</label>
               <input
                 type="number"
                 value={order}
@@ -391,7 +391,7 @@ export default function SpecialTopicManagement() {
             <div className="space-y-2.5 border-t border-slate-100 pt-4">
               <div className="flex items-center justify-between">
                 <label className="text-xs font-black text-slate-800">
-                  সেকশনে খবর নির্বাচন করুন ({selectedNewsIds.length}/৬)
+                  Select Posts for Section ({selectedNewsIds.length}/6)
                 </label>
                 {selectedNewsIds.length > 0 && (
                   <button
@@ -399,7 +399,7 @@ export default function SpecialTopicManagement() {
                     onClick={() => setSelectedNewsIds([])}
                     className="text-[11px] text-rose-600 hover:underline font-extrabold"
                   >
-                    সব ক্লিয়ার করুন
+                    Clear All
                   </button>
                 )}
               </div>
@@ -407,19 +407,19 @@ export default function SpecialTopicManagement() {
               {/* Selected news list items chips */}
               {Array.isArray(selectedNewsIds) && selectedNewsIds.length > 0 && (
                 <div className="space-y-1.5 p-2.5 bg-teal-50/70 border border-teal-200/80 rounded-xl">
-                  <span className="text-[10px] font-bold text-teal-900 block">নির্বাচিত খবরসমূহ (সরিয়ে ফেলতে ✕ এ চাপুন):</span>
+                  <span className="text-[10px] font-bold text-teal-900 block">Selected Posts (Click ✕ to remove):</span>
                   <div className="space-y-1">
                     {(Array.isArray(selectedNewsIds) ? selectedNewsIds : []).map((id, index) => {
                       const item = safeNewsList.find((n) => n.id === id);
                       const positionLabels = [
-                        '১: মূল সেন্টার কভার',
-                        '২: বাম পাশের ওপর',
-                        '৩: বাম পাশের নিচ',
-                        '৪: ডান পাশের ওপর',
-                        '৫: ডান পাশের নিচ',
-                        '৬: অতিরিক্ত'
+                        '1: Main Center Cover',
+                        '2: Top Left',
+                        '3: Bottom Left',
+                        '4: Top Right',
+                        '5: Bottom Right',
+                        '6: Extra'
                       ];
-                      const posLabel = positionLabels[index] || `${index + 1}: অতিরিক্ত`;
+                      const posLabel = positionLabels[index] || `${index + 1}: Extra`;
                       return (
                         <div
                           key={id}
@@ -430,7 +430,7 @@ export default function SpecialTopicManagement() {
                               {posLabel}
                             </span>
                             <span className="font-bold text-slate-800 truncate">
-                              {item ? item.title : `খবর (ID: ${id.slice(0, 8)}...)`}
+                              {item ? item.title : `Post (ID: ${id.slice(0, 8)}...)`}
                             </span>
                           </div>
                           <div className="flex items-center gap-1 shrink-0">
@@ -439,7 +439,7 @@ export default function SpecialTopicManagement() {
                               onClick={() => moveNewsUp(index)}
                               disabled={index === 0}
                               className="p-1 hover:bg-slate-100 text-slate-500 hover:text-teal-700 disabled:opacity-30 rounded-md transition"
-                              title="উপরে সরান"
+                              title="Move Up"
                             >
                               <ChevronUp size={13} />
                             </button>
@@ -448,7 +448,7 @@ export default function SpecialTopicManagement() {
                               onClick={() => moveNewsDown(index)}
                               disabled={index === selectedNewsIds.length - 1}
                               className="p-1 hover:bg-slate-100 text-slate-500 hover:text-teal-700 disabled:opacity-30 rounded-md transition"
-                              title="নিচে সরান"
+                              title="Move Down"
                             >
                               <ChevronDown size={13} />
                             </button>
@@ -456,7 +456,7 @@ export default function SpecialTopicManagement() {
                               type="button"
                               onClick={() => toggleSelectNews(id)}
                               className="p-1 hover:bg-rose-50 text-slate-400 hover:text-rose-600 rounded-md transition"
-                              title="মুছে ফেলুন"
+                              title="Remove"
                             >
                               <X size={13} />
                             </button>
@@ -473,7 +473,7 @@ export default function SpecialTopicManagement() {
                 <Search size={14} className="absolute left-3 top-2.5 text-slate-400" />
                 <input
                   type="text"
-                  placeholder="খবরের শিরোনাম লিখে খুঁজুন..."
+                  placeholder="Search posts by title..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-8 pr-3 py-2 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-teal-500/30 focus:border-teal-500 transition"
@@ -483,9 +483,9 @@ export default function SpecialTopicManagement() {
               {/* News list picker */}
               <div className="max-h-60 overflow-y-auto border border-slate-200/80 rounded-xl divide-y divide-slate-100 bg-slate-50/50">
                 {newsLoading ? (
-                  <div className="p-4 text-center text-xs text-slate-400 font-medium">খবর লোড হচ্ছে...</div>
+                  <div className="p-4 text-center text-xs text-slate-400 font-medium">Loading posts...</div>
                 ) : filteredNews.length === 0 ? (
-                  <div className="p-4 text-center text-xs text-slate-400 font-medium">কোনো খবর পাওয়া যায়নি।</div>
+                  <div className="p-4 text-center text-xs text-slate-400 font-medium">No posts found.</div>
                 ) : (
                   filteredNews.slice(0, 35).map((n) => {
                     const isSelected = selectedNewsIds.includes(n.id);
@@ -504,7 +504,7 @@ export default function SpecialTopicManagement() {
                           <span className="truncate">{n.title}</span>
                         </div>
                         <span className="text-[10px] font-semibold text-slate-500 bg-white px-1.5 py-0.5 rounded border border-slate-200 shrink-0">
-                          {n.category?.name || 'সাধারণ'}
+                          {n.category?.name || 'General'}
                         </span>
                       </div>
                     );
@@ -519,7 +519,7 @@ export default function SpecialTopicManagement() {
                 disabled={submitting}
                 className="flex-1 bg-gradient-to-r from-teal-700 to-teal-800 hover:from-teal-800 hover:to-teal-900 text-white font-extrabold text-xs py-2.5 rounded-xl shadow-md shadow-teal-700/20 transition disabled:opacity-50"
               >
-                {submitting ? 'সংরক্ষণ হচ্ছে...' : editingId ? 'আপডেট করুন' : 'সেভ করুন'}
+                {submitting ? 'Saving...' : editingId ? 'Update Section' : 'Save Section'}
               </button>
               {editingId && (
                 <button
@@ -527,7 +527,7 @@ export default function SpecialTopicManagement() {
                   onClick={handleResetForm}
                   className="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold py-2.5 px-4 rounded-xl transition"
                 >
-                  বাতিল
+                  Cancel
                 </button>
               )}
             </div>
@@ -538,14 +538,14 @@ export default function SpecialTopicManagement() {
         <div className="lg:col-span-7 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs space-y-4">
           <h3 className="font-extrabold text-slate-800 text-sm flex items-center gap-2 border-b border-slate-100 pb-3">
             <Layers size={18} className="text-teal-600" />
-            <span>স্পেশাল সেকশন তালিকা</span>
+            <span>Special Topics List</span>
           </h3>
 
           {loading ? (
-            <div className="text-center py-10 text-slate-400 font-medium">লোডিং হচ্ছে...</div>
+            <div className="text-center py-10 text-slate-400 font-medium">Loading...</div>
           ) : topics.length === 0 ? (
             <div className="text-center py-10 text-slate-400 border border-dashed border-slate-200 rounded-2xl p-6 text-xs font-medium">
-              এখনো কোনো কাস্টম স্পেশাল সেকশন তৈরি করা হয়নি। পাশে থাকা ফর্ম থেকে তৈরি করুন।
+              No special topics created yet. Create one using the form on the left.
             </div>
           ) : (
             <div className="space-y-4">
@@ -569,20 +569,20 @@ export default function SpecialTopicManagement() {
                               : 'bg-slate-200 text-slate-600'
                           }`}
                         >
-                          {item.isActive ? 'সচল (Active)' : 'হাইড (Hidden)'}
+                          {item.isActive ? 'Active' : 'Hidden'}
                         </span>
                       </div>
                       {item.bannerSubtitle && (
                         <p className="text-xs text-slate-500 font-medium">{item.bannerSubtitle}</p>
                       )}
                       <div className="text-[11px] text-slate-400 pt-1 font-semibold">
-                        সংযুক্ত খবর: {item.newsIds?.length || 0} টি | ক্রম: {item.order}
+                        Linked Posts: {item.newsIds?.length || 0} | Order: {item.order}
                       </div>
 
                       {/* Display Selected News Titles */}
                       {Array.isArray(parseNewsIds(item.newsIds)) && parseNewsIds(item.newsIds).length > 0 && (
                         <div className="mt-2.5 pt-2.5 border-t border-teal-100/80 space-y-1.5">
-                          <span className="text-[11px] font-black text-teal-900 block">সংযুক্ত খবরসমূহ:</span>
+                          <span className="text-[11px] font-black text-teal-900 block">Linked Posts:</span>
                           <div className="space-y-1">
                             {parseNewsIds(item.newsIds).map((newsId, idx) => {
                               const matchedNews = safeNewsList.find((n) => n.id === newsId);
@@ -591,7 +591,7 @@ export default function SpecialTopicManagement() {
                                   <span className="w-4 h-4 rounded-full bg-teal-700 text-white text-[10px] font-black flex items-center justify-center shrink-0">
                                     {idx + 1}
                                   </span>
-                                  <span className="truncate">{matchedNews ? matchedNews.title : `খবর (ID: ${newsId.slice(0, 8)}...)`}</span>
+                                  <span className="truncate">{matchedNews ? matchedNews.title : `Post (ID: ${newsId.slice(0, 8)}...)`}</span>
                                 </div>
                               );
                             })}
@@ -608,7 +608,7 @@ export default function SpecialTopicManagement() {
                             ? 'bg-white hover:bg-amber-50 text-amber-600 border-amber-200 shadow-2xs'
                             : 'bg-white hover:bg-teal-50 text-teal-600 border-teal-200 shadow-2xs'
                         }`}
-                        title={item.isActive ? 'হাইড করুন' : 'শো করুন'}
+                        title={item.isActive ? 'Hide' : 'Show'}
                       >
                         {item.isActive ? <EyeOff size={16} /> : <Eye size={16} />}
                       </button>
@@ -616,7 +616,7 @@ export default function SpecialTopicManagement() {
                       <button
                         onClick={() => handleEdit(item)}
                         className="p-2 bg-white hover:bg-blue-50 text-slate-600 hover:text-blue-600 rounded-xl border border-slate-200 shadow-2xs transition"
-                        title="সম্পাদনা করুন"
+                        title="Edit"
                       >
                         <Pencil size={16} />
                       </button>
@@ -624,7 +624,7 @@ export default function SpecialTopicManagement() {
                       <button
                         onClick={() => handleDelete(item.id)}
                         className="p-2 bg-white hover:bg-rose-50 text-slate-600 hover:text-rose-600 rounded-xl border border-slate-200 shadow-2xs transition"
-                        title="মুছে ফেলুন"
+                        title="Delete"
                       >
                         <Trash2 size={16} />
                       </button>
@@ -639,3 +639,4 @@ export default function SpecialTopicManagement() {
     </div>
   );
 }
+

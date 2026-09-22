@@ -229,7 +229,7 @@ export default async function HomePage() {
           ],
         },
         orderBy: { publishedAt: 'desc' },
-        take: 10,
+        take: 30,
         select: listSelect,
       }),
       specialTopicBannerNewsQuery,
@@ -373,7 +373,7 @@ export default async function HomePage() {
               <SpecialTopicSection
                 title={activeSpecialTopic.title}
                 bannerSubtitle={activeSpecialTopic.bannerSubtitle || undefined}
-                bannerImage={activeSpecialTopic.bannerImage || '/uploads/sidebar/anniversary_promo.jpg'}
+                bannerImage={activeSpecialTopic.bannerImage || '/uploads/sidebar/udbodhoni_promo.jpg'}
                 news={serializeList(finalSpecialTopicNews)}
               />
             )}

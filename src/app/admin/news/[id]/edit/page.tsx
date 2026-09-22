@@ -28,8 +28,8 @@ export default async function EditNewsPage({ params }: { params: { id: string } 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-bold text-gray-800">সংবাদ সম্পাদনা</h2>
-        <p className="text-sm text-gray-500">বিদ্যমান সংবাদ সংশোধন ও আপডেট করুন।</p>
+        <h2 className="text-xl font-bold text-gray-800">Edit Post</h2>
+        <p className="text-sm text-gray-500">Update and revise existing article details.</p>
       </div>
 
       <NewsForm initialData={serializedNews} newsId={params.id} />
