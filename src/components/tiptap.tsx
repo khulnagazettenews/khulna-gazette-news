@@ -370,7 +370,7 @@ export default function TiptapEditor({ value, onChange }: TiptapProps) {
         <button
           type="button"
           onClick={handleOpenMediaModal}
-          className="inline-flex items-center gap-2 px-3 py-1.5 bg-white hover:bg-gray-50 text-blue-700 font-medium text-xs sm:text-sm border border-blue-600 hover:border-blue-700 rounded shadow-2xs transition group"
+          className="tiptap-media-btn inline-flex items-center gap-2 px-3 py-1.5 bg-white hover:bg-gray-50 text-blue-700 font-medium text-xs sm:text-sm border border-blue-600 hover:border-blue-700 rounded shadow-2xs transition group"
         >
           <span className="flex items-center text-blue-600 group-hover:text-blue-700">
             <ImageIcon size={16} className="mr-0.5" />

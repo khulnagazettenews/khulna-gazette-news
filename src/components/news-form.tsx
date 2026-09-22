@@ -352,25 +352,44 @@ export default function NewsForm({ initialData, newsId }: NewsFormProps) {
         <div className="space-y-6">
           {/* Featured Image card */}
           <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
-            <h3 className="font-bold text-gray-800 text-sm border-b border-gray-100 pb-2">Featured Image</h3>
-            
-            {featuredImage ? (
-              <div className="relative border border-gray-200 rounded-lg overflow-hidden bg-gray-50 aspect-video flex items-center justify-center">
-                <img src={featuredImage} alt="Featured image" className="w-full h-full object-cover" />
+            <h3 className="font-bold text-gray-800 text-sm border-b border-gray-100 pb-2 flex items-center justify-between">
+              <span>Featured Image</span>
+              {featuredImage && (
                 <button
                   type="button"
                   onClick={handleRemoveImage}
-                  className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white p-1 rounded-full shadow-md transition"
+                  className="text-xs text-red-600 hover:underline font-normal"
                 >
-                  <X size={16} />
+                  Remove featured image
                 </button>
+              )}
+            </h3>
+            
+            {featuredImage ? (
+              <div className="relative border border-gray-200 rounded-lg overflow-hidden bg-gray-50 aspect-video flex items-center justify-center group">
+                <img src={featuredImage} alt="Featured image" className="w-full h-full object-cover" />
+                <label className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-xs font-bold cursor-pointer">
+                  <span>Click to Change Image</span>
+                  <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
+                </label>
               </div>
             ) : (
-              <label className="border-2 border-dashed border-gray-300 rounded-lg h-36 flex flex-col items-center justify-center cursor-pointer hover:border-red-600 transition bg-gray-50">
-                <Upload className="text-gray-400 mb-2" size={24} />
-                <span className="text-xs text-gray-500">{uploading ? 'Uploading...' : 'Select Featured Image'}</span>
-                <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
-              </label>
+              <div className="space-y-2">
+                <label className="border-2 border-dashed border-gray-300 hover:border-red-600 rounded-lg h-32 flex flex-col items-center justify-center cursor-pointer transition bg-gray-50 text-center p-3">
+                  <Upload className="text-gray-400 mb-1.5" size={22} />
+                  <span className="text-xs font-bold text-gray-700">{uploading ? 'Uploading Image...' : 'Upload Featured Image'}</span>
+                  <span className="text-[11px] text-gray-400">Click to select file from PC</span>
+                  <input type="file" accept="image/*" onChange={handleImageUpload} disabled={uploading} className="hidden" />
+                </label>
+
+                <button
+                  type="button"
+                  onClick={() => (document.querySelector('.tiptap-media-btn') as HTMLElement)?.click()}
+                  className="w-full text-center text-xs font-semibold text-blue-600 hover:text-blue-800 hover:underline py-1"
+                >
+                  Or choose from Media Library
+                </button>
+              </div>
             )}
 
             <div>
