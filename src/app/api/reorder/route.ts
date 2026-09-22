@@ -79,17 +79,24 @@ export async function GET(req: Request) {
       });
     }
 
-    // Handle regular category reordering
+    // Handle regular category reordering (including featured)
     const targetCategory = categories.find((c) => c.slug === categorySlug);
     if (!targetCategory) {
       return NextResponse.json({ error: 'ক্যাটাগরি পাওয়া যায়নি' }, { status: 404 });
     }
 
-    const catConfig = await prisma.specialTopic.findUnique({
-      where: { id: `cat_order_${targetCategory.id}` },
-    });
-
-    const savedIds: string[] = parseNewsIds(catConfig?.newsIds);
+    let savedIds: string[] = [];
+    if (categorySlug === 'featured') {
+      const activeSpecialTopic = await prisma.specialTopic.findFirst({
+        orderBy: [{ updatedAt: 'desc' }, { order: 'asc' }],
+      });
+      savedIds = parseNewsIds(activeSpecialTopic?.newsIds);
+    } else {
+      const catConfig = await prisma.specialTopic.findUnique({
+        where: { id: `cat_order_${targetCategory.id}` },
+      });
+      savedIds = parseNewsIds(catConfig?.newsIds);
+    }
 
     const categoryNews = await prisma.news.findMany({
       where: {
@@ -97,6 +104,8 @@ export async function GET(req: Request) {
         OR: [
           { categoryId: targetCategory.id },
           { subCategoryId: targetCategory.id },
+          { isFeatured: categorySlug === 'featured' ? true : undefined },
+          { tags: categorySlug === 'featured' ? { some: { tag: { name: { contains: 'ফিচার' } } } } : undefined },
         ],
       },
       orderBy: { publishedAt: 'desc' },
@@ -125,7 +134,7 @@ export async function GET(req: Request) {
       category: targetCategory.slug,
       categoryName: targetCategory.name,
       categories,
-      news: orderedNews,
+      news: categorySlug === 'featured' ? orderedNews.slice(0, 5) : orderedNews,
       poolNews: categoryNews,
     });
   } catch (error) {
@@ -182,6 +191,41 @@ export async function POST(req: Request) {
       return NextResponse.json({
         success: true,
         message: 'টপ নিউজ এর নতুন ক্রম সফলভাবে সংরক্ষিত হয়েছে।',
+      });
+    }
+
+    if (category === 'featured') {
+      const top5Ids = newsIds.slice(0, 5);
+
+      const activeSpecialTopic = await prisma.specialTopic.findFirst({
+        orderBy: [{ updatedAt: 'desc' }, { order: 'asc' }],
+      });
+
+      if (activeSpecialTopic) {
+        await prisma.specialTopic.update({
+          where: { id: activeSpecialTopic.id },
+          data: {
+            title: 'ফিচার',
+            newsIds: JSON.stringify(top5Ids),
+            isActive: true,
+          },
+        });
+      } else {
+        await prisma.specialTopic.create({
+          data: {
+            title: 'ফিচার',
+            newsIds: JSON.stringify(top5Ids),
+            isActive: true,
+          },
+        });
+      }
+
+      revalidatePath('/');
+      revalidatePath('/admin/reorder');
+
+      return NextResponse.json({
+        success: true,
+        message: 'ফিচার (Special Topic) সংবাদ এর নতুন ক্রম সফলভাবে সংরক্ষিত হয়েছে।',
       });
     }
 

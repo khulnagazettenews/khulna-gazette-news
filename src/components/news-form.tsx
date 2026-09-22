@@ -403,82 +403,116 @@ export default function NewsForm({ initialData, newsId }: NewsFormProps) {
             </div>
           </div>
 
-          {/* Categories Card */}
-          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
-            <h3 className="font-bold text-gray-800 text-sm border-b border-gray-100 pb-2">Taxonomy</h3>
-            
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">Primary Category</label>
-              <select
-                value={categoryId}
-                onChange={(e) => {
-                  setCategoryId(e.target.value);
-                  setSubCategoryId('');
-                }}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-red-600"
-                required
-              >
-                <option value="">Select Category</option>
-                {categories.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.name}
-                  </option>
-                ))}
-              </select>
+          {/* Categories Card (Exact WordPress Style Widget) */}
+          <div className="bg-white border border-gray-300 rounded-lg overflow-hidden shadow-xs">
+            {/* Header */}
+            <div className="bg-gray-50 border-b border-gray-200 px-4 py-2.5 flex items-center justify-between">
+              <h3 className="font-bold text-gray-800 text-xs sm:text-sm">Categories</h3>
+              <div className="flex items-center gap-1 text-gray-400">
+                <span className="cursor-pointer text-xs hover:text-gray-600">▲</span>
+                <span className="cursor-pointer text-xs hover:text-gray-600">▼</span>
+              </div>
             </div>
 
-            {subCategories.length > 0 && (
-              <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">
-                  Sub-category / District
-                </label>
-                <select
-                  value={subCategoryId}
-                  onChange={(e) => setSubCategoryId(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-red-600"
+            <div className="p-4 space-y-3">
+              {/* Category Tabs: All Categories / Most Used */}
+              <div className="flex border-b border-gray-200 text-xs font-semibold">
+                <button
+                  type="button"
+                  className="px-3 py-1.5 border-b-2 border-blue-600 text-blue-600 bg-white"
                 >
-                  <option value="">Select Sub-category</option>
-                  {subCategories.map((sub) => (
-                    <option key={sub.id} value={sub.id}>
-                      {sub.name}
-                    </option>
-                  ))}
-                </select>
+                  All Categories
+                </button>
+                <button
+                  type="button"
+                  className="px-3 py-1.5 text-gray-500 hover:text-gray-700"
+                >
+                  Most Used
+                </button>
               </div>
-            )}
 
-            {/* Additional Categories Checkboxes (Multi-select) */}
-            <div className="pt-2 border-t border-gray-100">
-              <label className="block text-xs font-bold text-gray-700 mb-2">
-                Additional Categories & Tags (Multi-select)
-              </label>
-              <div className="max-h-40 overflow-y-auto border border-gray-200 rounded-lg p-2.5 bg-gray-50/50 space-y-1.5">
-                {categories.map((c) => (
-                  <label key={c.id} className="flex items-center gap-2 cursor-pointer text-xs font-medium text-gray-700 hover:bg-white p-1 rounded transition">
-                    <input
-                      type="checkbox"
-                      checked={categoryId === c.id || tagsInput.toLowerCase().includes(c.name.toLowerCase())}
-                      onChange={(e) => {
-                        const currentTags = tagsInput.split(',').map((t: string) => t.trim()).filter(Boolean);
-                        if (e.target.checked) {
-                          if (!currentTags.includes(c.name)) {
-                            setTagsInput([...currentTags, c.name].join(', '));
-                          }
-                        } else {
-                          setTagsInput(currentTags.filter((t: string) => t.toLowerCase() !== c.name.toLowerCase()).join(', '));
-                        }
-                      }}
-                      className="rounded text-red-600 focus:ring-red-600"
-                    />
-                    <span>{c.name}</span>
-                  </label>
-                ))}
+              {/* Scrollable Categories List Container */}
+              <div className="max-h-60 overflow-y-auto border border-gray-200 rounded p-3 bg-white space-y-2">
+                {categories.map((c) => {
+                  const isPrimaryChecked = categoryId === c.id;
+                  const isTagChecked = tagsInput.split(',').map((t: string) => t.trim().toLowerCase()).includes(c.name.toLowerCase());
+                  const isChecked = isPrimaryChecked || isTagChecked;
+
+                  return (
+                    <div key={c.id} className="space-y-1.5">
+                      <label className="flex items-center gap-2 cursor-pointer text-xs text-gray-800 hover:text-black">
+                        <input
+                          type="checkbox"
+                          checked={isChecked}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              if (!categoryId) setCategoryId(c.id);
+                              const currentTags = tagsInput.split(',').map((t: string) => t.trim()).filter(Boolean);
+                              if (!currentTags.includes(c.name)) {
+                                setTagsInput([...currentTags, c.name].join(', '));
+                              }
+                            } else {
+                              if (categoryId === c.id) setCategoryId('');
+                              const currentTags = tagsInput.split(',').map((t: string) => t.trim()).filter(Boolean);
+                              setTagsInput(currentTags.filter((t: string) => t.toLowerCase() !== c.name.toLowerCase()).join(', '));
+                            }
+                          }}
+                          className="rounded border-gray-400 text-blue-600 focus:ring-blue-500 w-4 h-4"
+                        />
+                        <span className={isPrimaryChecked ? 'font-bold text-blue-700' : 'font-normal'}>{c.name}</span>
+                      </label>
+
+                      {/* Render Sub-categories indented underneath */}
+                      {c.subCategories && c.subCategories.length > 0 && (
+                        <div className="pl-5 space-y-1 border-l-2 border-gray-100 ml-1">
+                          {c.subCategories.map((sub) => {
+                            const isSubPrimary = subCategoryId === sub.id;
+                            const isSubTagChecked = tagsInput.split(',').map((t: string) => t.trim().toLowerCase()).includes(sub.name.toLowerCase());
+                            const isSubChecked = isSubPrimary || isSubTagChecked;
+
+                            return (
+                              <label key={sub.id} className="flex items-center gap-2 cursor-pointer text-xs text-gray-600 hover:text-black">
+                                <input
+                                  type="checkbox"
+                                  checked={isSubChecked}
+                                  onChange={(e) => {
+                                    if (e.target.checked) {
+                                      setSubCategoryId(sub.id);
+                                      if (!categoryId) setCategoryId(c.id);
+                                      const currentTags = tagsInput.split(',').map((t: string) => t.trim()).filter(Boolean);
+                                      if (!currentTags.includes(sub.name)) {
+                                        setTagsInput([...currentTags, sub.name].join(', '));
+                                      }
+                                    } else {
+                                      if (subCategoryId === sub.id) setSubCategoryId('');
+                                      const currentTags = tagsInput.split(',').map((t: string) => t.trim()).filter(Boolean);
+                                      setTagsInput(currentTags.filter((t: string) => t.toLowerCase() !== sub.name.toLowerCase()).join(', '));
+                                    }
+                                  }}
+                                  className="rounded border-gray-400 text-blue-600 focus:ring-blue-500 w-3.5 h-3.5"
+                                />
+                                <span className={isSubPrimary ? 'font-bold text-blue-700' : ''}>{sub.name}</span>
+                              </label>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
-              <p className="text-[10px] text-gray-500 mt-1">
-                Selected categories will also be linked via post tags to appear across multiple category streams.
-              </p>
+
+              <div className="pt-1">
+                <a href="/admin/categories" className="text-xs text-blue-600 hover:underline font-medium">
+                  + Add Category
+                </a>
+              </div>
             </div>
+          </div>
 
+          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
+            <h3 className="font-bold text-gray-800 text-sm border-b border-gray-100 pb-2">Author & Tags</h3>
+            
             <div>
               <label className="block text-xs font-medium text-gray-700 mb-1">Reporter Name</label>
               <input
@@ -572,25 +606,63 @@ export default function NewsForm({ initialData, newsId }: NewsFormProps) {
             )}
 
             {canPublish && (
-              <div className="space-y-2.5 pt-2">
-                <label className="flex items-center gap-2 cursor-pointer text-sm font-medium text-gray-700">
-                  <input
-                    type="checkbox"
-                    checked={isBreaking}
-                    onChange={(e) => setIsBreaking(e.target.checked)}
-                    className="rounded text-red-600 focus:ring-red-600"
-                  />
-                  <span>Show in Breaking News ticker</span>
+              <div className="space-y-3 pt-2 border-t border-gray-100">
+                <label className="block text-xs font-bold text-gray-700">
+                  Featured & Placement Options
                 </label>
 
-                <label className="flex items-center gap-2 cursor-pointer text-sm font-medium text-gray-700">
+                <label className="flex items-start gap-2 cursor-pointer text-xs font-medium text-gray-700 hover:bg-gray-50 p-1.5 rounded-lg border border-gray-200 transition">
                   <input
                     type="checkbox"
                     checked={isFeatured}
                     onChange={(e) => setIsFeatured(e.target.checked)}
-                    className="rounded text-red-600 focus:ring-red-600"
+                    className="rounded text-red-600 focus:ring-red-600 mt-0.5"
                   />
-                  <span>Highlight as Featured Story</span>
+                  <div>
+                    <span className="font-bold text-gray-900 block">ফিচার (Featured / Special Topic)</span>
+                    <span className="text-[11px] text-gray-500">
+                      Show in Special Topic Sections grid (Top 5 featured news).
+                    </span>
+                  </div>
+                </label>
+
+                <label className="flex items-start gap-2 cursor-pointer text-xs font-medium text-gray-700 hover:bg-gray-50 p-1.5 rounded-lg border border-gray-200 transition">
+                  <input
+                    type="checkbox"
+                    checked={tagsInput.toLowerCase().includes('টপ নিউজ')}
+                    onChange={(e) => {
+                      const currentTags = tagsInput.split(',').map((t: string) => t.trim()).filter(Boolean);
+                      if (e.target.checked) {
+                        if (!currentTags.includes('টপ নিউজ')) {
+                          setTagsInput([...currentTags, 'টপ নিউজ'].join(', '));
+                        }
+                      } else {
+                        setTagsInput(currentTags.filter((t: string) => t !== 'টপ নিউজ').join(', '));
+                      }
+                    }}
+                    className="rounded text-red-600 focus:ring-red-600 mt-0.5"
+                  />
+                  <div>
+                    <span className="font-bold text-gray-900 block">টপ নিউজ (Top News Grid)</span>
+                    <span className="text-[11px] text-gray-500">
+                      Include in homepage lead news section (Top 15 news list).
+                    </span>
+                  </div>
+                </label>
+
+                <label className="flex items-start gap-2 cursor-pointer text-xs font-medium text-gray-700 hover:bg-gray-50 p-1.5 rounded-lg border border-gray-200 transition">
+                  <input
+                    type="checkbox"
+                    checked={isBreaking}
+                    onChange={(e) => setIsBreaking(e.target.checked)}
+                    className="rounded text-red-600 focus:ring-red-600 mt-0.5"
+                  />
+                  <div>
+                    <span className="font-bold text-gray-900 block">Breaking News Ticker</span>
+                    <span className="text-[11px] text-gray-500">
+                      Scroll article in live breaking header bar.
+                    </span>
+                  </div>
                 </label>
               </div>
             )}

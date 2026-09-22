@@ -5,9 +5,26 @@ import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {
-    const issues = await prisma.epaperIssue.findMany({
+    const rawIssues = await prisma.epaperIssue.findMany({
       orderBy: { date: 'desc' },
     });
+
+    const issues = rawIssues.map((issue) => {
+      let parsedImageUrls: string[] = [];
+      if (issue.imageUrls) {
+        try {
+          const parsed = JSON.parse(issue.imageUrls);
+          if (Array.isArray(parsed)) parsedImageUrls = parsed;
+        } catch {
+          parsedImageUrls = issue.imageUrls.split(',').filter(Boolean);
+        }
+      }
+      return {
+        ...issue,
+        imageUrls: parsedImageUrls,
+      };
+    });
+
     return NextResponse.json(issues);
   } catch (err) {
     return NextResponse.json({ error: 'ই-পেপার লোড করা সম্ভব হয়নি।' }, { status: 500 });

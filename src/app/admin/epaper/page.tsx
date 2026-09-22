@@ -394,9 +394,20 @@ export default function EpaperManagement() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               {issues.map((issue) => {
-                const list = issue.imageUrls && issue.imageUrls.length > 0
-                  ? issue.imageUrls.filter(Boolean)
-                  : (issue.imageUrl ? [issue.imageUrl] : []);
+                let list: string[] = [];
+                if (Array.isArray(issue.imageUrls) && issue.imageUrls.length > 0) {
+                  list = issue.imageUrls.filter(Boolean);
+                } else if (typeof issue.imageUrls === 'string') {
+                  try {
+                    const parsed = JSON.parse(issue.imageUrls);
+                    if (Array.isArray(parsed)) list = parsed.filter(Boolean);
+                  } catch {
+                    list = (issue.imageUrls as string).split(',').filter(Boolean);
+                  }
+                }
+                if (list.length === 0 && issue.imageUrl) {
+                  list = [issue.imageUrl];
+                }
 
                 return (
                   <div key={issue.id} className="border border-slate-200/90 rounded-2xl overflow-hidden shadow-2xs bg-slate-50/70 p-3.5 space-y-3">

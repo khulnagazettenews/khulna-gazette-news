@@ -113,8 +113,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           { name: 'Categories', href: '/admin/categories', icon: FolderKanban },
           { name: 'Navbar Menu', href: '/admin/navbar-menu', icon: Globe },
         ],
-      },
-      { name: 'Special Reports', href: '/admin/special-topics', icon: Sparkles }
+      }
     );
   }
 
