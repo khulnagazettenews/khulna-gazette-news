@@ -32,8 +32,10 @@ export async function POST(req: Request) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Sanitize filename to URL-friendly string
-    const filename = `${Date.now()}-${file.name.toLowerCase().replace(/[^a-z0-9.]/g, '_')}`;
+    // Sanitize filename to URL-friendly string preserving extension
+    const ext = path.extname(file.name) || '.jpg';
+    const cleanName = path.basename(file.name, ext).replace(/[^a-zA-Z0-9]/g, '_');
+    const filename = `${Date.now()}-${cleanName || 'upload'}${ext.toLowerCase()}`;
 
     // 1. If ImageKit is configured, upload to ImageKit.io
     if (isImageKitConfigured && imagekit) {
