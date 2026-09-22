@@ -430,6 +430,9 @@ export default function PublicHeaderClient({ categories, formattedDate }: Public
               <Link href="/politics" className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition">
                 দ্বাদশ জাতীয় সংসদ নির্বাচন- ২০২৩
               </Link>
+              <Link href="/anniversary-supplement" className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition">
+                বর্ষপূর্তির ক্রোড়পত্র
+              </Link>
               <Link href="/khulnanchal/khulna" className="block px-4 py-2 hover:bg-[#e60023] hover:text-white text-[17px] font-medium text-[#333333] transition">
                 খুলনা সিটি কর্পোরেশন নির্বাচন-২০২৩
               </Link>
@@ -569,6 +572,7 @@ export default function PublicHeaderClient({ categories, formattedDate }: Public
                     <Link href="/sports" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">ফিফা বিশ্বকাপ-২০২২</Link>
                     <Link href="/politics" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">নির্বাচন</Link>
                     <Link href="/politics" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">দ্বাদশ জাতীয় সংসদ নির্বাচন- ২০২৩</Link>
+                    <Link href="/anniversary-supplement" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">বর্ষপূর্তির ক্রোড়পত্র</Link>
                     <Link href="/khulnanchal/khulna" onClick={() => setMobileOpen(false)} className="block py-1 hover:text-[#e60023]">খুলনা সিটি কর্পোরেশন নির্বাচন-২০২৩</Link>
                   </div>
                 )}

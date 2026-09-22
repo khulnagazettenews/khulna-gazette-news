@@ -514,17 +514,6 @@ export default function NewsForm({ initialData, newsId }: NewsFormProps) {
             <h3 className="font-bold text-gray-800 text-sm border-b border-gray-100 pb-2">Author & Tags</h3>
             
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">Reporter Name</label>
-              <input
-                type="text"
-                value={reporterName}
-                onChange={(e) => setReporterName(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-red-600"
-                placeholder="e.g. Staff Reporter / Khulna Bureau"
-              />
-            </div>
-
-            <div>
               <label className="block text-xs font-medium text-gray-700 mb-1">Author Title / Designation</label>
               <input
                 type="text"
@@ -534,6 +523,8 @@ export default function NewsForm({ initialData, newsId }: NewsFormProps) {
                 placeholder="e.g. Special Correspondent / District Reporter"
               />
             </div>
+
+
 
             <div>
               <label className="block text-xs font-medium text-gray-700 mb-1">Tags (Comma Separated)</label>
