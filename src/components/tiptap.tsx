@@ -22,7 +22,9 @@ import {
   Image as ImageIcon,
   Upload,
   Link as LinkIcon,
-  Loader2
+  Loader2,
+  Check,
+  Search
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { checkBanglaTextSpelling, checkBanglaWordSpelling, SpellCheckResult, BANGLA_COMMON_TYPOS } from '@/lib/bangla-spellchecker';
@@ -96,12 +98,42 @@ export default function TiptapEditor({ value, onChange }: TiptapProps) {
   const [spellStatusMessage, setSpellStatusMessage] = useState('');
   const [spellLoading, setSpellLoading] = useState(false);
 
-  // Image Upload Modal State
-  const [showImageModal, setShowImageModal] = useState(false);
+  // WordPress Style Media Modal States
+  const [showMediaModal, setShowMediaModal] = useState(false);
+  const [activeMediaTab, setActiveMediaTab] = useState<'upload' | 'library'>('upload');
+  const [activeSidebarMenu, setActiveSidebarMenu] = useState<'add_media' | 'gallery' | 'featured'>('add_media');
+  const [mediaList, setMediaList] = useState<{ id: string; url: string; name: string }[]>([]);
+  const [loadingMediaList, setLoadingMediaList] = useState(false);
+  const [selectedMediaUrl, setSelectedMediaUrl] = useState<string>('');
   const [imageUploading, setImageUploading] = useState(false);
-  const [imageUrlInput, setImageUrlInput] = useState('');
-  const [imageCaptionInput, setImageCaptionInput] = useState('');
   const [imageUploadError, setImageUploadError] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [mediaCaptionInput, setMediaCaptionInput] = useState('');
+  const [mediaAltInput, setMediaAltInput] = useState('');
+
+  const fetchMediaLibrary = async () => {
+    setLoadingMediaList(true);
+    try {
+      const res = await fetch('/api/media');
+      const data = await res.json();
+      if (res.ok && Array.isArray(data)) {
+        setMediaList(data);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoadingMediaList(false);
+    }
+  };
+
+  const handleOpenMediaModal = () => {
+    setImageUploadError('');
+    setSelectedMediaUrl('');
+    setMediaCaptionInput('');
+    setMediaAltInput('');
+    setShowMediaModal(true);
+    fetchMediaLibrary();
+  };
 
   const editor = useEditor({
     extensions: [
@@ -188,7 +220,7 @@ export default function TiptapEditor({ value, onChange }: TiptapProps) {
     setSpellCheckResults((prev) => prev.filter((r) => r.word !== originalWord));
   };
 
-  // Image Upload Handlers
+  // Image Upload Handler inside WordPress Modal
   const handleImageFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -206,10 +238,10 @@ export default function TiptapEditor({ value, onChange }: TiptapProps) {
       });
       const data = await res.json();
       if (res.ok && data.url) {
-        insertImageToEditor(data.url, imageCaptionInput);
-        setShowImageModal(false);
-        setImageUrlInput('');
-        setImageCaptionInput('');
+        setSelectedMediaUrl(data.url);
+        // Add to media list & switch tab to media library
+        setMediaList((prev) => [{ id: data.url, url: data.url, name: file.name }, ...prev]);
+        setActiveMediaTab('library');
       } else {
         setImageUploadError(data.error || 'ছবি আপলোড করতে সমস্যা হয়েছে।');
       }
@@ -220,25 +252,20 @@ export default function TiptapEditor({ value, onChange }: TiptapProps) {
     }
   };
 
-  const handleInsertUrlImage = () => {
-    if (!imageUrlInput.trim()) {
-      setImageUploadError('একটি বৈধ ইমেজের URL লিখুন');
-      return;
-    }
-    insertImageToEditor(imageUrlInput.trim(), imageCaptionInput);
-    setShowImageModal(false);
-    setImageUrlInput('');
-    setImageCaptionInput('');
-  };
-
-  const insertImageToEditor = (src: string, alt?: string) => {
-    if (!editor) return;
+  const insertSelectedMediaIntoPost = () => {
+    if (!selectedMediaUrl || !editor) return;
     editor
       .chain()
       .focus()
-      .setImage({ src, alt: alt || 'সংবাদ চিত্র' })
+      .setImage({ src: selectedMediaUrl, alt: mediaAltInput || mediaCaptionInput || 'সংবাদ চিত্র' })
       .run();
+    setShowMediaModal(false);
+    setSelectedMediaUrl('');
   };
+
+  const filteredMediaList = mediaList.filter((m) =>
+    m.name.toLowerCase().includes(searchQuery.toLowerCase()) || m.url.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const MenuBar = () => {
     return (
@@ -302,22 +329,6 @@ export default function TiptapEditor({ value, onChange }: TiptapProps) {
             <Quote size={16} />
           </button>
           <div className="w-[1px] h-5 bg-gray-300 mx-1" />
-
-          {/* Add Image Button */}
-          <button
-            type="button"
-            onClick={() => {
-              setImageUploadError('');
-              setShowImageModal(true);
-            }}
-            className="flex items-center gap-1 p-1.5 px-2 rounded hover:bg-blue-50 text-blue-700 font-medium text-xs border border-blue-200 transition"
-            title="খবরের ভেতরে ছবি যোগ করুন"
-          >
-            <ImageIcon size={15} />
-            <span>ছবি যোগ করুন</span>
-          </button>
-
-          <div className="w-[1px] h-5 bg-gray-300 mx-1" />
           <button
             type="button"
             onClick={() => editor.chain().focus().undo().run()}
@@ -353,113 +364,277 @@ export default function TiptapEditor({ value, onChange }: TiptapProps) {
   };
 
   return (
-    <div className="border border-gray-300 rounded-lg focus-within:ring-1 focus-within:ring-red-600 focus-within:border-red-600 overflow-hidden bg-white relative">
-      <MenuBar />
-      <EditorContent editor={editor} />
+    <div className="space-y-2">
+      {/* WordPress Exact "Add Media" Button Above Editor Toolbar */}
+      <div className="flex items-center justify-between pb-1">
+        <button
+          type="button"
+          onClick={handleOpenMediaModal}
+          className="inline-flex items-center gap-2 px-3 py-1.5 bg-white hover:bg-gray-50 text-blue-700 font-medium text-xs sm:text-sm border border-blue-600 hover:border-blue-700 rounded shadow-2xs transition group"
+        >
+          <span className="flex items-center text-blue-600 group-hover:text-blue-700">
+            <ImageIcon size={16} className="mr-0.5" />
+          </span>
+          <span className="font-semibold">Add Media</span>
+        </button>
+      </div>
 
-      {/* Image Insert / Upload Modal */}
-      {showImageModal && (
-        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl shadow-2xl border border-gray-200 w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-150">
-            <div className="bg-gray-900 text-white p-4 flex items-center justify-between">
-              <div className="flex items-center gap-2 font-bold text-sm sm:text-base">
-                <ImageIcon size={20} className="text-blue-400" />
-                <span>খবরের ভেতরে ছবি যোগ করুন</span>
-              </div>
+      <div className="border border-gray-300 rounded-lg focus-within:ring-1 focus-within:ring-red-600 focus-within:border-red-600 overflow-hidden bg-white relative">
+        <MenuBar />
+        <EditorContent editor={editor} />
+      </div>
+
+      {/* WordPress Authentic Modal Window */}
+      {showMediaModal && (
+        <div className="fixed inset-0 z-50 bg-black/65 flex items-center justify-center p-2 sm:p-6 animate-in fade-in duration-200">
+          <div className="bg-white rounded-md shadow-2xl border border-gray-400 w-full max-w-6xl h-[92vh] flex flex-col overflow-hidden text-gray-800 font-sans">
+            {/* Modal Header */}
+            <div className="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between shrink-0">
+              <h2 className="text-xl font-bold text-gray-800">Add media</h2>
               <button
                 type="button"
-                onClick={() => setShowImageModal(false)}
-                className="text-white/80 hover:text-white p-1 rounded-full hover:bg-gray-800 transition"
+                onClick={() => setShowMediaModal(false)}
+                className="text-gray-400 hover:text-gray-700 p-1 rounded hover:bg-gray-100 transition"
               >
-                <X size={18} />
+                <X size={20} />
               </button>
             </div>
 
-            <div className="p-5 space-y-4">
-              {imageUploadError && (
-                <div className="bg-red-50 border border-red-200 text-red-600 text-xs p-2.5 rounded-lg flex items-center gap-2">
-                  <AlertTriangle size={16} className="shrink-0" />
-                  <span>{imageUploadError}</span>
-                </div>
-              )}
+            {/* Modal Body Grid */}
+            <div className="flex flex-1 overflow-hidden">
+              {/* Left Sidebar Menu */}
+              <div className="w-48 bg-gray-50 border-r border-gray-200 py-3 shrink-0 hidden md:block">
+                <div className="text-xs font-semibold text-gray-500 px-4 mb-2 uppercase tracking-wider">Actions</div>
+                <button
+                  type="button"
+                  onClick={() => setActiveSidebarMenu('add_media')}
+                  className={`w-full text-left px-4 py-2 text-xs font-semibold transition flex items-center justify-between ${
+                    activeSidebarMenu === 'add_media'
+                      ? 'text-blue-700 bg-white border-l-4 border-blue-600 shadow-2xs'
+                      : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  Add media
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveSidebarMenu('gallery')}
+                  className={`w-full text-left px-4 py-2 text-xs font-semibold transition ${
+                    activeSidebarMenu === 'gallery'
+                      ? 'text-blue-700 bg-white border-l-4 border-blue-600 shadow-2xs'
+                      : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  Create gallery
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveSidebarMenu('featured')}
+                  className={`w-full text-left px-4 py-2 text-xs font-semibold transition ${
+                    activeSidebarMenu === 'featured'
+                      ? 'text-blue-700 bg-white border-l-4 border-blue-600 shadow-2xs'
+                      : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  Featured image
+                </button>
+              </div>
 
-              {/* Option A: Direct Device Upload */}
-              <div className="space-y-2">
-                <label className="block text-xs font-bold text-gray-700">১. ডিভাইস থেকে ছবি আপলোড করুন</label>
-                <label className="border-2 border-dashed border-blue-200 hover:border-blue-500 rounded-lg p-4 flex flex-col items-center justify-center cursor-pointer bg-blue-50/40 transition">
-                  {imageUploading ? (
-                    <div className="flex items-center gap-2 text-blue-700 text-xs font-bold py-2">
-                      <Loader2 size={18} className="animate-spin" />
-                      <span>ছবি আপলোড হচ্ছে...</span>
-                    </div>
-                  ) : (
-                    <div className="flex flex-col items-center gap-1 text-center py-1">
-                      <Upload size={22} className="text-blue-600 mb-1" />
-                      <span className="text-xs font-bold text-gray-800">ছবি নির্বাচন করতে ক্লিক করুন</span>
-                      <span className="text-[11px] text-gray-500">JPG, PNG, WEBP ইত্যাদি সাপোর্টেড</span>
+              {/* Main Content Area */}
+              <div className="flex-1 flex flex-col overflow-hidden bg-white">
+                {/* Top Tabs Bar */}
+                <div className="border-b border-gray-200 px-4 flex items-center justify-between bg-white shrink-0">
+                  <div className="flex space-x-1 font-medium text-sm">
+                    <button
+                      type="button"
+                      onClick={() => setActiveMediaTab('upload')}
+                      className={`px-4 py-3 border-b-2 text-xs sm:text-sm font-semibold transition ${
+                        activeMediaTab === 'upload'
+                          ? 'border-blue-600 text-blue-600'
+                          : 'border-transparent text-gray-600 hover:text-gray-900'
+                      }`}
+                    >
+                      Upload files
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setActiveMediaTab('library')}
+                      className={`px-4 py-3 border-b-2 text-xs sm:text-sm font-semibold transition ${
+                        activeMediaTab === 'library'
+                          ? 'border-blue-600 text-blue-600'
+                          : 'border-transparent text-gray-600 hover:text-gray-900'
+                      }`}
+                    >
+                      Media Library
+                    </button>
+                  </div>
+
+                  {activeMediaTab === 'library' && (
+                    <div className="relative py-2">
+                      <Search size={14} className="absolute left-2.5 top-4 text-gray-400" />
+                      <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder="Search media items..."
+                        className="pl-8 pr-3 py-1 border border-gray-300 rounded text-xs focus:outline-none focus:ring-1 focus:ring-blue-600 w-48 sm:w-64"
+                      />
                     </div>
                   )}
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageFileUpload}
-                    disabled={imageUploading}
-                    className="hidden"
-                  />
-                </label>
-              </div>
-
-              <div className="flex items-center gap-2 my-2 text-gray-400 text-xs font-medium">
-                <div className="h-[1px] bg-gray-200 flex-1" />
-                <span>অথবা</span>
-                <div className="h-[1px] bg-gray-200 flex-1" />
-              </div>
-
-              {/* Option B: Image URL */}
-              <div className="space-y-2">
-                <label className="block text-xs font-bold text-gray-700">২. ছবি ওয়েবসাইট লিংক (URL)</label>
-                <div className="flex gap-2">
-                  <div className="relative flex-1">
-                    <LinkIcon size={14} className="absolute left-3 top-3 text-gray-400" />
-                    <input
-                      type="url"
-                      value={imageUrlInput}
-                      onChange={(e) => setImageUrlInput(e.target.value)}
-                      placeholder="https://example.com/image.jpg"
-                      className="w-full border border-gray-300 rounded-lg pl-8 pr-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-blue-600"
-                    />
-                  </div>
-                  <button
-                    type="button"
-                    onClick={handleInsertUrlImage}
-                    className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-3 py-2 rounded-lg transition shrink-0"
-                  >
-                    যোগ করুন
-                  </button>
                 </div>
-              </div>
 
-              {/* Optional Caption Field */}
-              <div className="pt-2 border-t border-gray-100">
-                <label className="block text-xs font-medium text-gray-600 mb-1">ছবি বিবরণ / ক্যাপশন (ঐচ্ছিক)</label>
-                <input
-                  type="text"
-                  value={imageCaptionInput}
-                  onChange={(e) => setImageCaptionInput(e.target.value)}
-                  placeholder="ইমেজের বর্ণনা লিখুন"
-                  className="w-full border border-gray-300 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-gray-400"
-                />
+                {/* Tab 1: Upload Files */}
+                {activeMediaTab === 'upload' && (
+                  <div className="flex-1 flex flex-col items-center justify-center p-6 bg-white text-center">
+                    <div className="border-2 border-dashed border-gray-300 rounded-xl p-10 max-w-lg w-full flex flex-col items-center justify-center space-y-4 bg-gray-50/50">
+                      <div className="p-4 bg-blue-50 text-blue-600 rounded-full">
+                        <Upload size={36} />
+                      </div>
+                      <div className="space-y-1">
+                        <h3 className="text-lg font-bold text-gray-800">Drop files to upload</h3>
+                        <p className="text-xs text-gray-500">or click button below to select files from your computer</p>
+                      </div>
+
+                      <label className="bg-white hover:bg-gray-100 text-blue-700 font-semibold border border-blue-600 px-5 py-2 rounded text-xs sm:text-sm cursor-pointer shadow-2xs transition inline-block">
+                        {imageUploading ? 'Uploading Image...' : 'Select Files'}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageFileUpload}
+                          disabled={imageUploading}
+                          className="hidden"
+                        />
+                      </label>
+
+                      {imageUploadError && (
+                        <p className="text-xs text-red-600 font-semibold">{imageUploadError}</p>
+                      )}
+
+                      <p className="text-[11px] text-gray-400 pt-4 border-t border-gray-200 w-full">
+                        Maximum upload file size: 64 MB.
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Tab 2: Media Library */}
+                {activeMediaTab === 'library' && (
+                  <div className="flex-1 flex overflow-hidden">
+                    {/* Media Grid */}
+                    <div className="flex-1 p-4 overflow-y-auto bg-gray-50">
+                      {loadingMediaList ? (
+                        <div className="flex flex-col items-center justify-center h-full text-gray-400 gap-2">
+                          <Loader2 size={24} className="animate-spin text-blue-600" />
+                          <span className="text-xs font-semibold">Loading Media Library...</span>
+                        </div>
+                      ) : filteredMediaList.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center h-full text-gray-400">
+                          <ImageIcon size={40} className="mb-2 opacity-50" />
+                          <p className="text-xs font-semibold">No media items found in library.</p>
+                        </div>
+                      ) : (
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                          {filteredMediaList.map((item) => {
+                            const isSelected = selectedMediaUrl === item.url;
+                            return (
+                              <div
+                                key={item.id}
+                                onClick={() => setSelectedMediaUrl(item.url)}
+                                className={`relative aspect-square rounded border-2 overflow-hidden cursor-pointer group transition bg-gray-200 ${
+                                  isSelected ? 'border-blue-600 ring-2 ring-blue-600/30' : 'border-gray-200 hover:border-gray-400'
+                                }`}
+                              >
+                                <img
+                                  src={item.url}
+                                  alt={item.name}
+                                  className="w-full h-full object-cover transition transform group-hover:scale-105"
+                                  loading="lazy"
+                                />
+                                {isSelected && (
+                                  <div className="absolute top-1 right-1 bg-blue-600 text-white rounded-full p-1 shadow-md">
+                                    <Check size={12} strokeWidth={3} />
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Right Attachment Details Sidebar */}
+                    {selectedMediaUrl && (
+                      <div className="w-72 bg-gray-100 border-l border-gray-200 p-4 overflow-y-auto shrink-0 space-y-4 text-xs">
+                        <h4 className="font-bold text-gray-700 uppercase tracking-wider text-[11px] border-b border-gray-300 pb-2">
+                          Attachment Details
+                        </h4>
+
+                        <div className="aspect-video w-full rounded border border-gray-300 overflow-hidden bg-white shadow-2xs">
+                          <img src={selectedMediaUrl} alt="Selected" className="w-full h-full object-cover" />
+                        </div>
+
+                        <div className="space-y-3 pt-2">
+                          <div>
+                            <label className="block font-semibold text-gray-700 mb-1">Alt Text</label>
+                            <input
+                              type="text"
+                              value={mediaAltInput}
+                              onChange={(e) => setMediaAltInput(e.target.value)}
+                              placeholder="Alternative text for image"
+                              className="w-full border border-gray-300 rounded px-2.5 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-blue-600 bg-white"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block font-semibold text-gray-700 mb-1">Caption</label>
+                            <textarea
+                              value={mediaCaptionInput}
+                              onChange={(e) => setMediaCaptionInput(e.target.value)}
+                              placeholder="Image caption"
+                              rows={2}
+                              className="w-full border border-gray-300 rounded px-2.5 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-blue-600 bg-white"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block font-semibold text-gray-700 mb-1">File URL</label>
+                            <input
+                              type="text"
+                              readOnly
+                              value={selectedMediaUrl}
+                              className="w-full border border-gray-300 rounded px-2 py-1 text-[11px] bg-gray-200 text-gray-600 select-all"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
 
-            <div className="bg-gray-50 px-5 py-3 border-t border-gray-200 flex justify-end">
-              <button
-                type="button"
-                onClick={() => setShowImageModal(false)}
-                className="bg-gray-200 hover:bg-gray-300 text-gray-800 text-xs font-bold px-4 py-2 rounded-lg transition"
-              >
-                বাতিল করুন
-              </button>
+            {/* Modal Footer */}
+            <div className="bg-gray-100 border-t border-gray-200 px-4 py-3 flex items-center justify-between shrink-0">
+              <div className="text-xs text-gray-500 font-medium">
+                {selectedMediaUrl ? '1 item selected' : 'Select an image to insert into post'}
+              </div>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowMediaModal(false)}
+                  className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold px-4 py-2 rounded text-xs transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  disabled={!selectedMediaUrl}
+                  onClick={insertSelectedMediaIntoPost}
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-5 py-2 rounded text-xs transition disabled:opacity-40 disabled:cursor-not-allowed shadow-2xs"
+                >
+                  Insert into post
+                </button>
+              </div>
             </div>
           </div>
         </div>

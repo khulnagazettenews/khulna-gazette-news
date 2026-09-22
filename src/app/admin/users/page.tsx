@@ -305,9 +305,59 @@ export default function RoleManagementPage() {
         </div>
       )}
 
-      {/* Users table */}
+      {/* Users Desktop Table & Mobile Responsive Cards */}
       <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xs overflow-hidden">
-        <div className="overflow-x-auto">
+        {/* Mobile View: Responsive Cards List */}
+        <div className="block md:hidden divide-y divide-slate-100">
+          {loading ? (
+            <div className="p-8 text-center text-slate-400 font-bold">
+              <div className="animate-spin rounded-full h-7 w-7 border-b-2 border-red-600 mx-auto mb-2"></div>
+              Loading users...
+            </div>
+          ) : users.length === 0 ? (
+            <div className="p-8 text-center text-slate-400 font-medium">No users found.</div>
+          ) : (
+            users.map((user) => (
+              <div key={user.id} className="p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-slate-200 to-slate-100 border border-slate-200 text-slate-700 flex items-center justify-center font-black text-sm shrink-0">
+                      {user.name.charAt(0)}
+                    </div>
+                    <div>
+                      <span className="font-extrabold text-slate-900 block text-sm">{user.name}</span>
+                      <span className="text-xs text-slate-500 font-medium block truncate max-w-[180px]">{user.email}</span>
+                    </div>
+                  </div>
+                  {getRoleBadge(user.role)}
+                </div>
+
+                <div className="flex items-center justify-between text-xs text-slate-500 pt-2 border-t border-slate-100">
+                  <span>Joined {new Date(user.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => openEditModal(user)}
+                      disabled={user.role === 'SUPER_ADMIN' && role === 'ADMIN'}
+                      className="px-3 py-1 bg-blue-50 text-blue-700 font-bold rounded-lg border border-blue-200 text-xs"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(user)}
+                      disabled={user.id === (session.user as any).id || (user.role === 'SUPER_ADMIN' && role === 'ADMIN')}
+                      className="px-3 py-1 bg-red-50 text-red-700 font-bold rounded-lg border border-red-200 text-xs disabled:opacity-30"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Desktop View: Full Table */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full border-collapse text-left">
             <thead>
               <tr className="bg-slate-50/70 border-b border-slate-150 text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">

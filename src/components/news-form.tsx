@@ -366,18 +366,11 @@ export default function NewsForm({ initialData, newsId }: NewsFormProps) {
                 </button>
               </div>
             ) : (
-              role === 'CONTRIBUTOR' ? (
-                <div className="border-2 border-dashed border-gray-250 rounded-lg h-36 flex flex-col items-center justify-center bg-gray-50 text-gray-400 select-none">
-                  <Upload className="text-gray-300 mb-2" size={24} />
-                  <span className="text-xs">Image upload restricted for contributors</span>
-                </div>
-              ) : (
-                <label className="border-2 border-dashed border-gray-300 rounded-lg h-36 flex flex-col items-center justify-center cursor-pointer hover:border-red-650 transition bg-gray-50">
-                  <Upload className="text-gray-400 mb-2" size={24} />
-                  <span className="text-xs text-gray-500">{uploading ? 'Uploading...' : 'Select Featured Image'}</span>
-                  <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
-                </label>
-              )
+              <label className="border-2 border-dashed border-gray-300 rounded-lg h-36 flex flex-col items-center justify-center cursor-pointer hover:border-red-600 transition bg-gray-50">
+                <Upload className="text-gray-400 mb-2" size={24} />
+                <span className="text-xs text-gray-500">{uploading ? 'Uploading...' : 'Select Featured Image'}</span>
+                <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
+              </label>
             )}
 
             <div>
