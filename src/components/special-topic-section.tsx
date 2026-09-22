@@ -16,12 +16,14 @@ interface SpecialNewsItem {
 interface SpecialTopicSectionProps {
   title?: string;
   bannerSubtitle?: string;
+  bannerImage?: string;
   news: SpecialNewsItem[];
 }
 
 export default function SpecialTopicSection({
   title = 'গেজেট প্রতিবেদন',
   bannerSubtitle = 'বিশেষ ও এক্সক্লুসিভ সংবাদ, আপনার জন্য প্রতিদিন',
+  bannerImage,
   news,
 }: SpecialTopicSectionProps) {
   if (!news || news.length === 0) return null;
@@ -61,33 +63,45 @@ export default function SpecialTopicSection({
       className="mt-1 mb-5 rounded-2xl overflow-hidden bg-[#f3f7f6] p-2 sm:p-3 border border-gray-200/80 shadow-xs"
     >
       {/* ================= CAMPAIGN BANNER HEADER ================= */}
-      <div className="relative w-full bg-[#02474d] text-white px-4 sm:px-5 py-3 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3 shadow-sm border border-teal-600/40 overflow-hidden">
-        <div className="flex flex-col sm:flex-row items-center gap-3 text-center sm:text-left">
-          <div className="w-9 h-9 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 text-amber-300 flex items-center justify-center font-extrabold text-base shadow-inner shrink-0 select-none">
-            ★
-          </div>
-          <div>
-            <h4 className="text-base sm:text-lg font-black tracking-tight text-white">
-              {title}
-            </h4>
-            {bannerSubtitle && (
-              <p className="text-xs text-teal-100/90 font-medium mt-0.5">
-                {bannerSubtitle}
-              </p>
-            )}
-          </div>
-        </div>
-
-        {itemCenter && (
-          <Link
-            href={`/${itemCenter.category?.slug || 'news'}/${itemCenter.id}`}
-            className="inline-flex items-center gap-1.5 bg-white text-[#02474d] hover:bg-slate-100 font-extrabold text-xs sm:text-sm px-4 py-1.5 rounded-full shadow-2xs hover:shadow-sm transition-all duration-200 shrink-0 group border border-white"
-          >
-            <span>বিস্তারিত দেখুন</span>
-            <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform duration-200 text-[#02474d]" />
+      {bannerImage ? (
+        <div className="relative w-full overflow-hidden rounded-xl mb-3 border border-gray-200 shadow-xs">
+          <Link href="/borshopurti-crodpotro" className="block relative w-full group">
+            <img
+              src={bannerImage}
+              alt={title}
+              className="w-full h-auto object-cover block group-hover:scale-[1.01] transition duration-300"
+            />
           </Link>
-        )}
-      </div>
+        </div>
+      ) : (
+        <div className="relative w-full bg-[#02474d] text-white px-4 sm:px-5 py-3 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3 shadow-sm border border-teal-600/40 overflow-hidden">
+          <div className="flex flex-col sm:flex-row items-center gap-3 text-center sm:text-left">
+            <div className="w-9 h-9 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 text-amber-300 flex items-center justify-center font-extrabold text-base shadow-inner shrink-0 select-none">
+              ★
+            </div>
+            <div>
+              <h4 className="text-base sm:text-lg font-black tracking-tight text-white">
+                {title}
+              </h4>
+              {bannerSubtitle && (
+                <p className="text-xs text-teal-100/90 font-medium mt-0.5">
+                  {bannerSubtitle}
+                </p>
+              )}
+            </div>
+          </div>
+
+          {itemCenter && (
+            <Link
+              href={`/${itemCenter.category?.slug || 'news'}/${itemCenter.id}`}
+              className="inline-flex items-center gap-1.5 bg-white text-[#02474d] hover:bg-slate-100 font-extrabold text-xs sm:text-sm px-4 py-1.5 rounded-full shadow-2xs hover:shadow-sm transition-all duration-200 shrink-0 group border border-white"
+            >
+              <span>বিস্তারিত দেখুন</span>
+              <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform duration-200 text-[#02474d]" />
+            </Link>
+          )}
+        </div>
+      )}
 
       {/* ================= DYNAMIC CARDS GRID ================= */}
       <section className="pt-1.5 sm:pt-2">

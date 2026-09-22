@@ -373,6 +373,7 @@ export default async function HomePage() {
               <SpecialTopicSection
                 title={activeSpecialTopic.title}
                 bannerSubtitle={activeSpecialTopic.bannerSubtitle || undefined}
+                bannerImage={activeSpecialTopic.bannerImage || '/uploads/sidebar/anniversary_promo.jpg'}
                 news={serializeList(finalSpecialTopicNews)}
               />
             )}

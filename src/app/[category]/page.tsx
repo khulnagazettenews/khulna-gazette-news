@@ -57,6 +57,11 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
     'lifestyle': ['lifestyle', 'life-style'],
     'life-style': ['lifestyle', 'life-style'],
     'gazette-exclusive': ['gazette-exclusive'],
+    'anniversary-supplement': ['borshopurti-crodpotro', 'anniversary-supplement', 'crodpotro'],
+    'borshopurti-crodpotro': ['borshopurti-crodpotro', 'anniversary-supplement', 'crodpotro'],
+    'crodpotro': ['borshopurti-crodpotro', 'anniversary-supplement', 'crodpotro'],
+    'mukto-bhabna': ['muktobhabna', 'free-thinking', 'motamot'],
+    'muktobhabna': ['muktobhabna', 'free-thinking', 'motamot'],
   };
 
   const targetAliases = slugAliases[category] || [category];

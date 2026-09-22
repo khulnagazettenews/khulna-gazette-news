@@ -169,6 +169,30 @@ export default function SidebarWidgets({
         </div>
       )}
 
+      {/* 2.5. ANNIVERSARY SUPPLEMENT WIDGET (বর্ষপূর্তির ক্রোড়পত্র) */}
+      <div className="bg-white rounded border border-gray-200 shadow-2xs overflow-hidden font-sans">
+        <div 
+          className="bg-[#353d4c] text-white py-1 px-2 text-center font-normal border-b border-gray-200"
+          style={{
+            fontFamily: 'Bangla, sans-serif',
+            fontSize: '20px',
+            fontWeight: 400,
+            lineHeight: '22px',
+            letterSpacing: '-0.2px',
+            textAlign: 'center',
+          }}
+        >
+          বর্ষপূর্তির ক্রোড়পত্র
+        </div>
+        <Link href="/borshopurti-crodpotro" className="block relative w-full overflow-hidden bg-slate-900 group p-1.5 rounded-xs">
+          <img
+            src="/uploads/sidebar/anniversary_promo.jpg"
+            alt="বর্ষপূর্তির ক্রোড়পত্র"
+            className="w-full h-auto object-cover rounded-xs group-hover:scale-105 transition duration-500 shadow-md block"
+          />
+        </Link>
+      </div>
+
       {/* 3. GAZETTE EXCLUSIVE NEWS BOX (গেজেট এক্সক্লুসিভ - 3rd) */}
       <div className="bg-white rounded border border-gray-200 shadow-2xs overflow-hidden">
         <div 
