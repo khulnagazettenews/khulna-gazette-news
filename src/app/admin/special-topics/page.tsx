@@ -256,8 +256,8 @@ export default function SpecialTopicManagement() {
     if (selectedNewsIds.includes(id)) {
       setSelectedNewsIds(selectedNewsIds.filter((item) => item !== id));
     } else {
-      if (selectedNewsIds.length >= 6) {
-        alert('Maximum of 6 posts can be selected.');
+      if (selectedNewsIds.length >= 5) {
+        alert('Maximum of 5 posts can be selected for Special Topic Sections.');
         return;
       }
       setSelectedNewsIds([...selectedNewsIds, id]);
@@ -391,7 +391,7 @@ export default function SpecialTopicManagement() {
             <div className="space-y-2.5 border-t border-slate-100 pt-4">
               <div className="flex items-center justify-between">
                 <label className="text-xs font-black text-slate-800">
-                  Select Posts for Section ({selectedNewsIds.length}/6)
+                  Select Posts for Section ({selectedNewsIds.length}/5)
                 </label>
                 {selectedNewsIds.length > 0 && (
                   <button

@@ -105,7 +105,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   if (['SUPER_ADMIN', 'ADMIN', 'EDITOR', 'SUB_EDITOR'].includes(role)) {
     navigation.push(
       { name: 'Breaking Ticker', href: '/admin/breaking-news', icon: Sparkles },
-      { name: 'Reorder Posts', href: '/admin/reorder', icon: ArrowUpDown },
+      { name: 'Reorder', href: '/admin/reorder', icon: ArrowUpDown },
       {
         name: 'Categories',
         icon: FolderKanban,

@@ -144,7 +144,7 @@ export async function POST(req: Request) {
       };
     });
 
-    const canPublish = ['SUPER_ADMIN', 'ADMIN', 'EDITOR'].includes(userRole);
+    const canPublish = ['SUPER_ADMIN', 'ADMIN', 'EDITOR', 'AUTHOR'].includes(userRole);
     const finalStatus = canPublish ? (status || 'PUBLISHED') : 'DRAFT';
     const finalIsBreaking = canPublish ? !!isBreaking : false;
     const finalIsFeatured = canPublish ? !!isFeatured : false;

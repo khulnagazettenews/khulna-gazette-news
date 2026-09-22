@@ -33,7 +33,7 @@ export default function NewsForm({ initialData, newsId }: NewsFormProps) {
   const role = (session?.user as any)?.role || 'REPORTER';
   const isReporterOrContributor = ['REPORTER', 'CONTRIBUTOR'].includes(role);
   const isSubEditor = role === 'SUB_EDITOR';
-  const canPublish = ['SUPER_ADMIN', 'ADMIN', 'EDITOR'].includes(role);
+  const canPublish = ['SUPER_ADMIN', 'ADMIN', 'EDITOR', 'AUTHOR'].includes(role);
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [subCategories, setSubCategories] = useState<Category[]>([]);
@@ -446,6 +446,38 @@ export default function NewsForm({ initialData, newsId }: NewsFormProps) {
                 </select>
               </div>
             )}
+
+            {/* Additional Categories Checkboxes (Multi-select) */}
+            <div className="pt-2 border-t border-gray-100">
+              <label className="block text-xs font-bold text-gray-700 mb-2">
+                Additional Categories & Tags (Multi-select)
+              </label>
+              <div className="max-h-40 overflow-y-auto border border-gray-200 rounded-lg p-2.5 bg-gray-50/50 space-y-1.5">
+                {categories.map((c) => (
+                  <label key={c.id} className="flex items-center gap-2 cursor-pointer text-xs font-medium text-gray-700 hover:bg-white p-1 rounded transition">
+                    <input
+                      type="checkbox"
+                      checked={categoryId === c.id || tagsInput.toLowerCase().includes(c.name.toLowerCase())}
+                      onChange={(e) => {
+                        const currentTags = tagsInput.split(',').map((t: string) => t.trim()).filter(Boolean);
+                        if (e.target.checked) {
+                          if (!currentTags.includes(c.name)) {
+                            setTagsInput([...currentTags, c.name].join(', '));
+                          }
+                        } else {
+                          setTagsInput(currentTags.filter((t: string) => t.toLowerCase() !== c.name.toLowerCase()).join(', '));
+                        }
+                      }}
+                      className="rounded text-red-600 focus:ring-red-600"
+                    />
+                    <span>{c.name}</span>
+                  </label>
+                ))}
+              </div>
+              <p className="text-[10px] text-gray-500 mt-1">
+                Selected categories will also be linked via post tags to appear across multiple category streams.
+              </p>
+            </div>
 
             <div>
               <label className="block text-xs font-medium text-gray-700 mb-1">Reporter Name</label>

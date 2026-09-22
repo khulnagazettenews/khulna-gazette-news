@@ -225,16 +225,17 @@ export default function RoleManagementPage() {
             <span>Editor</span>
           </span>
         );
+      case 'AUTHOR':
+      case 'REPORTER':
+        return (
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200">
+            <span>Author</span>
+          </span>
+        );
       case 'SUB_EDITOR':
         return (
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black bg-indigo-50 text-indigo-700 border border-indigo-200">
             <span>Sub Editor</span>
-          </span>
-        );
-      case 'REPORTER':
-        return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200">
-            <span>Reporter</span>
           </span>
         );
       case 'CONTRIBUTOR':
@@ -452,11 +453,10 @@ export default function RoleManagementPage() {
                   onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                   className="w-full px-3.5 py-2.5 border border-slate-200 rounded-2xl focus:outline-none focus:border-red-500 bg-slate-50 font-bold transition cursor-pointer"
                 >
-                  <option value="SUBSCRIBER">Subscriber</option>
-                  <option value="CONTRIBUTOR">Contributor</option>
+                  <option value="AUTHOR">Author (Publish own posts)</option>
                   <option value="REPORTER">Reporter</option>
                   <option value="SUB_EDITOR">Sub Editor</option>
-                  <option value="EDITOR">Editor</option>
+                  <option value="EDITOR">Editor (Publish & Edit all posts)</option>
                   <option value="ADVERTISEMENT_MANAGER">Ad Manager</option>
                   <option value="ADMIN">Admin</option>
                   {role === 'SUPER_ADMIN' && (
@@ -569,11 +569,10 @@ export default function RoleManagementPage() {
                   disabled={currentUser.id === (session.user as any).id}
                   className="w-full px-3.5 py-2.5 border border-slate-200 rounded-2xl focus:outline-none focus:border-red-500 bg-slate-50 font-bold transition cursor-pointer disabled:opacity-50"
                 >
-                  <option value="SUBSCRIBER">Subscriber</option>
-                  <option value="CONTRIBUTOR">Contributor</option>
+                  <option value="AUTHOR">Author (Publish own posts)</option>
                   <option value="REPORTER">Reporter</option>
                   <option value="SUB_EDITOR">Sub Editor</option>
-                  <option value="EDITOR">Editor</option>
+                  <option value="EDITOR">Editor (Publish & Edit all posts)</option>
                   <option value="ADVERTISEMENT_MANAGER">Ad Manager</option>
                   <option value="ADMIN">Admin</option>
                   {role === 'SUPER_ADMIN' && (

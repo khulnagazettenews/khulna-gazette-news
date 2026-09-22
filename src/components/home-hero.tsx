@@ -49,9 +49,9 @@ function getExcerpt(content: string) {
 export default function HomeHero({ news }: HomeHeroProps) {
   if (!news || news.length === 0) return null;
 
-  // Main Lead news takes news[0], remaining items go to 3-column grid below
+  // Main Lead news takes news[0], remaining items go to 3-column grid below (Top 15 News)
   const mainLead = news[0];
-  const gridNews = news.length > 1 ? news.slice(1, 13) : [];
+  const gridNews = news.length > 1 ? news.slice(1, 16) : [];
 
   return (
     <div className="space-y-5 sm:space-y-6">

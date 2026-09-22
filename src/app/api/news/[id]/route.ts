@@ -111,7 +111,7 @@ export async function PUT(
       };
     });
 
-    const canPublish = ['SUPER_ADMIN', 'ADMIN', 'EDITOR'].includes(userRole);
+    const canPublish = ['SUPER_ADMIN', 'ADMIN', 'EDITOR', 'AUTHOR'].includes(userRole);
     let finalStatus = existingNews.status;
     let finalIsBreaking = existingNews.isBreaking;
     let finalIsFeatured = existingNews.isFeatured;

@@ -1,24 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { 
-  ArrowLeft, 
-  ArrowRight, 
-  GripVertical, 
-  Save, 
-  Sparkles, 
-  Search, 
-  Plus, 
-  Trash2, 
-  Check, 
-  AlertCircle, 
-  Layout, 
-  Star,
-  Newspaper,
-  Info,
-  Grid,
-  List
-} from 'lucide-react';
 
 interface NewsItem {
   id: string;
@@ -36,90 +18,81 @@ interface CategoryOption {
 }
 
 export default function AdminReorderPage() {
-  const [selectedCategory, setSelectedCategory] = useState<string>('top_news');
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [categories, setCategories] = useState<CategoryOption[]>([]);
   const [newsList, setNewsList] = useState<NewsItem[]>([]);
-  const [poolNews, setPoolNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [saving, setSaving] = useState<boolean>(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
-  
-  // Drag and drop state
+
+  // Manual sorting toggle
+  const [manualSorting, setManualSorting] = useState<'yes' | 'no'>('yes');
+  const [overrideOrderby, setOverrideOrderby] = useState<boolean>(false);
+
+  // Range controls
+  const [postRangeStart, setPostRangeStart] = useState<number>(1);
+  const [postRangeEnd, setPostRangeEnd] = useState<number>(20);
+  const [moveToRankInput, setMoveToRankInput] = useState<string>('');
+  const [selectedItems, setSelectedItems] = useState<string[]>([]);
+
+  // Drag state
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
-  
-  // Add modal state
-  const [modalOpen, setModalOpen] = useState<boolean>(false);
-  const [searchQuery, setSearchQuery] = useState<string>('');
 
-  // Fetch news data on category change
+  // Fetch initial category list & initial news
   useEffect(() => {
-    fetchReorderData(selectedCategory);
-  }, [selectedCategory]);
+    fetchCategoriesAndNews('');
+  }, []);
 
-  const fetchReorderData = async (catSlug: string) => {
+  const fetchCategoriesAndNews = async (catSlug: string) => {
     setLoading(true);
     setMessage(null);
     try {
-      const res = await fetch(`/api/reorder?category=${catSlug}`);
+      const res = await fetch(`/api/reorder?category=${catSlug || 'top_news'}`);
       const data = await res.json();
 
       if (res.ok) {
         setCategories(data.categories || []);
         setNewsList(data.news || []);
-        setPoolNews(data.poolNews || []);
+        if (!selectedCategory && data.categories && data.categories.length > 0) {
+          // If no category explicitly selected yet, keep selectedCategory as passed or default
+          if (catSlug) {
+            setSelectedCategory(catSlug);
+          }
+        }
       } else {
-        setMessage({ type: 'error', text: data.error || 'Failed to load grid data' });
+        setMessage({ type: 'error', text: data.error || 'Failed to fetch categories' });
       }
     } catch (err) {
-      setMessage({ type: 'error', text: 'Server connection failed' });
+      setMessage({ type: 'error', text: 'Error connecting to server' });
     } finally {
       setLoading(false);
     }
   };
 
-  // Reorder Functions
-  const moveItem = (fromIndex: number, toIndex: number) => {
-    if (toIndex < 0 || toIndex >= newsList.length) return;
-    const updated = [...newsList];
-    const [moved] = updated.splice(fromIndex, 1);
-    updated.splice(toIndex, 0, moved);
-    setNewsList(updated);
-  };
-
-  const makeMainLead = (index: number) => {
-    // Main Lead is Position #1 (index 0)
-    if (index === 0) return;
-    moveItem(index, 0);
-  };
-
-  const removeItem = (index: number) => {
-    const updated = [...newsList];
-    updated.splice(index, 1);
-    setNewsList(updated);
-  };
-
-  const addNewsToTop = (item: NewsItem) => {
-    if (newsList.some((n) => n.id === item.id)) {
-      alert('This article is already in the grid');
-      return;
+  const handleCategoryChange = (catSlug: string) => {
+    setSelectedCategory(catSlug);
+    if (catSlug) {
+      fetchCategoriesAndNews(catSlug);
+    } else {
+      setNewsList([]);
     }
-    setNewsList([item, ...newsList]);
-    setModalOpen(false);
   };
 
-  // Drag and drop handlers
-  const handleDragStart = (index: number) => {
+  // Drag and Drop
+  const handleDragStart = (e: React.DragEvent, index: number) => {
     setDraggedIndex(index);
+    e.dataTransfer.effectAllowed = 'move';
   };
 
   const handleDragOver = (e: React.DragEvent, index: number) => {
     e.preventDefault();
     if (draggedIndex === null || draggedIndex === index) return;
-    
+
     const updated = [...newsList];
-    const item = updated[draggedIndex];
+    const draggedItem = updated[draggedIndex];
     updated.splice(draggedIndex, 1);
-    updated.splice(index, 0, item);
+    updated.splice(index, 0, draggedItem);
+
     setDraggedIndex(index);
     setNewsList(updated);
   };
@@ -128,8 +101,44 @@ export default function AdminReorderPage() {
     setDraggedIndex(null);
   };
 
-  // Save Order to Backend
+  // Item Selection
+  const toggleSelectItem = (id: string) => {
+    setSelectedItems((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  };
+
+  // Move items to a specific rank
+  const handleMoveToRank = () => {
+    const targetRank = parseInt(moveToRankInput, 10);
+    if (isNaN(targetRank) || targetRank < 1 || targetRank > newsList.length) {
+      alert(`Please enter a valid rank between 1 and ${newsList.length}`);
+      return;
+    }
+
+    if (selectedItems.length === 0) {
+      alert('Please select one or multiple items to move by clicking on them.');
+      return;
+    }
+
+    const itemsToMove = newsList.filter((item) => selectedItems.includes(item.id));
+    const remainingItems = newsList.filter((item) => !selectedItems.includes(item.id));
+
+    const insertIndex = targetRank - 1;
+    const newOrder = [
+      ...remainingItems.slice(0, insertIndex),
+      ...itemsToMove,
+      ...remainingItems.slice(insertIndex),
+    ];
+
+    setNewsList(newOrder);
+    setMoveToRankInput('');
+    setSelectedItems([]);
+  };
+
+  // Save Order
   const handleSaveOrder = async () => {
+    if (!selectedCategory) return;
     setSaving(true);
     setMessage(null);
     try {
@@ -145,374 +154,269 @@ export default function AdminReorderPage() {
 
       const data = await res.json();
       if (res.ok) {
-        setMessage({ type: 'success', text: data.message || 'Homepage grid position reordered successfully!' });
+        setMessage({ type: 'success', text: data.message || 'News reordered successfully!' });
       } else {
-        setMessage({ type: 'error', text: data.error || 'Failed to save reorder configuration' });
+        setMessage({ type: 'error', text: data.error || 'Failed to save order' });
       }
     } catch (err) {
-      setMessage({ type: 'error', text: 'An error occurred while saving' });
+      setMessage({ type: 'error', text: 'An error occurred while saving order.' });
     } finally {
       setSaving(false);
     }
   };
 
-  const filteredPool = poolNews.filter(
-    (item) =>
-      item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.category?.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  // Render a Single Grid Card Component
-  const renderGridCard = (item: NewsItem | undefined, index: number) => {
-    const isMainLead = index === 0 && selectedCategory === 'top_news';
-
-    if (!item) {
-      return (
-        <div 
-          onClick={() => setModalOpen(true)}
-          className="border-2 border-dashed border-slate-300 rounded-2xl p-6 flex flex-col items-center justify-center text-slate-400 hover:border-red-400 hover:text-red-600 transition cursor-pointer bg-slate-50/50 min-h-[160px]"
-        >
-          <Plus size={24} />
-          <span className="text-xs font-bold mt-1">Position #{index + 1} Empty</span>
-          <span className="text-[10px] text-slate-400 mt-0.5">Click to add article</span>
-        </div>
-      );
+  // Reset Order
+  const handleResetOrder = () => {
+    if (confirm('Are you sure you want to reset order for this category? This cannot be undone!')) {
+      if (selectedCategory) {
+        fetchCategoriesAndNews(selectedCategory);
+      }
     }
-
-    return (
-      <div
-        key={item.id}
-        draggable
-        onDragStart={() => handleDragStart(index)}
-        onDragOver={(e) => handleDragOver(e, index)}
-        onDragEnd={handleDragEnd}
-        className={`bg-white rounded-2xl border transition-all duration-200 overflow-hidden flex flex-col justify-between group ${
-          isMainLead
-            ? 'border-2 border-red-500 shadow-xl ring-4 ring-red-500/15 bg-gradient-to-b from-red-50/40 via-white to-white'
-            : 'border-slate-200/90 shadow-xs hover:shadow-md hover:border-slate-300'
-        }`}
-      >
-        {/* Card Header Tag */}
-        <div className={`px-3 py-1.5 flex items-center justify-between border-b text-[11px] font-black ${
-          isMainLead 
-            ? 'bg-gradient-to-r from-red-600 to-rose-600 text-white border-red-600' 
-            : 'bg-slate-50 text-slate-700 border-slate-100'
-        }`}>
-          <div className="flex items-center gap-1.5">
-            <span className="cursor-grab active:cursor-grabbing hover:opacity-80 p-0.5" title="Drag to reorder">
-              <GripVertical size={14} />
-            </span>
-            <span>{isMainLead ? '⭐ Position #1 (MAIN LEAD)' : `Position #${index + 1}`}</span>
-          </div>
-
-          {item.category && (
-            <span className={`text-[10px] px-2 py-0.5 rounded ${isMainLead ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-800'}`}>
-              {item.category.name}
-            </span>
-          )}
-        </div>
-
-        {/* Thumbnail Image */}
-        <div className={`relative overflow-hidden bg-slate-100 ${isMainLead ? 'aspect-[16/9]' : 'aspect-video'}`}>
-          {item.featuredImage ? (
-            <img src={item.featuredImage} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center text-slate-400 bg-slate-100">
-              <Newspaper size={24} />
-            </div>
-          )}
-          {isMainLead && (
-            <span className="absolute top-2 left-2 bg-red-600 text-white font-extrabold text-[10px] px-2.5 py-1 rounded shadow-md uppercase tracking-wider flex items-center gap-1">
-              <Star size={12} className="fill-white text-white" />
-              MAIN LEAD (Top Story)
-            </span>
-          )}
-        </div>
-
-        {/* Title Content */}
-        <div className="p-3 space-y-1.5 flex-1 flex flex-col justify-between">
-          <h4 className={`font-extrabold text-slate-900 leading-snug line-clamp-2 ${isMainLead ? 'text-sm sm:text-base text-red-950 font-black' : 'text-xs'}`}>
-            {item.title}
-          </h4>
-
-          {/* Action Bar */}
-          <div className="flex items-center justify-between border-t border-slate-100 pt-2 mt-2 gap-1">
-            {selectedCategory === 'top_news' && index !== 0 && (
-              <button
-                type="button"
-                onClick={() => makeMainLead(index)}
-                className="text-[10px] font-black text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 px-2.5 py-1 rounded-lg transition flex items-center gap-1 cursor-pointer"
-                title="Set as Main Lead"
-              >
-                <Star size={12} className="fill-amber-500 text-amber-500" />
-                <span>Make Main Lead</span>
-              </button>
-            )}
-
-            <div className="flex items-center gap-1 ml-auto">
-              <button
-                type="button"
-                onClick={() => moveItem(index, index - 1)}
-                disabled={index === 0}
-                className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 disabled:opacity-30 transition"
-                title="Move Left/Up"
-              >
-                <ArrowLeft size={13} />
-              </button>
-
-              <button
-                type="button"
-                onClick={() => moveItem(index, index + 1)}
-                disabled={index === newsList.length - 1}
-                className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 disabled:opacity-30 transition"
-                title="Move Right/Down"
-              >
-                <ArrowRight size={13} />
-              </button>
-
-              <button
-                type="button"
-                onClick={() => removeItem(index)}
-                className="p-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 transition"
-                title="Remove"
-              >
-                <Trash2 size={13} />
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
   };
 
+  // Get name of selected category
+  const selectedCatObj = categories.find((c) => c.slug === selectedCategory);
+  const selectedCategoryName = selectedCatObj ? selectedCatObj.name : selectedCategory === 'top_news' ? 'টপ নিউজ (Top News)' : '';
+
   return (
-    <div className="space-y-6 max-w-7xl mx-auto pb-12 font-sans">
-      
-      {/* 1. Header Banner */}
-      <div className="bg-white rounded-3xl p-6 shadow-xs border border-slate-200/80 flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="min-h-screen bg-[#f1f1f1] text-[#2c3338] font-sans -m-4 sm:-m-6 lg:-m-8 p-6 sm:p-8">
+      <div className="max-w-6xl mx-auto space-y-6">
+        
+        {/* Page Title Header matching WordPress UI */}
         <div>
-          <div className="flex items-center gap-2 text-xs font-bold text-red-600 mb-1">
-            <Grid size={16} />
-            <span>Visual Layout Grid Manager</span>
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-            News Position Reorder
+          <h1 className="text-2xl sm:text-3xl font-normal text-[#1d2327] tracking-tight mb-2">
+            Manually rank your &quot;Posts&quot;
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            Drag and drop cards or use arrow keys to customize homepage post positions.
+          <p className="text-sm text-[#50575e]">
+            Select a taxonomy to sort Posts.
           </p>
         </div>
 
-        <div className="flex items-center gap-3 shrink-0">
-          <button
-            onClick={() => setModalOpen(true)}
-            className="inline-flex items-center gap-1.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-extrabold px-4 py-2.5 rounded-2xl shadow-xs transition"
+        {/* Taxonomy / Category Dropdown Select */}
+        <div className="space-y-1 max-w-md">
+          <select
+            value={selectedCategory}
+            onChange={(e) => handleCategoryChange(e.target.value)}
+            className="w-full bg-white border border-[#8c8f94] rounded px-3 py-2 text-sm font-normal text-[#2c3338] focus:outline-none focus:border-[#2271b1] focus:ring-1 focus:ring-[#2271b1] shadow-inner"
           >
-            <Plus size={16} />
-            <span>Add Article</span>
-          </button>
-          
-          <button
-            onClick={handleSaveOrder}
-            disabled={saving || loading}
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white text-xs sm:text-sm font-black px-5 py-2.5 rounded-2xl shadow-md shadow-red-600/20 transition duration-200 disabled:opacity-50"
-          >
-            <Save size={16} />
-            <span>{saving ? 'Saving...' : 'Save Reordered Grid'}</span>
-          </button>
+            <option value="">Select</option>
+            <option value="top_news">টপ নিউজ / Top News (Homepage Lead Grid)</option>
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.slug}>
+                {cat.name}
+              </option>
+            ))}
+          </select>
+          <p className="text-xs text-[#646970]">
+            Greyed-out categories contain too few posts and aren&apos;t available for sorting.
+          </p>
         </div>
-      </div>
 
-      {/* Toast Alert */}
-      {message && (
-        <div className={`p-4 rounded-2xl border flex items-center gap-3 text-xs font-bold ${
-          message.type === 'success' ? 'bg-emerald-50 text-emerald-800 border-emerald-200' : 'bg-red-50 text-red-800 border-red-200'
-        }`}>
-          {message.type === 'success' ? <Check size={18} /> : <AlertCircle size={18} />}
-          <span>{message.text}</span>
-        </div>
-      )}
-
-      {/* 2. Category Selector Tabs */}
-      <div className="bg-white rounded-2xl p-4 shadow-xs border border-slate-200/80 space-y-3">
-        <label className="text-xs font-extrabold text-slate-700 uppercase tracking-wider block">
-          Select Homepage Section or Category:
-        </label>
-        
-        <div className="flex flex-wrap gap-2">
-          <button
-            onClick={() => setSelectedCategory('top_news')}
-            className={`px-4 py-2 rounded-xl text-xs font-black transition flex items-center gap-1.5 ${
-              selectedCategory === 'top_news'
-                ? 'bg-gradient-to-r from-red-600 to-rose-600 text-white shadow-md shadow-red-600/20'
-                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-            }`}
-          >
-            <Sparkles size={14} />
-            <span>⭐ Top News (Homepage Grid)</span>
-          </button>
-
-          {categories.map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => setSelectedCategory(cat.slug)}
-              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition ${
-                selectedCategory === cat.slug
-                  ? 'bg-slate-900 text-white shadow-xs'
-                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-              }`}
-            >
-              {cat.name}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* 3. Visual Grid Section */}
-      {loading ? (
-        <div className="bg-white rounded-3xl p-12 text-center shadow-xs border border-slate-200">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600 mx-auto"></div>
-          <p className="text-xs text-slate-500 font-bold mt-3">Loading news grid...</p>
-        </div>
-      ) : selectedCategory === 'top_news' ? (
-        /* Top News Homepage Visual Layout Grid */
-        <div className="space-y-6">
-          {/* Main Hero Visual Section (3 Columns) */}
-          <div className="bg-slate-900/90 text-white p-5 rounded-3xl border border-slate-800 space-y-4 shadow-xl">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-              <span className="font-extrabold text-xs text-amber-400 uppercase tracking-widest flex items-center gap-1.5">
-                <Sparkles size={16} />
-                <span>Homepage Hero Grid Preview</span>
-              </span>
-              <span className="text-[11px] text-slate-400 font-bold">Position #1 = Center Main Lead</span>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-              {/* Main Lead Banner (Position #1) */}
-              <div className="lg:col-span-12 space-y-3">
-                <div className="text-[11px] font-black text-red-400 border-b border-slate-800 pb-1 flex items-center justify-between">
-                  <span>⭐ Main Lead Article — Position #1</span>
-                  <span className="text-white text-[10px] bg-red-600 px-2.5 py-0.5 rounded font-extrabold">MAIN LEAD BANNER</span>
-                </div>
-                {renderGridCard(newsList[0], 0)}
-              </div>
-
-              {/* Sub-grid of remaining top news cards (Positions #2 to #12) */}
-              <div className="lg:col-span-12 pt-3 border-t border-slate-800 space-y-3">
-                <span className="text-[11px] font-bold text-amber-400 block">Top News Secondary Grid (Positions 2-15):</span>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                  {Array.from({ length: 14 }, (_, i) => i + 1).map((idx) => (
-                    <div key={idx}>
-                      {renderGridCard(newsList[idx], idx)}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Secondary Grid (Positions #8 to #15) */}
-          <div className="bg-white rounded-3xl p-5 border border-slate-200 space-y-3 shadow-xs">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="font-extrabold text-sm text-slate-900">
-                Additional Top News Cards (Positions 8 - 15)
-              </h3>
-              <span className="text-xs text-slate-400 font-bold">Total: {Math.max(newsList.length, 15)} items</span>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {Array.from({ length: Math.max(newsList.length, 15) - 7 }).map((_, i) => {
-                const idx = i + 7;
-                return renderGridCard(newsList[idx], idx);
-              })}
-            </div>
-          </div>
-        </div>
-      ) : (
-        /* Regular Category Grid Layout */
-        <div className="bg-white rounded-3xl p-5 border border-slate-200 space-y-4 shadow-xs">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-            <h3 className="font-extrabold text-sm text-slate-900">
-              Category Grid Positions ({selectedCategory.toUpperCase()})
-            </h3>
-            <span className="text-xs text-slate-400 font-bold">Total: {newsList.length} items</span>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {newsList.map((item, idx) => renderGridCard(item, idx))}
-          </div>
-        </div>
-      )}
-
-      {/* Add News Modal */}
-      {modalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-xl w-full p-6 shadow-2xl space-y-4 border border-slate-200 max-h-[85vh] flex flex-col">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="font-extrabold text-base text-slate-900">
-                Add Article to Grid
-              </h3>
-              <button 
-                onClick={() => setModalOpen(false)} 
-                className="text-slate-400 hover:text-slate-600 p-1"
-              >
-                ✕
-              </button>
-            </div>
-
-            {/* Search Input */}
-            <div className="relative">
-              <Search size={16} className="absolute left-3.5 top-3 text-slate-400" />
-              <input
-                type="text"
-                placeholder="Search articles by title..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 text-xs font-bold bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-red-500"
-              />
-            </div>
-
-            {/* List */}
-            <div className="flex-1 overflow-y-auto space-y-2 pr-1">
-              {filteredPool.length === 0 ? (
-                <p className="text-xs text-slate-400 font-medium text-center py-8">
-                  No articles found.
+        {/* Dynamic Controls area when a category is selected */}
+        {selectedCategory && (
+          <div className="space-y-6 pt-2">
+            
+            {/* Manual Sorting Toggle Options */}
+            <div className="bg-white border border-[#c3c4c7] p-5 rounded shadow-sm space-y-4">
+              <div>
+                <h3 className="text-sm font-semibold text-[#1d2327] mb-1">
+                  Use the manual sorting for this category?
+                </h3>
+                <p className="text-xs text-[#50575e]">
+                  This switches the manual sorting on the front-end on or off. You can switch it off and manually sort your posts below until the new order is ready and you can then proceed to switch this on to showcase the new order on the front-end.
                 </p>
+              </div>
+
+              <div className="space-y-2 text-xs text-[#2c3338]">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="manualSorting"
+                    value="yes"
+                    checked={manualSorting === 'yes'}
+                    onChange={() => setManualSorting('yes')}
+                    className="text-[#2271b1] focus:ring-[#2271b1]"
+                  />
+                  <span>Yes</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="manualSorting"
+                    value="no"
+                    checked={manualSorting === 'no'}
+                    onChange={() => setManualSorting('no')}
+                    className="text-[#2271b1] focus:ring-[#2271b1]"
+                  />
+                  <span>No</span>
+                </label>
+              </div>
+
+              <div className="pt-1">
+                <label className="flex items-center gap-2 text-xs text-[#50575e] cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={overrideOrderby}
+                    onChange={(e) => setOverrideOrderby(e.target.checked)}
+                    className="rounded border-[#8c8f94] text-[#2271b1] focus:ring-[#2271b1]"
+                  />
+                  <span>Override &apos;orderby&apos; query attribute</span>
+                </label>
+              </div>
+
+              <p className="text-xs text-[#646970]">
+                Caution: Overriding &apos;orderby&apos; query attribute can have important consequences on WooCommerce listings where themes can display products ranked on various parameters such as price. This option overrides all other sortings, read <a href="#" className="text-[#2271b1] underline">FAQ #10</a> to see how to gain a finer control over this.
+              </p>
+            </div>
+
+            {/* Reset Order Box */}
+            <div className="bg-white border border-[#c3c4c7] p-5 rounded shadow-sm space-y-3">
+              <h3 className="text-sm font-semibold text-[#1d2327]">Reset the order!</h3>
+              <label className="flex items-center gap-2 text-xs text-[#50575e] cursor-pointer">
+                <input type="checkbox" className="rounded border-[#8c8f94]" />
+                <span>reset order for all posts, <strong>careful</strong>, this cannot be undone!</span>
+              </label>
+              <div>
+                <button
+                  type="button"
+                  onClick={handleResetOrder}
+                  className="px-3 py-1.5 bg-[#f6f7f7] text-[#2271b1] border border-[#2271b1] hover:bg-[#f0f0f1] text-xs font-normal rounded transition"
+                >
+                  Reset order
+                </button>
+              </div>
+            </div>
+
+            {/* Toast Notifications */}
+            {message && (
+              <div
+                className={`p-3 rounded border text-xs font-semibold ${
+                  message.type === 'success'
+                    ? 'bg-[#d1e7dd] text-[#0f5132] border-[#badbcc]'
+                    : 'bg-[#f8d7da] text-[#842029] border-[#f5c2c7]'
+                }`}
+              >
+                {message.text}
+              </div>
+            )}
+
+            {/* Grid of Posts Section */}
+            <div className="space-y-3">
+              <h2 className="text-base font-semibold text-[#1d2327]">
+                Grid of Posts, classified as <span className="font-bold">{selectedCategoryName}</span>:
+              </h2>
+
+              {/* Toolbar Controls */}
+              <div className="flex flex-wrap items-center justify-between gap-4 text-xs text-[#50575e] bg-white p-3 border border-[#c3c4c7] rounded">
+                <div className="flex items-center gap-2">
+                  <span>Post range:</span>
+                  <input
+                    type="number"
+                    value={postRangeStart}
+                    onChange={(e) => setPostRangeStart(Number(e.target.value))}
+                    className="w-12 border border-[#8c8f94] rounded px-2 py-1 text-center text-xs"
+                  />
+                  <span>—</span>
+                  <input
+                    type="number"
+                    value={postRangeEnd}
+                    onChange={(e) => setPostRangeEnd(Number(e.target.value))}
+                    className="w-12 border border-[#8c8f94] rounded px-2 py-1 text-center text-xs"
+                  />
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <span>Move items to rank:</span>
+                  <input
+                    type="text"
+                    value={moveToRankInput}
+                    onChange={(e) => setMoveToRankInput(e.target.value)}
+                    placeholder="e.g. 1"
+                    className="w-16 border border-[#8c8f94] rounded px-2 py-1 text-center text-xs"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleMoveToRank}
+                    className="px-3 py-1 bg-[#2271b1] hover:bg-[#135e96] text-white font-medium rounded text-xs transition"
+                  >
+                    Apply Rank
+                  </button>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleSaveOrder}
+                  disabled={saving}
+                  className="px-4 py-1.5 bg-[#2271b1] hover:bg-[#135e96] text-white font-bold rounded text-xs transition ml-auto disabled:opacity-50"
+                >
+                  {saving ? 'Saving...' : 'Save Reorder'}
+                </button>
+              </div>
+
+              <p className="text-xs italic text-[#646970]">
+                Select single/multiple items to move out of the current displayed range and insert towards the beginning or end of your list by selecting a suitable rank. Drag items to reposition manually.
+              </p>
+
+              {/* Grid Layout Container (7 Columns on large screens matching WP plugin image 2) */}
+              {loading ? (
+                <div className="bg-white border border-[#c3c4c7] p-12 text-center text-sm text-[#50575e]">
+                  Loading category posts...
+                </div>
+              ) : newsList.length === 0 ? (
+                <div className="bg-white border border-[#c3c4c7] p-12 text-center text-sm text-[#50575e]">
+                  No published posts found in this category.
+                </div>
               ) : (
-                filteredPool.map((item) => {
-                  const isAdded = newsList.some((n) => n.id === item.id);
-                  return (
-                    <div
-                      key={item.id}
-                      className="p-3 bg-slate-50 rounded-2xl border border-slate-200/70 flex items-center justify-between gap-3 text-xs"
-                    >
-                      <div className="min-w-0">
-                        <span className="text-[10px] font-bold text-teal-800 bg-teal-50 px-2 py-0.5 rounded border border-teal-100">
-                          {item.category?.name}
-                        </span>
-                        <h4 className="font-extrabold text-slate-900 truncate mt-1">
-                          {item.title}
-                        </h4>
-                      </div>
-                      <button
-                        onClick={() => addNewsToTop(item)}
-                        disabled={isAdded}
-                        className={`px-3 py-1.5 rounded-xl font-extrabold transition shrink-0 ${
-                          isAdded
-                            ? 'bg-slate-200 text-slate-500 cursor-not-allowed'
-                            : 'bg-red-600 hover:bg-red-700 text-white shadow-2xs'
+                <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 gap-2.5 pt-2">
+                  {newsList.map((item, index) => {
+                    const isSelected = selectedItems.includes(item.id);
+                    return (
+                      <div
+                        key={item.id}
+                        draggable
+                        onDragStart={(e) => handleDragStart(e, index)}
+                        onDragOver={(e) => handleDragOver(e, index)}
+                        onDragEnd={handleDragEnd}
+                        onClick={() => toggleSelectItem(item.id)}
+                        className={`group relative bg-[#3b4b6b] border border-[#2c3852] cursor-grab active:cursor-grabbing select-none transition-all flex flex-col justify-between aspect-[3/4] overflow-hidden ${
+                          isSelected ? 'ring-4 ring-[#2271b1] scale-[1.02]' : 'hover:border-blue-400'
                         }`}
                       >
-                        {isAdded ? 'Added' : '+ Add'}
-                      </button>
-                    </div>
-                  );
-                })
+                        {/* Thumbnail Image Container */}
+                        <div className="w-full h-full relative bg-[#2a364f]">
+                          {item.featuredImage ? (
+                            <img
+                              src={item.featuredImage}
+                              alt={item.title}
+                              className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-slate-400 text-xs">
+                              No Image
+                            </div>
+                          )}
+                          <div className="absolute top-1 left-1 bg-black/60 text-white font-mono text-[9px] px-1.5 py-0.5 rounded">
+                            #{index + 1}
+                          </div>
+                        </div>
+
+                        {/* Title Overlay Banner (Dark Blue Bottom Block matching image 2) */}
+                        <div className="bg-[#2d3a54] text-white p-1.5 w-full border-t border-[#3b4b6b]">
+                          <p className="text-[10px] leading-tight line-clamp-3 font-semibold text-center text-slate-100">
+                            {item.title}
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               )}
             </div>
+
           </div>
-        </div>
-      )}
+        )}
+
+      </div>
     </div>
   );
 }
