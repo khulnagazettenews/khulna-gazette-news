@@ -39,18 +39,13 @@ export default async function HomePage() {
     });
 
     if (!activeSpecialTopic) {
-      const totalSpecialTopics = await prisma.specialTopic.count();
-      if (totalSpecialTopics === 0) {
-        activeSpecialTopic = await prisma.specialTopic.create({
-          data: {
-            title: 'গেজেট প্রতিবেদন',
-            bannerSubtitle: 'বিস্তারিত দেখতে কভার খবরের যেকোনো একটিতে ক্লিক করুন',
-            isActive: true,
-            newsIds: JSON.stringify([]),
-            order: 0,
-          },
-        });
-      }
+      activeSpecialTopic = {
+        title: 'গেজেট প্রতিবেদন',
+        bannerSubtitle: 'বিস্তারিত দেখতে কভার খবরের যেকোনো একটিতে ক্লিক করুন',
+        isActive: true,
+        newsIds: JSON.stringify([]),
+        order: 0,
+      };
     }
   } catch (err) {
     console.error('Error fetching special topic:', err);

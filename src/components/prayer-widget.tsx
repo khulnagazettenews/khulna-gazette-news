@@ -30,9 +30,14 @@ export default async function PrayerWidget() {
   const cleanDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
 
   // Check DB custom overrides first
-  const dbTimes = await prisma.prayerTime.findUnique({
-    where: { date: cleanDate }
-  });
+  let dbTimes = null;
+  try {
+    dbTimes = await prisma.prayerTime.findUnique({
+      where: { date: cleanDate }
+    });
+  } catch (err) {
+    console.error('Error fetching prayer times from DB:', err);
+  }
 
   let timings = {
     fajr: '04:04',
