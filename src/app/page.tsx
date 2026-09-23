@@ -232,19 +232,106 @@ export default async function HomePage() {
       ...categoryQueries,
     ]);
 
-    heroNewsFallback = results[0];
-    latestNews = results[1];
-    popularNews = results[2];
-    photos = results[3];
-    videos = results[4];
-    advertisements = results[5];
-    exclusiveNews = results[6];
+    heroNewsFallback = results[0] || [];
+    latestNews = results[1] || [];
+    popularNews = results[2] || [];
+    photos = results[3] || [];
+    videos = results[4] || [];
+    advertisements = results[5] || [];
+    exclusiveNews = results[6] || [];
     specialTopicBannerNewsFetched = results[7] || [];
     topNewsConfig = results[8];
     initialCategoryResults = results.slice(9) as any[];
   } catch (err) {
     console.error('Error fetching homepage data:', err);
   }
+
+  // Sample fallback news when database returns empty results
+  const SAMPLE_FALLBACK_NEWS = [
+    {
+      id: 'demo-1',
+      title: 'সুন্দরবনের জীববৈচিত্র্য রক্ষায় কড়া পদক্ষেপের নির্দেশ হাইকোর্টের',
+      subtitle: 'পরিবেশ সুরক্ষায় নতুন নির্দেশনা',
+      content: 'বিশ্ব ঐতিহ্য সুন্দরবনের জীববৈচিত্র্য এবং বনাঞ্চল সুরক্ষায় কঠোর আইনি পদক্ষেপ গ্রহণের নির্দেশ দিয়েছেন আদালত...',
+      featuredImage: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=1200',
+      publishedAt: new Date(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      viewCount: 1250,
+      category: { name: 'গেজেট এক্সক্লুসিভ', slug: 'gazette-exclusive' },
+      author: { name: 'স্টাফ রিপোর্টার', avatar: null }
+    },
+    {
+      id: 'demo-2',
+      title: 'খুলনায় নতুন উদ্যোক্তা ও শিল্পায়নের সম্ভাবনা বাড়ছে, কর্মসংস্থানের সুযোগ',
+      subtitle: 'শিল্পনগরী খুলনার পুনর্জাগরণ',
+      content: 'খুলনা অঞ্চলে নতুন নতুন শিল্প কারখানা স্থাপনের মাধ্যমে অর্থনৈতিক প্রবৃদ্ধি অর্জিত হচ্ছে...',
+      featuredImage: 'https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?w=1200',
+      publishedAt: new Date(Date.now() - 3600000),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      viewCount: 980,
+      category: { name: 'অর্থনীতি', slug: 'economy' },
+      author: { name: 'নিজস্ব প্রতিবেদক', avatar: null }
+    },
+    {
+      id: 'demo-3',
+      title: 'জাতীয় রাজনীতিতে খুলনার জননেতাদের অবস্থান এবং উজ্জ্বল অবদান',
+      subtitle: 'রাজনৈতিক পর্যালোচনা',
+      content: 'বাংলাদেশের জাতীয় রাজনীতিতে খুলনাঞ্চলের নেতাদের ভূমিকা ইতিহাসজুড়ে অত্যন্ত গুরুত্বপূর্ণ...',
+      featuredImage: 'https://images.unsplash.com/photo-1540910419892-4a36d2c3266c?w=1200',
+      publishedAt: new Date(Date.now() - 7200000),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      viewCount: 840,
+      category: { name: 'রাজনীতি', slug: 'politics' },
+      author: { name: 'বিশেষ প্রতিনিধি', avatar: null }
+    },
+    {
+      id: 'demo-4',
+      title: 'গেজেট এক্সক্লুসিভ: খুলনার রূপসা ব্রিজের ওপারে নতুন রিসোর্ট ও ট্যুরিজম জোন',
+      subtitle: 'পর্যটনে নতুন দিগন্ত',
+      content: 'রূপসা নদীর তীরে আধুনিক সুবিধা সম্বলিত নতুন পর্যটন কেন্দ্র গড়ে তোলা হচ্ছে...',
+      featuredImage: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200',
+      publishedAt: new Date(Date.now() - 10800000),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      viewCount: 1100,
+      category: { name: 'গেজেট এক্সক্লুসিভ', slug: 'gazette-exclusive' },
+      author: { name: 'স্টাফ রিপোর্টার', avatar: null }
+    },
+    {
+      id: 'demo-5',
+      title: '৫ পেসার নিয়ে একাদশ ঘোষণায় পাকিস্তানের চমক, প্রস্তুত বাংলাদেশ দল',
+      subtitle: 'আন্তর্জাতিক ক্রিকেট নিউজ',
+      content: 'আসন্ন সিরিজে পাকিস্তানের শক্ত পেস আক্রমণের মুখোমুখি হতে প্রস্তুতি সম্পন্ন করেছে জাতীয় দল...',
+      featuredImage: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=1200',
+      publishedAt: new Date(Date.now() - 14400000),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      viewCount: 1540,
+      category: { name: 'খেলা', slug: 'sports' },
+      author: { name: 'ক্রীড়া প্রতিবেদক', avatar: null }
+    },
+    {
+      id: 'demo-6',
+      title: 'সাতক্ষীরায় নারী অধিকার সুরক্ষাকারীদের সহায়তা প্রদান শীর্ষক প্রশিক্ষণ সম্পন্ন',
+      subtitle: 'সমাজ উন্নয়ন ও অধিকার',
+      content: 'স্থানীয় নারীদের আত্মনির্ভরশীল ও অধিকার সচেতন করতে দিনব্যাপী প্রশিক্ষণের আয়োজন করা হয়...',
+      featuredImage: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=1200',
+      publishedAt: new Date(Date.now() - 18000000),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      viewCount: 670,
+      category: { name: 'বাংলাদেশ', slug: 'bangladesh' },
+      author: { name: 'স্টাফ রিপোর্টার', avatar: null }
+    }
+  ];
+
+  if (heroNewsFallback.length === 0) heroNewsFallback = SAMPLE_FALLBACK_NEWS;
+  if (latestNews.length === 0) latestNews = SAMPLE_FALLBACK_NEWS;
+  if (popularNews.length === 0) popularNews = SAMPLE_FALLBACK_NEWS;
+  if (exclusiveNews.length === 0) exclusiveNews = SAMPLE_FALLBACK_NEWS;
 
   // 1. Determine Lead News (Position 1)
   let leadNewsItem: any = null;
