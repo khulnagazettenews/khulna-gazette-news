@@ -28,6 +28,83 @@ const toDatetimeLocal = (dateStr?: string | Date | null) => {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 };
 
+const DEFAULT_FULL_CATEGORIES: any[] = [
+  { id: 'cat-epaper', name: 'epaper', slug: 'epaper' },
+  { id: 'cat-uncategorized', name: 'Uncategorized', slug: 'uncategorized' },
+  { id: 'cat-economy', name: 'অর্থনীতি', slug: 'economy' },
+  { id: 'cat-it', name: 'আইটি', slug: 'it' },
+  { id: 'cat-international', name: 'আন্তর্জাতিক', slug: 'international' },
+  { id: 'cat-islam', name: 'ইসলাম ও জীবন', slug: 'islam-and-life' },
+  { id: 'cat-udbodhoni', name: 'উদ্বোধনী ক্রোড়পত্র', slug: 'udbodhoni-krorpotro' },
+  { id: 'cat-corona', name: 'করোনা', slug: 'corona' },
+  {
+    id: 'cat-khulnanchal',
+    name: 'খুলনাঞ্চল',
+    slug: 'khulnanchal',
+    subCategories: [
+      { id: 'sub-kushtia', name: 'কুষ্টিয়া', slug: 'kushtia' },
+      { id: 'sub-khulna', name: 'খুলনা', slug: 'khulna' },
+      { id: 'sub-chuadanga', name: 'চুয়াডাঙ্গা', slug: 'chuadanga' },
+      { id: 'sub-jhenaidah', name: 'ঝিনাইদহ', slug: 'jhenaidah' },
+      { id: 'sub-narail', name: 'নড়াইল', slug: 'narail' },
+      { id: 'sub-bagerhat', name: 'বাগেরহাট', slug: 'bagerhat' },
+      { id: 'sub-magura', name: 'মাগুরা', slug: 'magura' },
+      { id: 'sub-meherpur', name: 'মেহেরপুর', slug: 'meherpur' },
+      { id: 'sub-jessore', name: 'যশোর', slug: 'jessore' },
+      { id: 'sub-satkhira', name: 'সাতক্ষীরা', slug: 'satkhira' },
+    ]
+  },
+  {
+    id: 'cat-sports',
+    name: 'খেলা',
+    slug: 'sports',
+    subCategories: [
+      { id: 'sub-worldcup-2026', name: 'ফুটবল বিশ্বকাপ-২০২৬', slug: 'football-world-cup-2026' }
+    ]
+  },
+  { id: 'cat-gazette-exclusive', name: 'গেজেট এক্সক্লুসিভ', slug: 'gazette-exclusive' },
+  { id: 'cat-chikitsha', name: 'চিকিৎসা', slug: 'chikitsha' },
+  { id: 'cat-chitra-bichitra', name: 'চিত্র বিচিত্র', slug: 'chitra-bichitra' },
+  { id: 'cat-top-news', name: 'টপ নিউজ', slug: 'top-news' },
+  { id: 'cat-dainik-khulna-gazette', name: 'দৈনিক খুলনা গেজেট', slug: 'dainik-khulna-gazette' },
+  {
+    id: 'cat-election',
+    name: 'নির্বাচন',
+    slug: 'election',
+    subCategories: [
+      { id: 'sub-kcc-election', name: 'খুলনা সিটি কর্পোরেশন নির্বাচন-২০২৩', slug: 'khulna-city-corporation-election-2023' },
+      { id: 'sub-12th-national-parliament', name: 'দ্বাদশ জাতীয় সংসদ নির্বাচন- ২০২৩', slug: '12th-national-parliament-election-2023' }
+    ]
+  },
+  { id: 'cat-photo-gallery', name: 'ফটো গ্যালারি', slug: 'photo-gallery' },
+  {
+    id: 'cat-feature',
+    name: 'ফিচার',
+    slug: 'feature',
+    subCategories: [
+      { id: 'sub-fifa-2022', name: 'ফিফা বিশ্বকাপ-২০২২', slug: 'fifa-world-cup-2022' },
+      { id: 'sub-borshopurti', name: 'বর্ষপূর্তির ক্রোড়পত্র', slug: 'borshopurti-krorpotro' }
+    ]
+  },
+  { id: 'cat-bangladesh', name: 'বাংলাদেশ', slug: 'bangladesh' },
+  {
+    id: 'cat-entertainment',
+    name: 'বিনোদন',
+    slug: 'entertainment',
+    subCategories: [
+      { id: 'sub-biswa-joyer', name: 'বিশ্ব জয়ের রোমাঞ্চকর আসর', slug: 'biswa-joyer-romanchokar-asor' }
+    ]
+  },
+  { id: 'cat-breaking-news', name: 'ব্রেকিং নিউজ', slug: 'breaking-news' },
+  { id: 'cat-video-gallery', name: 'ভিডিও গ্যালারি', slug: 'video-gallery' },
+  { id: 'cat-motamot', name: 'মুক্ত ভাবনা', slug: 'motamot' },
+  { id: 'cat-politics', name: 'রাজনীতি', slug: 'politics' },
+  { id: 'cat-lifestyle', name: 'লাইফ স্টাইল', slug: 'lifestyle' },
+  { id: 'cat-education', name: 'শিক্ষা', slug: 'education' },
+  { id: 'cat-sahitya', name: 'সাহিত্য', slug: 'sahitya' },
+  { id: 'cat-social-media', name: 'সোশ্যাল মিডিয়া', slug: 'social-media' }
+];
+
 export default function NewsForm({ initialData, newsId }: NewsFormProps) {
   const router = useRouter();
   const { data: session } = useSession();
@@ -36,8 +113,13 @@ export default function NewsForm({ initialData, newsId }: NewsFormProps) {
   const isSubEditor = role === 'SUB_EDITOR';
   const canPublish = ['SUPER_ADMIN', 'ADMIN', 'EDITOR', 'AUTHOR'].includes(role);
 
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [categories, setCategories] = useState<Category[]>(DEFAULT_FULL_CATEGORIES);
   const [subCategories, setSubCategories] = useState<Category[]>([]);
+  const [categoryTab, setCategoryTab] = useState<'all' | 'most_used'>('all');
+  const [showAddCategoryForm, setShowAddCategoryForm] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState('');
+  const [newCategoryParentId, setNewCategoryParentId] = useState('');
+  const [addingCategory, setAddingCategory] = useState(false);
 
   // Form State
   const [title, setTitle] = useState(initialData?.title || '');
@@ -119,13 +201,19 @@ export default function NewsForm({ initialData, newsId }: NewsFormProps) {
     setHasDraft(false);
   };
 
-  // Fetch all parent categories on load
+  // Fetch all parent categories on load (with auto-seed fallback)
   useEffect(() => {
     const fetchCats = async () => {
       try {
-        const res = await fetch('/api/categories');
-        const data = await res.json();
-        if (res.ok) {
+        let res = await fetch('/api/categories');
+        let data = await res.json();
+        if (res.ok && Array.isArray(data) && data.length < 20) {
+          // Auto-trigger category seeding if missing categories
+          await fetch('/api/seed-categories');
+          res = await fetch('/api/categories');
+          data = await res.json();
+        }
+        if (res.ok && Array.isArray(data)) {
           setCategories(data);
         }
       } catch (err) {
@@ -160,6 +248,45 @@ export default function NewsForm({ initialData, newsId }: NewsFormProps) {
       setTagsInput([...currentTags, tagAddInput.trim()].join(', '));
     }
     setTagAddInput('');
+  };
+
+  const handleAddCategorySubmit = async () => {
+    if (!newCategoryName.trim()) return;
+    setAddingCategory(true);
+    try {
+      const slug = newCategoryName.trim().toLowerCase().replace(/\s+/g, '-');
+      const res = await fetch('/api/categories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: newCategoryName.trim(),
+          slug,
+          parentId: newCategoryParentId || null,
+        }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        const catRes = await fetch('/api/categories');
+        const catData = await catRes.json();
+        if (catRes.ok) {
+          setCategories(catData);
+        }
+        if (newCategoryParentId) {
+          setSubCategoryId(data.id);
+        } else {
+          setCategoryId(data.id);
+        }
+        setNewCategoryName('');
+        setNewCategoryParentId('');
+        setShowAddCategoryForm(false);
+      } else {
+        alert(data.error || 'ক্যাটাগরি তৈরি করতে সমস্যা হয়েছে');
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setAddingCategory(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -513,28 +640,45 @@ export default function NewsForm({ initialData, newsId }: NewsFormProps) {
             <div className="bg-gray-50 border-b border-gray-200 px-3.5 py-2 flex items-center justify-between">
               <h3 className="font-bold text-gray-800 text-xs">Categories</h3>
               <div className="flex gap-1 text-gray-400">
-                <ChevronUp size={14} className="cursor-pointer" />
+                <ChevronUp size={14} className="cursor-pointer hover:text-gray-600" />
               </div>
             </div>
 
             <div className="p-3.5 space-y-2.5">
+              {/* Tab Header: All Categories | Most Used */}
               <div className="flex border-b border-gray-200 text-[11px] font-semibold">
                 <button
                   type="button"
-                  className="px-2.5 py-1 border-b-2 border-blue-600 text-blue-600 bg-white"
+                  onClick={() => setCategoryTab('all')}
+                  className={`px-3 py-1 border-b-2 transition ${
+                    categoryTab === 'all'
+                      ? 'border-blue-600 text-blue-600 bg-white font-bold'
+                      : 'border-transparent text-gray-500 hover:text-gray-700'
+                  }`}
                 >
                   All Categories
                 </button>
                 <button
                   type="button"
-                  className="px-2.5 py-1 text-gray-500 hover:text-gray-700"
+                  onClick={() => setCategoryTab('most_used')}
+                  className={`px-3 py-1 border-b-2 transition ${
+                    categoryTab === 'most_used'
+                      ? 'border-blue-600 text-blue-600 bg-white font-bold'
+                      : 'border-transparent text-gray-500 hover:text-gray-700'
+                  }`}
                 >
                   Most Used
                 </button>
               </div>
 
-              <div className="max-h-52 overflow-y-auto border border-gray-200 rounded p-2.5 bg-white space-y-1.5 text-[11px]">
-                {categories.map((c) => {
+              {/* Scrollable Category List Container */}
+              <div className="max-h-56 overflow-y-auto border border-gray-200 rounded p-2.5 bg-white space-y-1.5 text-[11px]">
+                {(categoryTab === 'most_used'
+                  ? categories.filter((c) =>
+                      ['bangladesh', 'khulnanchal', 'politics', 'economy', 'international', 'sports', 'entertainment', 'education', 'islam-and-life', 'gazette-exclusive', 'top-news'].includes(c.slug)
+                    )
+                  : categories
+                ).map((c) => {
                   const isPrimaryChecked = categoryId === c.id;
                   const isTagChecked = tagsInput.split(',').map((t: string) => t.trim().toLowerCase()).includes(c.name.toLowerCase());
                   const isChecked = isPrimaryChecked || isTagChecked;
@@ -602,10 +746,56 @@ export default function NewsForm({ initialData, newsId }: NewsFormProps) {
                 })}
               </div>
 
+              {/* + Add Category Form / Button */}
               <div>
-                <a href="/admin/categories" className="text-[11px] text-blue-600 hover:underline font-medium">
-                  + Add Category
-                </a>
+                {!showAddCategoryForm ? (
+                  <button
+                    type="button"
+                    onClick={() => setShowAddCategoryForm(true)}
+                    className="text-[11px] text-blue-600 hover:underline font-medium block"
+                  >
+                    + Add Category
+                  </button>
+                ) : (
+                  <div className="space-y-2 border-t border-gray-100 pt-2 text-[11px]">
+                    <input
+                      type="text"
+                      value={newCategoryName}
+                      onChange={(e) => setNewCategoryName(e.target.value)}
+                      placeholder="Category Name"
+                      className="w-full border border-gray-300 rounded px-2.5 py-1 text-xs outline-none focus:ring-1 focus:ring-blue-600"
+                    />
+                    <select
+                      value={newCategoryParentId}
+                      onChange={(e) => setNewCategoryParentId(e.target.value)}
+                      className="w-full border border-gray-300 rounded px-2 py-1 text-[11px] outline-none bg-white"
+                    >
+                      <option value="">— Parent Category —</option>
+                      {categories.map((cat) => (
+                        <option key={cat.id} value={cat.id}>
+                          {cat.name}
+                        </option>
+                      ))}
+                    </select>
+                    <div className="flex items-center gap-2 pt-1">
+                      <button
+                        type="button"
+                        onClick={handleAddCategorySubmit}
+                        disabled={addingCategory}
+                        className="px-3 py-1 bg-gray-100 hover:bg-gray-200 border border-gray-300 text-gray-800 font-semibold rounded text-[11px] transition disabled:opacity-50"
+                      >
+                        {addingCategory ? 'Adding...' : 'Add Category'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setShowAddCategoryForm(false)}
+                        className="text-gray-500 hover:underline text-[11px]"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
