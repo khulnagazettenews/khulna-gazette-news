@@ -6,14 +6,12 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('Seeding database...');
 
-  // 1. Create Super Admin User
   const existingAdmin = await prisma.user.findUnique({
     where: { email: 'admin@khulnagazette.com' },
   });
-
+  const hashedPassword = await bcrypt.hash('admin123', 10);
   let adminUser;
   if (!existingAdmin) {
-    const hashedPassword = await bcrypt.hash('admin123', 10);
     adminUser = await prisma.user.create({
       data: {
         name: 'সম্পাদক ও প্রকাশক',
@@ -25,8 +23,14 @@ async function main() {
     });
     console.log('Admin user created successfully.');
   } else {
-    adminUser = existingAdmin;
-    console.log('Admin user already exists.');
+    adminUser = await prisma.user.update({
+      where: { email: 'admin@khulnagazette.com' },
+      data: {
+        password: hashedPassword,
+        role: 'SUPER_ADMIN',
+      },
+    });
+    console.log('Admin user password updated successfully to admin123.');
   }
 
   // 2. Safe seed checks without deleting existing data
