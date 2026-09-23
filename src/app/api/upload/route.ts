@@ -26,7 +26,7 @@ export async function POST(req: Request) {
     const formData = await req.formData();
     const file = formData.get('file') as File | null;
     if (!file) {
-      return NextResponse.json({ error: 'কোনো ফাইল পাওয়া যায়নি' }, { status: 450 });
+      return NextResponse.json({ error: 'কোনো ফাইল পাওয়া যায়নি' }, { status: 400 });
     }
 
     const bytes = await file.arrayBuffer();
@@ -47,24 +47,35 @@ export async function POST(req: Request) {
           folder: '/khulna-gazette',
         });
 
-        return NextResponse.json({ url: uploadResult.url });
+        if (uploadResult && uploadResult.url) {
+          return NextResponse.json({ url: uploadResult.url });
+        }
       } catch (err) {
-        console.error('ImageKit upload error, falling back to local:', err);
+        console.error('ImageKit upload error, falling back to local/data-url:', err);
       }
     }
 
     // 2. Fallback to Local Storage in public/uploads
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads');
-    
-    // Ensure the uploads directory exists
-    await mkdir(uploadDir, { recursive: true });
+    try {
+      const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+      await mkdir(uploadDir, { recursive: true });
+      const filePath = path.join(uploadDir, filename);
+      await writeFile(filePath, buffer);
 
-    const filePath = path.join(uploadDir, filename);
-    await writeFile(filePath, buffer);
+      return NextResponse.json({ url: `/uploads/${filename}` });
+    } catch (localErr) {
+      console.error('Local file write error, falling back to Base64 Data URL:', localErr);
+      
+      // 3. Fallback to Data URL if local file system is read-only (e.g. Vercel) or fails
+      const mimeType = file.type || 'image/jpeg';
+      const base64Data = buffer.toString('base64');
+      const dataUrl = `data:${mimeType};base64,${base64Data}`;
 
-    return NextResponse.json({ url: `/uploads/${filename}` });
+      return NextResponse.json({ url: dataUrl });
+    }
   } catch (error) {
     console.error('File upload general exception:', error);
     return NextResponse.json({ error: 'ফাইল আপলোড করতে সমস্যা হয়েছে।' }, { status: 500 });
   }
 }
+
