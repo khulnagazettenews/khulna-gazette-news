@@ -53,6 +53,11 @@ export default function AdminReorderPage() {
       if (res.ok) {
         setCategories(data.categories || []);
         setNewsList(data.news || []);
+        if (data.isActive !== undefined) {
+          setManualSorting(data.isActive ? 'yes' : 'no');
+        } else {
+          setManualSorting('yes');
+        }
         if (!selectedCategory && data.categories && data.categories.length > 0) {
           // If no category explicitly selected yet, keep selectedCategory as passed or default
           if (catSlug) {
@@ -149,6 +154,7 @@ export default function AdminReorderPage() {
         body: JSON.stringify({
           category: selectedCategory,
           newsIds,
+          isActive: manualSorting === 'yes',
         }),
       });
 
@@ -201,6 +207,7 @@ export default function AdminReorderPage() {
           >
             <option value="">Select</option>
             <option value="top_news">টপ নিউজ / Top News (Homepage Lead Grid)</option>
+            <option value="featured">ফিচার / Featured Section</option>
             {categories.map((cat) => (
               <option key={cat.id} value={cat.slug}>
                 {cat.name}

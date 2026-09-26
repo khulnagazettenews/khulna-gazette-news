@@ -10,6 +10,7 @@ interface BlockNewsItem {
   content: string;
   publishedAt: Date | string | null;
   reporterName?: string | null;
+  authorTitle?: string | null;
 }
 
 interface CategoryBlockProps {
@@ -194,19 +195,26 @@ export default function CategoryBlock({
                       className="w-full h-full object-cover group-hover:scale-[1.03] transition duration-300"
                     />
                   </div>
-                  <h4
-                    style={{
-                      fontFamily: 'Bangla, sans-serif',
-                      fontSize: '21px',
-                      fontWeight: 400,
-                      lineHeight: '23.1px',
-                      letterSpacing: '-0.2px',
-                      textAlign: 'left',
-                    }}
-                    className="text-[#000000] group-hover:text-[#e60023] transition line-clamp-2 flex-1 break-words"
-                  >
-                    {item.title}
-                  </h4>
+                  <div className="flex-1 min-w-0">
+                    <h4
+                      style={{
+                        fontFamily: 'Bangla, sans-serif',
+                        fontSize: '21px',
+                        fontWeight: 400,
+                        lineHeight: '23.1px',
+                        letterSpacing: '-0.2px',
+                        textAlign: 'left',
+                      }}
+                      className="text-[#000000] group-hover:text-[#e60023] transition line-clamp-2 break-words"
+                    >
+                      {item.title}
+                    </h4>
+                    {(item.reporterName || (item as any).authorTitle) && (
+                      <span className="text-[12px] text-gray-500 font-medium block pt-0.5">
+                        {getReporterTitle(item)}
+                      </span>
+                    )}
+                  </div>
                 </Link>
               ))}
             </div>

@@ -12,6 +12,7 @@ interface HeroNewsItem {
   publishedAt: Date | string | null;
   category: { name: string; slug: string } | any;
   reporterName?: string | null;
+  authorTitle?: string | null;
 }
 
 interface HomeHeroProps {
@@ -158,6 +159,11 @@ export default function HomeHero({ news }: HomeHeroProps) {
                         {story.title}
                       </h3>
                     </Link>
+                    {(story.reporterName || story.authorTitle) && (
+                      <span className="text-[12px] text-gray-500 font-medium block pt-0.5">
+                        {getReporterTitle(story)}
+                      </span>
+                    )}
                   </div>
                 </div>
               );

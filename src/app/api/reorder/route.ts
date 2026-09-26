@@ -80,23 +80,61 @@ export async function GET(req: Request) {
     }
 
     // Handle regular category reordering (including featured)
+    if (categorySlug === 'featured') {
+      const activeSpecialTopic = await prisma.specialTopic.findFirst({
+        orderBy: [{ updatedAt: 'desc' }, { order: 'asc' }],
+      });
+      const savedIds = parseNewsIds(activeSpecialTopic?.newsIds);
+
+      const categoryNews = await prisma.news.findMany({
+        where: {
+          status: 'PUBLISHED',
+          OR: [
+            { isFeatured: true },
+            { tags: { some: { tag: { name: { contains: 'ফিচার' } } } } }
+          ],
+        },
+        orderBy: { publishedAt: 'desc' },
+        take: 30,
+        include: {
+          category: { select: { name: true, slug: true } },
+          author: { select: { name: true } },
+        },
+      });
+
+      const orderedNews: any[] = [];
+      if (savedIds.length > 0) {
+        savedIds.forEach((id) => {
+          const item = categoryNews.find((n) => n.id === id);
+          if (item) orderedNews.push(item);
+        });
+      }
+
+      categoryNews.forEach((item) => {
+        if (!orderedNews.some((n) => n.id === item.id)) {
+          orderedNews.push(item);
+        }
+      });
+
+      return NextResponse.json({
+        category: 'featured',
+        categoryName: 'ফিচার (Special Topic)',
+        categories,
+        isActive: activeSpecialTopic ? activeSpecialTopic.isActive : true,
+        news: orderedNews.slice(0, 5),
+        poolNews: categoryNews,
+      });
+    }
+
     const targetCategory = categories.find((c) => c.slug === categorySlug);
     if (!targetCategory) {
       return NextResponse.json({ error: 'ক্যাটাগরি পাওয়া যায়নি' }, { status: 404 });
     }
 
-    let savedIds: string[] = [];
-    if (categorySlug === 'featured') {
-      const activeSpecialTopic = await prisma.specialTopic.findFirst({
-        orderBy: [{ updatedAt: 'desc' }, { order: 'asc' }],
-      });
-      savedIds = parseNewsIds(activeSpecialTopic?.newsIds);
-    } else {
-      const catConfig = await prisma.specialTopic.findUnique({
-        where: { id: `cat_order_${targetCategory.id}` },
-      });
-      savedIds = parseNewsIds(catConfig?.newsIds);
-    }
+    const catConfig = await prisma.specialTopic.findUnique({
+      where: { id: `cat_order_${targetCategory.id}` },
+    });
+    const savedIds = parseNewsIds(catConfig?.newsIds);
 
     const categoryNews = await prisma.news.findMany({
       where: {
@@ -104,8 +142,6 @@ export async function GET(req: Request) {
         OR: [
           { categoryId: targetCategory.id },
           { subCategoryId: targetCategory.id },
-          { isFeatured: categorySlug === 'featured' ? true : undefined },
-          { tags: categorySlug === 'featured' ? { some: { tag: { name: { contains: 'ফিচার' } } } } : undefined },
         ],
       },
       orderBy: { publishedAt: 'desc' },
@@ -196,6 +232,7 @@ export async function POST(req: Request) {
 
     if (category === 'featured') {
       const top5Ids = newsIds.slice(0, 5);
+      const isFeatureActive = body.isActive !== undefined ? !!body.isActive : true;
 
       const activeSpecialTopic = await prisma.specialTopic.findFirst({
         orderBy: [{ updatedAt: 'desc' }, { order: 'asc' }],
@@ -207,7 +244,7 @@ export async function POST(req: Request) {
           data: {
             title: 'ফিচার',
             newsIds: JSON.stringify(top5Ids),
-            isActive: true,
+            isActive: isFeatureActive,
           },
         });
       } else {
@@ -215,7 +252,7 @@ export async function POST(req: Request) {
           data: {
             title: 'ফিচার',
             newsIds: JSON.stringify(top5Ids),
-            isActive: true,
+            isActive: isFeatureActive,
           },
         });
       }
@@ -225,7 +262,7 @@ export async function POST(req: Request) {
 
       return NextResponse.json({
         success: true,
-        message: 'ফিচার (Special Topic) সংবাদ এর নতুন ক্রম সফলভাবে সংরক্ষিত হয়েছে।',
+        message: 'ফিচার (Special Topic) সংবাদ এর নতুন ক্রম ও স্ট্যাটাস সফলভাবে সংরক্ষিত হয়েছে।',
       });
     }
 

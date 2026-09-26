@@ -450,15 +450,7 @@ export default async function HomePage() {
             {/* Ad slot: After Hero */}
             <AdBanner ad={getAd('home_after_hero')} className="h-20 sm:h-24" />
 
-            {/* 2.5 Special Topic / Report Section */}
-            {activeSpecialTopic?.isActive && finalSpecialTopicNews.length > 0 && (
-              <SpecialTopicSection
-                title={activeSpecialTopic.title}
-                bannerSubtitle={activeSpecialTopic.bannerSubtitle || undefined}
-                bannerImage={activeSpecialTopic.bannerImage || '/uploads/sidebar/udbodhoni_promo.jpg'}
-                news={serializeList(finalSpecialTopicNews)}
-              />
-            )}
+
 
             {/* 3. Red YouTube Promo Strip */}
             <YoutubeBanner />
@@ -589,6 +581,8 @@ export default async function HomePage() {
               exclusiveNews={serializeList(exclusiveNews)}
               sidebarAd={sidebarAd}
               sidebarAds={serializeList([...advertisements].sort((a: any, b: any) => (a.order ?? 0) - (b.order ?? 0)))}
+              specialTopic={activeSpecialTopic}
+              specialTopicNews={serializeList(finalSpecialTopicNews)}
             />
           </div>
         </div>

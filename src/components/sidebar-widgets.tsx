@@ -16,6 +16,8 @@ interface SidebarWidgetsProps {
   sidebarAds?: any[];
   isEpaperPage?: boolean;
   availableDates?: string[];
+  specialTopic?: any;
+  specialTopicNews?: any[];
 }
 
 function RenderAdItem({ ad }: { ad: any }) {
@@ -86,6 +88,8 @@ export default function SidebarWidgets({
   sidebarAds = [],
   isEpaperPage = false,
   availableDates = [],
+  specialTopic,
+  specialTopicNews = [],
 }: SidebarWidgetsProps) {
   const topAds = sidebarAds.filter(a => a.position === 'sidebar_widget_top');
   const middleAds = sidebarAds.filter(a => a.position === 'sidebar_widget_middle');
@@ -94,6 +98,51 @@ export default function SidebarWidgets({
     <div className="space-y-5">
       {/* 1. TABS WIDGET (সর্বশেষ | সর্বাধিক পঠিত - 1st) */}
       <TabsWidget latest={latestNews} popular={popularNews} />
+
+      {/* 1.5 SPECIAL TOPIC / FEATURED SECTION (Right below TabsWidget - সর্বশেষ এর নিচে) */}
+      {specialTopic?.isActive && specialTopicNews.length > 0 && (
+        <div className="bg-[#f3f7f6] rounded-2xl p-2 border border-gray-200/80 shadow-xs">
+          <div className="bg-[#02474d] text-white px-3.5 py-2 rounded-xl flex items-center justify-between gap-2 shadow-xs mb-2">
+            <div className="flex items-center gap-2">
+              <span className="text-amber-300 font-bold text-sm">★</span>
+              <h4 className="text-sm font-bold text-white tracking-tight">{specialTopic.title}</h4>
+            </div>
+            {specialTopicNews[0] && (
+              <Link
+                href={`/${specialTopicNews[0].category?.slug || 'news'}/${specialTopicNews[0].id}`}
+                className="text-[11px] font-bold bg-white text-[#02474d] px-2.5 py-1 rounded-full hover:bg-slate-100 transition"
+              >
+                বিস্তারিত
+              </Link>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            {specialTopicNews.slice(0, 5).map((item, idx) => (
+              <div 
+                key={item.id} 
+                className="bg-white rounded-lg p-2 border border-gray-200/60 shadow-2xs flex items-center gap-2.5 group hover:shadow-xs transition"
+              >
+                <div className="w-6 h-6 rounded-full bg-[#02474d]/10 text-[#02474d] font-bold text-xs flex items-center justify-center shrink-0">
+                  {idx + 1}
+                </div>
+                {item.featuredImage && (
+                  <Link href={`/${item.category?.slug || 'news'}/${item.id}`} className="block w-14 h-10 shrink-0 overflow-hidden rounded bg-gray-100">
+                    <img src={item.featuredImage} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition" />
+                  </Link>
+                )}
+                <div className="flex-1 min-w-0">
+                  <Link href={`/${item.category?.slug || 'news'}/${item.id}`}>
+                    <h5 className="text-xs font-bold text-gray-900 group-hover:text-[#02474d] transition line-clamp-2 leading-tight">
+                      {item.title}
+                    </h5>
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* 2. CALENDAR ARCHIVE WIDGET (আর্কাইভ / ই-পেপার আর্কাইভ - Right below TabsWidget) */}
       <CalendarArchiveWidget
